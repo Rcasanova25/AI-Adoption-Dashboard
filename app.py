@@ -274,7 +274,7 @@ data_year = st.sidebar.selectbox(
 
 view_type = st.sidebar.selectbox(
     "Analysis View", 
-    ["Adoption Rates", "Historical Trends", "Firm Size Analysis", "Technology Stack", "AI Technology Maturity", "Productivity Research", "AI Impact Estimates", "Geographic Distribution", "OECD 2025 Findings", "Barriers & Support", "ROI Analysis"]
+    ["Adoption Rates", "Historical Trends", "Firm Size Analysis", "Technology Stack", "AI Technology Maturity", "Productivity Research", "AI Impact Estimates", "ROI Analysis", "Geographic Distribution", "OECD 2025 Findings", "Barriers & Support"]
 )
 
 # Add export functionality
@@ -363,6 +363,9 @@ else:
 
 # Main visualization section
 st.subheader(f"📊 {view_type}")
+
+# Debug: Show which view is selected
+# st.write(f"Debug: Selected view is '{view_type}'")
 
 if view_type == "Historical Trends":
     fig = go.Figure()
@@ -798,6 +801,7 @@ elif view_type == "Barriers & Support":
     """)
 
 elif view_type == "ROI Analysis":
+    # st.write("Debug: ROI Analysis view selected")  # Debug line
     st.write("💰 **ROI Analysis: Costs, Returns, and Economic Impact of AI Adoption**")
     
     # ROI overview metrics based on research data
