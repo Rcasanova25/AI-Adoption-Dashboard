@@ -118,7 +118,7 @@ def load_data():
     
     # AI productivity estimates
     ai_productivity_estimates = pd.DataFrame({
-        'source': ['Acemoglu (2024)', 'Brynjolfsson et al.', 'McKinsey', 'Goldman Sachs', 'Richmond Fed'],
+        'source': ['Acemoglu (2024)', 'Brynjolfsson et al. (2023)', 'McKinsey (potential)', 'Goldman Sachs (potential)', 'Richmond Fed'],
         'annual_impact': [0.07, 1.5, 2.0, 2.5, 0.1]
     })
     
@@ -247,6 +247,13 @@ st.markdown("""
 st.title("🤖 AI Adoption Dashboard: 2018-2025")
 st.markdown("**Comprehensive analysis from early AI adoption (2018) to current GenAI trends (2025)**")
 
+# Add definition notice
+st.info("""
+**📌 Important Note:** Adoption rates in this dashboard reflect "any AI use" including pilots, experiments, and production deployments. 
+Enterprise-wide production use rates are typically lower. Data sources include McKinsey Global Survey on AI, OECD AI Policy Observatory, 
+and US Census Bureau AI Use Supplement.
+""")
+
 # Sidebar controls with persona-based recommendations
 st.sidebar.header("📊 Dashboard Controls")
 
@@ -319,10 +326,10 @@ if "2025" in data_year:
         ai_cagr = ((ai_2025_value/ai_2018)**(1/years) - 1) * 100
         
         st.metric(
-            label="Overall AI Adoption", 
+            label="Overall AI Adoption*", 
             value="78%", 
             delta=f"CAGR: {ai_cagr:.1f}%",
-            help="Compound Annual Growth Rate from 2018-2025"
+            help="*Includes any AI use (pilots, experiments, production). Compound Annual Growth Rate from 2018-2025"
         )
     with col2:
         # Calculate CAGR for GenAI (2022-2025)
@@ -332,10 +339,10 @@ if "2025" in data_year:
         genai_cagr = ((genai_2025_value/genai_2022)**(1/genai_years) - 1) * 100
         
         st.metric(
-            label="GenAI Adoption", 
+            label="GenAI Adoption*", 
             value="71%", 
             delta=f"CAGR: {genai_cagr:.1f}%",
-            help="Explosive growth since 2022"
+            help="*Includes any GenAI use. Explosive growth since 2022"
         )
     with col3:
         st.metric(
@@ -452,7 +459,7 @@ if view_type == "Historical Trends":
     )
     
     fig.update_layout(
-        title="AI Adoption Trends (2017-2025): The GenAI Revolution", 
+        title="AI Adoption Trends (2017-2025): The GenAI Revolution*", 
         xaxis_title="Year", 
         yaxis_title="Adoption Rate (%)",
         height=500,
@@ -463,7 +470,14 @@ if view_type == "Historical Trends":
             y=0.99,
             xanchor="right",
             x=0.99
-        )
+        ),
+        annotations=[dict(
+            xref="paper", yref="paper",
+            x=0.02, y=0.02,
+            showarrow=False,
+            text="*Adoption includes any AI use: pilots, experiments, and production deployments",
+            font=dict(size=10, color="gray")
+        )]
     )
     
     # Display chart with download button
@@ -501,16 +515,26 @@ elif view_type == "Adoption Rates":
                 genai_2025, 
                 x='function', 
                 y='adoption', 
-                title='GenAI Adoption by Business Function (2025)',
+                title='GenAI Adoption by Business Function (2025)*',
                 color='adoption', 
                 color_continuous_scale='viridis',
                 text='adoption'
             )
             fig.update_traces(texttemplate='%{text}%', textposition='outside')
-            fig.update_layout(xaxis_tickangle=45)
+            fig.update_layout(
+                xaxis_tickangle=45,
+                annotations=[dict(
+                    xref="paper", yref="paper",
+                    x=0, y=-0.25,
+                    showarrow=False,
+                    text="*Among firms using GenAI, percentage reporting use in each function",
+                    font=dict(size=10, color="gray")
+                )]
+            )
             st.plotly_chart(fig, use_container_width=True)
             
             st.write("🎯 **Key Insight**: Marketing & Sales leads GenAI adoption at 42%, followed by Product Development at 28%")
+            st.info("**Note:** These percentages reflect function-specific adoption among GenAI-using firms, not overall enterprise adoption rates.")
         else:
             st.error(f"Data error: genai_2025 is type {type(genai_2025)}")
         
@@ -653,8 +677,23 @@ elif view_type == "Productivity Research":
     st.plotly_chart(fig, use_container_width=True)
     
     st.write("📊 **Key Research Finding**: Workforce age composition correlates more strongly with productivity than technology adoption. Correlation between young workers and productivity: -0.49")
+    
+    # Add caveat about productivity paradox
+    st.warning("""
+    **⚠️ Important Context:** The "productivity paradox" suggests that technology adoption alone doesn't guarantee productivity gains. 
+    Factors like workforce experience, organizational changes, and implementation quality play crucial roles. This finding is consistent 
+    with Solow's observation about computers in the 1980s-1990s.
+    """)
 
 elif view_type == "AI Impact Estimates":
+    # Add important context about estimates
+    st.info("""
+    **📊 Important Context:** These estimates represent a wide range of views on AI's productivity impact:
+    - **Conservative estimates** (Acemoglu, Richmond Fed): 0.07-0.1% annual impact based on task automation analysis
+    - **Optimistic estimates** (McKinsey, Goldman Sachs): 1.5-2.5% represent *potential* upper bounds assuming widespread, effective deployment
+    - Actual impact will depend on implementation quality, organizational changes, and workforce adaptation
+    """)
+    
     fig = px.bar(
         ai_productivity_estimates,
         x='source',
@@ -668,10 +707,16 @@ elif view_type == "AI Impact Estimates":
     fig.update_layout(height=500, xaxis_title="Research Source", yaxis_title="Annual Productivity Impact (%)")
     st.plotly_chart(fig, use_container_width=True)
     
-    st.write("⚠️ **Reality Check**: Richmond Fed research suggests AI productivity gains may be closer to Acemoglu's conservative 0.07% annually vs optimistic 1.5-2.5% industry forecasts")
+    st.write("⚠️ **Reality Check**: The wide range reflects fundamental uncertainty. Conservative estimates focus on task-level analysis, while optimistic projections assume economy-wide transformation.")
 
 elif view_type == "OECD 2025 Findings":
     st.write("📊 **OECD/BCG/INSEAD 2025 Report: Key Findings**")
+    
+    # Add context box
+    st.info("""
+    **📌 Methodology Note:** OECD adoption rates include any AI use (pilots, experiments, and production). 
+    Based on survey of 840 enterprises across G7 countries + Brazil. Rates vary by sector and firm size.
+    """)
     
     # G7 Country comparison
     col1, col2 = st.columns([2, 1])
@@ -1053,11 +1098,15 @@ elif view_type == "ROI Analysis":
         - AI will begin measurably boosting GDP starting in **2027**
         - Long-term impact expected to be **disinflationary**
         - Benefits will accelerate as adoption deepens
+        - **Note:** These are *potential* impacts assuming widespread effective deployment
         
         **J.P. Morgan Analysis:**
         - AI investment funded by profitable companies with low debt
         - Contrasts with previous tech investment cycles
         - More sustainable growth pattern expected
+        
+        **Caveat:** Actual GDP impact will depend on implementation quality, 
+        organizational adaptation, and complementary investments in workforce skills.
         """)
     
     with tab4:
