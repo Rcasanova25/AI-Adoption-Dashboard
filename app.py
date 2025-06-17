@@ -11,9 +11,9 @@ st.set_page_config(
     layout="wide",
     initial_sidebar_state="expanded",
     menu_items={
-        'Get Help': 'https://github.com/yourusername/ai-dashboard/wiki',
-        'Report a bug': "https://github.com/yourusername/ai-dashboard/issues",
-        'About': "# AI Adoption Dashboard\nVersion 2.1.0\n\nTrack AI adoption trends across industries and geographies."
+        'Get Help': 'https://github.com/Rcasanova25/AI-Adoption-Dashboard/wiki',
+        'Report a bug': "https://github.com/Rcasanova25/AI-Adoption-Dashboard/issues",
+        'About': "# AI Adoption Dashboard\nVersion 2.1.0\n\nTrack AI adoption trends across industries and geographies.\n\nCreated by Robert Casanova"
     }
 )
 
@@ -1816,37 +1816,37 @@ col1, col2, col3, col4 = st.columns(4)
 with col1:
     st.markdown("""
     ### 📚 Resources
-    - [📖 User Guide](https://github.com/yourusername/ai-dashboard/wiki)
-    - [📊 Raw Data (CSV)](https://github.com/yourusername/ai-dashboard/data)
-    - [🔧 API Documentation](https://api.ai-dashboard.com/docs)
-    - [📝 Methodology](https://github.com/yourusername/ai-dashboard/methodology)
+    - [📖 GitHub Repository](https://github.com/Rcasanova25/AI-Adoption-Dashboard)
+    - [🚀 Live Dashboard](https://ai-adoption-dashboard-napbhrgtzq9nejnhvrcter.streamlit.app/)
+    - [📊 View Code](https://github.com/Rcasanova25/AI-Adoption-Dashboard/blob/main/app.py)
+    - [📝 Report Issues](https://github.com/Rcasanova25/AI-Adoption-Dashboard/issues)
     """)
 
 with col2:
     st.markdown("""
     ### 🔬 Research
-    - [McKinsey AI Report](https://www.mckinsey.com/ai)
+    - [McKinsey AI Report](https://www.mckinsey.com/capabilities/quantumblack/our-insights/the-state-of-ai)
     - [OECD AI Observatory](https://oecd.ai)
     - [Stanford AI Index](https://aiindex.stanford.edu)
-    - [MIT AI Research](https://www.csail.mit.edu)
+    - [MIT CSAIL](https://www.csail.mit.edu)
     """)
 
 with col3:
     st.markdown("""
-    ### 🤝 Community
-    - [GitHub Discussions](https://github.com/yourusername/ai-dashboard/discussions)
-    - [LinkedIn Group](https://linkedin.com/groups/ai-adoption)
-    - [Twitter Updates](https://twitter.com/ai_dashboard)
-    - [Newsletter](https://ai-dashboard.com/subscribe)
+    ### 🤝 Connect
+    - [LinkedIn - Robert Casanova](https://linkedin.com/in/robert-casanova)
+    - [GitHub Profile](https://github.com/Rcasanova25)
+    - [Email Robert](mailto:Robert.casanova82@gmail.com)
+    - [Star on GitHub](https://github.com/Rcasanova25/AI-Adoption-Dashboard)
     """)
 
 with col4:
     st.markdown("""
     ### 🛟 Support
-    - [FAQs](https://github.com/yourusername/ai-dashboard/wiki/FAQ)
-    - [Report Issue](https://github.com/yourusername/ai-dashboard/issues)
-    - [Feature Requests](https://github.com/yourusername/ai-dashboard/discussions)
-    - [Contact: help@ai-dashboard.com](mailto:help@ai-dashboard.com)
+    - [View Documentation](https://github.com/Rcasanova25/AI-Adoption-Dashboard/blob/main/README.md)
+    - [Report Bug](https://github.com/Rcasanova25/AI-Adoption-Dashboard/issues/new?labels=bug)
+    - [Request Feature](https://github.com/Rcasanova25/AI-Adoption-Dashboard/issues/new?labels=enhancement)
+    - [Contact: Robert.casanova82@gmail.com](mailto:Robert.casanova82@gmail.com)
     """)
 
 # Final attribution
@@ -1859,13 +1859,14 @@ st.markdown("""
         Tracking AI transformation across industries and geographies
     </p>
     <p style='font-size: 14px; color: #888;'>
-        Last updated: June 17, 2025 | Next update: July 1, 2025 | 
-        <a href='https://github.com/yourusername/ai-dashboard/releases' style='color: #888;'>Changelog</a>
+        Last updated: June 17, 2025 | 
+        <a href='https://github.com/Rcasanova25/AI-Adoption-Dashboard' style='color: #888;'>View on GitHub</a> | 
+        <a href='https://linkedin.com/in/robert-casanova' style='color: #888;'>Connect on LinkedIn</a>
     </p>
     <p style='font-size: 12px; margin-top: 15px;'>
-        Made with ❤️ by the AI Research Team | 
+        Created by <a href='https://linkedin.com/in/robert-casanova' style='color: #888;'>Robert Casanova</a> | 
         Powered by <a href='https://streamlit.io' style='color: #888;'>Streamlit</a> | 
-        <a href='https://github.com/yourusername/ai-dashboard/blob/main/LICENSE' style='color: #888;'>MIT License</a>
+        <a href='https://github.com/Rcasanova25/AI-Adoption-Dashboard/blob/main/LICENSE' style='color: #888;'>MIT License</a>
     </p>
 </div>
 """, unsafe_allow_html=True)
