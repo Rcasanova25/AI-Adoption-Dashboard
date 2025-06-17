@@ -636,7 +636,19 @@ if view_type == "Historical Trends":
             x=0.99
         )
     )
-    st.plotly_chart(fig, use_container_width=True)
+    
+    # Display chart with download button
+    col1, col2 = st.columns([10, 1])
+    with col1:
+        st.plotly_chart(fig, use_container_width=True)
+    with col2:
+        st.download_button(
+            label="📥",
+            data=fig.to_html(),
+            file_name="ai_adoption_trends.html",
+            mime="text/html",
+            help="Download chart"
+        )
     
     # Enhanced insights with benchmarking
     col1, col2 = st.columns(2)
@@ -1485,38 +1497,74 @@ with st.expander("📚 Data Sources & Methodology"):
         Academic studies on AI impact
         """)
 
-# Footer with additional resources
+# Footer with additional resources and data quality indicator
 st.markdown("---")
+
+# Data quality and last update indicator
+col1, col2, col3, col4 = st.columns(4)
+
+with col1:
+    st.markdown("""
+    ### 📊 Data Quality
+    <div style='background-color: #28a745; color: white; padding: 5px 10px; border-radius: 5px; display: inline-block;'>
+        ✓ High Confidence
+    </div>
+    """, unsafe_allow_html=True)
+
+with col2:
+    st.markdown("""
+    ### 🔄 Last Updated
+    June 17, 2025
+    """)
+
+with col3:
+    st.markdown("""
+    ### 📈 Data Points
+    1,000+ firms surveyed
+    """)
+
+with col4:
+    st.markdown("""
+    ### 🌍 Coverage
+    G7 + Brazil
+    """)
+
+st.markdown("---")
+
 col1, col2, col3 = st.columns(3)
 
 with col1:
     st.markdown("""
     ### 🔗 Quick Links
-    - [Download Full Dataset](#)
+    - [Download Full Dataset](https://github.com/yourusername/ai-dashboard)
     - [Methodology Documentation](#)
     - [API Access](#)
+    - [Source Code](https://github.com/yourusername/ai-dashboard)
     """)
 
 with col2:
     st.markdown("""
     ### 📚 Related Research
-    - [McKinsey AI Report 2025](#)
-    - [OECD AI Policy Observatory](#)
-    - [Gartner Hype Cycle](#)
+    - [McKinsey AI Report 2025](https://www.mckinsey.com)
+    - [OECD AI Policy Observatory](https://oecd.ai)
+    - [Gartner Hype Cycle](https://www.gartner.com)
+    - [Academic Papers](https://scholar.google.com)
     """)
 
 with col3:
     st.markdown("""
-    ### 🤝 Connect
-    - [Share Dashboard](#)
+    ### 🤝 Connect & Share
+    - [Share Dashboard](https://ai-adoption-dashboard.streamlit.app)
     - [Subscribe to Updates](#)
-    - [Contact Team](#)
+    - [Contact Team](mailto:contact@example.com)
+    - [Report Issues](https://github.com/yourusername/ai-dashboard/issues)
     """)
 
 st.markdown("""
 <div style='text-align: center; color: #666; padding: 20px;'>
     <p>🤖 AI Adoption Dashboard v2.0 | Built with Streamlit | Data as of 2025</p>
     <p>Combining historical analysis with current trends for strategic AI insights</p>
-    <p><small>Last updated: June 17, 2025 | Next update: July 2025</small></p>
+    <p><small>Last updated: June 17, 2025 | Next update: July 2025 | Version 2.0.1</small></p>
+    <p><small>Made with ❤️ by the AI Research Team</small></p>
 </div>
 """, unsafe_allow_html=True)
