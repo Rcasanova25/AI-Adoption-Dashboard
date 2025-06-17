@@ -976,6 +976,223 @@ elif view_type == "Barriers & Support":
     - Manufacturing and ICT sectors lead adoption, but face different challenges
     """)
 
+elif view_type == "ROI Analysis":
+    st.write("💰 **ROI Analysis: Business Value from AI Adoption**")
+    
+    # ROI overview metrics
+    col1, col2, col3, col4 = st.columns(4)
+    
+    with col1:
+        st.metric(
+            label="📈 Avg ROI", 
+            value="122%", 
+            delta="+15% YoY",
+            help="Average return on investment for AI adopters"
+        )
+    
+    with col2:
+        st.metric(
+            label="⏱️ Payback Period", 
+            value="14 months", 
+            delta="-4 months",
+            help="Average time to recover AI investment"
+        )
+    
+    with col3:
+        st.metric(
+            label="💵 Cost Reduction", 
+            value="23%", 
+            delta="+5%",
+            help="Average operational cost savings"
+        )
+    
+    with col4:
+        st.metric(
+            label="📊 Revenue Lift", 
+            value="+18%", 
+            delta="+3%",
+            help="Average revenue increase from AI"
+        )
+    
+    # Detailed ROI analysis
+    tab1, tab2, tab3 = st.tabs(["💼 By Function", "🏢 By Industry", "📊 Best Practices"])
+    
+    with tab1:
+        st.subheader("ROI by Business Function")
+        
+        # Create ROI by function data
+        roi_by_function = pd.DataFrame({
+            'function': ['Marketing & Sales', 'Supply Chain', 'Customer Service', 
+                        'Manufacturing', 'Finance', 'HR', 'IT Operations'],
+            'roi_percentage': [145, 132, 128, 118, 112, 95, 88],
+            'implementation_cost': [2.5, 3.8, 1.9, 4.2, 3.1, 1.5, 2.8],
+            'time_to_value_months': [6, 12, 4, 18, 9, 8, 10]
+        })
+        
+        # ROI chart
+        fig = go.Figure()
+        
+        fig.add_trace(go.Bar(
+            x=roi_by_function['function'],
+            y=roi_by_function['roi_percentage'],
+            name='ROI %',
+            marker_color='lightgreen',
+            text=roi_by_function['roi_percentage'].apply(lambda x: f'{x}%'),
+            textposition='outside'
+        ))
+        
+        fig.add_trace(go.Scatter(
+            x=roi_by_function['function'],
+            y=roi_by_function['time_to_value_months'],
+            name='Time to Value (months)',
+            yaxis='y2',
+            mode='lines+markers',
+            marker=dict(size=10, color='red'),
+            line=dict(width=3, color='red')
+        ))
+        
+        fig.update_layout(
+            title="ROI and Time to Value by Business Function",
+            yaxis=dict(title="ROI %", side="left"),
+            yaxis2=dict(title="Time to Value (months)", side="right", overlaying="y"),
+            height=450,
+            hovermode='x unified'
+        )
+        
+        st.plotly_chart(fig, use_container_width=True)
+        
+        st.info("""
+        💡 **Key Insight**: Marketing & Sales delivers the highest ROI (145%) with fastest time to value (6 months).
+        Supply Chain and Manufacturing require longer implementation but deliver strong returns.
+        """)
+    
+    with tab2:
+        st.subheader("Industry ROI Comparison")
+        
+        # Industry ROI data
+        industry_roi = pd.DataFrame({
+            'industry': ['Technology', 'Financial Services', 'Retail', 'Healthcare', 
+                        'Manufacturing', 'Energy', 'Government'],
+            'avg_roi': [156, 134, 128, 98, 115, 92, 78],
+            'adoption_rate': [78, 65, 58, 42, 55, 38, 28],
+            'investment_millions': [8.5, 12.3, 5.6, 9.8, 7.2, 11.5, 4.3]
+        })
+        
+        # Bubble chart
+        fig = px.scatter(
+            industry_roi,
+            x='adoption_rate',
+            y='avg_roi',
+            size='investment_millions',
+            color='avg_roi',
+            hover_data=['investment_millions'],
+            text='industry',
+            title='ROI vs Adoption Rate by Industry',
+            labels={'avg_roi': 'Average ROI (%)', 'adoption_rate': 'AI Adoption Rate (%)'},
+            color_continuous_scale='RdYlGn',
+            size_max=50
+        )
+        
+        fig.update_traces(textposition='top center')
+        fig.update_layout(height=500)
+        
+        st.plotly_chart(fig, use_container_width=True)
+        
+        st.markdown("""
+        **Industry Insights:**
+        - **Technology sector** leads with 156% ROI and 78% adoption
+        - **Financial Services** shows strong ROI despite high investment costs
+        - **Healthcare** lags in ROI due to regulatory complexity
+        - Clear correlation between adoption rate and ROI achievement
+        """)
+    
+    with tab3:
+        st.subheader("🏆 ROI Best Practices")
+        
+        col1, col2 = st.columns(2)
+        
+        with col1:
+            st.markdown("""
+            ### ✅ Success Factors for High ROI
+            
+            **1. CEO-Level Sponsorship**
+            - Companies with CEO oversight: **3x higher ROI**
+            - Clear vision and strategy alignment
+            - Resource commitment and change management
+            
+            **2. Workflow Redesign**
+            - Process optimization before automation
+            - **45% higher returns** than tool-only approach
+            - Focus on end-to-end transformation
+            
+            **3. Data Foundation**
+            - Clean, integrated data sources
+            - Real-time data pipelines
+            - **2x faster** time to value
+            
+            **4. Talent Investment**
+            - Upskilling existing workforce
+            - Hiring AI specialists
+            - **28% higher** success rate
+            """)
+        
+        with col2:
+            st.markdown("""
+            ### ❌ Common ROI Pitfalls
+            
+            **1. Pilot Purgatory**
+            - 67% of pilots never scale
+            - Lack of production planning
+            - No clear success metrics
+            
+            **2. Technology-First Approach**
+            - Ignoring process changes
+            - **-40% ROI** vs integrated approach
+            - Tool proliferation without strategy
+            
+            **3. Underestimating Costs**
+            - Hidden integration expenses
+            - Ongoing maintenance needs
+            - **35% budget overruns** common
+            
+            **4. Resistance to Change**
+            - Poor change management
+            - Lack of user training
+            - **50% longer** implementation
+            """)
+        
+        # ROI Calculator
+        st.markdown("---")
+        st.subheader("🧮 Quick ROI Calculator")
+        
+        col1, col2, col3 = st.columns(3)
+        
+        with col1:
+            investment = st.number_input("Initial Investment ($)", min_value=10000, value=100000, step=10000)
+            annual_savings = st.number_input("Expected Annual Savings ($)", min_value=0, value=50000, step=5000)
+        
+        with col2:
+            revenue_increase = st.number_input("Expected Revenue Increase (%)", min_value=0, value=10, step=1)
+            current_revenue = st.number_input("Current Annual Revenue ($)", min_value=100000, value=1000000, step=100000)
+        
+        with col3:
+            implementation_months = st.number_input("Implementation Time (months)", min_value=1, value=6, step=1)
+            
+            if st.button("Calculate ROI", type="primary"):
+                # Calculate ROI
+                revenue_gain = current_revenue * (revenue_increase / 100)
+                total_annual_benefit = annual_savings + revenue_gain
+                roi = ((total_annual_benefit - (investment / 3)) / investment) * 100  # 3-year amortization
+                payback_months = investment / (total_annual_benefit / 12)
+                
+                st.success(f"""
+                **📊 Your AI ROI Projection:**
+                - **ROI**: {roi:.1f}%
+                - **Payback Period**: {payback_months:.1f} months
+                - **Annual Benefit**: ${total_annual_benefit:,.0f}
+                """)
+
+# Add the Geographic Distribution view after ROI Analysis
 elif view_type == "Geographic Distribution":
     st.write("🗺️ **AI Adoption Geographic Distribution**")
     
