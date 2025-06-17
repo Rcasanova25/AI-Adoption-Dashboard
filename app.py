@@ -1104,10 +1104,13 @@ elif view_type == "Geographic Distribution":
             else:  # East coast
                 ax, ay = 50, -30
             
+            # Use shortened name for annotation to avoid clutter
+            short_name = city_name.split()[0] if len(city_name.split()) > 2 else city_name
+            
             fig.add_annotation(
                 x=city_data['lon'],
                 y=city_data['lat'],
-                text=f"<b>{city_name.split()[0]}</b><br>{city_data['rate']:.1f}%",
+                text=f"<b>{short_name}</b><br>{city_data['rate']:.1f}%",
                 showarrow=True,
                 arrowhead=2,
                 arrowsize=1.5,
@@ -1265,7 +1268,7 @@ elif view_type == "Geographic Distribution":
             top_city = geographic.loc[geographic['rate'].idxmax()]
             st.metric(
                 label="🏆 Highest City", 
-                value=top_city['city'].split()[0], 
+                value=top_city['city'], 
                 delta=f"+{top_city['above_state_avg']:.1f}% vs state"
             )
         
