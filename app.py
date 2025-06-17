@@ -977,220 +977,366 @@ elif view_type == "Barriers & Support":
     """)
 
 elif view_type == "ROI Analysis":
-    st.write("💰 **ROI Analysis: Business Value from AI Adoption**")
+    st.write("💰 **ROI Analysis: Costs, Returns, and Economic Impact of AI Adoption**")
     
-    # ROI overview metrics
+    # ROI overview metrics based on research data
     col1, col2, col3, col4 = st.columns(4)
     
     with col1:
         st.metric(
-            label="📈 Avg ROI", 
-            value="122%", 
-            delta="+15% YoY",
-            help="Average return on investment for AI adopters"
+            label="💵 Avg Project Cost", 
+            value="$39.5K-$250K", 
+            delta="Enterprise: $170K+",
+            help="Average AI implementation cost per project"
         )
     
     with col2:
         st.metric(
-            label="⏱️ Payback Period", 
-            value="14 months", 
-            delta="-4 months",
-            help="Average time to recover AI investment"
+            label="📈 Average ROI", 
+            value="$3.50 per $1", 
+            delta="Top 5%: $8 per $1",
+            help="Return for every dollar invested in AI"
         )
     
     with col3:
         st.metric(
-            label="💵 Cost Reduction", 
-            value="23%", 
-            delta="+5%",
-            help="Average operational cost savings"
+            label="💰 FinTech ROI", 
+            value="136%", 
+            delta="3-year returns",
+            help="$1.36M saved per $1M invested"
         )
     
     with col4:
         st.metric(
-            label="📊 Revenue Lift", 
-            value="+18%", 
-            delta="+3%",
-            help="Average revenue increase from AI"
+            label="🏛️ GDP Impact", 
+            value="+0.4% by 2034", 
+            delta="$50B added (2yr)",
+            help="Projected annual GDP boost"
         )
     
-    # Detailed ROI analysis
-    tab1, tab2, tab3 = st.tabs(["💼 By Function", "🏢 By Industry", "📊 Best Practices"])
+    # Detailed analysis tabs
+    tab1, tab2, tab3, tab4 = st.tabs(["💸 Cost Analysis", "📊 ROI by Sector", "🏛️ GDP Impact", "🏦 Banking Insights"])
     
     with tab1:
-        st.subheader("ROI by Business Function")
+        st.subheader("AI Adoption Costs Breakdown")
         
-        # Create ROI by function data
-        roi_by_function = pd.DataFrame({
-            'function': ['Marketing & Sales', 'Supply Chain', 'Customer Service', 
-                        'Manufacturing', 'Finance', 'HR', 'IT Operations'],
-            'roi_percentage': [145, 132, 128, 118, 112, 95, 88],
-            'implementation_cost': [2.5, 3.8, 1.9, 4.2, 3.1, 1.5, 2.8],
-            'time_to_value_months': [6, 12, 4, 18, 9, 8, 10]
+        col1, col2 = st.columns([2, 1])
+        
+        with col1:
+            # Cost breakdown chart
+            cost_categories = pd.DataFrame({
+                'category': ['Simple AI Project', 'Medium Complexity', 'Enterprise Solution', 
+                           'AI Consulting (hourly)', 'In-house Team (hourly)'],
+                'min_cost': [10, 39.5, 170, 170, 27],
+                'max_cost': [39.5, 170, 250, 400, 50],
+                'unit': ['K', 'K', 'K', '/hr', '/hr']
+            })
+            
+            fig = go.Figure()
+            
+            # Add bars for min and max costs
+            fig.add_trace(go.Bar(
+                name='Minimum Cost',
+                x=cost_categories['category'][:3],
+                y=cost_categories['min_cost'][:3],
+                marker_color='lightblue',
+                text=[f'${x}K' for x in cost_categories['min_cost'][:3]],
+                textposition='auto'
+            ))
+            
+            fig.add_trace(go.Bar(
+                name='Maximum Cost',
+                x=cost_categories['category'][:3],
+                y=cost_categories['max_cost'][:3],
+                marker_color='darkblue',
+                text=[f'${x}K' for x in cost_categories['max_cost'][:3]],
+                textposition='auto'
+            ))
+            
+            fig.update_layout(
+                title="AI Project Cost Ranges (in thousands USD)",
+                barmode='group',
+                height=400,
+                yaxis_title="Cost ($1000s)"
+            )
+            
+            st.plotly_chart(fig, use_container_width=True)
+        
+        with col2:
+            st.markdown("""
+            ### 💡 Cost Factors
+            
+            **Key Drivers:**
+            - Data acquisition & preparation
+            - Regulatory compliance
+            - Talent acquisition
+            - Ongoing training
+            
+            **Hourly Rates:**
+            - 🧑‍💼 AI Consulting: $170-$400/hr
+            - 👥 In-house Team: $27-$50/hr
+            
+            **Industry Investment:**
+            - 2023: **$35 billion**
+            - 2027: **$97 billion** (projected)
+            """)
+        
+        # Financial services investment trend
+        st.subheader("Financial Services AI Investment Trajectory")
+        
+        investment_data = pd.DataFrame({
+            'year': [2023, 2024, 2025, 2026, 2027],
+            'investment_billions': [35, 48, 62, 78, 97]
         })
         
-        # ROI chart
-        fig = go.Figure()
-        
-        fig.add_trace(go.Bar(
-            x=roi_by_function['function'],
-            y=roi_by_function['roi_percentage'],
-            name='ROI %',
-            marker_color='lightgreen',
-            text=roi_by_function['roi_percentage'].apply(lambda x: f'{x}%'),
-            textposition='outside'
-        ))
-        
-        fig.add_trace(go.Scatter(
-            x=roi_by_function['function'],
-            y=roi_by_function['time_to_value_months'],
-            name='Time to Value (months)',
-            yaxis='y2',
-            mode='lines+markers',
-            marker=dict(size=10, color='red'),
-            line=dict(width=3, color='red')
-        ))
-        
-        fig.update_layout(
-            title="ROI and Time to Value by Business Function",
-            yaxis=dict(title="ROI %", side="left"),
-            yaxis2=dict(title="Time to Value (months)", side="right", overlaying="y"),
-            height=450,
-            hovermode='x unified'
-        )
+        fig = px.line(investment_data, x='year', y='investment_billions',
+                     title='Financial Services AI Investment ($ Billions)',
+                     markers=True)
+        fig.update_traces(line_color='green', line_width=3)
+        fig.update_layout(height=350)
         
         st.plotly_chart(fig, use_container_width=True)
-        
-        st.info("""
-        💡 **Key Insight**: Marketing & Sales delivers the highest ROI (145%) with fastest time to value (6 months).
-        Supply Chain and Manufacturing require longer implementation but deliver strong returns.
-        """)
     
     with tab2:
-        st.subheader("Industry ROI Comparison")
+        st.subheader("Return on Investment Analysis")
         
-        # Industry ROI data
-        industry_roi = pd.DataFrame({
-            'industry': ['Technology', 'Financial Services', 'Retail', 'Healthcare', 
-                        'Manufacturing', 'Energy', 'Government'],
-            'avg_roi': [156, 134, 128, 98, 115, 92, 78],
-            'adoption_rate': [78, 65, 58, 42, 55, 38, 28],
-            'investment_millions': [8.5, 12.3, 5.6, 9.8, 7.2, 11.5, 4.3]
+        # ROI comparison chart
+        roi_data = pd.DataFrame({
+            'category': ['Average Adopter', 'Mature Adopter', 'Top 5% Adopter', 
+                        'FinTech Sector', 'Heavy AI Investors'],
+            'roi_multiplier': [1.5, 3.5, 8.0, 2.36, 2.8],
+            'description': ['Basic implementation', '$3.50 per $1 invested', 
+                          'Up to $8 per $1', '136% ROI over 3 years', 
+                          '82% report revenue increase']
         })
         
-        # Bubble chart
-        fig = px.scatter(
-            industry_roi,
-            x='adoption_rate',
-            y='avg_roi',
-            size='investment_millions',
-            color='avg_roi',
-            hover_data=['investment_millions'],
-            text='industry',
-            title='ROI vs Adoption Rate by Industry',
-            labels={'avg_roi': 'Average ROI (%)', 'adoption_rate': 'AI Adoption Rate (%)'},
-            color_continuous_scale='RdYlGn',
-            size_max=50
-        )
+        fig = px.bar(roi_data, x='category', y='roi_multiplier',
+                    title='AI ROI by Adoption Maturity',
+                    text='roi_multiplier',
+                    color='roi_multiplier',
+                    color_continuous_scale='RdYlGn')
         
-        fig.update_traces(textposition='top center')
-        fig.update_layout(height=500)
+        fig.update_traces(texttemplate='%{text:.1f}x', textposition='outside')
+        fig.update_layout(
+            height=400,
+            yaxis_title="ROI Multiplier",
+            showlegend=False
+        )
         
         st.plotly_chart(fig, use_container_width=True)
         
-        st.markdown("""
-        **Industry Insights:**
-        - **Technology sector** leads with 156% ROI and 78% adoption
-        - **Financial Services** shows strong ROI despite high investment costs
-        - **Healthcare** lags in ROI due to regulatory complexity
-        - Clear correlation between adoption rate and ROI achievement
+        # Operational savings breakdown
+        col1, col2 = st.columns(2)
+        
+        with col1:
+            st.markdown("""
+            ### 💰 Operational Cost Reduction
+            
+            **Potential Savings by 2030:**
+            - Total: **$1 trillion** globally
+            - Cost reduction: Up to **22%**
+            
+            **Breakdown by Function:**
+            - 🏪 Front-office: $490B
+            - 📊 Middle-office: $350B
+            - 🏢 Back-office: $200B
+            """)
+        
+        with col2:
+            # Pie chart of savings distribution
+            savings_data = pd.DataFrame({
+                'function': ['Front-office', 'Middle-office', 'Back-office'],
+                'savings_billions': [490, 350, 200]
+            })
+            
+            fig = px.pie(savings_data, values='savings_billions', names='function',
+                        title='AI Savings Distribution by Function ($B)')
+            fig.update_layout(height=300)
+            st.plotly_chart(fig, use_container_width=True)
+        
+        # Success metrics
+        st.info("""
+        📊 **Key Success Metrics:**
+        - **82%** of heavy AI investors report increased revenue
+        - **53%** see higher gross profits vs. less aggressive adopters
+        - **25%** of labor tasks could be automated in advanced economies
         """)
     
     with tab3:
-        st.subheader("🏆 ROI Best Practices")
+        st.subheader("🏛️ AI Impact on U.S. GDP")
+        
+        # GDP impact timeline
+        gdp_impact = pd.DataFrame({
+            'year': [2023, 2024, 2025, 2027, 2030, 2034],
+            'gdp_boost_pct': [0.05, 0.05, 0.1, 0.15, 0.25, 0.4],
+            'milestone': ['Initial Impact', 'Current', 'Near-term', 
+                         'Measurable Boost', 'Acceleration', 'Peak Impact']
+        })
+        
+        fig = go.Figure()
+        
+        fig.add_trace(go.Scatter(
+            x=gdp_impact['year'],
+            y=gdp_impact['gdp_boost_pct'],
+            mode='lines+markers',
+            name='GDP Boost',
+            line=dict(width=3, color='darkgreen'),
+            marker=dict(size=10)
+        ))
+        
+        # Add annotations for milestones
+        for _, row in gdp_impact.iterrows():
+            fig.add_annotation(
+                x=row['year'],
+                y=row['gdp_boost_pct'],
+                text=row['milestone'],
+                showarrow=True,
+                arrowhead=2,
+                yshift=20
+            )
+        
+        fig.update_layout(
+            title="Projected AI Impact on U.S. GDP Growth",
+            xaxis_title="Year",
+            yaxis_title="Annual GDP Boost (percentage points)",
+            height=450,
+            showlegend=False
+        )
+        
+        st.plotly_chart(fig, use_container_width=True)
+        
+        # Key statistics
+        col1, col2, col3 = st.columns(3)
+        
+        with col1:
+            st.metric("Short-term Impact", "$50B", "Added over 2 years")
+            st.markdown("**0.1%** GDP boost achieved")
+        
+        with col2:
+            st.metric("2034 Projection", "0.4%", "Annual GDP boost")
+            st.markdown("**25%** labor automation potential")
+        
+        with col3:
+            st.metric("5-Year Investment", "$400B", "Cumulative capex")
+            st.markdown("**0.3%** of expected GDP")
+        
+        # Economic insights
+        st.markdown("""
+        ### 📈 Economic Implications
+        
+        **Goldman Sachs Projections:**
+        - AI will begin measurably boosting GDP starting in **2027**
+        - Long-term impact expected to be **disinflationary**
+        - Benefits will accelerate as adoption deepens
+        
+        **J.P. Morgan Analysis:**
+        - AI investment funded by profitable companies with low debt
+        - Contrasts with previous tech investment cycles
+        - More sustainable growth pattern expected
+        """)
+    
+    with tab4:
+        st.subheader("🏦 Banking Sector AI Impact")
+        
+        # Banking profit impact
+        banking_profit = pd.DataFrame({
+            'year': [2024, 2025, 2026, 2027, 2028],
+            'additional_profit': [20, 45, 80, 120, 170],
+            'baseline_growth': [5, 5, 5, 5, 5]
+        })
+        
+        fig = go.Figure()
+        
+        fig.add_trace(go.Bar(
+            x=banking_profit['year'],
+            y=banking_profit['baseline_growth'],
+            name='Baseline Growth',
+            marker_color='lightgray'
+        ))
+        
+        fig.add_trace(go.Bar(
+            x=banking_profit['year'],
+            y=banking_profit['additional_profit'],
+            name='AI-driven Profit',
+            marker_color='gold'
+        ))
+        
+        fig.update_layout(
+            title="Global Banking Sector Additional Profit from AI ($B)",
+            barmode='stack',
+            height=400,
+            yaxis_title="Profit Impact ($ Billions)"
+        )
+        
+        st.plotly_chart(fig, use_container_width=True)
+        
+        # Bank case studies
+        st.markdown("### 🏛️ Major Bank Success Stories")
         
         col1, col2 = st.columns(2)
         
         with col1:
             st.markdown("""
-            ### ✅ Success Factors for High ROI
+            **Wells Fargo:**
+            - Virtual assistants handle millions of interactions
+            - Significant efficiency gains in customer service
+            - Improved customer satisfaction scores
             
-            **1. CEO-Level Sponsorship**
-            - Companies with CEO oversight: **3x higher ROI**
-            - Clear vision and strategy alignment
-            - Resource commitment and change management
-            
-            **2. Workflow Redesign**
-            - Process optimization before automation
-            - **45% higher returns** than tool-only approach
-            - Focus on end-to-end transformation
-            
-            **3. Data Foundation**
-            - Clean, integrated data sources
-            - Real-time data pipelines
-            - **2x faster** time to value
-            
-            **4. Talent Investment**
-            - Upskilling existing workforce
-            - Hiring AI specialists
-            - **28% higher** success rate
+            **Bank of America:**
+            - AI-driven automation in compliance
+            - Enhanced transaction processing
+            - Reduced operational costs
             """)
         
         with col2:
             st.markdown("""
-            ### ❌ Common ROI Pitfalls
+            **Industry Insights:**
+            - **$170B** additional profit by 2028
+            - **9%** increase over baseline
+            - ROI exceeding expectations
             
-            **1. Pilot Purgatory**
-            - 67% of pilots never scale
-            - Lack of production planning
-            - No clear success metrics
-            
-            **2. Technology-First Approach**
-            - Ignoring process changes
-            - **-40% ROI** vs integrated approach
-            - Tool proliferation without strategy
-            
-            **3. Underestimating Costs**
-            - Hidden integration expenses
-            - Ongoing maintenance needs
-            - **35% budget overruns** common
-            
-            **4. Resistance to Change**
-            - Poor change management
-            - Lack of user training
-            - **50% longer** implementation
+            **Key Applications:**
+            - Customer service automation
+            - Compliance & risk management
+            - Transaction processing
+            - Fraud detection
             """)
         
-        # ROI Calculator
+        # Implementation calculator
         st.markdown("---")
-        st.subheader("🧮 Quick ROI Calculator")
+        st.subheader("🧮 AI Investment Calculator")
         
-        col1, col2, col3 = st.columns(3)
+        col1, col2 = st.columns(2)
         
         with col1:
-            investment = st.number_input("Initial Investment ($)", min_value=10000, value=100000, step=10000)
-            annual_savings = st.number_input("Expected Annual Savings ($)", min_value=0, value=50000, step=5000)
+            project_type = st.selectbox(
+                "Project Complexity",
+                ["Simple ($10K-$40K)", "Medium ($40K-$170K)", "Enterprise ($170K-$250K+)"]
+            )
+            
+            adoption_maturity = st.slider(
+                "Expected Adoption Maturity",
+                min_value=1.5,
+                max_value=8.0,
+                value=3.5,
+                step=0.5,
+                help="Average is 3.5x, Top 5% achieve 8x"
+            )
         
         with col2:
-            revenue_increase = st.number_input("Expected Revenue Increase (%)", min_value=0, value=10, step=1)
-            current_revenue = st.number_input("Current Annual Revenue ($)", min_value=100000, value=1000000, step=100000)
-        
-        with col3:
-            implementation_months = st.number_input("Implementation Time (months)", min_value=1, value=6, step=1)
+            if project_type.startswith("Simple"):
+                avg_cost = 25000
+            elif project_type.startswith("Medium"):
+                avg_cost = 105000
+            else:
+                avg_cost = 210000
             
-            if st.button("Calculate ROI", type="primary"):
-                # Calculate ROI
-                revenue_gain = current_revenue * (revenue_increase / 100)
-                total_annual_benefit = annual_savings + revenue_gain
-                roi = ((total_annual_benefit - (investment / 3)) / investment) * 100  # 3-year amortization
-                payback_months = investment / (total_annual_benefit / 12)
-                
-                st.success(f"""
-                **📊 Your AI ROI Projection:**
-                - **ROI**: {roi:.1f}%
-                - **Payback Period**: {payback_months:.1f} months
-                - **Annual Benefit**: ${total_annual_benefit:,.0f}
-                """)
+            expected_return = avg_cost * adoption_maturity
+            net_benefit = expected_return - avg_cost
+            
+            st.metric("Investment Required", f"${avg_cost:,}")
+            st.metric("Expected Return", f"${expected_return:,}")
+            st.metric("Net Benefit", f"${net_benefit:,}", f"{(net_benefit/avg_cost)*100:.0f}% ROI")
 
 # Add the Geographic Distribution view after ROI Analysis
 elif view_type == "Geographic Distribution":
