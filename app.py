@@ -1641,8 +1641,7 @@ st.markdown("""
 """, unsafe_allow_html=True)
 """
 modified_content = file_content.replace(
-    """st.markdown("<h3>Trust and quality indicators</h3>", unsafe_allow_html=True)""",
-    """st.markdown("<h3>Trust and quality indicators</h3>", unsafe_allow_html=True)"""
+    "st.markdown("<h3>Trust and quality indicators</h3>", unsafe_allow_html=True)",
 )
 
 print(modified_content)
