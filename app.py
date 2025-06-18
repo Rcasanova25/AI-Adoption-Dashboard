@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 file_content = """import streamlit as st
 import plotly.express as px
 import plotly.graph_objects as go
