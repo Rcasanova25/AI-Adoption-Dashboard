@@ -604,32 +604,33 @@ with st.expander("📚 Data Sources & Methodology"):
             st.markdown("""
             **AI Index Report 2025**  
             Stanford HAI  
-            📊 Global AI metrics  
-            🌍 Investment & adoption data  
-            📈 Productivity research  
-            🌱 Environmental impact  
+            - Global AI metrics  
+            - Investment & adoption data  
+            - Productivity research  
+            - Environmental impact  
             [View Report](https://aiindex.stanford.edu)
             """)
             
         with col2:
+        with col2:
             st.markdown("""
-            **📊 McKinsey Global Survey**  
+            **McKinsey Global Survey**  
             July 2024 Survey  
-            👥 1,491 participants  
-            🌍 101 nations covered  
-            🏢 All organization levels  
-            💼 Function-specific data  
+            - 1,491 participants  
+            - 101 nations covered  
+            - All organization levels  
+            - Function-specific data  
             [View Report](https://www.mckinsey.com)
             """)
             
         with col3:
             st.markdown("""
-            **🏛️ OECD AI Observatory**  
+            **OECD AI Observatory**  
             OECD/BCG/INSEAD 2025  
-            🏢 840 enterprises  
-            🌍 G7 + Brazil  
-            📋 Policy focus  
-            🎯 Success factors  
+            - 840 enterprises  
+            - G7 + Brazil  
+            - Policy focus  
+            - Success factors  
             [View Report](https://oecd.ai)
             """)
     
@@ -651,7 +652,7 @@ with st.expander("📚 Data Sources & Methodology"):
         st.dataframe(quality_metrics, hide_index=True)
     
     with source_tabs[3]:
-        st.write("**📅 Latest Updates:**")
+        st.write("**Latest Updates:**")
         st.write("• **June 2025:** Integrated AI Index Report 2025 findings")
         st.write("• **May 2025:** Added industry-specific 2025 data")
         st.write("• **April 2025:** Enhanced financial impact analysis")
