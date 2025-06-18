@@ -2942,6 +2942,10 @@ elif view_type == "ROI Analysis":
 # Contextual insights section - Enhanced with all new findings
 st.subheader("💡 Key Research Findings")
 
+# For views that don't have year selector, default to showing 2025 data
+if view_type not in ["Historical Trends", "Adoption Rates", "Industry Analysis"]:
+    data_year = "2025 Data"
+
 if "2025" in data_year:
     st.write("🚀 **2024-2025 AI Acceleration (AI Index Report 2025)**")
     
