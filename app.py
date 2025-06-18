@@ -280,7 +280,7 @@ def load_data():
     
     # Token pricing evolution
     token_pricing_evolution = pd.DataFrame({
-        'date': pd.date_range('2022-11-01', '2025-06-01', freq='Q'),
+        'date': pd.date_range('2022-11-01', '2025-06-01', freq='Q').tolist(),
         'avg_price_input': [20.0, 18.0, 15.0, 10.0, 5.0, 3.0, 1.5, 0.8, 0.5, 0.3, 0.2],
         'avg_price_output': [20.0, 19.0, 16.0, 12.0, 8.0, 5.0, 3.0, 2.0, 1.5, 1.0, 0.8],
         'models_available': [5, 8, 12, 18, 25, 35, 45, 58, 72, 85, 95]
