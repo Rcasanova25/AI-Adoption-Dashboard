@@ -347,11 +347,11 @@ def show_source_info(source_key):
     if source_key in sources:
         source = sources[source_key]
         return f"""
-        **Source:** {source['title']}  
-        **Organization:** {source['org']}  
-        **Methodology:** {source['methodology']}  
-        [View Report]({source['url']})
-        """
+    **Source:** {source['title']}  
+    **Organization:** {source['org']}  
+    **Methodology:** {source['methodology']}  
+    [View Report]({source['url']})
+    """
     return ""
 
 # Token information helper
