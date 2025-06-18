@@ -2795,18 +2795,21 @@ elif view_type == "ROI Analysis":
     
     with tab3:
         # Sector-specific ROI
+        # First sort the data to avoid repeated sorting operations
+        sector_sorted = sector_2025.sort_values('avg_roi')
+        
         fig = go.Figure()
         
-        # Use sector_2025 data for ROI
+        # Use the pre-sorted data
         fig.add_trace(go.Bar(
-            x=sector_2025.sort_values('avg_roi')['sector'],
-            y=sector_2025.sort_values('avg_roi')['avg_roi'],
-            marker_color=sector_2025.sort_values('avg_roi')['avg_roi'],
+            x=sector_sorted['sector'],
+            y=sector_sorted['avg_roi'],
+            marker_color=sector_sorted['avg_roi'],
             marker_colorscale='Viridis',
-            text=[f'{x}x' for x in sector_2025.sort_values('avg_roi')['avg_roi']],
+            text=[f'{x}x' for x in sector_sorted['avg_roi']],
             textposition='outside',
             hovertemplate='<b>%{x}</b><br>ROI: %{y}x<br>Adoption: %{customdata}%<extra></extra>',
-            customdata=sector_2025.sort_values('avg_roi')['adoption_rate']
+            customdata=sector_sorted['adoption_rate']
         ))
         
         fig.update_layout(
@@ -2874,7 +2877,14 @@ elif view_type == "ROI Analysis":
             )
         
         # Calculate ROI
-        base_roi = sector_2025[sector_2025['sector'] == calc_industry]['avg_roi'].values[0]
+        industry_data = sector_2025[sector_2025['sector'] == calc_industry]
+        
+        if not industry_data.empty:
+            base_roi = industry_data['avg_roi'].values[0]
+        else:
+            # Fallback to default if industry not found
+            base_roi = 2.5
+            st.warning(f"Industry '{calc_industry}' not found, using default ROI of 2.5x")
         
         # Quality multiplier
         quality_mult = 0.5 + (calc_quality / 10)
@@ -2889,7 +2899,13 @@ elif view_type == "ROI Analysis":
         final_calc_roi = base_roi * quality_mult * scale_mult * tech_mult
         expected_value = calc_investment * final_calc_roi
         net_gain = expected_value - calc_investment
-        monthly_gain = net_gain / calc_timeline
+        
+        # Handle division by zero
+        if calc_timeline > 0:
+            monthly_gain = net_gain / calc_timeline
+        else:
+            monthly_gain = 0
+            st.error("Timeline must be greater than 0")
         
         # Display results
         st.markdown("---")
@@ -2906,38 +2922,43 @@ elif view_type == "ROI Analysis":
             st.metric("Monthly Value", f"${monthly_gain:,.0f}")
         
         # Visualization of ROI timeline
-        months = list(range(0, calc_timeline + 1))
-        values = [-calc_investment + (monthly_gain * m) for m in months]
-        
-        fig_calc = go.Figure()
-        
-        fig_calc.add_trace(go.Scatter(
-            x=months,
-            y=values,
-            mode='lines+markers',
-            name='Cumulative Value',
-            fill='tozeroy',
-            fillcolor='rgba(46, 204, 113, 0.1)',
-            line=dict(width=3, color='#2ECC71')
-        ))
-        
-        # Add break-even line
-        fig_calc.add_hline(y=0, line_dash="dash", line_color="gray",
-                          annotation_text="Break-even", annotation_position="right")
-        
-        # Find break-even point
-        breakeven_month = calc_investment / monthly_gain
-        fig_calc.add_vline(x=breakeven_month, line_dash="dash", line_color="red",
-                          annotation_text=f"Break-even: {breakeven_month:.1f} months")
-        
-        fig_calc.update_layout(
-            title='ROI Timeline Projection',
-            xaxis_title='Months',
-            yaxis_title='Cumulative Value ($)',
-            height=300
-        )
-        
-        st.plotly_chart(fig_calc, use_container_width=True)
+        if calc_timeline > 0 and monthly_gain > 0:
+            months = list(range(0, calc_timeline + 1))
+            values = [-calc_investment + (monthly_gain * m) for m in months]
+            
+            fig_calc = go.Figure()
+            
+            fig_calc.add_trace(go.Scatter(
+                x=months,
+                y=values,
+                mode='lines+markers',
+                name='Cumulative Value',
+                fill='tozeroy',
+                fillcolor='rgba(46, 204, 113, 0.1)',
+                line=dict(width=3, color='#2ECC71')
+            ))
+            
+            # Add break-even line
+            fig_calc.add_hline(y=0, line_dash="dash", line_color="gray",
+                              annotation_text="Break-even", annotation_position="right")
+            
+            # Find break-even point - only if monthly_gain > 0
+            if monthly_gain > 0:
+                breakeven_month = calc_investment / monthly_gain
+                if breakeven_month <= calc_timeline:
+                    fig_calc.add_vline(x=breakeven_month, line_dash="dash", line_color="red",
+                                      annotation_text=f"Break-even: {breakeven_month:.1f} months")
+            
+            fig_calc.update_layout(
+                title='ROI Timeline Projection',
+                xaxis_title='Months',
+                yaxis_title='Cumulative Value ($)',
+                height=300
+            )
+            
+            st.plotly_chart(fig_calc, use_container_width=True)
+        elif monthly_gain <= 0:
+            st.warning("Cannot display ROI timeline - the project shows negative returns with current parameters.")
 
 # Data sources and methodology - Enhanced
 with st.expander("📚 Data Sources & Methodology"):
