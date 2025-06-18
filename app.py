@@ -2940,121 +2940,122 @@ elif view_type == "ROI Analysis":
         st.plotly_chart(fig_calc, use_container_width=True)
 
 # Contextual insights section - Enhanced with all new findings
-st.subheader("💡 Key Research Findings")
-
-# For views that don't have year selector, default to showing 2025 data
-if view_type not in ["Historical Trends", "Adoption Rates", "Industry Analysis"]:
-    data_year = "2025 Data"
-
-if "2025" in data_year:
-    st.write("🚀 **2024-2025 AI Acceleration (AI Index Report 2025)**")
+if view_type in ["Historical Trends", "Adoption Rates", "Industry Analysis", "ROI Analysis"]:
+    st.subheader("💡 Key Research Findings")
     
-    # Create insight tabs for better organization
-    insight_tabs = st.tabs(["📊 Adoption", "💰 Investment", "🏭 Industry", "👥 Labor", "🌍 Global"])
+    # Ensure data_year is defined
+    if 'data_year' not in locals():
+        data_year = "2025 Data"
     
-    with insight_tabs[0]:
+    if "2025" in data_year:
+        st.write("🚀 **2024-2025 AI Acceleration (AI Index Report 2025)**")
+        
+        # Create insight tabs for better organization
+        insight_tabs = st.tabs(["📊 Adoption", "💰 Investment", "🏭 Industry", "👥 Labor", "🌍 Global"])
+        
+        with insight_tabs[0]:
+            col1, col2 = st.columns(2)
+            
+            with col1:
+                st.markdown('<div class="insight-box">', unsafe_allow_html=True)
+                st.write("**📈 Adoption Explosion:**")
+                st.write("• Overall AI: **55% → 78%** in one year")
+                st.write("• GenAI: **33% → 71%** (more than doubled)")
+                st.write("• AI now in **central role** for business value")
+                st.write("• **Fastest** tech adoption in history")
+                st.markdown('</div>', unsafe_allow_html=True)
+            
+            with col2:
+                st.markdown('<div class="insight-box">', unsafe_allow_html=True)
+                st.write("**🎯 Function Leadership:**")
+                st.write("• **Marketing & Sales:** 42% GenAI adoption")
+                st.write("• **71%** report revenue gains")
+                st.write("• **Service Operations:** 49% report cost savings")
+                st.write("• Benefits typically **<10%** savings, **<5%** revenue")
+                st.markdown('</div>', unsafe_allow_html=True)
+        
+        with insight_tabs[1]:
+            col1, col2 = st.columns(2)
+            
+            with col1:
+                st.markdown('<div class="insight-box">', unsafe_allow_html=True)
+                st.write("**💵 Investment Records:**")
+                st.write("• Total: **$252.3B** (+44.5% YoY)")
+                st.write("• GenAI: **$33.9B** (20% of all AI)")
+                st.write("• **13x growth** since 2014")
+                st.write("• US leads: **$109.1B** (12x China)")
+                st.markdown('</div>', unsafe_allow_html=True)
+            
+            with col2:
+                st.markdown('<div class="insight-box">', unsafe_allow_html=True)
+                st.write("**💸 Cost Revolution:**")
+                st.write("• **280x cheaper** inference since 2022")
+                st.write("• $20 → $0.07 per million tokens")
+                st.write("• Hardware: **43%** annual performance gain")
+                st.write("• Energy efficiency: **+40%** annually")
+                st.markdown('</div>', unsafe_allow_html=True)
+        
+        with insight_tabs[2]:
+            st.markdown('<div class="insight-box">', unsafe_allow_html=True)
+            st.write("**🏢 Industry Dynamics:**")
+            st.write("• **Technology sector:** 92% adoption, 4.2x ROI")
+            st.write("• **Financial services:** 85% adoption, 3.8x ROI")
+            st.write("• **GenAI apps** now lead: content generation (65%), code generation (58%)")
+            st.write("• **Full tech stack** (AI+Cloud+Digital) shows 3.5x ROI vs 1.5x for AI alone")
+            st.markdown('</div>', unsafe_allow_html=True)
+        
+        with insight_tabs[3]:
+            st.markdown('<div class="insight-box">', unsafe_allow_html=True)
+            st.write("**👷 Workforce Impact:**")
+            st.write("• **60%** expect job changes within 5 years")
+            st.write("• **36%** believe AI will replace their jobs")
+            st.write("• **Gen Z** (67%) vs **Boomers** (49%) on job impact")
+            st.write("• AI helps **low-skilled workers most** (14% productivity gain)")
+            st.write("• **Skill gaps narrowing** - potential for reduced inequality")
+            st.markdown('</div>', unsafe_allow_html=True)
+        
+        with insight_tabs[4]:
+            col1, col2 = st.columns(2)
+            
+            with col1:
+                st.markdown('<div class="insight-box">', unsafe_allow_html=True)
+                st.write("**🌏 Regional Competition:**")
+                st.write("• **Greater China:** +27pp growth")
+                st.write("• **Europe:** +23pp growth")
+                st.write("• **North America:** 82% adoption (highest)")
+                st.write("• Competition **intensifying** globally")
+                st.markdown('</div>', unsafe_allow_html=True)
+            
+            with col2:
+                st.markdown('<div class="insight-box">', unsafe_allow_html=True)
+                st.write("**🌱 Environmental Impact:**")
+                st.write("• Training emissions **increasing exponentially**")
+                st.write("• Llama 3.1: **8,930 tons** CO₂")
+                st.write("• Driving **nuclear energy** deals")
+                st.write("• Major tech securing clean energy")
+                st.markdown('</div>', unsafe_allow_html=True)
+        
+    else:
+        st.write("📊 **2018 Early AI Adoption Era**")
         col1, col2 = st.columns(2)
         
         with col1:
             st.markdown('<div class="insight-box">', unsafe_allow_html=True)
-            st.write("**📈 Adoption Explosion:**")
-            st.write("• Overall AI: **55% → 78%** in one year")
-            st.write("• GenAI: **33% → 71%** (more than doubled)")
-            st.write("• AI now in **central role** for business value")
-            st.write("• **Fastest** tech adoption in history")
+            st.write("**🏭 Industry Leadership:**")
+            st.write("• **Manufacturing & Information** sectors led at ~12%")
+            st.write("• Strong **correlation with firm size**")
+            st.write("• **Technology complementarity** crucial")
+            st.write("• Cloud + AI shows higher returns")
             st.markdown('</div>', unsafe_allow_html=True)
         
         with col2:
             st.markdown('<div class="insight-box">', unsafe_allow_html=True)
-            st.write("**🎯 Function Leadership:**")
-            st.write("• **Marketing & Sales:** 42% GenAI adoption")
-            st.write("• **71%** report revenue gains")
-            st.write("• **Service Operations:** 49% report cost savings")
-            st.write("• Benefits typically **<10%** savings, **<5%** revenue")
+            st.write("**📍 Geographic Patterns:**")
+            st.write("• **SF Bay Area** leads at 9.5%")
+            st.write("• **Emerging hubs:** Nashville, San Antonio")
+            st.write("• Strong **urban concentration**")
+            st.write("• Midwest and rural areas lagging")
             st.markdown('</div>', unsafe_allow_html=True)
-    
-    with insight_tabs[1]:
-        col1, col2 = st.columns(2)
-        
-        with col1:
-            st.markdown('<div class="insight-box">', unsafe_allow_html=True)
-            st.write("**💵 Investment Records:**")
-            st.write("• Total: **$252.3B** (+44.5% YoY)")
-            st.write("• GenAI: **$33.9B** (20% of all AI)")
-            st.write("• **13x growth** since 2014")
-            st.write("• US leads: **$109.1B** (12x China)")
-            st.markdown('</div>', unsafe_allow_html=True)
-        
-        with col2:
-            st.markdown('<div class="insight-box">', unsafe_allow_html=True)
-            st.write("**💸 Cost Revolution:**")
-            st.write("• **280x cheaper** inference since 2022")
-            st.write("• $20 → $0.07 per million tokens")
-            st.write("• Hardware: **43%** annual performance gain")
-            st.write("• Energy efficiency: **+40%** annually")
-            st.markdown('</div>', unsafe_allow_html=True)
-    
-    with insight_tabs[2]:
-        st.markdown('<div class="insight-box">', unsafe_allow_html=True)
-        st.write("**🏢 Industry Dynamics:**")
-        st.write("• **Technology sector:** 92% adoption, 4.2x ROI")
-        st.write("• **Financial services:** 85% adoption, 3.8x ROI")
-        st.write("• **GenAI apps** now lead: content generation (65%), code generation (58%)")
-        st.write("• **Full tech stack** (AI+Cloud+Digital) shows 3.5x ROI vs 1.5x for AI alone")
-        st.markdown('</div>', unsafe_allow_html=True)
-    
-    with insight_tabs[3]:
-        st.markdown('<div class="insight-box">', unsafe_allow_html=True)
-        st.write("**👷 Workforce Impact:**")
-        st.write("• **60%** expect job changes within 5 years")
-        st.write("• **36%** believe AI will replace their jobs")
-        st.write("• **Gen Z** (67%) vs **Boomers** (49%) on job impact")
-        st.write("• AI helps **low-skilled workers most** (14% productivity gain)")
-        st.write("• **Skill gaps narrowing** - potential for reduced inequality")
-        st.markdown('</div>', unsafe_allow_html=True)
-    
-    with insight_tabs[4]:
-        col1, col2 = st.columns(2)
-        
-        with col1:
-            st.markdown('<div class="insight-box">', unsafe_allow_html=True)
-            st.write("**🌏 Regional Competition:**")
-            st.write("• **Greater China:** +27pp growth")
-            st.write("• **Europe:** +23pp growth")
-            st.write("• **North America:** 82% adoption (highest)")
-            st.write("• Competition **intensifying** globally")
-            st.markdown('</div>', unsafe_allow_html=True)
-        
-        with col2:
-            st.markdown('<div class="insight-box">', unsafe_allow_html=True)
-            st.write("**🌱 Environmental Impact:**")
-            st.write("• Training emissions **increasing exponentially**")
-            st.write("• Llama 3.1: **8,930 tons** CO₂")
-            st.write("• Driving **nuclear energy** deals")
-            st.write("• Major tech securing clean energy")
-            st.markdown('</div>', unsafe_allow_html=True)
-    
-else:
-    st.write("📊 **2018 Early AI Adoption Era**")
-    col1, col2 = st.columns(2)
-    
-    with col1:
-        st.markdown('<div class="insight-box">', unsafe_allow_html=True)
-        st.write("**🏭 Industry Leadership:**")
-        st.write("• **Manufacturing & Information** sectors led at ~12%")
-        st.write("• Strong **correlation with firm size**")
-        st.write("• **Technology complementarity** crucial")
-        st.write("• Cloud + AI shows higher returns")
-        st.markdown('</div>', unsafe_allow_html=True)
-    
-    with col2:
-        st.markdown('<div class="insight-box">', unsafe_allow_html=True)
-        st.write("**📍 Geographic Patterns:**")
-        st.write("• **SF Bay Area** leads at 9.5%")
-        st.write("• **Emerging hubs:** Nashville, San Antonio")
-        st.write("• Strong **urban concentration**")
-        st.write("• Midwest and rural areas lagging")
-        st.markdown('</div>', unsafe_allow_html=True)
 
 # Data sources and methodology - Enhanced
 with st.expander("📚 Data Sources & Methodology"):
