@@ -305,9 +305,44 @@ def show_source_info(source_key):
 # Onboarding modal for first-time users
 if st.session_state.first_visit:
     with st.container():
-        st.write("**🏆 Top ROI Performers:**")
-        for _, sector in top_sectors.iterrows():
-            st.write(f"• **{sector['sector']}:** {sector['avg_roi']}x ROI, {sector['adoption_rate']}% adoption")
+        st.info("""
+        ### 👋 Welcome to the AI Adoption Dashboard!
+        
+        This dashboard provides comprehensive insights into AI adoption trends from 2018-2025, 
+        including the latest findings from the AI Index Report 2025.
+        
+        **Quick Start:**
+        - Use the sidebar to select different analysis views
+        - Click on charts to see detailed information
+        - Export any visualization using the download buttons
+        
+        **For best experience, select your role:**
+        col1, col2, col3, col4 = st.columns(4)
+        with col1:
+            if st.button("📊 Business Leader"):
+                st.session_state.selected_persona = "Business Leader"
+                st.session_state.first_visit = False
+                st.rerun()
+        with col2:
+            if st.button("🏛️ Policymaker"):
+                st.session_state.selected_persona = "Policymaker"
+                st.session_state.first_visit = False
+                st.rerun()
+        with col3:
+            if st.button("🔬 Researcher"):
+                st.session_state.selected_persona = "Researcher"
+                st.session_state.first_visit = False
+                st.rerun()
+        with col4:
+            if st.button("👤 General User"):
+                st.session_state.selected_persona = "General"
+                st.session_state.first_visit = False
+                st.rerun()
+        
+        if st.button("Got it! Let's explore", type="primary"):
+            st.session_state.first_visit = False
+            st.rerun()
+    st.stop()
     
     with tab4:
         # Interactive ROI Calculator
@@ -744,377 +779,7 @@ st.markdown("""
         <i>Data sources: AI Index Report 2025 (Stanford HAI), McKinsey Global Survey on AI, OECD AI Policy Observatory</i>
     </p>
 </div>
-""", unsafe_allow_html=True)info("""
-        ### 👋 Welcome to the AI Adoption Dashboard!
-        
-        This dashboard provides comprehensive insights into AI adoption trends from 2018-2025, 
-        including the latest findings from the AI Index Report 2025.
-        
-        **Quick Start:**
-        - Use the sidebar to select different analysis views
-        - Click on charts to see detailed information
-        - Export any visualization using the download buttons
-        
-        **For best experience, select your role:**
-        """)
-        col1, col2, col3, col4 = st.columns(4)
-        with col1:
-            if st.button("📊 Business Leader"):
-                st.session_state.selected_persona = "Business Leader"
-                st.session_state.first_visit = False
-                st.rerun()
-        with col2:
-            if st.button("🏛️ Policymaker"):
-                st.session_state.selected_persona = "Policymaker"
-                st.session_state.first_visit = False
-                st.rerun()
-        with col3:
-            if st.button("🔬 Researcher"):
-                st.session_state.selected_persona = "Researcher"
-                st.session_state.first_visit = False
-                st.rerun()
-        with col4:
-            if st.button("👤 General User"):
-                st.session_state.selected_persona = "General"
-                st.session_state.first_visit = False
-                st.rerun()
-        
-        if st.button("Got it! Let's explore", type="primary"):
-            st.session_state.first_visit = False
-            st.rerun()
-    st.stop()
-
-# Load all data
-try:
-    loaded_data = load_data()
-    
-    # Unpack the data - updated to include new datasets
-    (historical_data, sector_2018, sector_2025, firm_size, ai_maturity, 
-     geographic, tech_stack, productivity_data, productivity_by_skill,
-     ai_productivity_estimates, oecd_g7_adoption, oecd_applications, 
-     barriers_data, support_effectiveness, state_data, ai_investment_data, 
-     regional_growth, ai_cost_reduction, financial_impact, ai_perception, 
-     training_emissions, skill_gap_data, ai_governance) = loaded_data
-     
-except Exception as e:
-    st.error(f"Error loading data: {str(e)}")
-    st.stop()
-
-# Custom CSS
-st.markdown("""
-<style>
-    .metric-card {
-        background-color: transparent;
-        padding: 1rem;
-        border-radius: 0.5rem;
-        border-left: 4px solid #1f77b4;
-    }
-    .stApp > div {
-        background-color: transparent;
-    }
-    .main .block-container {
-        background-color: transparent;
-    }
-    .source-info {
-        font-size: 0.8em;
-        color: #666;
-        cursor: pointer;
-        text-decoration: underline;
-    }
-    .insight-box {
-        background-color: rgba(31, 119, 180, 0.1);
-        border-left: 4px solid #1f77b4;
-        padding: 1rem;
-        margin: 1rem 0;
-        border-radius: 0.25rem;
-    }
-</style>
-""", unsafe_allow_html=True)
-
-# Title and description
-st.title("🤖 AI Adoption Dashboard: 2018-2025")
-st.markdown("**Comprehensive analysis from early AI adoption (2018) to current GenAI trends (2025)**")
-
-# What's New section
-with st.expander("🆕 What's New in Version 2.2.0", expanded=st.session_state.show_changelog):
-    st.markdown("""
-    **Latest Updates (June 2025):**
-    - ✅ Integrated AI Index Report 2025 findings
-    - ✅ Added industry-specific 2025 data
-    - ✅ Enhanced financial impact clarity
-    - ✅ New skill gap and governance metrics
-    - ✅ Interactive filtering for charts
-    - ✅ Source attribution for all data points
-    - ✅ Export data as CSV functionality
-    """)
-
-# Add definition notice with AI Index Report reference
-st.info("""
-**📌 Important Note:** Adoption rates in this dashboard reflect "any AI use" including pilots, experiments, and production deployments. 
-Enterprise-wide production use rates are typically lower. Data sources include AI Index Report 2025, McKinsey Global Survey on AI, 
-OECD AI Policy Observatory, and US Census Bureau AI Use Supplement.
-""")
-
-# Sidebar controls
-st.sidebar.header("📊 Dashboard Controls")
-
-# Show persona selection
-persona = st.sidebar.selectbox(
-    "Select Your Role",
-    ["General", "Business Leader", "Policymaker", "Researcher"],
-    index=["General", "Business Leader", "Policymaker", "Researcher"].index(st.session_state.selected_persona)
-)
-st.session_state.selected_persona = persona
-
-# Persona-based view recommendations and filtering
-persona_views = {
-    "Business Leader": ["Industry Analysis", "Financial Impact", "Investment Trends", "ROI Analysis"],
-    "Policymaker": ["Geographic Distribution", "OECD 2025 Findings", "Regional Growth", "AI Governance"],
-    "Researcher": ["Historical Trends", "Productivity Research", "Environmental Impact", "Skill Gap Analysis"],
-    "General": ["Adoption Rates", "Historical Trends", "Investment Trends", "Labor Impact"]
-}
-
-# Filter views based on persona
-all_views = ["Adoption Rates", "Historical Trends", "Industry Analysis", "Investment Trends", 
-             "Regional Growth", "AI Cost Trends", "Financial Impact", "Labor Impact", 
-             "Firm Size Analysis", "Technology Stack", "AI Technology Maturity", 
-             "Productivity Research", "Environmental Impact", "Geographic Distribution", 
-             "OECD 2025 Findings", "Barriers & Support", "ROI Analysis", "Skill Gap Analysis", 
-             "AI Governance"]
-
-if persona != "General":
-    st.sidebar.info(f"💡 **Recommended views for {persona}:**\n" + "\n".join([f"• {v}" for v in persona_views[persona]]))
-
-data_year = st.sidebar.selectbox(
-    "Select Data Year", 
-    ["2018 (Early AI)", "2025 (GenAI Era)"],
-    index=1
-)
-
-view_type = st.sidebar.selectbox(
-    "Analysis View", 
-    all_views,
-    index=all_views.index(persona_views[persona][0]) if persona != "General" else 0
-)
-
-# Advanced filters
-st.sidebar.markdown("---")
-st.sidebar.markdown("### 🔧 Advanced Options")
-
-# Year filter for historical data
-if view_type == "Historical Trends":
-    year_range = st.sidebar.slider(
-        "Select Year Range",
-        min_value=2017,
-        max_value=2025,
-        value=(2017, 2025),
-        step=1
-    )
-    
-    compare_mode = st.sidebar.checkbox("Compare specific years", value=False)
-    if compare_mode:
-        col1, col2 = st.sidebar.columns(2)
-        with col1:
-            year1 = st.selectbox("Year 1", range(2017, 2026), index=1)
-        with col2:
-            year2 = st.selectbox("Year 2", range(2017, 2026), index=7)
-
-# Export functionality
-st.sidebar.markdown("---")
-st.sidebar.markdown("### 📥 Export Options")
-
-export_format = st.sidebar.selectbox(
-    "Export Format",
-    ["PNG Image", "CSV Data", "PDF Report (Beta)"]
-)
-
-if st.sidebar.button("📥 Export Current View", help="Download the current visualization"):
-    if export_format == "CSV Data":
-        # Export current data based on view
-        if view_type == "Historical Trends":
-            csv = historical_data.to_csv(index=False)
-            st.sidebar.download_button(
-                label="Download CSV",
-                data=csv,
-                file_name=f"ai_adoption_{view_type.lower().replace(' ', '_')}.csv",
-                mime="text/csv"
-            )
-        st.sidebar.success("✅ Data exported successfully!")
-    else:
-        st.sidebar.success("✅ View exported successfully!")
-
-# Feedback widget
-st.sidebar.markdown("---")
-st.sidebar.markdown("### 💬 Feedback")
-feedback = st.sidebar.text_area("Share your thoughts or request features:", height=100)
-if st.sidebar.button("Submit Feedback"):
-    st.sidebar.success("Thank you for your feedback!")
-
-# Help section
-with st.sidebar.expander("❓ Need Help?"):
-    st.markdown("""
-    **Navigation Tips:**
-    - Use the Analysis View dropdown to explore different perspectives
-    - Click 📊 icons for data source information
-    - Hover over chart elements for details
-    
-    **Keyboard Shortcuts:**
-    - `Ctrl + K`: Quick search
-    - `F`: Toggle fullscreen
-    - `?`: Show help
-    """)
-
-# Key metrics row - UPDATED with AI Index 2025 data
-st.subheader("📈 Key Metrics")
-col1, col2, col3, col4 = st.columns(4)
-
-if "2025" in data_year:
-    with col1:
-        st.metric(
-            label="Overall AI Adoption*", 
-            value="78%", 
-            delta="+23pp from 2023",
-            help="*Includes any AI use. Jumped from 55% in 2023 (AI Index 2025)"
-        )
-    with col2:
-        st.metric(
-            label="GenAI Adoption*", 
-            value="71%", 
-            delta="+38pp from 2023",
-            help="*More than doubled from 33% in 2023 (AI Index 2025)"
-        )
-    with col3:
-        st.metric(
-            label="2024 AI Investment", 
-            value="$252.3B", 
-            delta="+44.5% YoY",
-            help="Total corporate AI investment reached record levels"
-        )
-    with col4:
-        st.metric(
-            label="Cost Reduction", 
-            value="280x cheaper", 
-            delta="Since Nov 2022",
-            help="AI inference cost dropped from $20 to $0.07 per million tokens"
-        )
-else:
-    with col1:
-        st.metric("Overall AI Adoption", "5.8%", "📊 Firm-weighted")
-    with col2:
-        st.metric("Large Firms (5000+)", "58.5%", "🏢 High adoption")
-    with col3:
-        st.metric("AI + Cloud", "45%", "☁️ Technology stack")
-    with col4:
-        st.metric("Top City", "SF Bay (9.5%)", "🌍 Geographic leader")
-
-# Main visualization section
-st.subheader(f"📊 {view_type}")
-
-# View implementations
-if view_type == "Historical Trends":
-    # Apply year filter if set
-    filtered_data = historical_data[
-        (historical_data['year'] >= year_range[0]) & 
-        (historical_data['year'] <= year_range[1])
-    ]
-    
-    fig = go.Figure()
-    
-    # Add overall AI use line
-    fig.add_trace(go.Scatter(
-        x=filtered_data['year'], 
-        y=filtered_data['ai_use'], 
-        mode='lines+markers', 
-        name='Overall AI Use', 
-        line=dict(width=4, color='#1f77b4'),
-        marker=dict(size=8),
-        hovertemplate='Year: %{x}<br>Adoption: %{y}%<br>Source: AI Index & McKinsey<extra></extra>'
-    ))
-    
-    # Add GenAI use line
-    fig.add_trace(go.Scatter(
-        x=filtered_data['year'], 
-        y=filtered_data['genai_use'], 
-        mode='lines+markers', 
-        name='GenAI Use', 
-        line=dict(width=4, color='#ff7f0e'),
-        marker=dict(size=8),
-        hovertemplate='Year: %{x}<br>Adoption: %{y}%<br>Source: AI Index 2025<extra></extra>'
-    ))
-    
-    # Add annotations
-    fig.add_annotation(
-        x=2022, y=33,
-        text="<b>ChatGPT Launch</b><br>GenAI Era Begins",
-        showarrow=True,
-        arrowhead=2,
-        arrowsize=1,
-        arrowwidth=2,
-        arrowcolor="#ff7f0e",
-        ax=-50,
-        ay=-40,
-        bgcolor="rgba(255,127,14,0.1)",
-        bordercolor="#ff7f0e",
-        borderwidth=2,
-        font=dict(color="#ff7f0e", size=12, family="Arial")
-    )
-    
-    fig.add_annotation(
-        x=2024, y=78,
-        text="<b>2024 Acceleration</b><br>AI Index Report findings",
-        showarrow=True,
-        arrowhead=2,
-        arrowsize=1,
-        arrowwidth=2,
-        arrowcolor="#1f77b4",
-        ax=50,
-        ay=-30,
-        bgcolor="rgba(31,119,180,0.1)",
-        bordercolor="#1f77b4",
-        borderwidth=2,
-        font=dict(color="#1f77b4", size=12, family="Arial")
-    )
-    
-    fig.update_layout(
-        title="AI Adoption Trends: The GenAI Revolution", 
-        xaxis_title="Year", 
-        yaxis_title="Adoption Rate (%)",
-        height=500,
-        hovermode='x unified',
-        showlegend=True,
-        legend=dict(
-            yanchor="top",
-            y=0.99,
-            xanchor="right",
-            x=0.99
-        )
-    )
-    
-    # Display chart with source info
-    col1, col2 = st.columns([10, 1])
-    with col1:
-        st.plotly_chart(fig, use_container_width=True)
-    with col2:
-        if st.button("📊", key="hist_source", help="View data source"):
-            st.info(show_source_info('ai_index'))
-    
-    # Enhanced insights
-    col1, col2 = st.columns(2)
-    with col1:
-        st.markdown('<div class="insight-box">', unsafe_allow_html=True)
-        st.write("📊 **Key Growth Insights (AI Index 2025):**")
-        st.write("• Business adoption jumped from **55% to 78%** in just one year")
-        st.write("• GenAI adoption more than **doubled** from 33% to 71%")
-        st.write("• AI moved to **central role** in driving business value")
-        st.markdown('</div>', unsafe_allow_html=True)
-    
-    with col2:
-        st.markdown('<div class="insight-box">', unsafe_allow_html=True)
-        st.write("🎯 **Industry Context:**")
-        st.write("• Fastest enterprise technology adoption in history")
-        st.write("• **280x cost reduction** in AI inference since 2022")
-        st.write("• Growing research confirms AI **boosts productivity**")
-        st.markdown('</div>', unsafe_allow_html=True)
+""", unsafe_allow_html=True)allow_html=True)
     
     # Export data option
     csv = filtered_data.to_csv(index=False)
@@ -3235,4 +2900,6 @@ elif view_type == "ROI Analysis":
         # Top performers analysis
         top_sectors = sector_2025.nlargest(3, 'avg_roi')
         
-        st.
+        st.write("**🏆 Top ROI Performers:**")
+        for _, sector in top_sectors.iterrows():
+            st.write(f"• **{sector['sector']}:** {sector['avg_roi']}x ROI, {sector['adoption_rate']}% adoption")
