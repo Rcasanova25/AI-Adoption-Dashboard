@@ -2735,7 +2735,8 @@ elif view_type == "ROI Analysis":
         fig.add_trace(go.Funnel(
             y=payback_data['scenario'],
             x=payback_data['months'],
-            textinfo="value+percent",
+            textinfo="text+percent initial",
+            text=[f"{x} months" for x in payback_data['months']],
             marker=dict(color=['#2ECC71', '#F39C12', '#E74C3C'])
         ))
         
