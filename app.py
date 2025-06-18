@@ -602,7 +602,7 @@ with st.expander("📚 Data Sources & Methodology"):
         
         with col1:
             st.markdown("""
-            **🔬 AI Index Report 2025**  
+            **AI Index Report 2025**  
             Stanford HAI  
             📊 Global AI metrics  
             🌍 Investment & adoption data  
@@ -733,7 +733,7 @@ with footer_cols[0]:
 
 with footer_cols[1]:
     st.markdown("""
-    ### 🔬 Research Partners
+    ### Research Partners
     - [Stanford HAI](https://hai.stanford.edu)
     - [AI Index Report](https://aiindex.stanford.edu)
     - [McKinsey AI](https://www.mckinsey.com/capabilities/quantumblack)
@@ -743,17 +743,17 @@ with footer_cols[1]:
 
 with footer_cols[2]:
     st.markdown("""
-    ### 🤝 Connect
+    ### Connect
     - [LinkedIn - Robert Casanova](https://linkedin.com/in/robert-casanova)
     - [GitHub - @Rcasanova25](https://github.com/Rcasanova25)
     - [Email](mailto:Robert.casanova82@gmail.com)
     - [Twitter/X](https://twitter.com)
-    - [Star on GitHub ⭐](https://github.com/Rcasanova25/AI-Adoption-Dashboard)
+    - [Star on GitHub](https://github.com/Rcasanova25/AI-Adoption-Dashboard)
     """)
 
 with footer_cols[3]:
     st.markdown("""
-    ### 🛟 Support
+    ### Support
     - [User Guide](https://github.com/Rcasanova25/AI-Adoption-Dashboard/wiki/User-Guide)
     - [FAQ](https://github.com/Rcasanova25/AI-Adoption-Dashboard/wiki/FAQ)
     - [Report Bug](https://github.com/Rcasanova25/AI-Adoption-Dashboard/issues/new?labels=bug)
