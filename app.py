@@ -3292,7 +3292,7 @@ elif view_type == "Labor Impact":
             policy_areas,
             x='current_investment',
             y='priority',
-           size=[float(x.replace('$', '').replace('B', '').replace('M', '')) * (1000 if 'B' in x else 1) for x in policy_areas['estimated_cost']],
+            size=[float(x.replace(', '').replace('B', '').replace('M', '')) * (1000 if 'B' in x else 1) for x in policy_areas['estimated_cost']],
             text='area',
             title='Policy Priority vs Current Investment',
             labels={'current_investment': 'Current Investment Level (%)', 
