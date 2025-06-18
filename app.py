@@ -415,7 +415,7 @@ with st.sidebar:
             help="Select data period for analysis"
         )
     else:
-        data_year = "2025 Data"
+        data_year = "2025 Data"  # Default for all other views
     
     # Export options
     st.markdown("---")
