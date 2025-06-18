@@ -447,6 +447,11 @@ if st.session_state.first_visit:
         
         # Export calculation
         if st.button("📥 Export ROI Analysis"):
+            # Format the values first to avoid f-string issues
+            roi_str = f"{final_roi:.1f}"
+            return_str = f"{expected_return:,.0f}"
+            benefit_str = f"{net_benefit:,.0f}"
+            
             analysis_text = f"""AI ROI Analysis Report
 Generated: {datetime.now().strftime('%Y-%m-%d %H:%M')}
 
@@ -461,9 +466,9 @@ Quality Metrics:
 - Data Readiness: {data_readiness}/5
 
 Projected Results:
-- Expected ROI: {final_roi:.1f}x
-- Total Return: ${expected_return:,.0f}
-- Net Benefit: ${net_benefit:,.0f}
+- Expected ROI: {roi_str}x
+- Total Return: ${return_str}
+- Net Benefit: ${benefit_str}
 - Payback Period: {payback_months} months
 - Risk Level: {risk_level}
 """
