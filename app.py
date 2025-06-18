@@ -2708,47 +2708,50 @@ elif view_type == "ROI Analysis":
             'success_rate': [45, 58, 72, 81, 87]  # % of projects achieving positive ROI
         })
         
-        fig = go.Figure()
-        
-        # ROI bars
-        fig.add_trace(go.Bar(
-            name='Average ROI',
-            x=roi_data['investment_level'],
-            y=roi_data['avg_roi'],
-            yaxis='y',
-            marker_color='#2ECC71',
-            text=[f'{x}x' for x in roi_data['avg_roi']],
-            textposition='outside'
-        ))
-        
-        # Success rate line
-        fig.add_trace(go.Scatter(
-            name='Success Rate',
-            x=roi_data['investment_level'],
-            y=roi_data['success_rate'],
-            yaxis='y2',
-            mode='lines+markers',
-            line=dict(width=3, color='#3498DB'),
-            marker=dict(size=10)
-        ))
-        
-        fig.update_layout(
-            title='AI ROI by Investment Level',
-            xaxis_title='Investment Level',
-            yaxis=dict(title='Average ROI (x)', side='left'),
-            yaxis2=dict(title='Success Rate (%)', side='right', overlaying='y'),
-            height=400,
-            hovermode='x unified'
-        )
-        
-        st.plotly_chart(fig, use_container_width=True)
-        
-        st.info("""
-        **Key Insights:**
-        - Larger investments show higher ROI and success rates
-        - Enterprise projects (87% success) benefit from better resources and planning
-        - Even small pilots can achieve 1.8x ROI with 45% success rate
-        """)
+        try:
+            fig = go.Figure()
+            
+            # ROI bars
+            fig.add_trace(go.Bar(
+                name='Average ROI',
+                x=roi_data['investment_level'].tolist(),
+                y=roi_data['avg_roi'].tolist(),
+                yaxis='y',
+                marker_color='#2ECC71',
+                text=[f'{x}x' for x in roi_data['avg_roi']],
+                textposition='outside'
+            ))
+            
+            # Success rate line
+            fig.add_trace(go.Scatter(
+                name='Success Rate',
+                x=roi_data['investment_level'].tolist(),
+                y=roi_data['success_rate'].tolist(),
+                yaxis='y2',
+                mode='lines+markers',
+                line=dict(width=3, color='#3498DB'),
+                marker=dict(size=10)
+            ))
+            
+            fig.update_layout(
+                title='AI ROI by Investment Level',
+                xaxis_title='Investment Level',
+                yaxis=dict(title='Average ROI (x)', side='left'),
+                yaxis2=dict(title='Success Rate (%)', side='right', overlaying='y'),
+                height=400,
+                hovermode='x unified'
+            )
+            
+            st.plotly_chart(fig, use_container_width=True)
+            
+            st.info("""
+            **Key Insights:**
+            - Larger investments show higher ROI and success rates
+            - Enterprise projects (87% success) benefit from better resources and planning
+            - Even small pilots can achieve 1.8x ROI with 45% success rate
+            """)
+        except Exception as e:
+            st.error(f"Error creating investment returns visualization: {str(e)}")
     
     with tab2:
         # Payback period analysis
@@ -2758,207 +2761,265 @@ elif view_type == "ROI Analysis":
             'probability': [20, 60, 20]
         })
         
-        fig = go.Figure()
-        
-        # Create funnel chart for payback scenarios
-        fig.add_trace(go.Funnel(
-            y=payback_data['scenario'],
-            x=payback_data['months'],
-            textinfo="value+percent",
-            marker=dict(color=['#2ECC71', '#F39C12', '#E74C3C'])
-        ))
-        
-        fig.update_layout(
-            title='AI Investment Payback Period Distribution',
-            xaxis_title='Months to Payback',
-            height=350
-        )
-        
-        st.plotly_chart(fig, use_container_width=True)
-        
-        # Factors affecting payback
-        col1, col2 = st.columns(2)
-        
-        with col1:
-            st.write("**🚀 Accelerators:**")
-            st.write("• Clear use case definition")
-            st.write("• Strong change management")
-            st.write("• Existing data infrastructure")
-            st.write("• Skilled team in place")
-        
-        with col2:
-            st.write("**🐌 Delays:**")
-            st.write("• Poor data quality")
-            st.write("• Integration challenges")
-            st.write("• Organizational resistance")
-            st.write("• Scope creep")
+        try:
+            fig = go.Figure()
+            
+            # Create funnel chart for payback scenarios
+            fig.add_trace(go.Funnel(
+                y=payback_data['scenario'].tolist(),
+                x=payback_data['months'].tolist(),
+                textinfo="value+percent",
+                marker=dict(color=['#2ECC71', '#F39C12', '#E74C3C'])
+            ))
+            
+            fig.update_layout(
+                title='AI Investment Payback Period Distribution',
+                xaxis_title='Months to Payback',
+                height=350
+            )
+            
+            st.plotly_chart(fig, use_container_width=True)
+            
+            # Factors affecting payback
+            col1, col2 = st.columns(2)
+            
+            with col1:
+                st.write("**🚀 Accelerators:**")
+                st.write("• Clear use case definition")
+                st.write("• Strong change management")
+                st.write("• Existing data infrastructure")
+                st.write("• Skilled team in place")
+            
+            with col2:
+                st.write("**🐌 Delays:**")
+                st.write("• Poor data quality")
+                st.write("• Integration challenges")
+                st.write("• Organizational resistance")
+                st.write("• Scope creep")
+        except Exception as e:
+            st.error(f"Error creating payback analysis: {str(e)}")
     
     with tab3:
         # Sector-specific ROI
-        # First sort the data to avoid repeated sorting operations
-        sector_sorted = sector_2025.sort_values('avg_roi')
-        
-        fig = go.Figure()
-        
-        # Use the pre-sorted data
-        fig.add_trace(go.Bar(
-            x=sector_sorted['sector'],
-            y=sector_sorted['avg_roi'],
-            marker_color=sector_sorted['avg_roi'],
-            marker_colorscale='Viridis',
-            text=[f'{x}x' for x in sector_sorted['avg_roi']],
-            textposition='outside',
-            hovertemplate='<b>%{x}</b><br>ROI: %{y}x<br>Adoption: %{customdata}%<extra></extra>',
-            customdata=sector_sorted['adoption_rate']
-        ))
-        
-        fig.update_layout(
-            title='Average AI ROI by Industry Sector',
-            xaxis_title='Industry',
-            yaxis_title='Average ROI (x)',
-            height=400,
-            xaxis_tickangle=45,
-            showlegend=False
-        )
-        
-        st.plotly_chart(fig, use_container_width=True)
-        
-        # Top performers analysis
-        top_sectors = sector_2025.nlargest(3, 'avg_roi')
-        
-        st.write("**🏆 Top ROI Performers:**")
-        for _, sector in top_sectors.iterrows():
-            st.write(f"• **{sector['sector']}:** {sector['avg_roi']}x ROI, {sector['adoption_rate']}% adoption")
+        try:
+            # Check if sector_2025 exists and has required columns
+            if 'sector_2025' in locals() and not sector_2025.empty:
+                # Create a copy to avoid modifying original data
+                sector_data = sector_2025.copy()
+                
+                # Ensure numeric data types
+                sector_data['avg_roi'] = pd.to_numeric(sector_data['avg_roi'], errors='coerce')
+                sector_data['adoption_rate'] = pd.to_numeric(sector_data['adoption_rate'], errors='coerce')
+                
+                # Remove any rows with NaN values
+                sector_data = sector_data.dropna(subset=['avg_roi', 'adoption_rate', 'sector'])
+                
+                # Sort the data
+                sector_sorted = sector_data.sort_values('avg_roi')
+                
+                if not sector_sorted.empty:
+                    fig = go.Figure()
+                    
+                    # Use the pre-sorted data
+                    fig.add_trace(go.Bar(
+                        x=sector_sorted['sector'].tolist(),
+                        y=sector_sorted['avg_roi'].tolist(),
+                        marker_color=sector_sorted['avg_roi'].tolist(),
+                        marker_colorscale='Viridis',
+                        text=[f'{x}x' for x in sector_sorted['avg_roi']],
+                        textposition='outside',
+                        hovertemplate='<b>%{x}</b><br>ROI: %{y}x<br>Adoption: %{customdata}%<extra></extra>',
+                        customdata=sector_sorted['adoption_rate'].tolist()
+                    ))
+                    
+                    fig.update_layout(
+                        title='Average AI ROI by Industry Sector',
+                        xaxis_title='Industry',
+                        yaxis_title='Average ROI (x)',
+                        height=400,
+                        xaxis_tickangle=45,
+                        showlegend=False
+                    )
+                    
+                    st.plotly_chart(fig, use_container_width=True)
+                    
+                    # Top performers analysis
+                    if len(sector_data) >= 3:
+                        top_sectors = sector_data.nlargest(3, 'avg_roi')
+                        
+                        st.write("**🏆 Top ROI Performers:**")
+                        for _, sector in top_sectors.iterrows():
+                            st.write(f"• **{sector['sector']}:** {sector['avg_roi']}x ROI, {sector['adoption_rate']}% adoption")
+                    else:
+                        st.info("Insufficient data for top performers analysis")
+                else:
+                    st.warning("No valid sector data available for ROI analysis")
+            else:
+                st.error("Sector data not available")
+        except Exception as e:
+            st.error(f"Error creating sector ROI visualization: {str(e)}")
     
     with tab4:
         # Interactive ROI Calculator
         st.write("**🧮 AI ROI Calculator**")
         
-        col1, col2 = st.columns(2)
-        
-        with col1:
-            calc_investment = st.number_input(
-                "Initial Investment ($)",
-                min_value=10000,
-                max_value=10000000,
-                value=500000,
-                step=10000
-            )
+        try:
+            col1, col2 = st.columns(2)
             
-            calc_industry = st.selectbox(
-                "Industry",
-                sector_2025['sector'].tolist()
-            )
+            with col1:
+                calc_investment = st.number_input(
+                    "Initial Investment ($)",
+                    min_value=10000,
+                    max_value=10000000,
+                    value=500000,
+                    step=10000,
+                    key="roi_investment"
+                )
+                
+                # Ensure sector_2025 exists before using it
+                if 'sector_2025' in locals() and not sector_2025.empty:
+                    sector_list = sector_2025['sector'].tolist()
+                else:
+                    sector_list = ['Technology', 'Financial Services', 'Healthcare', 'Manufacturing']
+                
+                calc_industry = st.selectbox(
+                    "Industry",
+                    sector_list,
+                    key="roi_industry"
+                )
+                
+                calc_timeline = st.slider(
+                    "Implementation Timeline (months)",
+                    min_value=3,
+                    max_value=36,
+                    value=12,
+                    key="roi_timeline"
+                )
             
-            calc_timeline = st.slider(
-                "Implementation Timeline (months)",
-                min_value=3,
-                max_value=36,
-                value=12
-            )
-        
-        with col2:
-            calc_quality = st.slider(
-                "Implementation Quality (1-10)",
-                min_value=1,
-                max_value=10,
-                value=7
-            )
+            with col2:
+                calc_quality = st.slider(
+                    "Implementation Quality (1-10)",
+                    min_value=1,
+                    max_value=10,
+                    value=7,
+                    key="roi_quality"
+                )
+                
+                calc_scale = st.selectbox(
+                    "Deployment Scale",
+                    ["Pilot", "Department", "Division", "Enterprise-wide"],
+                    key="roi_scale"
+                )
+                
+                calc_tech_stack = st.multiselect(
+                    "Technology Stack",
+                    ["AI Only", "Cloud", "Advanced Analytics", "Automation"],
+                    default=["AI Only", "Cloud"],
+                    key="roi_tech_stack"
+                )
             
-            calc_scale = st.selectbox(
-                "Deployment Scale",
-                ["Pilot", "Department", "Division", "Enterprise-wide"]
-            )
-            
-            calc_tech_stack = st.multiselect(
-                "Technology Stack",
-                ["AI Only", "Cloud", "Advanced Analytics", "Automation"],
-                default=["AI Only", "Cloud"]
-            )
-        
-        # Calculate ROI
-        industry_data = sector_2025[sector_2025['sector'] == calc_industry]
-        
-        if not industry_data.empty:
-            base_roi = industry_data['avg_roi'].values[0]
-        else:
-            # Fallback to default if industry not found
-            base_roi = 2.5
-            st.warning(f"Industry '{calc_industry}' not found, using default ROI of 2.5x")
-        
-        # Quality multiplier
-        quality_mult = 0.5 + (calc_quality / 10)
-        
-        # Scale multiplier
-        scale_mult = {"Pilot": 0.7, "Department": 0.9, "Division": 1.1, "Enterprise-wide": 1.3}[calc_scale]
-        
-        # Tech stack multiplier
-        tech_mult = 1 + (len(calc_tech_stack) - 1) * 0.2
-        
-        # Final calculation
-        final_calc_roi = base_roi * quality_mult * scale_mult * tech_mult
-        expected_value = calc_investment * final_calc_roi
-        net_gain = expected_value - calc_investment
-        
-        # Handle division by zero
-        if calc_timeline > 0:
-            monthly_gain = net_gain / calc_timeline
-        else:
-            monthly_gain = 0
-            st.error("Timeline must be greater than 0")
-        
-        # Display results
-        st.markdown("---")
-        
-        result_col1, result_col2, result_col3, result_col4 = st.columns(4)
-        
-        with result_col1:
-            st.metric("Expected ROI", f"{final_calc_roi:.2f}x")
-        with result_col2:
-            st.metric("Total Value", f"${expected_value:,.0f}")
-        with result_col3:
-            st.metric("Net Gain", f"${net_gain:,.0f}")
-        with result_col4:
-            st.metric("Monthly Value", f"${monthly_gain:,.0f}")
-        
-        # Visualization of ROI timeline
-        if calc_timeline > 0 and monthly_gain > 0:
-            months = list(range(0, calc_timeline + 1))
-            values = [-calc_investment + (monthly_gain * m) for m in months]
-            
-            fig_calc = go.Figure()
-            
-            fig_calc.add_trace(go.Scatter(
-                x=months,
-                y=values,
-                mode='lines+markers',
-                name='Cumulative Value',
-                fill='tozeroy',
-                fillcolor='rgba(46, 204, 113, 0.1)',
-                line=dict(width=3, color='#2ECC71')
-            ))
-            
-            # Add break-even line
-            fig_calc.add_hline(y=0, line_dash="dash", line_color="gray",
-                              annotation_text="Break-even", annotation_position="right")
-            
-            # Find break-even point - only if monthly_gain > 0
-            if monthly_gain > 0:
-                breakeven_month = calc_investment / monthly_gain
-                if breakeven_month <= calc_timeline:
-                    fig_calc.add_vline(x=breakeven_month, line_dash="dash", line_color="red",
-                                      annotation_text=f"Break-even: {breakeven_month:.1f} months")
-            
-            fig_calc.update_layout(
-                title='ROI Timeline Projection',
-                xaxis_title='Months',
-                yaxis_title='Cumulative Value ($)',
-                height=300
-            )
-            
-            st.plotly_chart(fig_calc, use_container_width=True)
-        elif monthly_gain <= 0:
-            st.warning("Cannot display ROI timeline - the project shows negative returns with current parameters.")
+            # Calculate ROI with error handling
+            try:
+                # Get base ROI
+                if 'sector_2025' in locals() and not sector_2025.empty:
+                    industry_data = sector_2025[sector_2025['sector'] == calc_industry]
+                    
+                    if not industry_data.empty:
+                        base_roi = float(industry_data['avg_roi'].values[0])
+                    else:
+                        base_roi = 2.5
+                        st.info(f"Using default ROI of 2.5x for {calc_industry}")
+                else:
+                    base_roi = 2.5
+                
+                # Ensure base_roi is valid
+                if pd.isna(base_roi) or base_roi <= 0:
+                    base_roi = 2.5
+                
+                # Quality multiplier
+                quality_mult = 0.5 + (calc_quality / 10)
+                
+                # Scale multiplier
+                scale_mult = {"Pilot": 0.7, "Department": 0.9, "Division": 1.1, "Enterprise-wide": 1.3}[calc_scale]
+                
+                # Tech stack multiplier
+                tech_mult = 1 + (len(calc_tech_stack) - 1) * 0.2
+                
+                # Final calculation
+                final_calc_roi = base_roi * quality_mult * scale_mult * tech_mult
+                expected_value = calc_investment * final_calc_roi
+                net_gain = expected_value - calc_investment
+                
+                # Handle division by zero
+                if calc_timeline > 0:
+                    monthly_gain = net_gain / calc_timeline
+                else:
+                    monthly_gain = 0
+                    st.error("Timeline must be greater than 0")
+                
+                # Display results
+                st.markdown("---")
+                
+                result_col1, result_col2, result_col3, result_col4 = st.columns(4)
+                
+                with result_col1:
+                    st.metric("Expected ROI", f"{final_calc_roi:.2f}x")
+                with result_col2:
+                    st.metric("Total Value", f"${expected_value:,.0f}")
+                with result_col3:
+                    st.metric("Net Gain", f"${net_gain:,.0f}")
+                with result_col4:
+                    st.metric("Monthly Value", f"${monthly_gain:,.0f}")
+                
+                # Visualization of ROI timeline
+                if calc_timeline > 0 and not pd.isna(monthly_gain):
+                    try:
+                        months = list(range(0, int(calc_timeline) + 1))
+                        values = [-calc_investment + (monthly_gain * m) for m in months]
+                        
+                        # Check for valid values
+                        if all(pd.notna(v) for v in values):
+                            fig_calc = go.Figure()
+                            
+                            fig_calc.add_trace(go.Scatter(
+                                x=months,
+                                y=values,
+                                mode='lines+markers',
+                                name='Cumulative Value',
+                                fill='tozeroy',
+                                fillcolor='rgba(46, 204, 113, 0.1)',
+                                line=dict(width=3, color='#2ECC71')
+                            ))
+                            
+                            # Add break-even line
+                            fig_calc.add_hline(y=0, line_dash="dash", line_color="gray",
+                                              annotation_text="Break-even", annotation_position="right")
+                            
+                            # Find break-even point - only if monthly_gain > 0
+                            if monthly_gain > 0:
+                                breakeven_month = calc_investment / monthly_gain
+                                if breakeven_month <= calc_timeline:
+                                    fig_calc.add_vline(x=breakeven_month, line_dash="dash", line_color="red",
+                                                      annotation_text=f"Break-even: {breakeven_month:.1f} months")
+                            
+                            fig_calc.update_layout(
+                                title='ROI Timeline Projection',
+                                xaxis_title='Months',
+                                yaxis_title='Cumulative Value ($)',
+                                height=300
+                            )
+                            
+                            st.plotly_chart(fig_calc, use_container_width=True)
+                        else:
+                            st.warning("Cannot display ROI timeline - invalid data values")
+                    except Exception as e:
+                        st.error(f"Error creating ROI timeline: {str(e)}")
+                elif monthly_gain <= 0:
+                    st.warning("Cannot display ROI timeline - the project shows negative or zero returns with current parameters.")
+            except Exception as e:
+                st.error(f"Error calculating ROI: {str(e)}")
+        except Exception as e:
+            st.error(f"Error setting up ROI calculator: {str(e)}")
 
 # Data sources and methodology - Enhanced
 with st.expander("📚 Data Sources & Methodology"):
