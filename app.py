@@ -406,13 +406,13 @@ if view_type == "Historical Trends":
         arrowhead=2,
         arrowsize=1,
         arrowwidth=2,
-        arrowcolor="#ffffff",
+        arrowcolor="#ff7f0e",
         ax=-50,
         ay=-40,
-        bgcolor="rgba(0,0,0,0)",
-        bordercolor="#ffffff",
-        borderwidth=1,
-        font=dict(color="#ffffff")
+        bgcolor="rgba(255,127,14,0.1)",
+        bordercolor="#ff7f0e",
+        borderwidth=2,
+        font=dict(color="#ff7f0e", size=12, family="Arial")
     )
     
     # COVID impact annotation
@@ -423,13 +423,13 @@ if view_type == "Historical Trends":
         arrowhead=2,
         arrowsize=1,
         arrowwidth=2,
-        arrowcolor="#999999",
+        arrowcolor="#1f77b4",
         ax=50,
         ay=-30,
-        bgcolor="rgba(0,0,0,0)",
-        bordercolor="#999999",
-        borderwidth=1,
-        font=dict(color="#ffffff")
+        bgcolor="rgba(31,119,180,0.1)",
+        bordercolor="#1f77b4",
+        borderwidth=2,
+        font=dict(color="#1f77b4", size=12, family="Arial")
     )
     
     # Calculate and display growth rates
@@ -441,10 +441,10 @@ if view_type == "Historical Trends":
         xref="paper", yref="paper",
         x=0.02, y=0.98,
         showarrow=False,
-        bgcolor="rgba(0,0,0,0)",
-        bordercolor="#ffffff",
+        bgcolor="rgba(255,255,255,0.8)",
+        bordercolor="#1f77b4",
         borderwidth=1,
-        font=dict(color="#ffffff")
+        font=dict(color="#1f77b4", size=11)
     )
     
     fig.add_annotation(
@@ -452,10 +452,10 @@ if view_type == "Historical Trends":
         xref="paper", yref="paper",
         x=0.02, y=0.91,
         showarrow=False,
-        bgcolor="rgba(0,0,0,0)",
-        bordercolor="#ffffff",
+        bgcolor="rgba(255,255,255,0.8)",
+        bordercolor="#ff7f0e",
         borderwidth=1,
-        font=dict(color="#ffffff")
+        font=dict(color="#ff7f0e", size=11)
     )
     
     fig.update_layout(
