@@ -619,7 +619,8 @@ with st.sidebar.expander("❓ Need Help?"):
     - `?`: Show help
     """)
 
-st.markdown("<h3>Trust and quality indicators</h3>", unsafe_allow_html=True) # Added this header
+# Trust and quality indicators
+st.markdown("<h3>Trust and quality indicators</h3>", unsafe_allow_html=True)
 trust_cols = st.columns(5)
 
 with trust_cols[0]:
@@ -716,54 +717,62 @@ if "2025" in data_year:
             label="Cost per Million Tokens",
             value="$0.07",
             delta="280x cheaper",
-            help="AI inference cost dropped from $20 to <span class="math-inline">0\.07 per million tokens\. Tokens are tiny units of data that AI models process \- short words may be 1 token, longer words split into multiple tokens\. This massive cost reduction enables mass AI deployment\."
-\)
-else\:
-with col1\:
-st\.metric\("Overall AI Adoption", "5\.8%", "📊 Firm\-weighted"\)
-with col2\:
-st\.metric\("Large Firms \(5000\+\)", "58\.5%", "🏢 High adoption"\)
-with col3\:
-st\.metric\("AI \+ Cloud", "45%", "☁️ Technology stack"\)
-with col4\:
-st\.metric\("Top City", "SF Bay \(9\.5%\)", "🌍 Geographic leader"\)
-\# Main visualization section
-st\.subheader\(f"📊 \{view\_type\}"\)
-\# View implementations with token context
-if view\_type \=\= "Token Economics"\:
-st\.write\("🪙 \*\*Token Economics\: The Currency Driving AI Adoption\*\*"\)
-\# Create comprehensive token economics dashboard
-tab1, tab2, tab3, tab4 \= st\.tabs\(\["Token Basics", "Cost Evolution", "Industry Usage", "Performance Metrics"\]\)
-with tab1\:
-st\.write\("\#\#\# Understanding AI Tokens"\)
-col1, col2 \= st\.columns\(2\)
-with col1\:
-st\.markdown\('<div class\="token\-highlight"\>', unsafe\_allow\_html\=True\)
-st\.write\("\*\*What are Tokens?\*\*"\)
-st\.write\("• Basic units of data AI models process"\)
-st\.write\("• Text\: 'understanding' \= 3 tokens"\)
-st\.write\("• Images\: Pixels → visual tokens"\)
-st\.write\("• Audio\: Sound → spectrogram tokens"\)
-st\.write\("• \*\*1,000 tokens ≈ 750 words\*\*"\)
-st\.markdown\('</div\>', unsafe\_allow\_html\=True\)
-\# Token examples visualization
-examples \= pd\.DataFrame\(\{
-'Content Type'\: \['Tweet', 'Email', 'Article', 'Book Chapter', 'Research Paper'\],
-'Typical Tokens'\: \[50, 500, 2000, 10000, 25000\],
-'Cost\_2022'\: \[0\.001, 0\.01, 0\.04, 0\.20, 0\.50\],
-'Cost\_2024'\: \[0\.0000035, 0\.000035, 0\.00014, 0\.0007, 0\.00175\]
-\}\)
-fig \= px\.bar\(
-examples,
-x\='Content Type',
-y\=\['Cost\_2022', 'Cost\_2024'\],
-title\='Token Costs by Content Type',
-labels\=\{'value'\: 'Cost \(</span>)', 'variable': 'Year'},
-            barmode='group',
-            color_discrete_map={'Cost_2022': '#E74C3C', 'Cost_2024': '#2ECC71'}
+            help="AI inference cost dropped from $20 to $0.07 per million tokens. Tokens are tiny units of data that AI models process - short words may be 1 token, longer words split into multiple tokens. This massive cost reduction enables mass AI deployment."
         )
-        fig.update_layout(height=300)
-        st.plotly_chart(fig, use_container_width=True, key="token_cost_by_content_type")
+else:
+    with col1:
+        st.metric("Overall AI Adoption", "5.8%", "📊 Firm-weighted")
+    with col2:
+        st.metric("Large Firms (5000+)", "58.5%", "🏢 High adoption")
+    with col3:
+        st.metric("AI + Cloud", "45%", "☁️ Technology stack")
+    with col4:
+        st.metric("Top City", "SF Bay (9.5%)", "🌍 Geographic leader")
+
+# Main visualization section
+st.subheader(f"📊 {view_type}")
+
+# View implementations with token context
+if view_type == "Token Economics":
+    st.write("🪙 **Token Economics: The Currency Driving AI Adoption**")
+    
+    # Create comprehensive token economics dashboard
+    tab1, tab2, tab3, tab4 = st.tabs(["Token Basics", "Cost Evolution", "Industry Usage", "Performance Metrics"])
+    
+    with tab1:
+        st.write("### Understanding AI Tokens")
+        col1, col2 = st.columns(2)
+        
+        with col1:
+            st.markdown('<div class="token-highlight">', unsafe_allow_html=True)
+            st.write("**What are Tokens?**")
+            st.write("• Basic units of data AI models process")
+            st.write("• Text: 'understanding' = 3 tokens")
+            st.write("• Images: Pixels → visual tokens")
+            st.write("• Audio: Sound → spectrogram tokens")
+            st.write("• **1,000 tokens ≈ 750 words**")
+            st.markdown('</div>', unsafe_allow_html=True)
+            
+            # Token examples visualization
+            examples = pd.DataFrame({
+                'Content Type': ['Tweet', 'Email', 'Article', 'Book Chapter', 'Research Paper'],
+                'Typical Tokens': [50, 500, 2000, 10000, 25000],
+                'Cost_2022': [0.001, 0.01, 0.04, 0.20, 0.50],
+                'Cost_2024': [0.0000035, 0.000035, 0.00014, 0.0007, 0.00175]
+            })
+            
+            fig = px.bar(
+                examples,
+                x='Content Type',
+                y=['Cost_2022', 'Cost_2024'],
+                title='Token Costs by Content Type',
+                labels={'value': 'Cost ($)', 'variable': 'Year'},
+                barmode='group',
+                color_discrete_map={'Cost_2022': '#E74C3C', 'Cost_2024': '#2ECC71'}
+            )
+            fig.update_layout(height=300)
+            st.plotly_chart(fig, use_container_width=True, key="token_cost_by_content_type")
+            
         with col2:
             st.markdown('<div class="token-highlight">', unsafe_allow_html=True)
             st.write("**Token Processing Flow**")
@@ -773,204 +782,256 @@ labels\=\{'value'\: 'Cost \(</span>)', 'variable': 'Year'},
             st.write("4. **Billing**: Input + output tokens")
             st.write("• Context window = max tokens at once")
             st.markdown('</div>', unsafe_allow_html=True)
-        # Token usage patterns
-        fig2 = go.Figure()
-        fig2.add_trace(go.Scatter(
-            x=token_usage['avg_tokens'],
-            y=token_usage['typical_time_min'],
-            mode='markers+text',
-            marker=dict(
-                size=token_usage['avg_tokens']/1000,
-                color=['#2ECC71' if v == 'Low' else '#F39C12' if v == 'Medium' else '#E74C3C' if v == 'High' else '#9B59B6' for v in token_usage['value_category']],
-                line=dict(width=2, color='white')
-            ),
-            text=token_usage['use_case'],
-            textposition='top center',
-            hovertemplate='<b>%{text}</b><br>Tokens: %{x:,.0f}<br>Time: %{y} min<br>Value: %{customdata}<extra></extra>',
-            customdata=token_usage['value_category']
-        ))
-        fig2.update_layout(title='AI Token Usage Patterns by Use Case',
-                           xaxis_title='Average Tokens per Use',
-                           yaxis_title='Typical Time (min)',
-                           hovermode='closest')
-        st.plotly_chart(fig2, use_container_width=True, key="token_usage_patterns")
+            
+            # Token usage patterns
+            fig2 = go.Figure()
+            fig2.add_trace(go.Scatter(
+                x=token_usage['avg_tokens'],
+                y=token_usage['typical_time_min'],
+                mode='markers+text',
+                marker=dict(
+                    size=token_usage['avg_tokens']/1000,
+                    color=['#2ECC71' if v == 'Low' else '#F39C12' if v == 'Medium' else '#E74C3C' if v == 'High' else '#9B59B6' for v in token_usage['value_category']],
+                    line=dict(width=2, color='white')
+                ),
+                text=token_usage['use_case'],
+                textposition='top center',
+                hovertemplate='<b>%{text}</b><br>Tokens: %{x:,.0f}<br>Time: %{y} min<br>Value: %{customdata}<extra></extra>',
+                customdata=token_usage['value_category']
+            ))
+            fig2.update_layout(
+                title='AI Token Usage Patterns by Use Case',
+                xaxis_title='Average Tokens per Use',
+                yaxis_title='Typical Time (min)',
+                hovermode='closest'
+            )
+            st.plotly_chart(fig2, use_container_width=True, key="token_usage_patterns")
 
     with tab2:
         st.write("### Token Cost Evolution: 2022-2024")
         st.dataframe(token_pricing)
+        
+        fig_cost_reduction = px.line(
+            token_pricing, x='date', y='cost_per_million',
+            title='Cost per Million Tokens Over Time',
+            labels={'cost_per_million': 'Cost per Million Tokens ($)', 'date': 'Date'},
+            markers=True
+        )
+        fig_cost_reduction.update_traces(mode='lines+markers', line=dict(color='#28a745', width=3))
+        fig_cost_reduction.update_layout(hovermode="x unified")
+        st.plotly_chart(fig_cost_reduction, use_container_width=True, key="token_cost_evolution")
+        
+        fig_cost_multiplier = px.bar(
+            token_pricing, x='date', y='cost_reduction',
+            title='Cost Reduction Multiplier',
+            labels={'cost_reduction': 'Cost Reduction Factor', 'date': 'Date'},
+            color_discrete_sequence=['#1f77b4']
+        )
+        fig_cost_multiplier.update_layout(hovermode="x unified")
+        st.plotly_chart(fig_cost_multiplier, use_container_width=True, key="token_cost_multiplier")
+        
+        st.info("💡 **Insight:** The dramatic reduction in token costs (280x from Nov 2022 to Oct 2024) has made large-scale AI deployment economically viable.")
 
-        fig_cost_reduction = px.line(token_pricing, x='date', y='cost_per_million',
-                                     title='Cost per Million Tokens Over Time',
-                                     labels={'cost_per_million': 'Cost per Million Tokens (<span class="math-inline">\)', 'date'\: 'Date'\},
-markers\=True\)
-fig\_cost\_reduction\.update\_traces\(mode\='lines\+markers', line\=dict\(color\='\#28a745', width\=3\)\)
-fig\_cost\_reduction\.update\_layout\(hovermode\="x unified"\)
-st\.plotly\_chart\(fig\_cost\_reduction, use\_container\_width\=True, key\="token\_cost\_evolution"\)
-fig\_cost\_multiplier \= px\.bar\(token\_pricing, x\='date', y\='cost\_reduction',
-title\='Cost Reduction Multiplier',
-labels\=\{'cost\_reduction'\: 'Cost Reduction Factor', 'date'\: 'Date'\},
-color\_discrete\_sequence\=\['\#1f77b4'\]\)
-fig\_cost\_multiplier\.update\_layout\(hovermode\="x unified"\)
-st\.plotly\_chart\(fig\_cost\_multiplier, use\_container\_width\=True, key\="token\_cost\_multiplier"\)
-st\.info\("💡 \*\*Insight\:\*\* The dramatic reduction in token costs \(280x from Nov 2022 to Oct 2024\) has made large\-scale AI deployment economically viable\."\)
-with tab3\:
-st\.write\("\#\#\# Industry\-Specific Token Usage & ROI"\)
-\# Combine financial impact and sector data for a richer view
-financial\_impact\_tokens \= financial\_impact\.merge\(
-sector\_2025\[\['sector', 'adoption\_rate', 'genai\_adoption', 'avg\_roi', 'avg\_monthly\_tokens\_millions'\]\],
-left\_on\='function', right\_on\='sector', how\='left'
-\)
-financial\_impact\_tokens\['monthly\_tokens\_millions\_display'\] \= financial\_impact\_tokens\['monthly\_tokens\_millions'\]\.fillna\(0\)\.apply\(lambda x\: f"\{x\:,\.0f\}M"\)
-\# Financial Impact by Function with Token Context
-st\.subheader\("Financial Impact by Business Function"\)
-fig\_financial \= px\.bar\(financial\_impact, x\='function', y\=\['companies\_reporting\_cost\_savings', 'companies\_reporting\_revenue\_gains'\],
-title\='Companies Reporting Financial Gains from AI \(2025\)',
-labels\=\{'value'\: 'Percentage of Companies \(%\)', 'function'\: 'Business Function', 'variable'\: 'Metric'\},
-barmode\='group',
-color\_discrete\_map\=\{'companies\_reporting\_cost\_savings'\: '\#1f77b4', 'companies\_reporting\_revenue\_gains'\: '\#ff7f0e'\}\)
-fig\_financial\.update\_layout\(height\=400\)
-st\.plotly\_chart\(fig\_financial, use\_container\_width\=True, key\="financial\_impact\_gains"\)
-st\.subheader\("Average Monthly Token Usage by Business Function \(Millions\)"\)
-fig\_tokens\_by\_function \= px\.bar\(financial\_impact, x\='function', y\='monthly\_tokens\_millions',
-title\='Average Monthly Tokens by Function',
-labels\=\{'monthly\_tokens\_millions'\: 'Avg\. Monthly Tokens \(Millions\)', 'function'\: 'Business Function'\},
-color\_discrete\_sequence\=\['\#2CA02C'\]\)
-fig\_tokens\_by\_function\.update\_layout\(height\=400\)
-st\.plotly\_chart\(fig\_tokens\_by\_function, use\_container\_width\=True, key\="monthly\_tokens\_by\_function"\)
-st\.info\("💡 \*\*Insight\:\*\* Functions with higher token usage \(e\.g\., Software Engineering, Marketing & Sales\) often correlate with greater opportunities for cost savings and revenue gains through AI\."\)
-st\.subheader\("Sector\-wise GenAI Adoption & ROI"\)
-fig\_sector\_genai \= px\.scatter\(sector\_2025, 
-x\='genai\_adoption', 
-y\='avg\_roi', 
-size\='avg\_monthly\_tokens\_millions', 
-color\='sector',
-hover\_name\='sector',
-size\_max\=60,
-title\='GenAI Adoption vs\. Average ROI by Sector \(2025\)',
-labels\=\{'genai\_adoption'\: 'GenAI Adoption Rate \(%\)', 
-'avg\_roi'\: 'Average ROI \(%\)', 
-'avg\_monthly\_tokens\_millions'\: 'Avg\. Monthly Tokens \(Millions\)'\}\)
-st\.plotly\_chart\(fig\_sector\_genai, use\_container\_width\=True, key\="sector\_genai\_adoption\_roi"\)
-st\.info\("💡 \*\*Insight\:\*\* Sectors with higher GenAI adoption and token intensity tend to see higher average ROI, demonstrating the direct link between adoption, usage, and business value\."\)
-with tab4\:
-st\.write\("\#\#\# AI System Performance Metrics"\)
-st\.dataframe\(token\_performance\)
-\# Bar chart for performance metrics
-fig\_performance \= px\.bar\(token\_performance, x\='metric', y\=\['good\_performance', 'average\_performance', 'poor\_performance'\],
-title\='AI Token Performance Benchmarks',
-labels\=\{'value'\: 'Value', 'metric'\: 'Metric', 'variable'\: 'Performance Level'\},
-barmode\='group',
-color\_discrete\_map\=\{'good\_performance'\: '\#2ECC71', 'average\_performance'\: '\#F39C12', 'poor\_performance'\: '\#E74C3C'\}\)
-fig\_performance\.update\_layout\(height\=400\)
-st\.plotly\_chart\(fig\_performance, use\_container\_width\=True, key\="ai\_performance\_benchmarks"\)
-st\.info\("💡 \*\*Insight\:\*\* Optimizing 'Time to First Token' and 'Tokens per Second' is critical for user experience, while a larger 'Context Window Size' enables more complex AI applications\."\)
-elif view\_type \=\= "Adoption Rates"\:
-st\.header\("Overall AI Adoption Trends \(2018\-2025\)"\)
-st\.write\("This section shows the overall AI and GenAI adoption rates across all industries\."\)
-\# Filter historical data if year\_range is set
-filtered\_historical\_data \= historical\_data\[
-\(historical\_data\['year'\] \>\= year\_range\[0\]\) & 
-\(historical\_data\['year'\] <\= year\_range\[1\]\)
-\] if 'year\_range' in locals\(\) else historical\_data
-fig \= px\.line\(filtered\_historical\_data, x\='year', y\=\['ai\_use', 'genai\_use'\],
-title\='Overall AI and GenAI Adoption Trends',
-labels\=\{'value'\: 'Adoption Rate \(%\)', 'year'\: 'Year', 'variable'\: 'Type of AI Use'\},
-markers\=True\)
-fig\.update\_layout\(hovermode\="x unified"\)
-st\.plotly\_chart\(fig, use\_container\_width\=True, key\="overall\_ai\_genai\_adoption"\)
-st\.markdown\(show\_source\_info\('ai\_index'\), unsafe\_allow\_html\=True\)
-st\.info\("💡 \*\*Insight\:\*\* While overall AI adoption has steadily increased, Generative AI adoption has seen a significant surge in 2024, reflecting the impact of advanced models becoming more accessible\."\)
-elif view\_type \=\= "Historical Trends"\:
-st\.header\("Historical AI Adoption & GenAI Breakthrough \(2017\-2025\)"\)
-st\.write\("Examine the long\-term trends of AI adoption and the emergence of Generative AI\."\)
-if compare\_mode\:
-st\.subheader\(f"Comparison\: \{year1\} vs\. \{year2\}"\)
-col1, col2 \= st\.columns\(2\)
-\# Filter data for year1
-data\_year1 \= historical\_data\[historical\_data\['year'\] \=\= year1\]\.iloc\[0\]
-with col1\:
-st\.metric\(f"AI Use \(\{year1\}\)", f"\{data\_year1\['ai\_use'\]\}%"\)
-st\.metric\(f"GenAI Use \(\{year1\}\)", f"\{data\_year1\['genai\_use'\]\}%"\)
-\# Filter data for year2
-data\_year2 \= historical\_data\[historical\_data\['year'\] \=\= year2\]\.iloc\[0\]
-with col2\:
-st\.metric\(f"AI Use \(\{year2\}\)", f"\{data\_year2\['ai\_use'\]\}%"\)
-st\.metric\(f"GenAI Use \(\{year2\}\)", f"\{data\_year2\['genai\_use'\]\}%"\)
-st\.info\(f"💡 \*\*Insight\:\*\* Comparing \{year1\} and \{year2\} highlights the rapid acceleration of AI and particularly GenAI adoption\. In \{year1\}, GenAI was at \{data\_year1\['genai\_use'\]\}%, leaping to \{data\_year2\['genai\_use'\]\}% by \{year2\}\."\)
-else\:
-st\.subheader\("AI Adoption Trends Over Time"\)
-fig \= px\.line\(historical\_data, x\='year', y\=\['ai\_use', 'genai\_use'\],
-title\='Historical AI and GenAI Adoption Trends \(2017\-2025\)',
-labels\=\{'value'\: 'Adoption Rate \(%\)', 'year'\: 'Year', 'variable'\: 'Type of AI Use'\},
-markers\=True\)
-fig\.update\_layout\(hovermode\="x unified"\)
-st\.plotly\_chart\(fig, use\_container\_width\=True, key\="historical\_ai\_genai\_trends"\)
-st\.markdown\(show\_source\_info\('ai\_index'\), unsafe\_allow\_html\=True\)
-st\.info\("💡 \*\*Insight\:\*\* The data clearly shows a steady increase in overall AI adoption, with a notable inflection point for Generative AI around 2022\-2023, indicating its rapid emergence and impact\."\)
-elif view\_type \=\= "Industry Analysis"\:
-st\.header\("Industry\-Specific AI Adoption \(2018 vs\. 2025\)"\)
-st\.write\("Compare AI adoption across different industries, highlighting the shift from early adoption to the GenAI era\."\)
-if "2025" in data\_year\:
-st\.subheader\("2025 Sector Adoption \(GenAI Era\)"\)
-fig \= px\.bar\(sector\_2025\.sort\_values\('adoption\_rate', ascending\=False\), x\='sector', y\='adoption\_rate',
-title\='AI Adoption Rate by Sector \(2025\)',
-labels\=\{'adoption\_rate'\: 'Adoption Rate \(%\)', 'sector'\: 'Sector'\},
-color\='genai\_adoption',
-color\_continuous\_scale\=px\.colors\.sequential\.Plasma,
-hover\_name\='sector',
-hover\_data\=\{'genai\_adoption'\:True, 'avg\_roi'\:True, 'avg\_monthly\_tokens\_millions'\:True\}\)
-fig\.update\_layout\(xaxis\=\{'categoryorder'\:'total descending'\}\)
-st\.plotly\_chart\(fig, use\_container\_width\=True, key\="industry\_2025\_sector\_adoption"\)
-st\.markdown\(show\_source\_info\('mckinsey'\), unsafe\_allow\_html\=True\)
-st\.info\("💡 \*\*Insight\:\*\* Technology and Financial Services sectors lead in AI and GenAI adoption in 2025, driven by high ROI and significant token usage\."\)
-else\:
-st\.subheader\("2018 Sector Adoption \(Early AI\)"\)
-fig \= px\.bar\(sector\_2018\.sort\_values\('firm\_weighted', ascending\=False\), x\='sector', y\='firm\_weighted',
-title\='AI Adoption by Sector \(Firm\-weighted, 2018\)',
-labels\=\{'firm\_weighted'\: 'Percentage of Firms \(%\)', 'sector'\: 'Sector'\},
-color\_discrete\_sequence\=px\.colors\.qualitative\.Pastel\)
-fig\.update\_layout\(xaxis\=\{'categoryorder'\:'total descending'\}\)
-st\.plotly\_chart\(fig, use\_container\_width\=True, key\="industry\_2018\_sector\_adoption"\)
-st\.markdown\(show\_source\_info\('census'\), unsafe\_allow\_html\=True\)
-st\.info\("💡 \*\*Insight\:\*\* In 2018, Manufacturing and Information sectors were early adopters, focusing on process automation and data analysis\."\)
-elif view\_type \=\= "Investment Trends"\:
-st\.header\("Global AI Investment Trends \(2014\-2024\)"\)
-st\.write\("Explore the growth of AI investment globally, including the rise of Generative AI funding\."\)
-fig \= px\.line\(ai\_investment\_data, x\='year', y\=\['total\_investment', 'genai\_investment', 'us\_investment', 'china\_investment', 'uk\_investment'\],
-title\='Global AI Investment Trends \(Billions USD\)',
-labels\=\{'value'\: 'Investment \(Billions USD\)', 'year'\: 'Year', 'variable'\: 'Investment Type'\},
-markers\=True\)
-fig\.update\_layout\(hovermode\="x unified"\)
-st\.plotly\_chart\(fig, use\_container\_width\=True, key\="global\_ai\_investment\_trends"\)
-st\.info\("💡 \*\*Insight\:\*\* Total AI investment has seen exponential growth, with a significant portion shifting towards Generative AI since 2022, especially in the US\."\)
-st\.markdown\(show\_source\_info\('ai\_index'\), unsafe\_allow\_html\=True\)
-elif view\_type \=\= "Regional Growth"\:
-st\.header\("Regional AI Adoption Growth \(AI Index 2025\)"\)
-st\.write\("Understand AI adoption rates and investment growth across different global regions\."\)
-fig \= px\.bar\(regional\_growth, x\='region', y\='adoption\_rate',
-title\='AI Adoption Rate by Region \(2025\)',
-labels\=\{'adoption\_rate'\: 'Adoption Rate \(%\)', 'region'\: 'Region'\},
-color\='investment\_growth',
-color\_continuous\_scale\=px\.colors\.sequential\.Viridis,
-hover\_data\=\{'growth\_2024'\:True, 'investment\_growth'\:True\}\)
-fig\.update\_layout\(xaxis\=\{'categoryorder'\:'total descending'\}\)
-st\.plotly\_chart\(fig, use\_container\_width\=True, key\="regional\_ai\_adoption\_growth"\)
-st\.info\("💡 \*\*Insight\:\*\* North America leads in AI adoption and investment growth, while Greater China shows strong growth in both areas\. These regions are becoming AI innovation hubs\."\)
-st\.markdown\(show\_source\_info\('ai\_index'\), unsafe\_allow\_html\=True\)
-elif view\_type \=\= "AI Cost Trends"\:
-st\.header\("AI Cost Reduction and Efficiency"\)
-st\.write\("Analyze how the cost of AI inference has dramatically decreased, driven by model optimization and token efficiency\."\)
-fig \= px\.line\(ai\_cost\_reduction, x\='year', y\='cost\_per\_million\_tokens',
-title\='Cost Per Million Tokens Trend',
-labels\=\{'cost\_per\_million\_tokens'\: 'Cost per Million Tokens \(</span>)', 'year': 'Year'},
-                  markers=True)
+    with tab3:
+        st.write("### Industry-Specific Token Usage & ROI")
+        
+        # Financial Impact by Function with Token Context
+        st.subheader("Financial Impact by Business Function")
+        fig_financial = px.bar(
+            financial_impact, x='function', y=['companies_reporting_cost_savings', 'companies_reporting_revenue_gains'],
+            title='Companies Reporting Financial Gains from AI (2025)',
+            labels={'value': 'Percentage of Companies (%)', 'function': 'Business Function', 'variable': 'Metric'},
+            barmode='group',
+            color_discrete_map={'companies_reporting_cost_savings': '#1f77b4', 'companies_reporting_revenue_gains': '#ff7f0e'}
+        )
+        fig_financial.update_layout(height=400)
+        st.plotly_chart(fig_financial, use_container_width=True, key="financial_impact_gains")
+        
+        st.subheader("Average Monthly Token Usage by Business Function (Millions)")
+        fig_tokens_by_function = px.bar(
+            financial_impact, x='function', y='monthly_tokens_millions',
+            title='Average Monthly Tokens by Function',
+            labels={'monthly_tokens_millions': 'Avg. Monthly Tokens (Millions)', 'function': 'Business Function'},
+            color_discrete_sequence=['#2CA02C']
+        )
+        fig_tokens_by_function.update_layout(height=400)
+        st.plotly_chart(fig_tokens_by_function, use_container_width=True, key="monthly_tokens_by_function")
+        
+        st.info("💡 **Insight:** Functions with higher token usage (e.g., Software Engineering, Marketing & Sales) often correlate with greater opportunities for cost savings and revenue gains through AI.")
+        
+        st.subheader("Sector-wise GenAI Adoption & ROI")
+        fig_sector_genai = px.scatter(
+            sector_2025, 
+            x='genai_adoption', 
+            y='avg_roi', 
+            size='avg_monthly_tokens_millions', 
+            color='sector',
+            hover_name='sector',
+            size_max=60,
+            title='GenAI Adoption vs. Average ROI by Sector (2025)',
+            labels={'genai_adoption': 'GenAI Adoption Rate (%)', 
+                    'avg_roi': 'Average ROI (%)', 
+                    'avg_monthly_tokens_millions': 'Avg. Monthly Tokens (Millions)'}
+        )
+        st.plotly_chart(fig_sector_genai, use_container_width=True, key="sector_genai_adoption_roi")
+        
+        st.info("💡 **Insight:** Sectors with higher GenAI adoption and token intensity tend to see higher average ROI, demonstrating the direct link between adoption, usage, and business value.")
+
+    with tab4:
+        st.write("### AI System Performance Metrics")
+        st.dataframe(token_performance)
+        
+        # Bar chart for performance metrics
+        fig_performance = px.bar(
+            token_performance, x='metric', y=['good_performance', 'average_performance', 'poor_performance'],
+            title='AI Token Performance Benchmarks',
+            labels={'value': 'Value', 'metric': 'Metric', 'variable': 'Performance Level'},
+            barmode='group',
+            color_discrete_map={'good_performance': '#2ECC71', 'average_performance': '#F39C12', 'poor_performance': '#E74C3C'}
+        )
+        fig_performance.update_layout(height=400)
+        st.plotly_chart(fig_performance, use_container_width=True, key="ai_performance_benchmarks")
+        
+        st.info("💡 **Insight:** Optimizing 'Time to First Token' and 'Tokens per Second' is critical for user experience, while a larger 'Context Window Size' enables more complex AI applications.")
+
+elif view_type == "Adoption Rates":
+    st.header("Overall AI Adoption Trends (2018-2025)")
+    st.write("This section shows the overall AI and GenAI adoption rates across all industries.")
+    
+    # Filter historical data if year_range is set
+    filtered_historical_data = historical_data[
+        (historical_data['year'] >= year_range[0]) & 
+        (historical_data['year'] <= year_range[1])
+    ] if 'year_range' in locals() else historical_data
+    
+    fig = px.line(
+        filtered_historical_data, x='year', y=['ai_use', 'genai_use'],
+        title='Overall AI and GenAI Adoption Trends',
+        labels={'value': 'Adoption Rate (%)', 'year': 'Year', 'variable': 'Type of AI Use'},
+        markers=True
+    )
+    fig.update_layout(hovermode="x unified")
+    st.plotly_chart(fig, use_container_width=True, key="overall_ai_genai_adoption")
+    st.markdown(show_source_info('ai_index'), unsafe_allow_html=True)
+    st.info("💡 **Insight:** While overall AI adoption has steadily increased, Generative AI adoption has seen a significant surge in 2024, reflecting the impact of advanced models becoming more accessible.")
+
+elif view_type == "Historical Trends":
+    st.header("Historical AI Adoption & GenAI Breakthrough (2017-2025)")
+    st.write("Examine the long-term trends of AI adoption and the emergence of Generative AI.")
+    
+    if compare_mode:
+        st.subheader(f"Comparison: {year1} vs. {year2}")
+        col1, col2 = st.columns(2)
+        
+        # Filter data for year1
+        data_year1 = historical_data[historical_data['year'] == year1].iloc[0]
+        with col1:
+            st.metric(f"AI Use ({year1})", f"{data_year1['ai_use']}%")
+            st.metric(f"GenAI Use ({year1})", f"{data_year1['genai_use']}%")
+        
+        # Filter data for year2
+        data_year2 = historical_data[historical_data['year'] == year2].iloc[0]
+        with col2:
+            st.metric(f"AI Use ({year2})", f"{data_year2['ai_use']}%")
+            st.metric(f"GenAI Use ({year2})", f"{data_year2['genai_use']}%")
+        
+        st.info(f"💡 **Insight:** Comparing {year1} and {year2} highlights the rapid acceleration of AI and particularly GenAI adoption. In {year1}, GenAI was at {data_year1['genai_use']}%, leaping to {data_year2['genai_use']}% by {year2}.")
+    else:
+        st.subheader("AI Adoption Trends Over Time")
+        fig = px.line(
+            historical_data, x='year', y=['ai_use', 'genai_use'],
+            title='Historical AI and GenAI Adoption Trends (2017-2025)',
+            labels={'value': 'Adoption Rate (%)', 'year': 'Year', 'variable': 'Type of AI Use'},
+            markers=True
+        )
+        fig.update_layout(hovermode="x unified")
+        st.plotly_chart(fig, use_container_width=True, key="historical_ai_genai_trends")
+        st.markdown(show_source_info('ai_index'), unsafe_allow_html=True)
+        st.info("💡 **Insight:** The data clearly shows a steady increase in overall AI adoption, with a notable inflection point for Generative AI around 2022-2023, indicating its rapid emergence and impact.")
+
+elif view_type == "Industry Analysis":
+    st.header("Industry-Specific AI Adoption (2018 vs. 2025)")
+    st.write("Compare AI adoption across different industries, highlighting the shift from early adoption to the GenAI era.")
+    
+    if "2025" in data_year:
+        st.subheader("2025 Sector Adoption (GenAI Era)")
+        fig = px.bar(
+            sector_2025.sort_values('adoption_rate', ascending=False), x='sector', y='adoption_rate',
+            title='AI Adoption Rate by Sector (2025)',
+            labels={'adoption_rate': 'Adoption Rate (%)', 'sector': 'Sector'},
+            color='genai_adoption',
+            color_continuous_scale=px.colors.sequential.Plasma,
+            hover_name='sector',
+            hover_data={'genai_adoption':True, 'avg_roi':True, 'avg_monthly_tokens_millions':True}
+        )
+        fig.update_layout(xaxis={'categoryorder':'total descending'})
+        st.plotly_chart(fig, use_container_width=True, key="industry_2025_sector_adoption")
+        st.markdown(show_source_info('mckinsey'), unsafe_allow_html=True)
+        st.info("💡 **Insight:** Technology and Financial Services sectors lead in AI and GenAI adoption in 2025, driven by high ROI and significant token usage.")
+    else:
+        st.subheader("2018 Sector Adoption (Early AI)")
+        fig = px.bar(
+            sector_2018.sort_values('firm_weighted', ascending=False), x='sector', y='firm_weighted',
+            title='AI Adoption by Sector (Firm-weighted, 2018)',
+            labels={'firm_weighted': 'Percentage of Firms (%)', 'sector': 'Sector'},
+            color_discrete_sequence=px.colors.qualitative.Pastel
+        )
+        fig.update_layout(xaxis={'categoryorder':'total descending'})
+        st.plotly_chart(fig, use_container_width=True, key="industry_2018_sector_adoption")
+        st.markdown(show_source_info('census'), unsafe_allow_html=True)
+        st.info("💡 **Insight:** In 2018, Manufacturing and Information sectors were early adopters, focusing on process automation and data analysis.")
+
+elif view_type == "Investment Trends":
+    st.header("Global AI Investment Trends (2014-2024)")
+    st.write("Explore the growth of AI investment globally, including the rise of Generative AI funding.")
+    
+    fig = px.line(
+        ai_investment_data, x='year', y=['total_investment', 'genai_investment', 'us_investment', 'china_investment', 'uk_investment'],
+        title='Global AI Investment Trends (Billions USD)',
+        labels={'value': 'Investment (Billions USD)', 'year': 'Year', 'variable': 'Investment Type'},
+        markers=True
+    )
+    fig.update_layout(hovermode="x unified")
+    st.plotly_chart(fig, use_container_width=True, key="global_ai_investment_trends")
+    st.info("💡 **Insight:** Total AI investment has seen exponential growth, with a significant portion shifting towards Generative AI since 2022, especially in the US.")
+    st.markdown(show_source_info('ai_index'), unsafe_allow_html=True)
+
+elif view_type == "Regional Growth":
+    st.header("Regional AI Adoption Growth (AI Index 2025)")
+    st.write("Understand AI adoption rates and investment growth across different global regions.")
+    
+    fig = px.bar(
+        regional_growth, x='region', y='adoption_rate',
+        title='AI Adoption Rate by Region (2025)',
+        labels={'adoption_rate': 'Adoption Rate (%)', 'region': 'Region'},
+        color='investment_growth',
+        color_continuous_scale=px.colors.sequential.Viridis,
+        hover_data={'growth_2024':True, 'investment_growth':True}
+    )
+    fig.update_layout(xaxis={'categoryorder':'total descending'})
+    st.plotly_chart(fig, use_container_width=True, key="regional_ai_adoption_growth")
+    st.info("💡 **Insight:** North America leads in AI adoption and investment growth, while Greater China shows strong growth in both areas. These regions are becoming AI innovation hubs.")
+    st.markdown(show_source_info('ai_index'), unsafe_allow_html=True)
+
+elif view_type == "AI Cost Trends":
+    st.header("AI Cost Reduction and Efficiency")
+    st.write("Analyze how the cost of AI inference has dramatically decreased, driven by model optimization and token efficiency.")
+    
+    fig = px.line(
+        ai_cost_reduction, x='year', y='cost_per_million_tokens',
+        title='Cost Per Million Tokens Trend',
+        labels={'cost_per_million_tokens': 'Cost per Million Tokens ($)', 'year': 'Year'},
+        markers=True
+    )
     fig.update_layout(hovermode="x unified")
     st.plotly_chart(fig, use_container_width=True, key="ai_cost_reduction_trend")
 
-    fig2 = px.bar(ai_cost_reduction, x='model', y='tokens_per_dollar',
-                  title='Tokens Per Dollar by Model',
-                  labels={'tokens_per_dollar': 'Tokens per Dollar', 'model': 'Model'},
-                  color_discrete_sequence=px.colors.qualitative.G10)
+    fig2 = px.bar(
+        ai_cost_reduction, x='model', y='tokens_per_dollar',
+        title='Tokens Per Dollar by Model',
+        labels={'tokens_per_dollar': 'Tokens per Dollar', 'model': 'Model'},
+        color_discrete_sequence=px.colors.qualitative.G10
+    )
     st.plotly_chart(fig2, use_container_width=True, key="tokens_per_dollar_by_model")
     st.markdown(show_source_info('nvidia'), unsafe_allow_html=True)
     st.info("💡 **Insight:** The cost of processing AI tokens has plummeted, making advanced AI capabilities significantly more accessible and affordable for broad adoption.")
@@ -979,17 +1040,21 @@ elif view_type == "Financial Impact":
     st.header("AI's Financial Impact by Business Function")
     st.write("Examine how different business functions are experiencing cost savings and revenue gains from AI adoption.")
 
-    fig_cost_savings = px.bar(financial_impact, x='function', y='companies_reporting_cost_savings',
-                             title='Companies Reporting Cost Savings from AI (%)',
-                             labels={'companies_reporting_cost_savings': '% of Companies', 'function': 'Business Function'},
-                             color_discrete_sequence=['#1f77b4'])
+    fig_cost_savings = px.bar(
+        financial_impact, x='function', y='companies_reporting_cost_savings',
+        title='Companies Reporting Cost Savings from AI (%)',
+        labels={'companies_reporting_cost_savings': '% of Companies', 'function': 'Business Function'},
+        color_discrete_sequence=['#1f77b4']
+    )
     fig_cost_savings.update_layout(xaxis={'categoryorder':'total descending'})
     st.plotly_chart(fig_cost_savings, use_container_width=True, key="financial_impact_cost_savings")
 
-    fig_revenue_gains = px.bar(financial_impact, x='function', y='companies_reporting_revenue_gains',
-                              title='Companies Reporting Revenue Gains from AI (%)',
-                              labels={'companies_reporting_revenue_gains': '% of Companies', 'function': 'Business Function'},
-                              color_discrete_sequence=['#ff7f0e'])
+    fig_revenue_gains = px.bar(
+        financial_impact, x='function', y='companies_reporting_revenue_gains',
+        title='Companies Reporting Revenue Gains from AI (%)',
+        labels={'companies_reporting_revenue_gains': '% of Companies', 'function': 'Business Function'},
+        color_discrete_sequence=['#ff7f0e']
+    )
     fig_revenue_gains.update_layout(xaxis={'categoryorder':'total descending'})
     st.plotly_chart(fig_revenue_gains, use_container_width=True, key="financial_impact_revenue_gains")
     
@@ -1001,41 +1066,49 @@ elif view_type == "Labor Impact":
     st.write("Analyze how AI is influencing productivity growth, job changes, and skill gaps across the workforce.")
 
     st.subheader("Historical Productivity Growth")
-    fig_productivity = px.line(productivity_data, x='year', y='productivity_growth',
-                                title='US Labor Productivity Growth (Annual % Change)',
-                                labels={'productivity_growth': 'Productivity Growth (%)', 'year': 'Year'},
-                                markers=True)
+    fig_productivity = px.line(
+        productivity_data, x='year', y='productivity_growth',
+        title='US Labor Productivity Growth (Annual % Change)',
+        labels={'productivity_growth': 'Productivity Growth (%)', 'year': 'Year'},
+        markers=True
+    )
     st.plotly_chart(fig_productivity, use_container_width=True, key="historical_productivity_growth")
     st.info("💡 **Insight:** AI has the potential to reignite productivity growth, which has slowed in recent decades, by automating tasks and augmenting human capabilities.")
 
     st.subheader("AI Productivity by Skill Level")
-    fig_skill_productivity = px.bar(productivity_by_skill, x='skill_level', y='productivity_gain',
-                                    title='AI Impact on Productivity Gain by Skill Level (%)',
-                                    labels={'productivity_gain': 'Productivity Gain (%)', 'skill_level': 'Skill Level'},
-                                    color_discrete_sequence=px.colors.qualitative.Set2)
+    fig_skill_productivity = px.bar(
+        productivity_by_skill, x='skill_level', y='productivity_gain',
+        title='AI Impact on Productivity Gain by Skill Level (%)',
+        labels={'productivity_gain': 'Productivity Gain (%)', 'skill_level': 'Skill Level'},
+        color_discrete_sequence=px.colors.qualitative.Set2
+    )
     fig_skill_productivity.update_layout(xaxis={'categoryorder':'array', 'categoryarray':['Low-skilled', 'Medium-skilled', 'High-skilled']})
     st.plotly_chart(fig_skill_productivity, use_container_width=True, key="ai_productivity_by_skill")
     st.info("💡 **Insight:** AI offers the largest productivity gains for low-skilled workers, helping to reduce skill gaps and democratize access to advanced capabilities.")
     
     st.subheader("Generational AI Perception on Job Impact")
-    fig_job_impact = px.bar(ai_perception, x='generation', y=['expect_job_change', 'expect_job_replacement'],
-                            title='Generational Perception: AI Impact on Jobs (%)',
-                            labels={'value': 'Percentage (%)', 'generation': 'Generation', 'variable': 'Perception'},
-                            barmode='group',
-                            color_discrete_map={'expect_job_change': '#636EFA', 'expect_job_replacement': '#EF553B'})
+    fig_job_impact = px.bar(
+        ai_perception, x='generation', y=['expect_job_change', 'expect_job_replacement'],
+        title='Generational Perception: AI Impact on Jobs (%)',
+        labels={'value': 'Percentage (%)', 'generation': 'Generation', 'variable': 'Perception'},
+        barmode='group',
+        color_discrete_map={'expect_job_change': '#636EFA', 'expect_job_replacement': '#EF553B'}
+    )
     st.plotly_chart(fig_job_impact, use_container_width=True, key="generational_job_impact")
-    st.info("💡 **Insight:** Younger generations (Gen Z, Millennials) are more likely to anticipate job changes due2 to AI, reflecting a greater awareness and acceptance of its transformative potential on the labor market.")
+    st.info("💡 **Insight:** Younger generations (Gen Z, Millennials) are more likely to anticipate job changes due to AI, reflecting a greater awareness and acceptance of its transformative potential on the labor market.")
 
 elif view_type == "Firm Size Analysis":
     st.header("AI Adoption by Firm Size")
     st.write("Examine how AI adoption varies across different firm sizes and the corresponding token usage.")
 
-    fig = px.bar(firm_size, x='size', y='adoption',
-                 title='AI Adoption Rate by Firm Size (%)',
-                 labels={'adoption': 'Adoption Rate (%)', 'size': 'Firm Size'},
-                 color='avg_tokens_per_employee_daily',
-                 color_continuous_scale=px.colors.sequential.Blues,
-                 hover_data={'avg_tokens_per_employee_daily':True})
+    fig = px.bar(
+        firm_size, x='size', y='adoption',
+        title='AI Adoption Rate by Firm Size (%)',
+        labels={'adoption': 'Adoption Rate (%)', 'size': 'Firm Size'},
+        color='avg_tokens_per_employee_daily',
+        color_continuous_scale=px.colors.sequential.Blues,
+        hover_data={'avg_tokens_per_employee_daily':True}
+    )
     fig.update_layout(xaxis={'categoryorder':'array', 'categoryarray':firm_size['size'].tolist()})
     st.plotly_chart(fig, use_container_width=True, key="ai_adoption_by_firm_size")
     st.markdown(show_source_info('census'), unsafe_allow_html=True)
@@ -1045,16 +1118,20 @@ elif view_type == "Technology Stack":
     st.header("AI Adoption by Technology Stack")
     st.write("Understand the proportion of firms adopting AI in conjunction with cloud and digitization, and their impact on token efficiency.")
 
-    fig = px.pie(tech_stack, values='percentage', names='technology',
-                 title='AI Adoption by Complementary Technology Stack (2025)',
-                 color_discrete_sequence=px.colors.qualitative.Pastel)
+    fig = px.pie(
+        tech_stack, values='percentage', names='technology',
+        title='AI Adoption by Complementary Technology Stack (2025)',
+        color_discrete_sequence=px.colors.qualitative.Pastel
+    )
     st.plotly_chart(fig, use_container_width=True, key="ai_adoption_tech_stack_pie")
 
     st.subheader("Token Efficiency Multiplier by Tech Stack")
-    fig2 = px.bar(tech_stack, x='technology', y='token_efficiency_multiplier',
-                  title='Token Efficiency Multiplier',
-                  labels={'token_efficiency_multiplier': 'Efficiency Multiplier', 'technology': 'Technology Stack'},
-                  color_discrete_sequence=px.colors.qualitative.Set3)
+    fig2 = px.bar(
+        tech_stack, x='technology', y='token_efficiency_multiplier',
+        title='Token Efficiency Multiplier',
+        labels={'token_efficiency_multiplier': 'Efficiency Multiplier', 'technology': 'Technology Stack'},
+        color_discrete_sequence=px.colors.qualitative.Set3
+    )
     st.plotly_chart(fig2, use_container_width=True, key="token_efficiency_multiplier")
     st.info("💡 **Insight:** Firms combining AI with Cloud and Digitization achieve significantly higher token efficiency, indicating that a holistic digital transformation strategy maximizes AI's potential.")
 
@@ -1062,16 +1139,18 @@ elif view_type == "AI Technology Maturity":
     st.header("AI Technology Maturity & Risk Landscape")
     st.write("Explore the maturity of various AI technologies, their associated risks, and time to value, along with typical token requirements.")
 
-    fig = px.scatter(ai_maturity, x='adoption_rate', y='risk_score',
-                     size='avg_tokens_per_query', color='maturity', hover_name='technology',
-                     size_max=60,
-                     title='AI Technology Maturity Landscape (2025)',
-                     labels={'adoption_rate': 'Adoption Rate (%)', 'risk_score': 'Risk Score (Higher is Riskier)', 'avg_tokens_per_query': 'Avg. Tokens per Query'},
-                     color_discrete_map={
-                         'Peak of Expectations': '#ff7f0e',
-                         'Trough of Disillusionment': '#1f77b4',
-                         'Slope of Enlightenment': '#2ca02c'
-                     })
+    fig = px.scatter(
+        ai_maturity, x='adoption_rate', y='risk_score',
+        size='avg_tokens_per_query', color='maturity', hover_name='technology',
+        size_max=60,
+        title='AI Technology Maturity Landscape (2025)',
+        labels={'adoption_rate': 'Adoption Rate (%)', 'risk_score': 'Risk Score (Higher is Riskier)', 'avg_tokens_per_query': 'Avg. Tokens per Query'},
+        color_discrete_map={
+            'Peak of Expectations': '#ff7f0e',
+            'Trough of Disillusionment': '#1f77b4',
+            'Slope of Enlightenment': '#2ca02c'
+        }
+    )
     st.plotly_chart(fig, use_container_width=True, key="ai_tech_maturity_landscape")
     st.info("💡 **Insight:** While Generative AI and AI Agents are at the 'Peak of Expectations' with high adoption but also higher perceived risk and token use, technologies like Cloud AI Services are more mature with lower risk and quicker time to value.")
 
@@ -1079,10 +1158,12 @@ elif view_type == "Productivity Research":
     st.header("Research on AI's Productivity Impact")
     st.write("Review findings from various sources on AI's estimated annual productivity impact.")
     
-    fig = px.bar(ai_productivity_estimates, x='source', y='annual_impact',
-                 title='Estimated Annual Productivity Impact of AI (%)',
-                 labels={'annual_impact': 'Annual Impact (%)', 'source': 'Source'},
-                 color_discrete_sequence=px.colors.qualitative.D3)
+    fig = px.bar(
+        ai_productivity_estimates, x='source', y='annual_impact',
+        title='Estimated Annual Productivity Impact of AI (%)',
+        labels={'annual_impact': 'Annual Impact (%)', 'source': 'Source'},
+        color_discrete_sequence=px.colors.qualitative.D3
+    )
     st.plotly_chart(fig, use_container_width=True, key="ai_productivity_impact_estimates")
     st.info("💡 **Insight:** Different research sources offer varying estimates for AI's productivity impact, reflecting the complexity and novelty of measuring its full economic effects.")
 
@@ -1090,5 +1171,274 @@ elif view_type == "Environmental Impact":
     st.header("Environmental Impact of AI Training")
     st.write("Understand the carbon emissions associated with training large AI models and the increasing energy demands.")
 
-    fig = px.bar(training_emissions, x='model', y='carbon_tons',
-                 title
+    fig = px.bar(
+        training_emissions, x='model', y='carbon_tons',
+        title='Carbon Emissions from AI Model Training (tons CO2)',
+        labels={'carbon_tons': 'Carbon Emissions (tons)', 'model': 'Model'},
+        color_discrete_sequence=px.colors.qualitative.Reds
+    )
+    st.plotly_chart(fig, use_container_width=True, key="carbon_emissions_ai_training")
+    
+    # Add token context
+    fig2 = px.scatter(
+        training_emissions, x='training_tokens_billions', y='carbon_tons',
+        size='carbon_tons', hover_name='model',
+        title='Training Tokens vs Carbon Emissions',
+        labels={'training_tokens_billions': 'Training Tokens (Billions)', 'carbon_tons': 'Carbon Emissions (tons)'},
+        size_max=60
+    )
+    st.plotly_chart(fig2, use_container_width=True, key="tokens_vs_emissions")
+    
+    st.info("💡 **Insight:** The carbon footprint of AI training has grown exponentially with model size. Recent models like Llama 3.1 405B emit nearly 9,000 tons of CO2, highlighting the need for sustainable AI development practices.")
+
+elif view_type == "Geographic Distribution":
+    st.header("Geographic Distribution of AI Adoption (US)")
+    st.write("Explore AI adoption rates across different US cities and states.")
+    
+    if "2018" in data_year:
+        # Map visualization
+        fig = px.scatter_mapbox(
+            geographic, lat='lat', lon='lon', size='rate', hover_name='city',
+            hover_data={'state': True, 'rate': True, 'population_millions': True, 'gdp_billions': True},
+            color='rate', color_continuous_scale=px.colors.sequential.Viridis,
+            title='AI Adoption Rates by City (2018)',
+            size_max=30, zoom=3, center={"lat": 39.8283, "lon": -98.5795}
+        )
+        fig.update_layout(mapbox_style="carto-positron", height=600)
+        st.plotly_chart(fig, use_container_width=True, key="geographic_ai_adoption_map")
+        
+        # State-level choropleth
+        fig2 = px.choropleth(
+            state_data, locations='state_code', locationmode='USA-states',
+            color='rate', hover_name='state',
+            color_continuous_scale=px.colors.sequential.Blues,
+            title='AI Adoption Rates by State (2018)',
+            scope='usa'
+        )
+        fig2.update_layout(height=500)
+        st.plotly_chart(fig2, use_container_width=True, key="state_ai_adoption_choropleth")
+        st.markdown(show_source_info('census'), unsafe_allow_html=True)
+        st.info("💡 **Insight:** San Francisco Bay Area leads in AI adoption, followed by tech hubs like Nashville and San Antonio. California shows the highest state-level adoption.")
+
+elif view_type == "OECD 2025 Findings":
+    st.header("OECD 2025 Report: Global AI Adoption Insights")
+    st.write("Key findings from the OECD/BCG/INSEAD comprehensive study on AI adoption.")
+    
+    st.subheader("G7 Countries AI Adoption Rates")
+    fig = px.bar(
+        oecd_g7_adoption, x='country', y='adoption_rate',
+        title='Overall AI Adoption Rates - G7 Countries (2025)',
+        labels={'adoption_rate': 'Adoption Rate (%)', 'country': 'Country'},
+        color_discrete_sequence=px.colors.qualitative.Safe
+    )
+    fig.update_layout(xaxis={'categoryorder':'total descending'})
+    st.plotly_chart(fig, use_container_width=True, key="g7_ai_adoption_rates")
+    
+    st.subheader("AI Applications by Usage Rate")
+    fig2 = px.bar(
+        oecd_applications.sort_values('usage_rate', ascending=True), 
+        x='usage_rate', y='application',
+        orientation='h', color='category',
+        title='AI Application Usage Rates Across Enterprises',
+        labels={'usage_rate': 'Usage Rate (%)', 'application': 'Application'},
+        color_discrete_map={'GenAI': '#ff7f0e', 'Traditional AI': '#1f77b4'}
+    )
+    fig2.update_layout(height=600)
+    st.plotly_chart(fig2, use_container_width=True, key="ai_application_usage_rates")
+    
+    # Add token intensity visualization
+    st.subheader("Token Intensity by Application")
+    fig3 = px.scatter(
+        oecd_applications, x='usage_rate', y='avg_tokens_per_use',
+        size='avg_tokens_per_use', color='category', hover_name='application',
+        title='Usage Rate vs Token Intensity by Application',
+        labels={'usage_rate': 'Usage Rate (%)', 'avg_tokens_per_use': 'Avg Tokens per Use'},
+        size_max=50
+    )
+    st.plotly_chart(fig3, use_container_width=True, key="token_intensity_by_application")
+    
+    st.markdown(show_source_info('oecd'), unsafe_allow_html=True)
+    st.info("💡 **Insight:** Japan leads G7 in AI adoption (48%), while GenAI applications like content generation dominate usage. High-token applications like personalized learning show lower adoption but higher potential value.")
+
+elif view_type == "Barriers & Support":
+    st.header("Barriers to AI Adoption & Support Effectiveness")
+    st.write("Identify key barriers preventing AI adoption and evaluate the effectiveness of various support mechanisms.")
+    
+    st.subheader("Primary Barriers to AI Adoption")
+    fig = px.bar(
+        barriers_data.sort_values('percentage'), x='percentage', y='barrier',
+        orientation='h', title='Barriers to AI Adoption (%)',
+        labels={'percentage': 'Percentage of Companies (%)', 'barrier': 'Barrier'},
+        color_discrete_sequence=['#e74c3c']
+    )
+    st.plotly_chart(fig, use_container_width=True, key="barriers_to_ai_adoption")
+    
+    st.subheader("Support Mechanism Effectiveness")
+    fig2 = px.bar(
+        support_effectiveness.sort_values('effectiveness_score'), 
+        x='effectiveness_score', y='support_type',
+        orientation='h', title='AI Support Mechanism Effectiveness Scores',
+        labels={'effectiveness_score': 'Effectiveness Score', 'support_type': 'Support Type'},
+        color_discrete_sequence=['#27ae60']
+    )
+    st.plotly_chart(fig2, use_container_width=True, key="support_mechanism_effectiveness")
+    st.info("💡 **Insight:** Lack of skilled personnel remains the top barrier (68%), while government education investment shows the highest effectiveness (82%) in supporting AI adoption.")
+
+elif view_type == "ROI Analysis":
+    st.header("AI Return on Investment Analysis")
+    st.write("Analyze the return on investment across different sectors and functions.")
+    
+    # ROI by sector
+    fig = px.bar(
+        sector_2025.sort_values('avg_roi', ascending=False), 
+        x='sector', y='avg_roi',
+        title='Average AI ROI by Sector (2025)',
+        labels={'avg_roi': 'Average ROI (%)', 'sector': 'Sector'},
+        color='avg_roi',
+        color_continuous_scale=px.colors.sequential.Greens
+    )
+    st.plotly_chart(fig, use_container_width=True, key="roi_by_sector")
+    
+    # Cost reduction vs revenue increase
+    fig2 = px.scatter(
+        financial_impact, x='avg_cost_reduction', y='avg_revenue_increase',
+        size='monthly_tokens_millions', hover_name='function',
+        title='Cost Reduction vs Revenue Increase by Function',
+        labels={'avg_cost_reduction': 'Avg Cost Reduction (%)', 
+                'avg_revenue_increase': 'Avg Revenue Increase (%)'},
+        size_max=50
+    )
+    st.plotly_chart(fig2, use_container_width=True, key="cost_vs_revenue_by_function")
+    st.info("💡 **Insight:** Technology sector shows the highest average ROI (4.2%), while functions with higher token usage tend to achieve better cost reduction and revenue increases.")
+
+elif view_type == "Skill Gap Analysis":
+    st.header("AI Skills Gap Analysis")
+    st.write("Examine the severity of skill gaps in AI-related roles and current training initiatives.")
+    
+    fig = px.bar(
+        skill_gap_data, x='skill', y='gap_severity',
+        title='AI Skill Gap Severity by Role',
+        labels={'gap_severity': 'Gap Severity Score', 'skill': 'Skill Area'},
+        color='training_initiatives',
+        color_continuous_scale=px.colors.sequential.Reds_r,
+        hover_data={'training_initiatives': True}
+    )
+    fig.update_layout(xaxis_tickangle=-45, height=500)
+    st.plotly_chart(fig, use_container_width=True, key="skill_gap_severity")
+    
+    # Training initiatives vs gap severity
+    fig2 = px.scatter(
+        skill_gap_data, x='training_initiatives', y='gap_severity',
+        size='gap_severity', hover_name='skill',
+        title='Training Initiatives vs Skill Gap Severity',
+        labels={'training_initiatives': 'Companies with Training Initiatives (%)', 
+                'gap_severity': 'Gap Severity Score'},
+        size_max=50,
+        trendline="ols"
+    )
+    st.plotly_chart(fig2, use_container_width=True, key="training_vs_gap_severity")
+    st.info("💡 **Insight:** AI/ML Engineering shows the most severe skill gap (85), while Data Science has more training initiatives (52%) despite high gap severity.")
+
+elif view_type == "AI Governance":
+    st.header("AI Governance Maturity")
+    st.write("Assess the adoption and maturity of AI governance practices across organizations.")
+    
+    fig = px.bar(
+        ai_governance, x='aspect', y='adoption_rate',
+        title='AI Governance Aspect Adoption Rates',
+        labels={'adoption_rate': 'Adoption Rate (%)', 'aspect': 'Governance Aspect'},
+        color='maturity_score',
+        color_continuous_scale=px.colors.sequential.Blues,
+        hover_data={'maturity_score': True}
+    )
+    fig.update_layout(xaxis_tickangle=-45)
+    st.plotly_chart(fig, use_container_width=True, key="ai_governance_adoption")
+    
+    # Maturity radar chart
+    fig2 = go.Figure()
+    fig2.add_trace(go.Scatterpolar(
+        r=ai_governance['maturity_score'].tolist() + [ai_governance['maturity_score'].iloc[0]],
+        theta=ai_governance['aspect'].tolist() + [ai_governance['aspect'].iloc[0]],
+        fill='toself',
+        name='Maturity Score'
+    ))
+    fig2.update_layout(
+        polar=dict(
+            radialaxis=dict(
+                visible=True,
+                range=[0, 5]
+            )),
+        showlegend=False,
+        title="AI Governance Maturity Radar (1-5 scale)"
+    )
+    st.plotly_chart(fig2, use_container_width=True, key="ai_governance_radar")
+    st.info("💡 **Insight:** Data Privacy shows the highest adoption (78%) and maturity (3.8), while Bias Detection lags behind with only 45% adoption and 2.5 maturity score.")
+
+elif view_type == "Token Performance":
+    st.header("Token Performance Analysis")
+    st.write("Deep dive into token performance metrics and their impact on AI system efficiency.")
+    
+    # Performance comparison
+    fig = px.bar(
+        token_performance, x='metric', y=['good_performance', 'average_performance', 'poor_performance'],
+        title='Token Performance Benchmarks by Metric',
+        labels={'value': 'Performance Value', 'metric': 'Performance Metric', 'variable': 'Performance Level'},
+        barmode='group',
+        color_discrete_map={
+            'good_performance': '#2ecc71',
+            'average_performance': '#f39c12', 
+            'poor_performance': '#e74c3c'
+        }
+    )
+    st.plotly_chart(fig, use_container_width=True, key="token_performance_benchmarks")
+    
+    # Token efficiency calculator
+    st.subheader("Token Efficiency Calculator")
+    col1, col2, col3 = st.columns(3)
+    
+    with col1:
+        tokens_per_sec = st.number_input("Tokens per second", min_value=1, max_value=200, value=50)
+        context_window = st.number_input("Context window size", min_value=1000, max_value=200000, value=32000, step=1000)
+    
+    with col2:
+        daily_requests = st.number_input("Daily requests", min_value=100, max_value=1000000, value=10000)
+        avg_tokens_per_request = st.number_input("Avg tokens per request", min_value=100, max_value=50000, value=2000)
+    
+    with col3:
+        # Calculate metrics
+        daily_tokens = daily_requests * avg_tokens_per_request
+        daily_cost_2022 = (daily_tokens / 1_000_000) * 20
+        daily_cost_2024 = (daily_tokens / 1_000_000) * 0.07
+        daily_savings = daily_cost_2022 - daily_cost_2024
+        
+        st.metric("Daily tokens (millions)", f"{daily_tokens/1_000_000:.1f}")
+        st.metric("Daily cost (2024)", f"${daily_cost_2024:,.2f}")
+        st.metric("Daily savings vs 2022", f"${daily_savings:,.2f}")
+    
+    st.info(f"💡 **Insight:** With {tokens_per_sec} tokens/sec performance, you can process {daily_requests:,} requests daily. The 280x cost reduction saves ${daily_savings:,.2f} per day compared to 2022 prices.")
+
+# Add a summary section at the bottom
+st.markdown("---")
+st.subheader("📋 Key Takeaways")
+
+if view_type == "Token Economics":
+    st.markdown("""
+    - **280x cost reduction**: Token costs dropped from $20 to $0.07 per million tokens (2022-2024)
+    - **Industry leaders**: Software Engineering and Marketing use the most tokens monthly
+    - **Performance matters**: Optimizing tokens/second and context window size is critical
+    - **ROI correlation**: Higher token usage generally correlates with better business outcomes
+    """)
+elif view_type == "Adoption Rates":
+    st.markdown("""
+    - **78% overall adoption**: AI adoption reached 78% in 2024, up from 55% in 2023
+    - **71% GenAI adoption**: Generative AI more than doubled from 33% to 71%
+    - **Rapid acceleration**: The pace of adoption has significantly increased post-2022
+    - **Broad impact**: AI is now mainstream across most industries and functions
+    """)
+else:
+    st.markdown("""
+    - AI adoption has reached mainstream levels with 78% of organizations using some form of AI
+    - Token economics are fundamental to understanding AI's rapid adoption and ROI
+    - Significant variations exist across industries, regions, and company sizes
+    - The next phase focuses on governance, skills, and sustainable scaling
+    """)
