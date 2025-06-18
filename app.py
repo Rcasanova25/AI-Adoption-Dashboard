@@ -344,9 +344,9 @@ def show_source_info(source_key):
             'methodology': 'Technical analysis of token economics and AI factories'
         }
     }
-    
+
     if source_key in sources:
-        source = sources[source_key] # Corrected indentation here
+        source = sources[source_key]
         return f"""
 **Source:** {source['title']}
 **Organization:** {source['org']}
