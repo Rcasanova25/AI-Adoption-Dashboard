@@ -1093,7 +1093,8 @@ elif view_type == "Investment Trends":
             st.write("• **Europe steady:** $10.5B across top 3 countries")
             st.write("• **Concentration:** Top 5 countries = 82% of investment")
     
-   with tab3:
+    with tab3:
+
         # GenAI growth visualization with context - FIXED
         genai_data = pd.DataFrame({
             'year': ['2022', '2023', '2024'],
