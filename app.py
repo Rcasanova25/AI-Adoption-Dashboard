@@ -1094,8 +1094,7 @@ elif view_type == "Financial Impact":
     
     # CORRECTED interpretation box
     st.warning("""
-    **📊 Understanding the Data:** 
-    - The percentages below show the **proportion of companies reporting financial benefits** from AI
+    **📊 Understanding the Data:** - The percentages below show the **proportion of companies reporting financial benefits** from AI
     - Among companies that see benefits, the **actual magnitude** is typically:
       - Cost savings: **Less than 10%** (average 5-10%)
       - Revenue gains: **Less than 5%** (average 2-4%)
@@ -1340,8 +1339,7 @@ elif view_type == "Productivity Research":
         st.plotly_chart(fig, use_container_width=True)
         
         st.info("""
-        **📊 Note on Estimates:** 
-        - Conservative estimates (0.07-0.1%) focus on task-level automation
+        **📊 Note on Estimates:** - Conservative estimates (0.07-0.1%) focus on task-level automation
         - Optimistic estimates (1.5-2.5%) assume economy-wide transformation
         - Actual impact depends on implementation quality and complementary investments
         """)
@@ -3466,8 +3464,7 @@ elif view_type == "Barriers & Support":
         st.write("• **Technology centers:** Infrastructure development")
     
     st.success("""
-    **Recommended Approach:** 
-    Start with regulatory clarity and tax incentives for immediate impact while building 
+    **Recommended Approach:** Start with regulatory clarity and tax incentives for immediate impact while building 
     long-term capacity through education and partnerships.
     """)
 
@@ -3852,6 +3849,207 @@ else:
         st.write("• Midwest and rural areas lagging")
         st.markdown('</div>', unsafe_allow_html=True)
 
+# Comprehensive Analysis Integration
+st.subheader("📋 Comprehensive AI Impact Analysis")
+
+# Add comprehensive analysis from the document
+with st.expander("📊 Comprehensive AI Impact Analysis - Full Report", expanded=False):
+    st.markdown("""
+    ### Executive Summary
+    
+    This comprehensive analysis synthesizes insights from multiple authoritative sources including the AI Index Report 2025, 
+    Federal Reserve research, MIT studies, OECD reports, and industry analyses to provide a complete picture of AI's 
+    current state and projected impacts across all sectors of society and economy.
+    """)
+    
+    # Create comprehensive analysis tabs
+    comp_tabs = st.tabs(["📈 Performance & Adoption", "💰 Investment & Economics", "👥 Labor & Productivity", 
+                         "🏛️ Policy & Governance", "🔬 Technical Trends", "🌍 Global Impact"])
+    
+    with comp_tabs[0]:
+        st.markdown("""
+        #### AI Performance and Capabilities
+        
+        **Breakthrough Performance Improvements (2024):**
+        - MMMU benchmark: +18.8 percentage points vs 2023
+        - GPQA scores: +48.9 percentage points improvement
+        - SWE-bench: +67.3 percentage points increase
+        - Language model agents now outperform humans in programming tasks with limited time budgets
+        
+        **Cost Revolution:**
+        - GPT-3.5 equivalent models: 280x cost reduction (Nov 2022: $20/M tokens → Oct 2024: $0.07/M tokens)
+        - Hardware performance: +43% annually
+        - Energy efficiency: +40% annual improvement
+        - Cost dropping: -30% per year for same performance
+        
+        **Adoption Acceleration:**
+        - Business AI use: 55% (2023) → 78% (2024)
+        - GenAI adoption: More than doubled from 33% to 71%
+        - FDA AI-enabled medical devices: 6 (2015) → 223 (2023)
+        - Individual worker usage: 28% of U.S. workers use GenAI at work (Aug 2024)
+        - Daily usage: 9% of workers use GenAI every workday
+        """)
+        
+    with comp_tabs[1]:
+        st.markdown("""
+        #### Investment and Economic Impact
+        
+        **Record Investment Levels (2024):**
+        - U.S. private AI investment: $109.1 billion (vs China: $9.3B, UK: $4.5B)
+        - Global GenAI investment: $33.9 billion (+18.7% from 2023)
+        - Sector leaders: AI infrastructure ($37.3B), Data management ($16.6B), Healthcare ($11B)
+        
+        **GDP Impact Projections:**
+        - **Optimistic scenarios:** - Goldman Sachs: +7% global GDP (~$7 trillion) over 10 years
+          - McKinsey: $17.1-25.6 trillion global economic addition
+          - Productivity growth: +1.5-3.4 percentage points annually
+        - **Conservative estimates:**
+          - MIT (Acemoglu): +0.66% total factor productivity over 10 years
+          - Fed analysis: Modest but nontrivial macroeconomic effects
+        
+        **Tokens as Economic Units:**
+        - AI "factories" process tokens as fundamental units converting data into intelligence
+        - Enterprises can enhance value by processing more tokens at lower computational cost
+        - Token optimization strategies showing 25x revenue increases in some cases
+        """)
+        
+    with comp_tabs[2]:
+        st.markdown("""
+        #### Labor Market and Productivity Impact
+        
+        **Productivity Gains:**
+        - Workers estimate 15% longer completion time without AI (Nov 2024 survey)
+        - Potential aggregate productivity gain: 0.4% assuming full beneficial adoption
+        - Research confirms AI boosts productivity and narrows skill gaps
+        
+        **Workforce Exposure:**
+        - 80% of U.S. workforce: at least 10% of tasks affected by LLMs
+        - 19% of workers: at least 50% of tasks impacted
+        - Direct LLM access: 15% of tasks completed significantly faster
+        - With AI tools: 47-56% of all tasks can be enhanced
+        
+        **Task Efficiency:**
+        - 15% of worker tasks can be completed significantly faster with direct LLM access
+        - 47-56% of tasks improved when including AI-powered software and tools
+        - Higher-income jobs show greater exposure to AI capabilities
+        - Information processing industries have highest exposure
+        
+        **Skill and Inequality Effects:**
+        - AI provides greatest productivity boost to low-skilled workers (14% gain)
+        - Medium-skilled workers: 9% productivity improvement
+        - High-skilled workers: 5% productivity enhancement
+        - Potential to narrow skill gaps and reduce workplace inequality
+        - Strong correlation between education/income and GenAI usage rates
+        """)
+        
+    with comp_tabs[3]:
+        st.markdown("""
+        #### Policy and Governance Developments
+        
+        **Regulatory Activity (2024):**
+        - U.S. federal agencies: 59 AI-related regulations (2x increase from 2023)
+        - Global legislative mentions: +21.3% across 75 countries
+        - Major frameworks from OECD, EU, UN, African Union emphasizing transparency
+        
+        **Education and Training:**
+        - 2/3 of countries now offer/plan K-12 computer science education (2x from 2019)
+        - U.S. teachers: 81% believe AI should be in foundational education
+        - Reality gap: <50% feel equipped to teach AI concepts
+        
+        **Key Policy Areas:**
+        - **Competition:** UK CMA reports on AI foundation models
+        - **Privacy:** GDPR framework applicable to AI systems
+        - **IP/Copyright:** UK developing AI copyright code of practice
+        - **Military/Security:** UK MOD ethical AI guidelines
+        - **Ethics/Bias:** Multiple national guidance frameworks
+        
+        **OECD AI Capability Indicators:**
+        - Developing assessment framework across 9 domains
+        - Focus on Language and Manipulation capabilities
+        - International comparability for policy decisions
+        """)
+        
+    with comp_tabs[4]:
+        st.markdown("""
+        #### Technical and Compute Trends
+        
+        **Historical Compute Growth:**
+        - Pre-2010: Training compute doubled every 20 months (Moore's Law pace)
+        - 2010+: Deep Learning era - doubling every 6 months
+        - 2015+: Large-Scale era - 10-100x larger training requirements
+        - Recent variations: 2-3.4 month doubling (2012-2018) to >2 years (2018-2020)
+        
+        **Model Development:**
+        - U.S. institutions: 40 notable AI models in 2024
+        - China: 15 notable models
+        - Europe: 3 notable models
+        - Parameter counts: 18-24 month doubling (2000-2021)
+        - Language models: 4-8 month doubling (2016-2018)
+        
+        **Environmental Impact:**
+        - Carbon emissions increasing significantly
+        - Llama 3.1 405B training: 8,930 tons CO₂ (vs GPT-3: 588 tons)
+        - Hardware constraints may limit exponential growth
+        - Energy consumption rivaling global cloud infrastructure
+        
+        **Research Output:**
+        - AI publications nearly tripled (2013-2023): 102k → 242k
+        - AI share of CS publications: 21.6% → 41.8%
+        - China leads publications (23.2%) and citations (22.6%)
+        - U.S. excels in highly influential research (top 100 cited)
+        - AI patents: 3,833 (2010) → 122,511 (2023), China holds 69.7%
+        """)
+        
+    with comp_tabs[5]:
+        st.markdown("""
+        #### Global Impact and Trends
+        
+        **Regional Optimism Levels:**
+        - High optimism: China (83%), Indonesia (80%), Thailand (77%)
+        - Lower optimism: Canada (40%), U.S. (39%), Netherlands (36%)
+        - Cultural and policy differences drive perception gaps
+        
+        **Talent Flow:**
+        - U.S. maintains positive net AI talent flow (1.07 per 10,000 members)
+        - Career transitions into AI engineering: Software engineers (26.9%), Data scientists (13.3%)
+        - Geographic concentration in select hubs (SF, London) creating disparities
+        
+        **Emerging Applications:**
+        - Robotics and multimodal AI systems (GPT-4V) expanding beyond text
+        - Participatory governance and civic engagement tools
+        - Medical devices showing explosive growth
+        
+        **Key Challenges:**
+        - Increasing AI incidents involving misuse, bias, safety failures
+        - Centralization of compute access in private firms
+        - Academic transparency and reproducibility concerns
+        - Regional disparities between advanced and developing economies
+        """)
+    
+    # Sources section
+    st.markdown("---")
+    st.markdown("""
+    #### 📚 Comprehensive Analysis Sources
+    
+    This analysis synthesizes findings from:
+    
+    **Primary Sources:**
+    - **AI Index Report 2025** - Stanford Human-Centered AI Institute
+    - **Federal Reserve Research** - Multiple papers on productivity and economic impact
+    - **MIT Research** - Acemoglu (2024) "The Simple Macroeconomics of AI"
+    - **OECD Reports** - Firm adoption analysis and AI capability indicators
+    - **McKinsey Global Survey** - Enterprise AI adoption patterns
+    - **Academic Research** - Sevilla et al. (2022) on compute trends
+    - **Industry Analysis** - Goldman Sachs, NVIDIA, and other sector reports
+    
+    **Key Research Papers:**
+    - Bick, Blandin, and Deming (2024, 2025) - Generative AI productivity impact
+    - Eloundou et al. (2023) - Labor market impact of large language models
+    - Briggs & Kodnani (2023) - Goldman Sachs economic growth projections
+    - Korinek (2023) - Cognitive automation for knowledge work
+    - Multiple Federal Reserve analyses on productivity and workforce impact
+    """)
+
 # Data sources and methodology - Enhanced
 with st.expander("📚 Data Sources & Methodology"):
     source_tabs = st.tabs(["Primary Sources", "Methodology", "Data Quality", "Updates"])
@@ -3861,8 +4059,7 @@ with st.expander("📚 Data Sources & Methodology"):
         
         with col1:
             st.markdown("""
-            **🔬 AI Index Report 2025**  
-            Stanford HAI  
+            **🔬 AI Index Report 2025** Stanford HAI  
             📊 Global AI metrics  
             🌍 Investment & adoption data  
             📈 Productivity research  
@@ -3872,8 +4069,7 @@ with st.expander("📚 Data Sources & Methodology"):
             
         with col2:
             st.markdown("""
-            **📊 McKinsey Global Survey**  
-            July 2024 Survey  
+            **📊 McKinsey Global Survey** July 2024 Survey  
             👥 1,491 participants  
             🌍 101 nations covered  
             🏢 All organization levels  
@@ -3883,13 +4079,54 @@ with st.expander("📚 Data Sources & Methodology"):
             
         with col3:
             st.markdown("""
-            **🏛️ OECD AI Observatory**  
-            OECD/BCG/INSEAD 2025  
+            **🏛️ OECD AI Observatory** OECD/BCG/INSEAD 2025  
             🏢 840 enterprises  
             🌍 G7 + Brazil  
             📋 Policy focus  
             🎯 Success factors  
             [View Report](https://oecd.ai)
+            """)
+        
+        # Add comprehensive analysis sources
+        st.markdown("---")
+        st.markdown("### 📚 Comprehensive Analysis Sources")
+        
+        col1, col2, col3, col4 = st.columns(4)
+        
+        with col1:
+            st.markdown("""
+            **🎓 Federal Reserve Research** Bick, Blandin, Deming  
+            📈 Productivity impact studies  
+            👥 Worker survey analysis  
+            💼 Labor market effects  
+            [St. Louis Fed](https://www.stlouisfed.org)
+            """)
+            
+        with col2:
+            st.markdown("""
+            **🏫 MIT Research** Daron Acemoglu  
+            🔬 Macroeconomic analysis  
+            📊 Task-level impact  
+            💡 AI automation vs augmentation  
+            [MIT Economics](https://economics.mit.edu)
+            """)
+            
+        with col3:
+            st.markdown("""
+            **💰 Goldman Sachs Research** Economic Growth Analysis  
+            📈 GDP impact projections  
+            🌍 Global economic effects  
+            💼 Industry transformation  
+            [GS Research](https://www.goldmansachs.com/intelligence)
+            """)
+            
+        with col4:
+            st.markdown("""
+            **🔬 Academic Research** Sevilla et al., Eloundou et al.  
+            💻 Compute trends analysis  
+            👥 Labor market studies  
+            🧠 LLM capabilities research  
+            [arXiv Papers](https://arxiv.org)
             """)
     
     with source_tabs[1]:
@@ -3899,6 +4136,11 @@ with st.expander("📚 Data Sources & Methodology"):
         st.write("• **Adoption Definition:** Includes any AI use (pilots, experiments, production)")
         st.write("• **Geographic Coverage:** Global with focus on developed economies")
         st.write("• **Sector Classification:** Standard industry codes (NAICS/ISIC)")
+        st.write("• **Productivity Measurement:** Self-reported, task-level analysis, and economic modeling")
+        st.write("• **Comprehensive Synthesis:** Integration of 15+ authoritative sources")
+        st.write("• **Incident Tracking:** AI Index database of reported safety incidents")
+        st.write("• **Talent Flow Analysis:** LinkedIn and professional network data")
+        st.write("• **Compute Trends:** Historical analysis from multiple research papers")
     
     with source_tabs[2]:
         quality_metrics = pd.DataFrame({
