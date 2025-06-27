@@ -817,26 +817,58 @@ if view_type == "Historical Trends":
 st.sidebar.markdown("---")
 st.sidebar.markdown("### 📥 Export Options")
 
+# Mapping of view types to their respective dataframes
+# This allows for a scalable way to handle data exports
+data_map = {
+    "Historical Trends": historical_data,
+    "Industry Analysis": sector_2025,
+    "Financial Impact": financial_impact,
+    "Skill Gap Analysis": skill_gap_data,
+    "AI Governance": ai_governance,
+    "Productivity Research": productivity_data,
+    "Investment Trends": ai_investment_data,
+    "Regional Growth": regional_growth,
+    "AI Cost Trends": ai_cost_reduction,
+    "Token Economics": token_economics,
+    "Labor Impact": ai_perception,
+    "Environmental Impact": training_emissions,
+    "Adoption Rates": genai_2025 if "2025" in data_year else sector_2018,
+    "Firm Size Analysis": firm_size,
+    "Technology Stack": tech_stack,
+    "AI Technology Maturity": ai_maturity,
+    "Geographic Distribution": geographic,
+    "OECD 2025 Findings": oecd_g7_adoption,
+    "Barriers & Support": barriers_data,
+    "ROI Analysis": sector_2025  # Example, could be a more detailed ROI dataframe
+}
+
 export_format = st.sidebar.selectbox(
     "Export Format",
-    ["PNG Image", "CSV Data", "PDF Report (Beta)"]
+    ["CSV Data", "PNG Image", "PDF Report (Beta)"]
 )
 
-if st.sidebar.button("📥 Export Current View", help="Download the current visualization"):
-    if export_format == "CSV Data":
-        # Export current data based on view
-        if view_type == "Historical Trends":
-            csv = historical_data.to_csv(index=False)
-            st.sidebar.download_button(
-                label="Download CSV",
-                data=csv,
-                file_name=f"ai_adoption_{view_type.lower().replace(' ', '_')}.csv",
-                mime="text/csv"
-            )
-        st.sidebar.success("✅ Data exported successfully!")
+if export_format == "CSV Data":
+    # Check if the current view has data to download
+    if view_type in data_map:
+        df_to_download = data_map[view_type]
+        csv = df_to_download.to_csv(index=False).encode('utf-8')
+        
+        # Use st.download_button directly
+        st.sidebar.download_button(
+           label="📥 Download CSV for Current View",
+           data=csv,
+           file_name=f"ai_adoption_{view_type.lower().replace(' ', '_')}.csv",
+           mime="text/csv",
+           use_container_width=True
+        )
     else:
-        st.sidebar.success("✅ View exported successfully!")
+        st.sidebar.warning(f"CSV export is not available for the '{view_type}' view.")
 
+elif export_format in ["PNG Image", "PDF Report (Beta)"]:
+    # Inform the user that these features are not yet implemented
+    st.sidebar.warning(f"{export_format} export is not yet implemented.")
+    # Keep a disabled button for UI consistency
+    st.sidebar.button("📥 Export Current View", disabled=True, use_container_width=True)
 # Feedback widget
 st.sidebar.markdown("---")
 st.sidebar.markdown("### 💬 Feedback")
