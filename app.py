@@ -1093,16 +1093,16 @@ elif view_type == "Investment Trends":
             st.write("• **Europe steady:** $10.5B across top 3 countries")
             st.write("• **Concentration:** Top 5 countries = 82% of investment")
     
-    with tab3:
-        # GenAI growth visualization with context
+   with tab3:
+        # GenAI growth visualization with context - FIXED
         genai_data = pd.DataFrame({
             'year': ['2022', '2023', '2024'],
             'investment': [3.95, 28.5, 33.9],
             'growth': ['Baseline', '+621%', '+18.7%'],
-            'pct_of_total': [2.7, 16.3, 13.4]  # % of total AI investment
+            'pct_of_total': [2.7, 16.3, 13.4]
         })
         
-        # Create dual-axis chart
+        # Create dual-axis chart - FIXED VERSION
         fig = go.Figure()
         
         fig.add_trace(go.Bar(
@@ -1131,7 +1131,13 @@ elif view_type == "Investment Trends":
             yaxis=dict(title="Investment ($ Billions)", side="left"),
             yaxis2=dict(title="% of Total AI Investment", side="right", overlaying="y"),
             height=400,
-            hovermode='x unified'
+            hovermode='x unified',
+            # FIX: Force categorical x-axis to prevent decimal years
+            xaxis=dict(
+                type='category',
+                categoryorder='array',
+                categoryarray=['2022', '2023', '2024']
+            )
         )
         
         st.plotly_chart(fig, use_container_width=True)
