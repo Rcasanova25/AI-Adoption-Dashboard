@@ -3514,7 +3514,8 @@ elif view_type == "Geographic Distribution":
             hovertemplate='<b>%{text}</b><br>AI Adoption: %{z:.1f}%<br>NSF Institutes: %{customdata[0]}<br>Federal Funding: $%{customdata[1]:.1f}B<extra></extra>',
             text=state_research_data['state'],
             customdata=state_research_data[['nsf_ai_institutes_total', 'total_federal_funding_billions']],
-            name="State Infrastructure"
+            name="State Infrastructure",
+            showlegend=False  # Keep this hidden as it's shown via colorbar
         ))
         
         # Dynamic city markers that change based on selected metric
@@ -3575,6 +3576,7 @@ elif view_type == "Geographic Distribution":
                         line=dict(width=3, color='darkblue')
                     ),
                     name="NSF AI Institutes",
+                    showlegend=True,  # Show in legend
                     hovertemplate='<b>%{text}</b><br>NSF AI Institute Location<extra></extra>'
                 ))
         
@@ -3594,6 +3596,7 @@ elif view_type == "Geographic Distribution":
                         line=dict(width=2, color='white')
                     ),
                     name="Major University Hubs",
+                    showlegend=True,  # Show in legend
                     hovertemplate='<b>%{text}</b><br>Universities: %{customdata}<extra></extra>',
                     customdata=major_uni_cities['major_universities']
                 ))
@@ -3609,7 +3612,7 @@ elif view_type == "Geographic Distribution":
                 coastlinewidth=2
             ),
             height=700,
-            showlegend=False,
+            showlegend=True,
             legend=dict(
                 x=0.85,  # Position legend to avoid colorbar overlap
                 y=0.95,
