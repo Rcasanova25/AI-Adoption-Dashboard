@@ -4122,6 +4122,9 @@ with geo_tabs[0]:
             mime="text/csv"
         )
 
+# This should be part of your main view selection logic
+# Make sure this elif connects to your main if statement
+
 elif view_type == "OECD 2025 Findings":
     st.write("📊 **OECD/BCG/INSEAD 2025 Report: Enterprise AI Adoption**")
     
