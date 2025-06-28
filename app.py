@@ -1562,7 +1562,7 @@ elif view_type == "Investment Trends":
             mime="text/csv"
         )
     
-   with tab2:
+    with tab2:
         # Country comparison with more context - FIXED to include Israel
         countries_extended = pd.DataFrame({
             'country': ['United States', 'China', 'United Kingdom', 'Germany', 'France', 
