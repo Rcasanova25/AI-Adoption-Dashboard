@@ -3504,9 +3504,10 @@ elif view_type == "Geographic Distribution":
             colorscale='Blues',
             colorbar=dict(
                 title="State AI<br>Adoption (%)",
-                x=0.02,
-                len=0.4,
-                y=0.7
+                x=-0.05,  # Move further left to avoid overlap
+                len=0.35,
+                y=0.75,
+                thickness=15
             ),
             marker_line_color='black',
             marker_line_width=1,
@@ -3533,9 +3534,10 @@ elif view_type == "Geographic Distribution":
                 showscale=True,
                 colorbar=dict(
                     title=f"{map_metric}<br>({unit})",  # Dynamic title with units
-                    x=0.98,
-                    len=0.4,
-                    y=0.7
+                    x=1.02,  # Move slightly outside the plot area
+                    len=0.35,
+                    y=0.35,  # Position lower to avoid overlap with legend
+                    thickness=15
                 ),
                 line=dict(width=2, color='white'),
                 sizemode='diameter',
@@ -3607,7 +3609,15 @@ elif view_type == "Geographic Distribution":
                 coastlinewidth=2
             ),
             height=700,
-            showlegend=True
+            showlegend=True,
+            legend=dict(
+                x=0.85,  # Position legend to avoid colorbar overlap
+                y=0.95,
+                bgcolor='rgba(255,255,255,0.8)',
+                bordercolor='rgba(0,0,0,0.2)',
+                borderwidth=1
+            ),
+            margin=dict(l=50, r=80, t=50, b=50)  # Add margins for colorbars
         )
         
         st.plotly_chart(fig, use_container_width=True)
@@ -4120,7 +4130,7 @@ elif view_type == "Geographic Distribution":
             data=csv,
             file_name="ai_geographic_ecosystem_analysis.csv",
             mime="text/csv"
-        )# Make sure this elif connects to your main if statement
+        )
 
 elif view_type == "OECD 2025 Findings":
     st.write("📊 **OECD/BCG/INSEAD 2025 Report: Enterprise AI Adoption**")
