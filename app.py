@@ -666,7 +666,7 @@ st.subheader(f"📊 {view_type}")
 # Enhanced Historical Trends View - Add this to your existing Historical Trends section
 # Replace the existing Historical Trends view implementation with this enhanced version
 
-elif view_type == "Historical Trends":
+if view_type == "Historical Trends":
     # Apply year filter if set
     if 'compare_mode' in locals() and compare_mode:
         # Compare mode: Show specific years comparison (existing functionality preserved)
