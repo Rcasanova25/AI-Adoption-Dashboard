@@ -665,111 +665,209 @@ st.subheader(f"📊 {view_type}")
 # View implementations - ALL COMPLETE VISUALIZATIONS
 if view_type == "Historical Trends":
     # Apply year filter if set
-    filtered_data = historical_data[
-        (historical_data['year'] >= year_range[0]) & 
-        (historical_data['year'] <= year_range[1])
-    ]
-    
-    fig = go.Figure()
-    
-    # Add overall AI use line
-    fig.add_trace(go.Scatter(
-        x=filtered_data['year'], 
-        y=filtered_data['ai_use'], 
-        mode='lines+markers', 
-        name='Overall AI Use', 
-        line=dict(width=4, color='#1f77b4'),
-        marker=dict(size=8),
-        hovertemplate='Year: %{x}<br>Adoption: %{y}%<br>Source: AI Index & McKinsey<extra></extra>'
-    ))
-    
-    # Add GenAI use line
-    fig.add_trace(go.Scatter(
-        x=filtered_data['year'], 
-        y=filtered_data['genai_use'], 
-        mode='lines+markers', 
-        name='GenAI Use', 
-        line=dict(width=4, color='#ff7f0e'),
-        marker=dict(size=8),
-        hovertemplate='Year: %{x}<br>Adoption: %{y}%<br>Source: AI Index 2025<extra></extra>'
-    ))
-    
-    # Add annotations
-    fig.add_annotation(
-        x=2022, y=33,
-        text="<b>ChatGPT Launch</b><br>GenAI Era Begins",
-        showarrow=True,
-        arrowhead=2,
-        arrowsize=1,
-        arrowwidth=2,
-        arrowcolor="#ff7f0e",
-        ax=-50,
-        ay=-40,
-        bgcolor="rgba(255,127,14,0.1)",
-        bordercolor="#ff7f0e",
-        borderwidth=2,
-        font=dict(color="#ff7f0e", size=12, family="Arial")
-    )
-    
-    fig.add_annotation(
-        x=2024, y=78,
-        text="<b>2024 Acceleration</b><br>AI Index Report findings",
-        showarrow=True,
-        arrowhead=2,
-        arrowsize=1,
-        arrowwidth=2,
-        arrowcolor="#1f77b4",
-        ax=50,
-        ay=-30,
-        bgcolor="rgba(31,119,180,0.1)",
-        bordercolor="#1f77b4",
-        borderwidth=2,
-        font=dict(color="#1f77b4", size=12, family="Arial")
-    )
-    
-    fig.update_layout(
-        title="AI Adoption Trends: The GenAI Revolution", 
-        xaxis_title="Year", 
-        yaxis_title="Adoption Rate (%)",
-        height=500,
-        hovermode='x unified',
-        showlegend=True,
-        legend=dict(
-            yanchor="top",
-            y=0.99,
-            xanchor="right",
-            x=0.99
+    if 'compare_mode' in locals() and compare_mode:
+        # Compare mode: Show specific years comparison
+        st.write(f"📊 **Comparing AI Adoption: {year1} vs {year2}**")
+        
+        # Get data for comparison years
+        year1_data = historical_data[historical_data['year'] == year1].iloc[0]
+        year2_data = historical_data[historical_data['year'] == year2].iloc[0]
+        
+        # Create comparison metrics
+        col1, col2, col3, col4 = st.columns(4)
+        
+        with col1:
+            ai_change = year2_data['ai_use'] - year1_data['ai_use']
+            st.metric(
+                f"Overall AI ({year2})", 
+                f"{year2_data['ai_use']}%",
+                delta=f"{ai_change:+.1f}pp vs {year1}",
+                help=f"Change from {year1_data['ai_use']}% in {year1}"
+            )
+        
+        with col2:
+            genai_change = year2_data['genai_use'] - year1_data['genai_use']
+            st.metric(
+                f"GenAI ({year2})", 
+                f"{year2_data['genai_use']}%",
+                delta=f"{genai_change:+.1f}pp vs {year1}",
+                help=f"Change from {year1_data['genai_use']}% in {year1}"
+            )
+        
+        with col3:
+            years_diff = year2 - year1
+            ai_cagr = ((year2_data['ai_use'] / year1_data['ai_use']) ** (1/years_diff) - 1) * 100 if year1_data['ai_use'] > 0 else 0
+            st.metric(
+                "AI CAGR", 
+                f"{ai_cagr:.1f}%",
+                help=f"Compound Annual Growth Rate over {years_diff} years"
+            )
+        
+        with col4:
+            if year1_data['genai_use'] > 0:
+                genai_cagr = ((year2_data['genai_use'] / year1_data['genai_use']) ** (1/years_diff) - 1) * 100
+                st.metric(
+                    "GenAI CAGR", 
+                    f"{genai_cagr:.1f}%",
+                    help=f"Compound Annual Growth Rate over {years_diff} years"
+                )
+            else:
+                st.metric("GenAI CAGR", "New Category", help="GenAI didn't exist in earlier years")
+        
+        # Create side-by-side comparison chart
+        comparison_data = pd.DataFrame({
+            'category': ['Overall AI', 'GenAI'],
+            year1: [year1_data['ai_use'], year1_data['genai_use']],
+            year2: [year2_data['ai_use'], year2_data['genai_use']]
+        })
+        
+        fig = go.Figure()
+        
+        fig.add_trace(go.Bar(
+            name=str(year1),
+            x=comparison_data['category'],
+            y=comparison_data[year1],
+            marker_color='#1f77b4',
+            text=[f'{x}%' for x in comparison_data[year1]],
+            textposition='outside'
+        ))
+        
+        fig.add_trace(go.Bar(
+            name=str(year2),
+            x=comparison_data['category'],
+            y=comparison_data[year2],
+            marker_color='#ff7f0e',
+            text=[f'{x}%' for x in comparison_data[year2]],
+            textposition='outside'
+        ))
+        
+        fig.update_layout(
+            title=f"AI Adoption Comparison: {year1} vs {year2}",
+            xaxis_title="AI Category",
+            yaxis_title="Adoption Rate (%)",
+            barmode='group',
+            height=400,
+            hovermode='x unified'
         )
-    )
-    
-    # Display chart with source info
-    col1, col2 = st.columns([10, 1])
-    with col1:
+        
         st.plotly_chart(fig, use_container_width=True)
-    with col2:
-        if st.button("📊", key="hist_source", help="View data source"):
-            st.info(show_source_info('ai_index'))
+        
+        # Add insights for comparison
+        st.info(f"""
+        **📈 Key Changes from {year1} to {year2}:**
+        - Overall AI adoption {"increased" if ai_change > 0 else "decreased"} by **{abs(ai_change):.1f} percentage points**
+        - GenAI adoption {"increased" if genai_change > 0 else "decreased"} by **{abs(genai_change):.1f} percentage points**
+        - Time period represents **{years_diff} year{"s" if years_diff != 1 else ""}** of evolution
+        """)
+        
+    else:
+        # Standard timeline view with year range filter
+        filtered_data = historical_data[
+            (historical_data['year'] >= year_range[0]) & 
+            (historical_data['year'] <= year_range[1])
+        ]
+        
+        fig = go.Figure()
+        
+        # Add overall AI use line
+        fig.add_trace(go.Scatter(
+            x=filtered_data['year'], 
+            y=filtered_data['ai_use'], 
+            mode='lines+markers', 
+            name='Overall AI Use', 
+            line=dict(width=4, color='#1f77b4'),
+            marker=dict(size=8),
+            hovertemplate='Year: %{x}<br>Adoption: %{y}%<br>Source: AI Index & McKinsey<extra></extra>'
+        ))
+        
+        # Add GenAI use line
+        fig.add_trace(go.Scatter(
+            x=filtered_data['year'], 
+            y=filtered_data['genai_use'], 
+            mode='lines+markers', 
+            name='GenAI Use', 
+            line=dict(width=4, color='#ff7f0e'),
+            marker=dict(size=8),
+            hovertemplate='Year: %{x}<br>Adoption: %{y}%<br>Source: AI Index 2025<extra></extra>'
+        ))
+        
+        # Add annotations
+        fig.add_annotation(
+            x=2022, y=33,
+            text="<b>ChatGPT Launch</b><br>GenAI Era Begins",
+            showarrow=True,
+            arrowhead=2,
+            arrowsize=1,
+            arrowwidth=2,
+            arrowcolor="#ff7f0e",
+            ax=-50,
+            ay=-40,
+            bgcolor="rgba(255,127,14,0.1)",
+            bordercolor="#ff7f0e",
+            borderwidth=2,
+            font=dict(color="#ff7f0e", size=12, family="Arial")
+        )
+        
+        fig.add_annotation(
+            x=2024, y=78,
+            text="<b>2024 Acceleration</b><br>AI Index Report findings",
+            showarrow=True,
+            arrowhead=2,
+            arrowsize=1,
+            arrowwidth=2,
+            arrowcolor="#1f77b4",
+            ax=50,
+            ay=-30,
+            bgcolor="rgba(31,119,180,0.1)",
+            bordercolor="#1f77b4",
+            borderwidth=2,
+            font=dict(color="#1f77b4", size=12, family="Arial")
+        )
+        
+        fig.update_layout(
+            title="AI Adoption Trends: The GenAI Revolution", 
+            xaxis_title="Year", 
+            yaxis_title="Adoption Rate (%)",
+            height=500,
+            hovermode='x unified',
+            showlegend=True,
+            legend=dict(
+                yanchor="top",
+                y=0.99,
+                xanchor="right",
+                x=0.99
+            )
+        )
+        
+        # Display chart with source info
+        col1, col2 = st.columns([10, 1])
+        with col1:
+            st.plotly_chart(fig, use_container_width=True)
+        with col2:
+            if st.button("📊", key="hist_source", help="View data source"):
+                st.info(show_source_info('ai_index'))
+        
+        # Enhanced insights
+        col1, col2 = st.columns(2)
+        with col1:
+            st.markdown('<div class="insight-box">', unsafe_allow_html=True)
+            st.write("📊 **Key Growth Insights (AI Index 2025):**")
+            st.write("• Business adoption jumped from **55% to 78%** in just one year")
+            st.write("• GenAI adoption more than **doubled** from 33% to 71%")
+            st.write("• AI moved to **central role** in driving business value")
+            st.markdown('</div>', unsafe_allow_html=True)
+        
+        with col2:
+            st.markdown('<div class="insight-box">', unsafe_allow_html=True)
+            st.write("🎯 **Industry Context:**")
+            st.write("• Fastest enterprise technology adoption in history")
+            st.write("• **280x cost reduction** in AI inference since 2022")
+            st.write("• Growing research confirms AI **boosts productivity**")
+            st.markdown('</div>', unsafe_allow_html=True)
     
-    # Enhanced insights
-    col1, col2 = st.columns(2)
-    with col1:
-        st.markdown('<div class="insight-box">', unsafe_allow_html=True)
-        st.write("📊 **Key Growth Insights (AI Index 2025):**")
-        st.write("• Business adoption jumped from **55% to 78%** in just one year")
-        st.write("• GenAI adoption more than **doubled** from 33% to 71%")
-        st.write("• AI moved to **central role** in driving business value")
-        st.markdown('</div>', unsafe_allow_html=True)
-    
-    with col2:
-        st.markdown('<div class="insight-box">', unsafe_allow_html=True)
-        st.write("🎯 **Industry Context:**")
-        st.write("• Fastest enterprise technology adoption in history")
-        st.write("• **280x cost reduction** in AI inference since 2022")
-        st.write("• Growing research confirms AI **boosts productivity**")
-        st.markdown('</div>', unsafe_allow_html=True)
-    
-    # Export data option
-    csv = filtered_data.to_csv(index=False)
+    # Export data option (works for both modes)
+    export_data = filtered_data if not ('compare_mode' in locals() and compare_mode) else historical_data
+    csv = export_data.to_csv(index=False)
     st.download_button(
         label="📥 Download Historical Data (CSV)",
         data=csv,
