@@ -1562,18 +1562,7 @@ elif view_type == "Investment Trends":
             mime="text/csv"
         )
     
-    with tab2:
-        # Country comparison with more context
-        countries_extended = pd.DataFrame({
-            'country': ['United States', 'China', 'United Kingdom', 'Germany', 'France', 
-                       'Canada', 'Israel', 'Japan', 'South Korea', 'India'],
-            'investment': [109.1, 9.3, 4.5, 3.2, 2.8, 2.5, 2.2, 2.0, 1.8, 1.5],
-            'per_capita': [324.8, 6.6, 66.2, 38.1, 41.2, 65.8, 231.6, 16.0, 34.6, 1.1],
-            'pct_of_gdp': [0.43, 0.05, 0.14, 0.08, 0.09, 0.13, 0.48, 0.05, 0.10, 0.04]
-        })
-        
-        # Create subplot with multiple metrics
-       with tab2:
+   with tab2:
         # Country comparison with more context - FIXED to include Israel
         countries_extended = pd.DataFrame({
             'country': ['United States', 'China', 'United Kingdom', 'Germany', 'France', 
