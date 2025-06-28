@@ -3609,7 +3609,7 @@ elif view_type == "Geographic Distribution":
                 coastlinewidth=2
             ),
             height=700,
-            showlegend=True,
+            showlegend=False,
             legend=dict(
                 x=0.85,  # Position legend to avoid colorbar overlap
                 y=0.95,
