@@ -4059,7 +4059,9 @@ elif view_type == "Geographic Distribution":
             data=csv,
             file_name="ai_geographic_ecosystem_analysis.csv",
             mime="text/csv"
-        )elif view_type == "OECD 2025 Findings":
+        )
+
+elif view_type == "OECD 2025 Findings":
     st.write("📊 **OECD/BCG/INSEAD 2025 Report: Enterprise AI Adoption**")
     
     # Enhanced OECD visualization
