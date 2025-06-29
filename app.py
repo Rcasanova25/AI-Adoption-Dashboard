@@ -1712,7 +1712,7 @@ elif view_type == "💰 Investment Decision Engine":
                 title="Portfolio Risk Distribution",
                 height=500,
 		width=500,
-                showlegend=True
+                showlegend=True,
 		title_font_size=16
             )
             
