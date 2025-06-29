@@ -490,21 +490,57 @@ persona = st.sidebar.selectbox(
 )
 st.session_state.selected_persona = persona
 
-# Persona-based view recommendations and filtering
+# Update persona recommendations to focus on strategic views
 persona_views = {
-    "Business Leader": ["Industry Analysis", "Financial Impact", "Investment Trends", "ROI Analysis"],
-    "Policymaker": ["Geographic Distribution", "OECD 2025 Findings", "Regional Growth", "AI Governance"],
-    "Researcher": ["Historical Trends", "Productivity Research", "Environmental Impact", "Skill Gap Analysis"],
-    "General": ["Adoption Rates", "Historical Trends", "Investment Trends", "Labor Impact"]
+    "Business Leader": ["🎯 Competitive Position Assessor", "💰 Investment Decision Engine", "Financial Impact", "ROI Analysis"],
+    "Policymaker": ["⚖️ Regulatory Risk Radar", "Geographic Distribution", "OECD 2025 Findings", "AI Governance"],
+    "Researcher": ["Historical Trends", "Productivity Research", "Environmental Impact", "Bibliography & Sources"],
+    "General": ["🎯 Competitive Position Assessor", "Historical Trends", "Investment Trends", "Industry Analysis"]
 }
 
-# Filter views based on persona
-all_views = ["Adoption Rates", "Historical Trends", "Industry Analysis", "Investment Trends", 
-             "Regional Growth", "AI Cost Trends", "Token Economics", "Financial Impact", "Labor Impact", 
-             "Firm Size Analysis", "Technology Stack", "AI Technology Maturity", 
-             "Productivity Research", "Environmental Impact", "Geographic Distribution", 
-             "OECD 2025 Findings", "Barriers & Support", "ROI Analysis", "Skill Gap Analysis", 
-             "AI Governance", "Bibliography & Sources"]
+
+# Strategic views (top priority)
+strategic_views = [
+    "🎯 Competitive Position Assessor",  # NEW MVP
+    "💰 Investment Decision Engine",     # Coming soon
+    "⚖️ Regulatory Risk Radar"          # Coming soon
+]
+
+# Core analysis views (refined list)
+core_views = [
+    "Historical Trends", 
+    "Industry Analysis", 
+    "Investment Trends",
+    "Financial Impact",
+    "Geographic Distribution"
+]
+
+# Detailed analysis views (for deep dives)
+detailed_views = [
+    "Token Economics",
+    "Labor Impact", 
+    "Environmental Impact",
+    "Skill Gap Analysis",
+    "AI Governance",
+    "OECD 2025 Findings",
+    "Productivity Research",
+    "ROI Analysis"
+]
+
+# Legacy views (keep for completeness)
+legacy_views = [
+    "Adoption Rates",
+    "Regional Growth", 
+    "AI Cost Trends",
+    "Firm Size Analysis",
+    "Technology Stack",
+    "AI Technology Maturity",
+    "Barriers & Support",
+    "Bibliography & Sources"
+]
+
+# Create organized menu structure
+all_views = strategic_views + ["---"] + core_views + ["---"] + detailed_views + ["---"] + legacy_views
 
 if persona != "General":
     st.sidebar.info(f"💡 **Recommended views for {persona}:**\n" + "\n".join([f"• {v}" for v in persona_views[persona]]))
