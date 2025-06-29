@@ -1282,8 +1282,8 @@ if view_type == "🎯 Competitive Position Assessor":
     st.success("✅ Report ready for download! Use this for leadership presentations and strategic planning.")
     
     # Help section (this should be at the same level as the main sections above)
-        with st.expander("ℹ️ How This Assessment Works"):
-            st.markdown("""
+    with st.expander("ℹ️ How This Assessment Works"):
+        st.markdown("""
         ### Assessment Methodology
         
         This competitive position assessment uses a multi-factor analysis based on:
