@@ -112,12 +112,11 @@ def apply_executive_styling():
         
     st.markdown("""
     <style>
-    /* Executive metric cards */
     .exec-metric {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
         padding: 1.5rem;
         border-radius: 12px;
-        color: white;
+        color: #2c3e50;
         text-align: center;
         margin: 0.5rem 0;
         box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
@@ -135,7 +134,6 @@ def apply_executive_styling():
         font-weight: bold;
     }
     
-    /* Strategic insight boxes */
     .strategic-insight {
         border-left: 4px solid #2E86AB;
         background: rgba(46, 134, 171, 0.1);
@@ -149,7 +147,6 @@ def apply_executive_styling():
         margin-top: 0;
     }
     
-    /* Action required boxes */
     .action-required {
         background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
         color: white;
@@ -163,7 +160,6 @@ def apply_executive_styling():
         color: white;
     }
     
-    /* Opportunity boxes */
     .opportunity-box {
         background: linear-gradient(135deg, #2ecc71 0%, #27ae60 100%);
         color: white;
@@ -172,38 +168,37 @@ def apply_executive_styling():
         margin: 1.5rem 0;
     }
     
-    /* Chart consistency */
-    .plotly-graph-div {
-        border: 1px solid #e1e5e9;
-        border-radius: 8px;
-        padding: 10px;
-        margin: 1rem 0;
-    }
-    
-    /* Executive brief styling with proper contrast */
+    /* FIXED: Eye-catching executive brief background */
     .exec-brief-section {
-        background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+        background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
         padding: 2rem;
         border-radius: 12px;
         margin: 1rem 0;
-        border: 1px solid #dee2e6;
-        color: #212529;
+        border: 2px solid #3d5af1;
+        color: white;
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
     }
     
     .exec-brief-section h4 {
-        color: #495057;
+        color: #ffffff;
         margin-top: 1rem;
         margin-bottom: 0.5rem;
+        font-weight: bold;
     }
     
     .exec-brief-section p {
-        color: #212529;
+        color: #f8f9fa;
         line-height: 1.6;
     }
     
     .exec-brief-section ol li {
-        color: #212529;
+        color: #f8f9fa;
         margin-bottom: 0.5rem;
+    }
+    
+    .exec-brief-section strong {
+        color: #ffffff;
+        font-weight: bold;
     }
     </style>
     """, unsafe_allow_html=True)
@@ -231,7 +226,7 @@ def executive_strategic_brief():
     
     st.markdown('<div class="exec-brief-section">', unsafe_allow_html=True)
     
-    st.title("🎯 Executive Strategic Brief")
+    st.title("🎯Strategic Brief")
     st.markdown("*5-minute strategic intelligence for leadership decisions*")
     st.markdown("**Updated:** June 2025 | **Sources:** Stanford AI Index, McKinsey, OECD")
     
