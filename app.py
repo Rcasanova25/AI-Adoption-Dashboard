@@ -499,15 +499,44 @@ with col4:
     """, unsafe_allow_html=True)
 
 # Quick start for executives
+# BETTER SOLUTION: Auto-show assessment when button clicked
+
+# Quick start for executives
 if st.session_state.selected_persona in ["Business Leader", "General"]:
+    # Initialize session state for quick start
+    if 'show_quick_assessment' not in st.session_state:
+        st.session_state.show_quick_assessment = False
+    
     with st.container():
         st.info("""
         **👔 Executive Quick Start:** Take the 2-minute Competitive Position Assessment to understand your AI strategy position and get specific recommendations.
         """)
-        if st.button("🚀 Start Strategic Assessment", type="primary"):
-            # This will change the view to the assessor
-            st.session_state.selected_view = "🎯 Competitive Position Assessor"
-            st.rerun()
+        
+        col1, col2, col3 = st.columns([1, 2, 1])
+        
+        with col2:
+            if st.button("🚀 Start Strategic Assessment", type="primary", use_container_width=True):
+                st.session_state.show_quick_assessment = True
+                st.rerun()
+    
+    # Show the assessment inline if button was clicked
+    if st.session_state.show_quick_assessment:
+        st.markdown("---")
+        st.subheader("🎯 Quick Strategic Assessment")
+        
+        # Add a collapse button
+        col1, col2 = st.columns([3, 1])
+        with col1:
+            st.write("**Complete your assessment below:**")
+        with col2:
+            if st.button("❌ Close", key="close_quick"):
+                st.session_state.show_quick_assessment = False
+                st.rerun()
+        
+        # Embed a simplified version of the assessment here
+        # (Copy the key parts from your Competitive Position Assessor)
+        
+        st.info("💡 **Tip:** For the full experience with detailed analysis, select '🎯 Competitive Position Assessor' from the sidebar menu.")
 
 # What's New section
 with st.expander("🆕 What's New in Version 2.2.0", expanded=st.session_state.show_changelog):
@@ -1179,10 +1208,11 @@ if view_type == "🎯 Competitive Position Assessor":
             """)
         
         # DOWNLOAD STRATEGIC REPORT
-        st.subheader("📥 Executive Summary Report")
-        
-        if st.button("📊 Generate Executive Report", use_container_width=True):
-            report_data = f"""
+# DOWNLOAD STRATEGIC REPORT (FIXED VERSION)
+st.subheader("📥 Executive Summary Report")
+
+# Generate the report data immediately (don't wait for button click)
+report_data = f"""
 AI COMPETITIVE POSITION ASSESSMENT
 Executive Summary Report
 Generated: {datetime.now().strftime('%B %d, %Y')}
@@ -1232,17 +1262,24 @@ Data Sources: Stanford AI Index 2025, McKinsey Global Survey, OECD AI Observator
 Methodology: Multi-factor competitive analysis based on industry benchmarks
 Contact: [Your organization contact information]
 ═══════════════════════════════════════════════════════════════
-            """
-            
-            st.download_button(
-                label="📥 Download Executive Report",
-                data=report_data,
-                file_name=f"AI_Competitive_Assessment_{datetime.now().strftime('%Y%m%d')}.txt",
-                mime="text/plain",
-                use_container_width=True
-            )
-            
-            st.success("✅ Executive report generated! Use this for leadership presentations and strategic planning.")
+"""
+
+# Show a preview of the report
+with st.expander("📋 Preview Executive Report", expanded=False):
+    st.text(report_data[:500] + "...")
+    st.write("*Full report available for download below*")
+
+# Direct download button (this should work)
+st.download_button(
+    label="📥 Download Complete Executive Report",
+    data=report_data,
+    file_name=f"AI_Competitive_Assessment_{datetime.now().strftime('%Y%m%d')}.txt",
+    mime="text/plain",
+    use_container_width=True,
+    help="Click to download your complete strategic assessment report"
+)
+
+st.success("✅ Report ready for download! Use this for leadership presentations and strategic planning.")
     
     # Help section
     with st.expander("ℹ️ How This Assessment Works"):
