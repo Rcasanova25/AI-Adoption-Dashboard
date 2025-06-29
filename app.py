@@ -563,28 +563,6 @@ OECD AI Policy Observatory, and US Census Bureau AI Use Supplement.
 # Sidebar controls
 st.sidebar.header("📊 Dashboard Controls")
 
-persona_info = {
-    "Business Leader": "👔 Strategic focus with executive tools",
-    "Policymaker": "🏛️ Policy and regulatory emphasis", 
-    "Researcher": "🔬 Comprehensive data and methodology",
-    "General": "👤 Balanced strategic and analytical views"
-}
-
-st.sidebar.info(f"""
-**Current View Mode:** {st.session_state.selected_persona}
-{persona_info[st.session_state.selected_persona]}
-
-**Recommended:** {', '.join(recommended_views[:2])}...
-""")
-
-# Show view selector
-view_type = st.sidebar.selectbox(
-    "Analysis View", 
-    all_views,
-    index=0,  # Always start with first recommended view
-    help="Curated views based on your selected role"
-)
-
 if st.session_state.selected_persona == "Business Leader":
     # EXECUTIVE-FOCUSED: Only strategic tools + essential insights
     all_views = [
@@ -706,6 +684,28 @@ legacy_views = [
     "Barriers & Support",
     "Bibliography & Sources"
 ]
+
+persona_info = {
+    "Business Leader": "👔 Strategic focus with executive tools",
+    "Policymaker": "🏛️ Policy and regulatory emphasis", 
+    "Researcher": "🔬 Comprehensive data and methodology",
+    "General": "👤 Balanced strategic and analytical views"
+}
+
+st.sidebar.info(f"""
+**Current View Mode:** {st.session_state.selected_persona}
+{persona_info[st.session_state.selected_persona]}
+
+**Recommended:** {', '.join(recommended_views[:2])}...
+""")
+
+# Show view selector
+view_type = st.sidebar.selectbox(
+    "Analysis View", 
+    all_views,
+    index=0,  # Always start with first recommended view
+    help="Curated views based on your selected role"
+)
 
 # Create organized menu structure
 all_views = strategic_views + ["---"] + core_views + ["---"] + detailed_views + ["---"] + legacy_views
