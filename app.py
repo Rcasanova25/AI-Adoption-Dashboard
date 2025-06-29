@@ -1209,60 +1209,60 @@ if view_type == "🎯 Competitive Position Assessor":
         
         # DOWNLOAD STRATEGIC REPORT
 # DOWNLOAD STRATEGIC REPORT (FIXED VERSION)
-st.subheader("📥 Executive Summary Report")
+    st.subheader("📥 Executive Summary Report")
 
 # Generate the report data immediately (don't wait for button click)
-report_data = f"""
-AI COMPETITIVE POSITION ASSESSMENT
-Executive Summary Report
-Generated: {datetime.now().strftime('%B %d, %Y')}
+    report_data = f"""
+    AI COMPETITIVE POSITION ASSESSMENT
+    Executive Summary Report
+    Generated: {datetime.now().strftime('%B %d, %Y')}
 
-═══════════════════════════════════════════════════════════════
+    ═══════════════════════════════════════════════════════════════
 
-ORGANIZATION PROFILE
-═══════════════════════════════════════════════════════════════
-Industry Sector: {industry}
-Organization Size: {company_size}
-Geographic Focus: {geographic_focus}
-Current AI Adoption: {current_ai_adoption}%
-Annual AI Investment: {ai_investment}
-Strategic Priority: {urgency}
+    ORGANIZATION PROFILE
+    ═══════════════════════════════════════════════════════════════
+    Industry Sector: {industry}
+    Organization Size: {company_size}
+    Geographic Focus: {geographic_focus}
+    Current AI Adoption: {current_ai_adoption}%
+    Annual AI Investment: {ai_investment}
+    Strategic Priority: {urgency}
 
-COMPETITIVE ASSESSMENT RESULTS  
-═══════════════════════════════════════════════════════════════
-Overall Position: {position} ({competitive_score:.0f}/100)
-Industry Comparison: {industry_gap:+.0f}pp vs {industry} average ({industry_avg}%)
-Size Peer Comparison: {size_gap:+.0f}pp vs {company_size} average ({size_avg}%)
-Competitive Risk Level: {risk_level}
-Recommended Action Timeline: {months_to_risk:.0f} months
+    COMPETITIVE ASSESSMENT RESULTS  
+    ═══════════════════════════════════════════════════════════════
+    Overall Position: {position} ({competitive_score:.0f}/100)
+    Industry Comparison: {industry_gap:+.0f}pp vs {industry} average ({industry_avg}%)
+    Size Peer Comparison: {size_gap:+.0f}pp vs {company_size} average ({size_avg}%)
+    Competitive Risk Level: {risk_level}
+    Recommended Action Timeline: {months_to_risk:.0f} months
 
-STRATEGIC RECOMMENDATIONS
-═══════════════════════════════════════════════════════════════
-{chr(10).join([f"{i+1}. {rec.replace('**', '').replace('*', '')}" for i, rec in enumerate(recommendations)])}
+    STRATEGIC RECOMMENDATIONS
+    ═══════════════════════════════════════════════════════════════
+    {chr(10).join([f"{i+1}. {rec.replace('**', '').replace('*', '')}" for i, rec in enumerate(recommendations)])}
 
-BENCHMARKING DATA
-═══════════════════════════════════════════════════════════════
-Your Organization: {current_ai_adoption}%
-{industry} Average: {industry_avg}%
-{company_size} Peers: {size_avg}%
-Industry Leaders: {min(industry_avg * 1.3, 95):.0f}%
-Market Leaders: 90%+
+    BENCHMARKING DATA
+    ═══════════════════════════════════════════════════════════════
+    Your Organization: {current_ai_adoption}%
+    {industry} Average: {industry_avg}%
+    {company_size} Peers: {size_avg}%
+    Industry Leaders: {min(industry_avg * 1.3, 95):.0f}%
+    Market Leaders: 90%+
 
-IMMEDIATE NEXT STEPS
-═══════════════════════════════════════════════════════════════
-1. Present findings to executive leadership
-2. Conduct detailed AI readiness assessment  
-3. Allocate appropriate investment budget
-4. Identify and launch pilot initiatives
-5. Establish AI governance and strategy framework
+    IMMEDIATE NEXT STEPS
+    ═══════════════════════════════════════════════════════════════
+    1. Present findings to executive leadership
+    2. Conduct detailed AI readiness assessment  
+    3. Allocate appropriate investment budget
+    4. Identify and launch pilot initiatives
+    5. Establish AI governance and strategy framework
 
-═══════════════════════════════════════════════════════════════
-Report Source: AI Adoption Dashboard v2.2.0
-Data Sources: Stanford AI Index 2025, McKinsey Global Survey, OECD AI Observatory
-Methodology: Multi-factor competitive analysis based on industry benchmarks
-Contact: [Your organization contact information]
-═══════════════════════════════════════════════════════════════
-"""
+    ═══════════════════════════════════════════════════════════════
+    Report Source: AI Adoption Dashboard v2.2.0
+    Data Sources: Stanford AI Index 2025, McKinsey Global Survey, OECD AI Observatory
+    Methodology: Multi-factor competitive analysis based on industry benchmarks
+    Contact: [Your organization contact information]
+    ═══════════════════════════════════════════════════════════════
+    """
 
 # Show a preview of the report
         with st.expander("📋 Preview Executive Report", expanded=False):
