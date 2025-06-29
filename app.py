@@ -1693,48 +1693,63 @@ elif view_type == "💰 Investment Decision Engine":
         st.subheader("⚠️ Investment Risk Analysis")
         
         # Calculate portfolio risk
-        risk_distribution = portfolio_df['Risk Level'].value_counts()
-        total_low_risk = portfolio_df[portfolio_df['Risk Level'] == 'Low']['Allocation (%)'].sum()
-        total_high_risk = portfolio_df[portfolio_df['Risk Level'] == 'High']['Allocation (%)'].sum()
-        
-        col1, col2 = st.columns(2)
-        
-        with col1:
-            # Risk distribution pie chart
-            fig_risk = go.Figure(data=[go.Pie(
-                labels=risk_distribution.index,
-                values=risk_distribution.values,
-                hole=.3,
-                marker_colors=['#2ECC71', '#F39C12', '#E74C3C']
-            )])
-            
-            fig_risk.update_layout(
-                title="Portfolio Risk Distribution",
-                height=500,
-		width=500,
-                showlegend=True,
-		title_font_size=16
-            )
-            
-            st.plotly_chart(fig_risk, use_container_width=True)
-        
-        with col2:
-            st.markdown(f"""
-            **🎯 Risk Assessment:**
-            
-            **Low Risk Projects:** {total_low_risk:.0f}% of budget
-            - Proven ROI, established vendors
-            - Recommended for immediate implementation
-            
-            **High Risk Projects:** {total_high_risk:.0f}% of budget  
-            - Higher potential returns but uncertain outcomes
-            - Implement after establishing AI capabilities
-            
-            **Risk Mitigation:**
-            - Start with low-risk, high-ROI projects
-            - Build internal AI expertise gradually
-            - Maintain 20% budget buffer for adjustments
-            """)
+        # REPLACE the risk calculation section with this:
+
+# Calculate portfolio risk BY BUDGET ALLOCATION (not just count)
+risk_allocation = portfolio_df.groupby('Risk Level')['Allocation (%)'].sum().reset_index()
+risk_allocation.columns = ['Risk Level', 'Budget Percentage']
+
+# Calculate individual risk totals
+total_low_risk = portfolio_df[portfolio_df['Risk Level'] == 'Low']['Allocation (%)'].sum()
+total_medium_risk = portfolio_df[portfolio_df['Risk Level'] == 'Medium']['Allocation (%)'].sum()
+total_high_risk = portfolio_df[portfolio_df['Risk Level'] == 'High']['Allocation (%)'].sum()
+
+col1, col2 = st.columns(2)
+
+with col1:
+    # Dynamic risk distribution pie chart
+    fig_risk = go.Figure(data=[go.Pie(
+        labels=risk_allocation['Risk Level'],
+        values=risk_allocation['Budget Percentage'],  # ← NOW uses actual budget allocation
+        hole=.3,
+        marker_colors=['#2ECC71', '#F39C12', '#E74C3C'],
+        textinfo='label+percent',
+        textfont_size=12,
+        hovertemplate='<b>%{label}</b><br>Budget Allocation: %{value:.1f}%<br>Investment: $%{customdata}<extra></extra>',
+        customdata=[f"{(pct/100 * adjusted_budget):,.0f}" for pct in risk_allocation['Budget Percentage']]
+    )])
+    
+    fig_risk.update_layout(
+        title="Portfolio Risk Distribution by Budget",
+        height=500,  # ← Increased size as requested
+        showlegend=True
+    )
+    
+    st.plotly_chart(fig_risk, use_container_width=True)
+
+with col2:
+    st.markdown(f"""
+    **🎯 Dynamic Risk Assessment:**
+    
+    **Low Risk Projects:** {total_low_risk:.1f}% of budget (${total_low_risk/100 * adjusted_budget:,.0f})
+    - Proven ROI, established vendors
+    - Recommended for immediate implementation
+    
+    **Medium Risk Projects:** {total_medium_risk:.1f}% of budget (${total_medium_risk/100 * adjusted_budget:,.0f})
+    - Good potential with some uncertainty
+    - Implement after initial success
+    
+    **High Risk Projects:** {total_high_risk:.1f}% of budget (${total_high_risk/100 * adjusted_budget:,.0f})
+    - Higher potential returns but uncertain outcomes
+    - Implement after establishing AI capabilities
+    
+    **Risk Recommendation:**
+    {
+        "Conservative approach - good balance" if total_high_risk < 20 else
+        "Aggressive approach - monitor closely" if total_high_risk > 40 else
+        "Balanced approach - appropriate risk level"
+    }
+    """)
         
         # DOWNLOAD INVESTMENT PLAN
         st.subheader("📥 Investment Strategy Report")
