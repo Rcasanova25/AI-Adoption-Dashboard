@@ -2146,73 +2146,97 @@ elif view_type == "📊 Strategic Market Intelligence":
         - Winner-take-most dynamics creating market concentration
         """)
     
-    with intel_tabs[3]:
-        st.subheader("🔮 Forward Outlook & Scenario Planning")
+    # Fix for the scenario planning visualization in Strategic Market Intelligence
+# Replace the problematic section around line 2162
+
+with intel_tabs[3]:
+    st.subheader("🔮 Forward Outlook & Scenario Planning")
+    
+    # Scenario planning matrix - FIXED
+    scenarios = pd.DataFrame({
+        'scenario': ['AI Winter 2.0', 'Steady Growth', 'Explosive Acceleration', 'Regulatory Clampdown'],
+        'probability': [15, 35, 40, 10],
+        'impact_adoption': [-30, 15, 85, -20],
+        'impact_investment': [-60, 25, 150, -40],  # This was causing the issue
+        'timeline': ['2026-2027', '2025-2030', '2025-2026', '2025-2027']
+    })
+    
+    # Scenario visualization - FIXED VERSION
+    fig = go.Figure()
+    
+    # Create scatter plot manually to avoid the plotly express issue
+    for i, scenario in scenarios.iterrows():
+        fig.add_trace(go.Scatter(
+            x=[scenario['probability']],
+            y=[scenario['impact_adoption']],
+            mode='markers+text',
+            marker=dict(
+                size=abs(scenario['impact_investment']) / 3,  # Use absolute value for size
+                color=scenario['impact_investment'],
+                colorscale='RdYlGn',
+                showscale=True if i == 0 else False,  # Only show colorbar once
+                colorbar=dict(title="Investment Impact (%)") if i == 0 else None,
+                line=dict(width=2, color='black')
+            ),
+            text=scenario['scenario'],
+            textposition='top center',
+            name=scenario['scenario'],
+            hovertemplate='<b>%{text}</b><br>' +
+                         f'Probability: {scenario["probability"]}%<br>' +
+                         f'Adoption Impact: {scenario["impact_adoption"]:+d}%<br>' +
+                         f'Investment Impact: {scenario["impact_investment"]:+d}%<br>' +
+                         f'Timeline: {scenario["timeline"]}<extra></extra>'
+        ))
+    
+    fig.update_layout(
+        title='AI Future Scenarios: Probability vs Impact',
+        xaxis_title='Probability (%)',
+        yaxis_title='Adoption Impact (%)',
+        height=400,
+        showlegend=False,  # Hide legend since we have text labels
+        xaxis=dict(range=[0, 50]),
+        yaxis=dict(range=[-40, 100])
+    )
+    
+    st.plotly_chart(fig, use_container_width=True)
+    
+    # Scenario details
+    col1, col2 = st.columns(2)
+    
+    with col1:
+        st.write("**🎯 Most Likely: Explosive Acceleration (40%)**")
+        st.write("• Continued breakthrough innovations")
+        st.write("• Mass market adoption across all sectors") 
+        st.write("• 85% increase in adoption rates")
+        st.write("• 150% investment growth")
         
-        # Scenario planning matrix
-        scenarios = pd.DataFrame({
-            'scenario': ['AI Winter 2.0', 'Steady Growth', 'Explosive Acceleration', 'Regulatory Clampdown'],
-            'probability': [15, 35, 40, 10],
-            'impact_adoption': [-30, 15, 85, -20],
-            'impact_investment': [-60, 25, 150, -40],
-            'timeline': ['2026-2027', '2025-2030', '2025-2026', '2025-2027']
-        })
+        st.write("**📊 Conservative: Steady Growth (35%)**")
+        st.write("• Gradual, sustainable adoption")
+        st.write("• Measured investment growth")
+        st.write("• Focus on proven use cases")
+        st.write("• Regulatory clarity emerges")
+    
+    with col2:
+        st.write("**❄️ Downside: AI Winter 2.0 (15%)**")
+        st.write("• Technology limitations hit wall")
+        st.write("• Investment bubble bursts")
+        st.write("• Disillusionment with ROI")
+        st.write("• Market consolidation")
         
-        # Scenario visualization
-        fig = px.scatter(
-            scenarios,
-            x='probability',
-            y='impact_adoption',
-            size='impact_investment',
-            color='scenario',
-            title='AI Future Scenarios: Probability vs Impact',
-            labels={
-                'probability': 'Probability (%)',
-                'impact_adoption': 'Adoption Impact (%)',
-                'impact_investment': 'Investment Impact (%)'
-            },
-            height=400
-        )
-        
-        st.plotly_chart(fig, use_container_width=True)
-        
-        # Scenario details
-        col1, col2 = st.columns(2)
-        
-        with col1:
-            st.write("**🎯 Most Likely: Explosive Acceleration (40%)**")
-            st.write("• Continued breakthrough innovations")
-            st.write("• Mass market adoption across all sectors") 
-            st.write("• 85% increase in adoption rates")
-            st.write("• 150% investment growth")
-            
-            st.write("**📊 Conservative: Steady Growth (35%)**")
-            st.write("• Gradual, sustainable adoption")
-            st.write("• Measured investment growth")
-            st.write("• Focus on proven use cases")
-            st.write("• Regulatory clarity emerges")
-        
-        with col2:
-            st.write("**❄️ Downside: AI Winter 2.0 (15%)**")
-            st.write("• Technology limitations hit wall")
-            st.write("• Investment bubble bursts")
-            st.write("• Disillusionment with ROI")
-            st.write("• Market consolidation")
-            
-            st.write("**⚖️ Wild Card: Regulatory Clampdown (10%)**")
-            st.write("• Strict AI regulations imposed")
-            st.write("• Innovation significantly slowed")
-            st.write("• Compliance costs skyrocket")
-            st.write("• Market fragmentation by region")
-        
-        # Strategic recommendations by scenario
-        st.info("""
-        **🎯 Scenario-Based Strategy:**
-        - **Explosive Acceleration:** Invest aggressively now, build capabilities fast
-        - **Steady Growth:** Balanced approach, focus on ROI and sustainability  
-        - **AI Winter 2.0:** Defensive strategy, focus on core use cases only
-        - **Regulatory Clampdown:** Invest in compliance and governance early
-        """)
+        st.write("**⚖️ Wild Card: Regulatory Clampdown (10%)**")
+        st.write("• Strict AI regulations imposed")
+        st.write("• Innovation significantly slowed")
+        st.write("• Compliance costs skyrocket")
+        st.write("• Market fragmentation by region")
+    
+    # Strategic recommendations by scenario
+    st.info("""
+    **🎯 Scenario-Based Strategy:**
+    - **Explosive Acceleration:** Invest aggressively now, build capabilities fast
+    - **Steady Growth:** Balanced approach, focus on ROI and sustainability  
+    - **AI Winter 2.0:** Defensive strategy, focus on core use cases only
+    - **Regulatory Clampdown:** Invest in compliance and governance early
+    """)
     
     with intel_tabs[4]:
         st.subheader("🚨 Risk Monitor & Early Warning System")
