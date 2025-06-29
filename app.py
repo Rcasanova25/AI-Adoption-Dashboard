@@ -1279,7 +1279,7 @@ if view_type == "🎯 Competitive Position Assessor":
         help="Click to download your complete strategic assessment report"
     )
 
-        st.success("✅ Report ready for download! Use this for leadership presentations and strategic planning.")
+    st.success("✅ Report ready for download! Use this for leadership presentations and strategic planning.")
     
     # Help section (this should be at the same level as the main sections above)
         with st.expander("ℹ️ How This Assessment Works"):
