@@ -382,6 +382,9 @@ def assess_competitive_position(industry, company_size):
 # Apply styling
 apply_executive_styling()
 
+# Load data first to ensure all variables are available
+historical_data, sector_2018, sector_2025, firm_size, ai_maturity, geographic, state_data, tech_stack, productivity_data, productivity_by_skill, ai_productivity_estimates, oecd_g7_adoption, oecd_applications, barriers_data = load_data()
+
 # Determine navigation mode
 current_view, is_detailed = determine_navigation_mode()
 
@@ -390,212 +393,212 @@ if not is_detailed:
     # Executive views
     if current_view == "🚀 Strategic Brief":
         executive_strategic_brief()
-elif current_view == "⚖️ Competitive Position":
-    st.subheader("⚖️ Competitive Position Intelligence")
-    st.markdown("*Understand your strategic position in the AI adoption landscape*")
-    
-    # Quick positioning assessment
-    col1, col2 = st.columns([2, 1])
-    
-    with col1:
-        st.markdown("### 🎯 Position Your Company")
+    elif current_view == "⚖️ Competitive Position":
+        st.subheader("⚖️ Competitive Position Intelligence")
+        st.markdown("*Understand your strategic position in the AI adoption landscape*")
         
-        industry = st.selectbox("Your Industry", [
-            "Technology (92% adoption)",
-            "Financial Services (85% adoption)", 
-            "Healthcare (78% adoption)",
-            "Manufacturing (75% adoption)",
-            "Retail & E-commerce (72% adoption)",
-            "Education (65% adoption)",
-            "Energy & Utilities (58% adoption)",
-            "Government (52% adoption)"
-        ], help="Select your primary industry")
+        # Quick positioning assessment
+        col1, col2 = st.columns([2, 1])
         
-        company_size = st.selectbox("Company Size", [
-            "1-50 employees (3% adoption)",
-            "51-250 employees (12% adoption)",
-            "251-1000 employees (25% adoption)", 
-            "1000-5000 employees (42% adoption)",
-            "5000+ employees (58% adoption)"
-        ], help="Select your company size range")
-        
-        current_ai_maturity = st.select_slider("Current AI Maturity", [
-            "Exploring (0-10%)",
-            "Piloting (10-30%)", 
-            "Implementing (30-60%)",
-            "Scaling (60-80%)",
-            "Leading (80%+)"
-        ], help="Estimate your current AI implementation level")
-    
-    with col2:
-        if st.button("🎯 Assess My Position", type="primary", use_container_width=True):
-            # Extract percentages for calculation
-            industry_rate = int(industry.split('(')[1].split('%')[0])
-            size_rate = int(company_size.split('(')[1].split('%')[0])
-            maturity_score = {"Exploring (0-10%)": 5, "Piloting (10-30%)": 20, 
-                            "Implementing (30-60%)": 45, "Scaling (60-80%)": 70, 
-                            "Leading (80%+)": 90}[current_ai_maturity]
+        with col1:
+            st.markdown("### 🎯 Position Your Company")
             
-            # Calculate competitive position
-            competitive_score = (industry_rate * 0.4 + size_rate * 0.4 + maturity_score * 0.2)
+            industry = st.selectbox("Your Industry", [
+                "Technology (92% adoption)",
+                "Financial Services (85% adoption)", 
+                "Healthcare (78% adoption)",
+                "Manufacturing (75% adoption)",
+                "Retail & E-commerce (72% adoption)",
+                "Education (65% adoption)",
+                "Energy & Utilities (58% adoption)",
+                "Government (52% adoption)"
+            ], help="Select your primary industry")
             
-            if competitive_score >= 70:
-                st.success(f"""
-                **🏆 COMPETITIVE LEADER**
-                
-                **Position Score:** {competitive_score:.0f}/100
-                
-                **Status:** You're ahead of most competitors
-                **Focus:** Innovation and market expansion
-                **Risk Level:** Low - maintain leadership
-                """)
-            elif competitive_score >= 50:
-                st.warning(f"""
-                **⚖️ COMPETITIVE POSITION**
-                
-                **Position Score:** {competitive_score:.0f}/100
-                
-                **Status:** Keeping pace with market
-                **Focus:** Accelerate to gain advantage  
-                **Risk Level:** Medium - must not fall behind
-                """)
-            else:
-                st.error(f"""
-                **⚠️ COMPETITIVE RISK**
-                
-                **Position Score:** {competitive_score:.0f}/100
-                
-                **Status:** Behind market adoption curve
-                **Focus:** Urgent catch-up required
-                **Risk Level:** High - immediate action needed
-                """)
-    
-    # Competitive landscape visualization
-    st.markdown("### 📊 Competitive Landscape Analysis")
-    
-    # Use your existing firm size data but with competitive context
-    fig = go.Figure()
-    
-    # Enhanced firm size chart with competitive zones
-    fig.add_trace(go.Bar(
-        x=firm_size['size'], 
-        y=firm_size['adoption'],
-        marker=dict(
-            color=firm_size['adoption'],
-            colorscale='RdYlGn',
-            colorbar=dict(title="Competitive Position")
-        ),
-        text=[f'{x}%' for x in firm_size['adoption']],
-        textposition='outside',
-        hovertemplate='<b>%{x}</b><br>Adoption: %{y}%<br>Position: %{customdata}<extra></extra>',
-        customdata=['High Risk', 'High Risk', 'At Risk', 'At Risk', 'Below Average',
-                   'Average', 'Competitive', 'Strong', 'Very Strong', 'Leader', 'Dominant']
-    ))
-    
-    # Add competitive threshold lines
-    fig.add_hline(y=25, line_dash="dash", line_color="orange", 
-                  annotation_text="Competitive Threshold (25%)", annotation_position="right")
-    fig.add_hline(y=50, line_dash="dash", line_color="green",
-                  annotation_text="Strong Position (50%)", annotation_position="right")
-    
-    # Add shaded competitive zones
-    fig.add_hrect(y0=0, y1=25, fillcolor="red", opacity=0.1, 
-                  annotation_text="Risk Zone", annotation_position="top left")
-    fig.add_hrect(y0=25, y1=50, fillcolor="yellow", opacity=0.1,
-                  annotation_text="Competitive Zone", annotation_position="top left")  
-    fig.add_hrect(y0=50, y1=100, fillcolor="green", opacity=0.1,
-                  annotation_text="Leadership Zone", annotation_position="top left")
-    
-    fig.update_layout(
-        title='Competitive Position by Company Size - Where Do You Stand?',
-        xaxis_title='Company Size (Employees)',
-        yaxis_title='AI Adoption Rate (%)',
-        height=500,
-        showlegend=False
-    )
-    
-    st.plotly_chart(fig, use_container_width=True)
-    
-    # Strategic implications by position
-    col1, col2, col3 = st.columns(3)
-    
-    with col1:
-        st.markdown("""
-        **🚨 Risk Zone (0-25%)**
-        - **Immediate Action Required**
-        - Falling behind competitors
-        - Missing productivity gains
-        - Talent disadvantage growing
+            company_size = st.selectbox("Company Size", [
+                "1-50 employees (3% adoption)",
+                "51-250 employees (12% adoption)",
+                "251-1000 employees (25% adoption)", 
+                "1000-5000 employees (42% adoption)",
+                "5000+ employees (58% adoption)"
+            ], help="Select your company size range")
+            
+            current_ai_maturity = st.select_slider("Current AI Maturity", [
+                "Exploring (0-10%)",
+                "Piloting (10-30%)", 
+                "Implementing (30-60%)",
+                "Scaling (60-80%)",
+                "Leading (80%+)"
+            ], help="Estimate your current AI implementation level")
         
-        **Next Steps:**
-        - 30-day competitive assessment
-        - Quick-win pilot projects
-        - Emergency talent acquisition
-        """)
-    
-    with col2:
-        st.markdown("""
-        **⚡ Competitive Zone (25-50%)**
-        - **Accelerate Investment**
-        - Keeping pace but not leading
-        - Opportunity to gain advantage
-        - Scale existing successes
+        with col2:
+            if st.button("🎯 Assess My Position", type="primary", use_container_width=True):
+                # Extract percentages for calculation
+                industry_rate = int(industry.split('(')[1].split('%')[0])
+                size_rate = int(company_size.split('(')[1].split('%')[0])
+                maturity_score = {"Exploring (0-10%)": 5, "Piloting (10-30%)": 20, 
+                                "Implementing (30-60%)": 45, "Scaling (60-80%)": 70, 
+                                "Leading (80%+)": 90}[current_ai_maturity]
+                
+                # Calculate competitive position
+                competitive_score = (industry_rate * 0.4 + size_rate * 0.4 + maturity_score * 0.2)
+                
+                if competitive_score >= 70:
+                    st.success(f"""
+                    **🏆 COMPETITIVE LEADER**
+                    
+                    **Position Score:** {competitive_score:.0f}/100
+                    
+                    **Status:** You're ahead of most competitors
+                    **Focus:** Innovation and market expansion
+                    **Risk Level:** Low - maintain leadership
+                    """)
+                elif competitive_score >= 50:
+                    st.warning(f"""
+                    **⚖️ COMPETITIVE POSITION**
+                    
+                    **Position Score:** {competitive_score:.0f}/100
+                    
+                    **Status:** Keeping pace with market
+                    **Focus:** Accelerate to gain advantage  
+                    **Risk Level:** Medium - must not fall behind
+                    """)
+                else:
+                    st.error(f"""
+                    **⚠️ COMPETITIVE RISK**
+                    
+                    **Position Score:** {competitive_score:.0f}/100
+                    
+                    **Status:** Behind market adoption curve
+                    **Focus:** Urgent catch-up required
+                    **Risk Level:** High - immediate action needed
+                    """)
         
-        **Next Steps:**
-        - Expand successful pilots
-        - Increase investment pace
-        - Build AI capabilities
-        """)
-    
-    with col3:
-        st.markdown("""
-        **🏆 Leadership Zone (50%+)**
-        - **Maintain & Innovate**
-        - Ahead of most competitors
-        - Building sustainable moats
-        - Focus on innovation
+        # Competitive landscape visualization
+        st.markdown("### 📊 Competitive Landscape Analysis")
         
-        **Next Steps:**
-        - Advanced AI applications
-        - Market expansion
-        - Ecosystem development
-        """)
-    
-    # Industry-specific competitive intelligence
-    st.markdown("### 🏭 Industry Competitive Intelligence")
-    
-    if "Technology" in industry:
-        st.info("""
-        **Technology Sector Competitive Reality:**
-        - 92% adoption rate - highest of all sectors
-        - Competition is fierce - table stakes, not advantage
-        - Focus areas: AI-native products, developer productivity, infrastructure
-        - Key differentiator: Speed of innovation and deployment
-        """)
-    elif "Financial" in industry:
-        st.info("""
-        **Financial Services Competitive Reality:**
-        - 85% adoption rate - second highest sector
-        - Regulatory compliance critical factor
-        - Focus areas: Risk management, customer service, fraud detection
-        - Key differentiator: Regulatory-compliant AI deployment
-        """)
-    elif "Healthcare" in industry:
-        st.info("""
-        **Healthcare Competitive Reality:**
-        - 78% adoption rate - strong growth sector
-        - FDA approval and safety paramount
-        - Focus areas: Diagnostics, drug discovery, patient care
-        - Key differentiator: Clinical validation and safety protocols
-        """)
-    else:
-        st.info("""
-        **Sector Opportunity:**
-        - Your industry has room for competitive advantage
-        - Early movers can establish market leadership
-        - Focus on high-ROI, customer-facing applications
-        - Key differentiator: Speed and quality of implementation
-        """)
+        # Use your existing firm size data but with competitive context
+        fig = go.Figure()
+        
+        # Enhanced firm size chart with competitive zones
+        fig.add_trace(go.Bar(
+            x=firm_size['size'], 
+            y=firm_size['adoption'],
+            marker=dict(
+                color=firm_size['adoption'],
+                colorscale='RdYlGn',
+                colorbar=dict(title="Competitive Position")
+            ),
+            text=[f'{x}%' for x in firm_size['adoption']],
+            textposition='outside',
+            hovertemplate='<b>%{x}</b><br>Adoption: %{y}%<br>Position: %{customdata}<extra></extra>',
+            customdata=['High Risk', 'High Risk', 'At Risk', 'At Risk', 'Below Average',
+                       'Average', 'Competitive', 'Strong', 'Very Strong', 'Leader', 'Dominant']
+        ))
+        
+        # Add competitive threshold lines
+        fig.add_hline(y=25, line_dash="dash", line_color="orange", 
+                      annotation_text="Competitive Threshold (25%)", annotation_position="right")
+        fig.add_hline(y=50, line_dash="dash", line_color="green",
+                      annotation_text="Strong Position (50%)", annotation_position="right")
+        
+        # Add shaded competitive zones
+        fig.add_hrect(y0=0, y1=25, fillcolor="red", opacity=0.1, 
+                      annotation_text="Risk Zone", annotation_position="top left")
+        fig.add_hrect(y0=25, y1=50, fillcolor="yellow", opacity=0.1,
+                      annotation_text="Competitive Zone", annotation_position="top left")  
+        fig.add_hrect(y0=50, y1=100, fillcolor="green", opacity=0.1,
+                      annotation_text="Leadership Zone", annotation_position="top left")
+        
+        fig.update_layout(
+            title='Competitive Position by Company Size - Where Do You Stand?',
+            xaxis_title='Company Size (Employees)',
+            yaxis_title='AI Adoption Rate (%)',
+            height=500,
+            showlegend=False
+        )
+        
+        st.plotly_chart(fig, use_container_width=True)
+        
+        # Strategic implications by position
+        col1, col2, col3 = st.columns(3)
+        
+        with col1:
+            st.markdown("""
+            **🚨 Risk Zone (0-25%)**
+            - **Immediate Action Required**
+            - Falling behind competitors
+            - Missing productivity gains
+            - Talent disadvantage growing
+            
+            **Next Steps:**
+            - 30-day competitive assessment
+            - Quick-win pilot projects
+            - Emergency talent acquisition
+            """)
+        
+        with col2:
+            st.markdown("""
+            **⚡ Competitive Zone (25-50%)**
+            - **Accelerate Investment**
+            - Keeping pace but not leading
+            - Opportunity to gain advantage
+            - Scale existing successes
+            
+            **Next Steps:**
+            - Expand successful pilots
+            - Increase investment pace
+            - Build AI capabilities
+            """)
+        
+        with col3:
+            st.markdown("""
+            **🏆 Leadership Zone (50%+)**
+            - **Maintain & Innovate**
+            - Ahead of most competitors
+            - Building sustainable moats
+            - Focus on innovation
+            
+            **Next Steps:**
+            - Advanced AI applications
+            - Market expansion
+            - Ecosystem development
+            """)
+        
+        # Industry-specific competitive intelligence
+        st.markdown("### 🏭 Industry Competitive Intelligence")
+        
+        if "Technology" in industry:
+            st.info("""
+            **Technology Sector Competitive Reality:**
+            - 92% adoption rate - highest of all sectors
+            - Competition is fierce - table stakes, not advantage
+            - Focus areas: AI-native products, developer productivity, infrastructure
+            - Key differentiator: Speed of innovation and deployment
+            """)
+        elif "Financial" in industry:
+            st.info("""
+            **Financial Services Competitive Reality:**
+            - 85% adoption rate - second highest sector
+            - Regulatory compliance critical factor
+            - Focus areas: Risk management, customer service, fraud detection
+            - Key differentiator: Regulatory-compliant AI deployment
+            """)
+        elif "Healthcare" in industry:
+            st.info("""
+            **Healthcare Competitive Reality:**
+            - 78% adoption rate - strong growth sector
+            - FDA approval and safety paramount
+            - Focus areas: Diagnostics, drug discovery, patient care
+            - Key differentiator: Clinical validation and safety protocols
+            """)
+        else:
+            st.info("""
+            **Sector Opportunity:**
+            - Your industry has room for competitive advantage
+            - Early movers can establish market leadership
+            - Focus on high-ROI, customer-facing applications
+            - Key differentiator: Speed and quality of implementation
+            """)
 
     elif current_view == "💰 Investment Case":
         # Create focused investment view
@@ -776,7 +779,7 @@ def load_data():
             'usage_rate': [65, 58, 52, 45, 42, 38, 35, 32, 30, 28, 25, 23, 22, 18, 15],
             'category': ['GenAI', 'GenAI', 'GenAI', 'Traditional AI', 'Traditional AI', 
                         'Traditional AI', 'Traditional AI', 'Traditional AI', 'Traditional AI',
-                        'Traditional AI', 'Traditional AI', 'Traditional AI', 'Traditional AI', 
+                        'Traditional AI', 'Traditional AI', 
                         'Traditional AI', 'GenAI']
         })
         
@@ -1196,6 +1199,12 @@ else:
 	st.subheader(f"📊 {view_type}")
 
 if view_type == "Historical Trends":
+    # Define comparison variables
+    compare_mode = False
+    year1 = 2018
+    year2 = 2024
+    year_range = [2017, 2025]
+    
     # Apply year filter if set
     if 'compare_mode' in locals() and compare_mode:
         # Compare mode: Show specific years comparison (existing functionality preserved)
