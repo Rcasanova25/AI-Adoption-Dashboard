@@ -390,54 +390,54 @@ if not is_detailed:
     # Executive views
     if current_view == "🚀 Strategic Brief":
         executive_strategic_brief()
-elif current_view == "⚖️ Competitive Position":
-    st.subheader("⚖️ Competitive Position Intelligence")
-    st.markdown("*Understand your strategic position in the AI adoption landscape*")
+    elif current_view == "⚖️ Competitive Position":
+        st.subheader("⚖️ Competitive Position Intelligence")
+        st.markdown("*Understand your strategic position in the AI adoption landscape*")
     
     # Quick positioning assessment
-    col1, col2 = st.columns([2, 1])
+        col1, col2 = st.columns([2, 1])
     
-    with col1:
-        st.markdown("### 🎯 Position Your Company")
+        with col1:
+            st.markdown("### 🎯 Position Your Company")
         
-        industry = st.selectbox("Your Industry", [
-            "Technology (92% adoption)",
-            "Financial Services (85% adoption)", 
-            "Healthcare (78% adoption)",
-            "Manufacturing (75% adoption)",
-            "Retail & E-commerce (72% adoption)",
-            "Education (65% adoption)",
-            "Energy & Utilities (58% adoption)",
-            "Government (52% adoption)"
-        ], help="Select your primary industry")
+            industry = st.selectbox("Your Industry", [
+                "Technology (92% adoption)",
+                "Financial Services (85% adoption)", 
+                "Healthcare (78% adoption)",
+                "Manufacturing (75% adoption)",
+                "Retail & E-commerce (72% adoption)",
+                "Education (65% adoption)",
+                "Energy & Utilities (58% adoption)",
+                "Government (52% adoption)"
+            ], help="Select your primary industry")
         
-        company_size = st.selectbox("Company Size", [
-            "1-50 employees (3% adoption)",
-            "51-250 employees (12% adoption)",
-            "251-1000 employees (25% adoption)", 
-            "1000-5000 employees (42% adoption)",
-            "5000+ employees (58% adoption)"
-        ], help="Select your company size range")
+            company_size = st.selectbox("Company Size", [
+                "1-50 employees (3% adoption)",
+                "51-250 employees (12% adoption)",
+                "251-1000 employees (25% adoption)", 
+                "1000-5000 employees (42% adoption)",
+                "5000+ employees (58% adoption)"
+            ], help="Select your company size range")
         
-        current_ai_maturity = st.select_slider("Current AI Maturity", [
-            "Exploring (0-10%)",
-            "Piloting (10-30%)", 
-            "Implementing (30-60%)",
-            "Scaling (60-80%)",
-            "Leading (80%+)"
-        ], help="Estimate your current AI implementation level")
+            current_ai_maturity = st.select_slider("Current AI Maturity", [
+                "Exploring (0-10%)",
+                "Piloting (10-30%)", 
+                "Implementing (30-60%)",
+                "Scaling (60-80%)",
+                "Leading (80%+)"
+            ], help="Estimate your current AI implementation level")
     
-    with col2:
-        if st.button("🎯 Assess My Position", type="primary", use_container_width=True):
-            # Extract percentages for calculation
-            industry_rate = int(industry.split('(')[1].split('%')[0])
-            size_rate = int(company_size.split('(')[1].split('%')[0])
-            maturity_score = {"Exploring (0-10%)": 5, "Piloting (10-30%)": 20, 
-                            "Implementing (30-60%)": 45, "Scaling (60-80%)": 70, 
-                            "Leading (80%+)": 90}[current_ai_maturity]
+        with col2:
+            if st.button("🎯 Assess My Position", type="primary", use_container_width=True):
+                # Extract percentages for calculation
+                industry_rate = int(industry.split('(')[1].split('%')[0])
+                size_rate = int(company_size.split('(')[1].split('%')[0])
+                maturity_score = {"Exploring (0-10%)": 5, "Piloting (10-30%)": 20, 
+                                "Implementing (30-60%)": 45, "Scaling (60-80%)": 70, 
+                                "Leading (80%+)": 90}[current_ai_maturity]
             
-            # Calculate competitive position
-            competitive_score = (industry_rate * 0.4 + size_rate * 0.4 + maturity_score * 0.2)
+                # Calculate competitive position
+                competitive_score = (industry_rate * 0.4 + size_rate * 0.4 + maturity_score * 0.2)
             
             if competitive_score >= 70:
                 st.success(f"""
