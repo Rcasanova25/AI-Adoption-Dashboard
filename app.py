@@ -224,7 +224,6 @@ def executive_metric(label, value, delta, insight, help_text=""):
 def executive_strategic_brief():
     """5-minute strategic intelligence for executives"""
     
-    st.markdown('<div class="exec-brief-section">', unsafe_allow_html=True)
     
     st.title("🎯Strategic Brief")
     st.markdown("*5-minute strategic intelligence for leadership decisions*")
@@ -333,24 +332,22 @@ def executive_strategic_brief():
     # Executive summary
     st.subheader("🎯 Executive Summary")
     st.markdown("""
-    <div class="exec-brief-section">
-    <h4>Bottom Line Up Front (BLUF):</h4>
-    <p><strong>AI adoption has reached irreversible market tipping point.</strong> The combination of 78% business adoption, 
+    **Bottom Line Up Front (BLUF):**
+
+    AI adoption has reached irreversible market tipping point. The combination of 78% business adoption, 
     280x cost reduction, and proven ROI means competitive advantage now flows to implementation speed and quality, 
-    not adoption decisions.</p>
-    
-    <h4>Strategic Imperative:</h4>
-    <p>Move immediately from "Should we invest in AI?" to "How fast can we scale AI capabilities?" 
-    Focus on talent development, full-stack integration, and production deployment over pilots.</p>
-    
-    <h4>Next 90 Days:</h4>
-    <ol>
-    <li><strong>Week 1-2:</strong> Competitive gap analysis and investment case development</li>
-    <li><strong>Week 3-8:</strong> Talent assessment and capability building strategy</li>
-    <li><strong>Week 9-12:</strong> Production deployment of highest-ROI use cases</li>
-    </ol>
-    </div>
-    """, unsafe_allow_html=True)
+    not adoption decisions.
+
+    **Strategic Imperative:**
+
+    Move immediately from "Should we invest in AI?" to "How fast can we scale AI capabilities?" 
+    Focus on talent development, full-stack integration, and production deployment over pilots.
+
+    **Next 90 Days:**
+    1. **Week 1-2:** Competitive gap analysis and investment case development
+    2. **Week 3-8:** Talent assessment and capability building strategy  
+    3. **Week 9-12:** Production deployment of highest-ROI use cases
+    """)
 
 def assess_competitive_position(industry, company_size):
     """Quick competitive assessment logic"""
