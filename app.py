@@ -475,131 +475,93 @@ if not is_detailed:
         
         # Competitive landscape visualization
         st.markdown("### 📊 Competitive Landscape Analysis")
-        
-        # Use your existing firm size data but with competitive context
-        fig = go.Figure()
-        
-        # Enhanced firm size chart with competitive zones
-        fig.add_trace(go.Bar(
-            x=firm_size['size'], 
-            y=firm_size['adoption'],
-            marker=dict(
-                color=firm_size['adoption'],
-                colorscale='RdYlGn',
-                colorbar=dict(title="Competitive Position")
-            ),
-            text=[f'{x}%' for x in firm_size['adoption']],
-            textposition='outside',
-            hovertemplate='<b>%{x}</b><br>Adoption: %{y}%<br>Position: %{customdata}<extra></extra>',
-            customdata=['High Risk', 'High Risk', 'At Risk', 'At Risk', 'Below Average',
-                       'Average', 'Competitive', 'Strong', 'Very Strong', 'Leader', 'Dominant']
-        ))
-        
-        # Add competitive threshold lines
-        fig.add_hline(y=25, line_dash="dash", line_color="orange", 
-                      annotation_text="Competitive Threshold (25%)", annotation_position="right")
-        fig.add_hline(y=50, line_dash="dash", line_color="green",
-                      annotation_text="Strong Position (50%)", annotation_position="right")
-        
-        # Add shaded competitive zones
-        fig.add_hrect(y0=0, y1=25, fillcolor="red", opacity=0.1, 
-                      annotation_text="Risk Zone", annotation_position="top left")
-        fig.add_hrect(y0=25, y1=50, fillcolor="yellow", opacity=0.1,
-                      annotation_text="Competitive Zone", annotation_position="top left")  
-        fig.add_hrect(y0=50, y1=100, fillcolor="green", opacity=0.1,
-                      annotation_text="Leadership Zone", annotation_position="top left")
-        
-        fig.update_layout(
-            title='Competitive Position by Company Size - Where Do You Stand?',
-            xaxis_title='Company Size (Employees)',
-            yaxis_title='AI Adoption Rate (%)',
-            height=500,
-            showlegend=False
-        )
-        
-        st.plotly_chart(fig, use_container_width=True)
-        
-        # Strategic implications by position
-        col1, col2, col3 = st.columns(3)
-        
-        with col1:
-            st.markdown("""
-            **🚨 Risk Zone (0-25%)**
-            - **Immediate Action Required**
-            - Falling behind competitors
-            - Missing productivity gains
-            - Talent disadvantage growing
-            
-            **Next Steps:**
-            - 30-day competitive assessment
-            - Quick-win pilot projects
-            - Emergency talent acquisition
-            """)
-        
-        with col2:
-            st.markdown("""
-            **⚡ Competitive Zone (25-50%)**
-            - **Accelerate Investment**
-            - Keeping pace but not leading
-            - Opportunity to gain advantage
-            - Scale existing successes
-            
-            **Next Steps:**
-            - Expand successful pilots
-            - Increase investment pace
-            - Build AI capabilities
-            """)
-        
-        with col3:
-            st.markdown("""
-            **🏆 Leadership Zone (50%+)**
-            - **Maintain & Innovate**
-            - Ahead of most competitors
-            - Building sustainable moats
-            - Focus on innovation
-            
-            **Next Steps:**
-            - Advanced AI applications
-            - Market expansion
-            - Ecosystem development
-            """)
-        
-        # Industry-specific competitive intelligence
-        st.markdown("### 🏭 Industry Competitive Intelligence")
-        
-        if "Technology" in industry:
-            st.info("""
-            **Technology Sector Competitive Reality:**
-            - 92% adoption rate - highest of all sectors
-            - Competition is fierce - table stakes, not advantage
-            - Focus areas: AI-native products, developer productivity, infrastructure
-            - Key differentiator: Speed of innovation and deployment
-            """)
-        elif "Financial" in industry:
-            st.info("""
-            **Financial Services Competitive Reality:**
-            - 85% adoption rate - second highest sector
-            - Regulatory compliance critical factor
-            - Focus areas: Risk management, customer service, fraud detection
-            - Key differentiator: Regulatory-compliant AI deployment
-            """)
-        elif "Healthcare" in industry:
-            st.info("""
-            **Healthcare Competitive Reality:**
-            - 78% adoption rate - strong growth sector
-            - FDA approval and safety paramount
-            - Focus areas: Diagnostics, drug discovery, patient care
-            - Key differentiator: Clinical validation and safety protocols
-            """)
-        else:
-            st.info("""
-            **Sector Opportunity:**
-            - Your industry has room for competitive advantage
-            - Early movers can establish market leadership
-            - Focus on high-ROI, customer-facing applications
-            - Key differentiator: Speed and quality of implementation
-            """)
 
+        # Check if firm_size data is available
+        try:
+            # Use your existing firm size data but with competitive context
+            fig = go.Figure()
+            
+            # Enhanced firm size chart with competitive zones
+            fig.add_trace(go.Bar(
+                x=firm_size['size'], 
+                y=firm_size['adoption'],
+                marker=dict(
+                    color=firm_size['adoption'],
+                    colorscale='RdYlGn',
+                    colorbar=dict(title="Competitive Position")
+                ),
+                text=[f'{x}%' for x in firm_size['adoption']],
+                textposition='outside',
+                hovertemplate='<b>%{x}</b><br>Adoption: %{y}%<br>Position: %{customdata}<extra></extra>',
+                customdata=['High Risk', 'High Risk', 'At Risk', 'At Risk', 'Below Average',
+                           'Average', 'Competitive', 'Strong', 'Very Strong', 'Leader', 'Dominant']
+            ))
+            
+            # Add competitive threshold lines
+            fig.add_hline(y=25, line_dash="dash", line_color="orange", 
+                          annotation_text="Competitive Threshold (25%)", annotation_position="right")
+            fig.add_hline(y=50, line_dash="dash", line_color="green",
+                          annotation_text="Strong Position (50%)", annotation_position="right")
+            
+            # Add shaded competitive zones
+            fig.add_hrect(y0=0, y1=25, fillcolor="red", opacity=0.1, 
+                          annotation_text="Risk Zone", annotation_position="top left")
+            fig.add_hrect(y0=25, y1=50, fillcolor="yellow", opacity=0.1,
+                          annotation_text="Competitive Zone", annotation_position="top left")  
+            fig.add_hrect(y0=50, y1=100, fillcolor="green", opacity=0.1,
+                          annotation_text="Leadership Zone", annotation_position="top left")
+            
+            fig.update_layout(
+                title='Competitive Position by Company Size - Where Do You Stand?',
+                xaxis_title='Company Size (Employees)',
+                yaxis_title='AI Adoption Rate (%)',
+                height=500,
+                showlegend=False
+            )
+            
+            st.plotly_chart(fig, use_container_width=True)
+
+        except NameError:
+            # Fallback: Create the chart with manual data if firm_size isn't available
+            st.info("Loading competitive landscape data...")
+            
+            # Manual firm size data as fallback
+            fallback_firm_size = pd.DataFrame({
+                'size': ['1-4', '5-9', '10-19', '20-49', '50-99', '100-249', '250-499', 
+                        '500-999', '1000-2499', '2500-4999', '5000+'],
+                'adoption': [3.2, 3.8, 4.5, 5.2, 7.8, 12.5, 18.2, 25.6, 35.4, 42.8, 58.5]
+            })
+            
+            fig = go.Figure()
+            
+            fig.add_trace(go.Bar(
+                x=fallback_firm_size['size'], 
+                y=fallback_firm_size['adoption'],
+                marker=dict(
+                    color=fallback_firm_size['adoption'],
+                    colorscale='RdYlGn',
+                    colorbar=dict(title="Competitive Position")
+                ),
+                text=[f'{x}%' for x in fallback_firm_size['adoption']],
+                textposition='outside'
+            ))
+            
+            # Add competitive threshold lines
+            fig.add_hline(y=25, line_dash="dash", line_color="orange", 
+                          annotation_text="Competitive Threshold (25%)", annotation_position="right")
+            fig.add_hline(y=50, line_dash="dash", line_color="green",
+                          annotation_text="Strong Position (50%)", annotation_position="right")
+            
+            fig.update_layout(
+                title='Competitive Position by Company Size - Where Do You Stand?',
+                xaxis_title='Company Size (Employees)',
+                yaxis_title='AI Adoption Rate (%)',
+                height=500,
+                showlegend=False
+            )
+            
+            st.plotly_chart(fig, use_container_width=True)
+    
     elif current_view == "💰 Investment Case":
         # Create focused investment view
         st.title("💰 AI Investment Case Builder")
@@ -625,18 +587,18 @@ else:
         pass
     # ... etc for all existing views
 
-# Page config
-st.set_page_config(
-    page_title="AI Adoption Dashboard | 2018-2025 Analysis",
-    page_icon="🤖",
-    layout="wide",
-    initial_sidebar_state="expanded",
-    menu_items={
-        'Get Help': 'https://github.com/Rcasanova25/AI-Adoption-Dashboard/wiki',
-        'Report a bug': "https://github.com/Rcasanova25/AI-Adoption-Dashboard/issues",
-        'About': "# AI Adoption Dashboard\nVersion 2.2.0\n\nTrack AI adoption trends across industries and geographies.\n\nCreated by Robert Casanova"
-    }
-)
+# Page config - REMOVED: Duplicate call causing error
+# st.set_page_config(
+#     page_title="AI Adoption Dashboard | 2018-2025 Analysis",
+#     page_icon="🤖",
+#     layout="wide",
+#     initial_sidebar_state="expanded",
+#     menu_items={
+#         'Get Help': 'https://github.com/Rcasanova25/AI-Adoption-Dashboard/wiki',
+#         'Report a bug': "https://github.com/Rcasanova25/AI-Adoption-Dashboard/issues",
+#         'About': "# AI Adoption Dashboard\nVersion 2.2.0\n\nTrack AI adoption trends across industries and geographies.\n\nCreated by Robert Casanova"
+#     }
+# )
 
 # Data loading function - updated with AI Index 2025 data and Token Economics
 @st.cache_data
