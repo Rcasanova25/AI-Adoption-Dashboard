@@ -699,15 +699,13 @@ legacy_views = [
 ]
 
 # Show view selector
+# Show view selector based on persona
 view_type = st.sidebar.selectbox(
     "Analysis View", 
     all_views,
     index=0,  # Always start with first recommended view
     help="Curated views based on your selected role"
 )
-
-# Create organized menu structure
-all_views = strategic_views + ["---"] + core_views + ["---"] + detailed_views + ["---"] + legacy_views
 
 persona = st.session_state.selected_persona
 
