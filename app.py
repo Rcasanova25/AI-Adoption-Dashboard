@@ -6,6 +6,37 @@ import numpy as np
 from datetime import datetime
 from plotly.subplots import make_subplots
 
+# Page config must be the first Streamlit command.
+st.set_page_config(
+    page_title="AI Adoption Dashboard | 2018-2025 Analysis",
+    page_icon="🤖",
+    layout="wide",
+    initial_sidebar_state="expanded",
+    menu_items={
+        'Get Help': 'https://github.com/Rcasanova25/AI-Adoption-Dashboard/wiki',
+        'Report a bug': "https://github.com/Rcasanova25/AI-Adoption-Dashboard/issues",
+        'About': "# AI Adoption Dashboard\nVersion 2.2.0\n\nTrack AI adoption trends across industries and geographies.\n\nCreated by Robert Casanova"
+    }
+)
+
+# These view lists are created based on the options available in the script.
+all_views = [
+    "Adoption Rates", "Historical Trends", "Industry Analysis", "Investment Trends", 
+    "Regional Growth", "AI Cost Trends", "Token Economics", "Financial Impact", 
+    "Labor Impact", "Firm Size Analysis", "Technology Stack", "AI Technology Maturity", 
+    "Productivity Research", "Environmental Impact", "Geographic Distribution", 
+    "OECD 2025 Findings", "Barriers & Support", "ROI Analysis", "Skill Gap Analysis", 
+    "AI Governance"
+]
+
+persona_views = {
+    "General": ["Historical Trends"],
+    "Business Leader": ["Financial Impact", "ROI Analysis", "Industry Analysis"],
+    "Policymaker": ["Labor Impact", "Geographic Distribution", "Barriers & Support"],
+    "Researcher": ["Productivity Research", "AI Technology Maturity", "Historical Trends"]
+}
+
+
 # Add feature flags for safe deployment
 if 'feature_flags' not in st.session_state:
     st.session_state.feature_flags = {
@@ -47,8 +78,6 @@ def create_executive_navigation():
             return detailed_view, True
     
     return exec_view, False
-
-
 
 # Toggle between executive and detailed modes
 def determine_navigation_mode():
@@ -151,110 +180,40 @@ def apply_executive_styling():
         margin: 1rem 0;
     }
     
-    /* Executive brief styling */
-   def apply_executive_styling():
-    """Enhanced visual design for executive experience"""
-    if not st.session_state.feature_flags['visual_redesign']:
-        return
-        
-    st.markdown("""
-    <style>
-    /* Executive metric cards */
-    .exec-metric {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        padding: 1.5rem;
-        border-radius: 12px;
-        color: white;
-        text-align: center;
-        margin: 0.5rem 0;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    }
-    
-    .exec-metric h3 {
-        margin: 0 0 0.5rem 0;
-        font-size: 0.9rem;
-        opacity: 0.9;
-    }
-    
-    .exec-metric h2 {
-        margin: 0 0 0.25rem 0;
-        font-size: 1.8rem;
-        font-weight: bold;
-    }
-    
-    /* Strategic insight boxes */
-    .strategic-insight {
-        border-left: 4px solid #2E86AB;
-        background: rgba(46, 134, 171, 0.1);
-        padding: 1.5rem;
-        margin: 1.5rem 0;
-        border-radius: 0 8px 8px 0;
-    }
-    
-    .strategic-insight h4 {
-        color: #2E86AB;
-        margin-top: 0;
-    }
-    
-    /* Action required boxes */
-    .action-required {
-        background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
-        color: white;
-        padding: 1.5rem;
-        border-radius: 8px;
-        margin: 1.5rem 0;
-    }
-    
-    .action-required h4 {
-        margin-top: 0;
-        color: white;
-    }
-    
-    /* Opportunity boxes */
-    .opportunity-box {
-        background: linear-gradient(135deg, #2ecc71 0%, #27ae60 100%);
-        color: white;
-        padding: 1.5rem;
-        border-radius: 8px;
-        margin: 1.5rem 0;
-    }
-    
-    /* Chart consistency */
-    .plotly-graph-div {
-        border: 1px solid #e1e5e9;
-        border-radius: 8px;
-        padding: 10px;
-        margin: 1rem 0;
-    }
-    
-    /* FIXED: Executive brief styling with proper contrast */
+    /* Executive brief styling with proper contrast */
     .exec-brief-section {
         background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
         padding: 2rem;
         border-radius: 12px;
         margin: 1rem 0;
         border: 1px solid #dee2e6;
-        color: #212529;  /* Dark text for contrast */
+        color: #212529;
     }
     
     .exec-brief-section h4 {
-        color: #495057;  /* Slightly lighter dark text for headers */
+        color: #495057;
         margin-top: 1rem;
         margin-bottom: 0.5rem;
     }
     
     .exec-brief-section p {
-        color: #212529;  /* Dark text for paragraphs */
+        color: #212529;
         line-height: 1.6;
     }
     
     .exec-brief-section ol li {
-        color: #212529;  /* Dark text for list items */
+        color: #212529;
         margin-bottom: 0.5rem;
     }
     </style>
     """, unsafe_allow_html=True)
 
+# [The rest of your function definitions continue here, starting with executive_metric()]
+# ...
+# def executive_metric(...):
+# ...
+
+# [Then, remove the old st.set_page_config() call from later in the script]
 # Enhanced metric display function
 def executive_metric(label, value, delta, insight, help_text=""):
     """Create visually appealing executive metrics"""
