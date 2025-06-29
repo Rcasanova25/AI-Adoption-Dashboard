@@ -933,11 +933,21 @@ else:
         st.metric("Top City", "SF Bay (9.5%)", "🌍 Geographic leader")
 
 # Main visualization section
-st.subheader(f"📊 {view_type}")
+if not is_detailed:
+    # 🎯 EXECUTIVE STREAMLINED VIEWS
+    if current_view == "🚀 Strategic Brief":
+        executive_strategic_brief()
+    elif current_view == "⚖️ Competitive Position":
+        st.info("Competitive Position view - coming soon")
+    elif current_view == "💰 Investment Case":
+        st.info("Investment Case view - coming soon")
+    elif current_view == "📊 Market Intelligence":
+        st.info("Market Intelligence view - coming soon")
+    elif current_view == "🎯 Action Planning":
+        st.info("Action Planning view - coming soon")
+else:
 
-# View implementations - ALL COMPLETE VISUALIZATIONS
-# Enhanced Historical Trends View - Add this to your existing Historical Trends section
-# Replace the existing Historical Trends view implementation with this enhanced version
+	st.subheader(f"📊 {view_type}")
 
 if view_type == "Historical Trends":
     # Apply year filter if set
