@@ -1265,21 +1265,6 @@ Contact: [Your organization contact information]
 """
 
 # Show a preview of the report
-	with st.expander("📋 Preview Executive Report", expanded=False):
-    	    st.text(report_data[:500] + "...")
-            st.write("*Full report available for download below*")
-
-# Direct download button (this should work)
-            st.download_button(
-                label="📥 Download Complete Executive Report",
-                data=report_data,
-                file_name=f"AI_Competitive_Assessment_{datetime.now().strftime('%Y%m%d')}.txt",
-                mime="text/plain",
-                use_container_width=True,
-                help="Click to download your complete strategic assessment report"
-)
-
-# Show a preview of the report
         with st.expander("📋 Preview Executive Report", expanded=False):
             st.text(report_data[:500] + "...")
             st.write("*Full report available for download below*")
@@ -1297,8 +1282,8 @@ Contact: [Your organization contact information]
         st.success("✅ Report ready for download! Use this for leadership presentations and strategic planning.")
     
     # Help section (this should be at the same level as the main sections above)
-    with st.expander("ℹ️ How This Assessment Works"):
-        st.markdown("""
+        with st.expander("ℹ️ How This Assessment Works"):
+            st.markdown("""
         ### Assessment Methodology
         
         This competitive position assessment uses a multi-factor analysis based on:
