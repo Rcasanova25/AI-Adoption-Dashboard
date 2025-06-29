@@ -1696,59 +1696,60 @@ elif view_type == "💰 Investment Decision Engine":
         # REPLACE the risk calculation section with this:
 
 # Calculate portfolio risk BY BUDGET ALLOCATION (not just count)
-	risk_allocation = portfolio_df.groupby('Risk Level')['Allocation (%)'].sum().reset_index()
-	risk_allocation.columns = ['Risk Level', 'Budget Percentage']
+# Calculate portfolio risk BY BUDGET ALLOCATION (not just count)
+        risk_allocation = portfolio_df.groupby('Risk Level')['Allocation (%)'].sum().reset_index()
+        risk_allocation.columns = ['Risk Level', 'Budget Percentage']
 
-# Calculate individual risk totals
-	total_low_risk = portfolio_df[portfolio_df['Risk Level'] == 'Low']['Allocation (%)'].sum()
-	total_medium_risk = portfolio_df[portfolio_df['Risk Level'] == 'Medium']['Allocation (%)'].sum()
-	total_high_risk = portfolio_df[portfolio_df['Risk Level'] == 'High']['Allocation (%)'].sum()
+        # Calculate individual risk totals
+        total_low_risk = portfolio_df[portfolio_df['Risk Level'] == 'Low']['Allocation (%)'].sum()
+        total_medium_risk = portfolio_df[portfolio_df['Risk Level'] == 'Medium']['Allocation (%)'].sum()
+        total_high_risk = portfolio_df[portfolio_df['Risk Level'] == 'High']['Allocation (%)'].sum()
 
-	col1, col2 = st.columns(2)
+        col1, col2 = st.columns(2)
 
-	with col1:
-    	    # Dynamic risk distribution pie chart
-    	    fig_risk = go.Figure(data=[go.Pie(
+        with col1:
+            # Dynamic risk distribution pie chart
+            fig_risk = go.Figure(data=[go.Pie(
                 labels=risk_allocation['Risk Level'],
-            	values=risk_allocation['Budget Percentage'],  # ← NOW uses actual budget allocation
-        	hole=.3,
-        	marker_colors=['#2ECC71', '#F39C12', '#E74C3C'],
-        	textinfo='label+percent',
-        	textfont_size=12,
-        	hovertemplate='<b>%{label}</b><br>Budget Allocation: %{value:.1f}%<br>Investment: $%{customdata}<extra></extra>',
-        	customdata=[f"{(pct/100 * adjusted_budget):,.0f}" for pct in risk_allocation['Budget Percentage']]
-    	    )])
-    
-    	    fig_risk.update_layout(
+                values=risk_allocation['Budget Percentage'],  # ← NOW uses actual budget allocation
+                hole=.3,
+                marker_colors=['#2ECC71', '#F39C12', '#E74C3C'],
+                textinfo='label+percent',
+                textfont_size=12,
+                hovertemplate='<b>%{label}</b><br>Budget Allocation: %{value:.1f}%<br>Investment: $%{customdata}<extra></extra>',
+                customdata=[f"{(pct/100 * adjusted_budget):,.0f}" for pct in risk_allocation['Budget Percentage']]
+            )])
+            
+            fig_risk.update_layout(
                 title="Portfolio Risk Distribution by Budget",
-        	height=500,  # ← Increased size as requested
-        	showlegend=True
-    	    )
-    
-    	    st.plotly_chart(fig_risk, use_container_width=True)
+                height=500,  # ← Increased size as requested
+                showlegend=True
+            )
+            
+            st.plotly_chart(fig_risk, use_container_width=True)
 
-	with col2:
-    	    st.markdown(f"""
-    	    **🎯 Dynamic Risk Assessment:**
-    
+        with col2:
+            st.markdown(f"""
+            **🎯 Dynamic Risk Assessment:**
+            
             **Low Risk Projects:** {total_low_risk:.1f}% of budget (${total_low_risk/100 * adjusted_budget:,.0f})
-    	    - Proven ROI, established vendors
-    	    - Recommended for immediate implementation
-    
-    	    **Medium Risk Projects:** {total_medium_risk:.1f}% of budget (${total_medium_risk/100 * adjusted_budget:,.0f})
-    	    - Good potential with some uncertainty
+            - Proven ROI, established vendors
+            - Recommended for immediate implementation
+            
+            **Medium Risk Projects:** {total_medium_risk:.1f}% of budget (${total_medium_risk/100 * adjusted_budget:,.0f})
+            - Good potential with some uncertainty
             - Implement after initial success
-    
+            
             **High Risk Projects:** {total_high_risk:.1f}% of budget (${total_high_risk/100 * adjusted_budget:,.0f})
             - Higher potential returns but uncertain outcomes
             - Implement after establishing AI capabilities
-    
+            
             **Risk Recommendation:**
             {
                 "Conservative approach - good balance" if total_high_risk < 20 else
-        	"Aggressive approach - monitor closely" if total_high_risk > 40 else
-        	"Balanced approach - appropriate risk level"
-    	    }
+                "Aggressive approach - monitor closely" if total_high_risk > 40 else
+                "Balanced approach - appropriate risk level"
+            }
             """)
         
         # DOWNLOAD INVESTMENT PLAN
