@@ -1710,8 +1710,10 @@ elif view_type == "💰 Investment Decision Engine":
             
             fig_risk.update_layout(
                 title="Portfolio Risk Distribution",
-                height=300,
+                height=500,
+		width=500,
                 showlegend=True
+		title_font_size=16
             )
             
             st.plotly_chart(fig_risk, use_container_width=True)
