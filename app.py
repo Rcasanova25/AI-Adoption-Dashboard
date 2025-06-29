@@ -19,6 +19,15 @@ st.set_page_config(
     }
 )
 
+# Add feature flags for safe deployment
+if 'feature_flags' not in st.session_state:
+    st.session_state.feature_flags = {
+        'executive_mode': True,
+        'visual_redesign': True,
+        'strategic_callouts': True,
+        'competitive_homepage': False  # Start disabled, enable after testing
+    }
+
 # These view lists are created based on the options available in the script.
 all_views = [
     "Adoption Rates", "Historical Trends", "Industry Analysis", "Investment Trends", 
@@ -35,16 +44,6 @@ persona_views = {
     "Policymaker": ["Labor Impact", "Geographic Distribution", "Barriers & Support"],
     "Researcher": ["Productivity Research", "AI Technology Maturity", "Historical Trends"]
 }
-
-
-# Add feature flags for safe deployment
-if 'feature_flags' not in st.session_state:
-    st.session_state.feature_flags = {
-        'executive_mode': True,
-        'visual_redesign': True,
-        'strategic_callouts': True,
-        'competitive_homepage': False  # Start disabled, enable after testing
-    }
 
 # Executive navigation function
 def create_executive_navigation():
@@ -523,8 +522,7 @@ def load_data():
             'usage_rate': [65, 58, 52, 45, 42, 38, 35, 32, 30, 28, 25, 23, 22, 18, 15],
             'category': ['GenAI', 'GenAI', 'GenAI', 'Traditional AI', 'Traditional AI', 
                         'Traditional AI', 'Traditional AI', 'Traditional AI', 'Traditional AI',
-                        'Traditional AI', 'Traditional AI', 
-                        'Traditional AI', 'GenAI']
+                        'Traditional AI', 'Traditional AI', 'Traditional AI', 'GenAI', 'Traditional AI', 'Traditional AI']
         })
         
         # Barriers to AI Adoption
