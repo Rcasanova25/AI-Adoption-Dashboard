@@ -113,10 +113,10 @@ def apply_executive_styling():
     st.markdown("""
     <style>
     .exec-metric {
-        background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+        background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
         padding: 1.5rem;
         border-radius: 12px;
-        color: #2c3e50;
+        color: white;
         text-align: center;
         margin: 0.5rem 0;
         box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
