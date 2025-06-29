@@ -1265,54 +1265,54 @@ Contact: [Your organization contact information]
 """
 
 # Show a preview of the report
-with st.expander("📋 Preview Executive Report", expanded=False):
-    st.text(report_data[:500] + "...")
-    st.write("*Full report available for download below*")
+	with st.expander("📋 Preview Executive Report", expanded=False):
+    	    st.text(report_data[:500] + "...")
+            st.write("*Full report available for download below*")
 
 # Direct download button (this should work)
-st.download_button(
-    label="📥 Download Complete Executive Report",
-    data=report_data,
-    file_name=f"AI_Competitive_Assessment_{datetime.now().strftime('%Y%m%d')}.txt",
-    mime="text/plain",
-    use_container_width=True,
-    help="Click to download your complete strategic assessment report"
+            st.download_button(
+                label="📥 Download Complete Executive Report",
+                data=report_data,
+                file_name=f"AI_Competitive_Assessment_{datetime.now().strftime('%Y%m%d')}.txt",
+                mime="text/plain",
+                use_container_width=True,
+                help="Click to download your complete strategic assessment report"
 )
 
-    	st.success("✅ Report ready for download! Use this for leadership presentations and strategic planning.")
+            st.success("✅ Report ready for download! Use this for leadership presentations and strategic planning.")
     
     # Help section
-    with st.expander("ℹ️ How This Assessment Works"):
-        st.markdown("""
-        ### Assessment Methodology
+        with st.expander("ℹ️ How This Assessment Works"):
+            st.markdown("""
+            ### Assessment Methodology
         
-        This competitive position assessment uses a multi-factor analysis based on:
+            This competitive position assessment uses a multi-factor analysis based on:
         
-        **Data Sources:**
-        - Stanford AI Index Report 2025 (industry benchmarks)
-        - McKinsey Global Survey on AI (adoption patterns)
-        - OECD AI Policy Observatory (enterprise data)
-        - US Census Bureau AI Use Supplement (firm size correlations)
+            **Data Sources:**
+            - Stanford AI Index Report 2025 (industry benchmarks)
+            - McKinsey Global Survey on AI (adoption patterns)
+            - OECD AI Policy Observatory (enterprise data)
+            - US Census Bureau AI Use Supplement (firm size correlations)
         
-        **Scoring Factors:**
-        - **Current adoption rate** (40% weight) - Your actual AI usage
-        - **Industry position** (25% weight) - How you compare to industry peers
-        - **Size-adjusted performance** (15% weight) - Accounting for organization size
-        - **Investment adequacy** (15% weight) - Whether funding matches ambition
-        - **Strategic priority** (5% weight) - Leadership commitment level
+            **Scoring Factors:**
+            - **Current adoption rate** (40% weight) - Your actual AI usage
+            - **Industry position** (25% weight) - How you compare to industry peers
+            - **Size-adjusted performance** (15% weight) - Accounting for organization size
+            - **Investment adequacy** (15% weight) - Whether funding matches ambition
+            - **Strategic priority** (5% weight) - Leadership commitment level
         
-        **Position Categories:**
-        - **🟢 LEADER (80-100)**: Ahead of industry curve, competitive advantage
-        - **🟡 COMPETITIVE (60-79)**: Keeping pace, some advantages
-        - **🟠 LAGGARD (40-59)**: Falling behind, action needed
-        - **🔴 AT RISK (0-39)**: Critical competitive disadvantage
+            **Position Categories:**
+            - **🟢 LEADER (80-100)**: Ahead of industry curve, competitive advantage
+            - **🟡 COMPETITIVE (60-79)**: Keeping pace, some advantages
+            - **🟠 LAGGARD (40-59)**: Falling behind, action needed
+            - **🔴 AT RISK (0-39)**: Critical competitive disadvantage
         
-        **Limitations:**
-        - Based on self-reported adoption levels
-        - Does not account for implementation quality
-        - Industry averages may vary by specific subsector
-        - Recommendations are general guidance, not specific consulting advice
-        """)
+            **Limitations:**
+            - Based on self-reported adoption levels
+            - Does not account for implementation quality
+            - Industry averages may vary by specific subsector
+            - Recommendations are general guidance, not specific consulting advice
+            """)
 
 elif view_type == "💰 Investment Decision Engine":
     st.write("# 💰 Investment Decision Engine")
