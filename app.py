@@ -3324,7 +3324,21 @@ else:
         if ai_governance is None:
             st.info("AI governance data not available. Please check data loading.")
             st.stop()
+        
         st.write("⚖️ **AI Governance & Ethics Implementation**")
+        
+        # Governance overview
+        col1, col2, col3, col4 = st.columns(4)
+        with col1:
+            st.metric("Data Privacy", "78%", "Highest adoption")
+        with col2:
+            st.metric("Regulatory Compliance", "72%", "Strong compliance")
+        with col3:
+            st.metric("Ethics Guidelines", "62%", "Growing adoption")
+        with col4:
+            st.metric("Avg Maturity", "3.1/5", "Moderate maturity")
+        
+        # Governance radar chart
         fig = go.Figure()
         categories = ai_governance['aspect'].tolist()
         fig.add_trace(go.Scatterpolar(
@@ -3352,14 +3366,151 @@ else:
             height=500
         )
         st.plotly_chart(fig, use_container_width=True)
+        
+        # Governance analysis
         col1, col2 = st.columns(2)
         with col1:
             st.write("✅ **Well-Established Areas:**")
             st.write("• **Data Privacy:** 78% adoption, 3.8/5 maturity")
             st.write("• **Regulatory Compliance:** 72% adoption, 3.5/5 maturity")
             st.write("• **Ethics Guidelines:** 62% adoption, 3.2/5 maturity")
+            st.write("• **Risk Assessment:** 55% adoption, 3.0/5 maturity")
+            
+            st.success("""
+            **Strong Foundation:** Organizations are building solid 
+            governance foundations, particularly in data privacy and 
+            regulatory compliance areas.
+            """)
+        
         with col2:
             st.write("⚠️ **Areas Needing Attention:**")
             st.write("• **Bias Detection:** Only 45% adoption, 2.5/5 maturity")
             st.write("• **Accountability Framework:** 48% adoption, 2.6/5 maturity")
             st.write("• **Transparency:** 52% adoption, 2.8/5 maturity")
+            
+            st.warning("""
+            **Development Needed:** Technical governance areas like 
+            bias detection and transparency mechanisms require 
+            more attention and investment.
+            """)
+        
+        # Governance maturity analysis
+        st.subheader("Governance Maturity Analysis")
+        governance_maturity = ai_governance.copy()
+        governance_maturity['maturity_category'] = governance_maturity['maturity_score'].apply(
+            lambda x: 'Advanced (4-5)' if x >= 4.0 else 
+                     'Developing (3-4)' if x >= 3.0 else 
+                     'Basic (2-3)' if x >= 2.0 else 
+                     'Emerging (1-2)'
+        )
+        
+        fig2 = px.scatter(
+            governance_maturity,
+            x='adoption_rate',
+            y='maturity_score',
+            size='adoption_rate',
+            color='maturity_category',
+            hover_name='aspect',
+            title='Governance Maturity vs Adoption Rate',
+            labels={
+                'adoption_rate': 'Adoption Rate (%)',
+                'maturity_score': 'Maturity Score (1-5)',
+                'maturity_category': 'Maturity Category'
+            },
+            height=400
+        )
+        
+        # Add quadrant lines
+        fig2.add_hline(y=3.0, line_dash="dash", line_color="gray", opacity=0.5)
+        fig2.add_vline(x=60, line_dash="dash", line_color="gray", opacity=0.5)
+        
+        st.plotly_chart(fig2, use_container_width=True)
+        
+        # Governance implementation roadmap
+        st.subheader("AI Governance Implementation Roadmap")
+        
+        roadmap_phases = pd.DataFrame({
+            'phase': ['Phase 1: Foundation', 'Phase 2: Integration', 'Phase 3: Optimization', 'Phase 4: Advanced'],
+            'timeline': ['0-6 months', '6-12 months', '12-18 months', '18+ months'],
+            'focus_areas': [
+                'Ethics Guidelines, Data Privacy',
+                'Risk Assessment, Regulatory Compliance', 
+                'Bias Detection, Transparency',
+                'Accountability Framework, Advanced Monitoring'
+            ],
+            'expected_maturity': [2.5, 3.2, 3.8, 4.5]
+        })
+        
+        fig3 = px.bar(
+            roadmap_phases,
+            x='phase',
+            y='expected_maturity',
+            color='expected_maturity',
+            color_continuous_scale='RdYlGn',
+            title='Governance Maturity Roadmap',
+            labels={'expected_maturity': 'Expected Maturity Score', 'phase': 'Implementation Phase'},
+            height=350
+        )
+        fig3.update_layout(xaxis_tickangle=45)
+        st.plotly_chart(fig3, use_container_width=True)
+        
+        # Governance recommendations
+        st.subheader("Governance Implementation Recommendations")
+        
+        col1, col2, col3 = st.columns(3)
+        
+        with col1:
+            st.markdown("**🏗️ Foundation Phase**")
+            st.write("• Establish AI ethics committee")
+            st.write("• Define data privacy policies")
+            st.write("• Create basic risk assessment framework")
+            st.write("• Document AI use cases and impacts")
+            
+        with col2:
+            st.markdown("**🔧 Integration Phase**")
+            st.write("• Integrate governance into development lifecycle")
+            st.write("• Implement automated compliance checking")
+            st.write("• Establish cross-functional governance teams")
+            st.write("• Create stakeholder feedback mechanisms")
+        
+        with col3:
+            st.markdown("**🚀 Optimization Phase**")
+            st.write("• Deploy advanced bias detection tools")
+            st.write("• Implement explainable AI frameworks")
+            st.write("• Create continuous monitoring systems")
+            st.write("• Establish industry partnerships")
+        
+        # Governance ROI analysis
+        st.subheader("Governance Investment vs Risk Reduction")
+        
+        governance_roi = pd.DataFrame({
+            'governance_area': ai_governance['aspect'],
+            'implementation_cost': [3, 4, 5, 4, 3, 4, 2],  # Relative cost (1-5)
+            'risk_reduction': [85, 90, 70, 60, 75, 80, 95],  # Risk reduction %
+            'regulatory_importance': [95, 85, 60, 70, 80, 75, 90]  # Regulatory importance %
+        })
+        
+        fig4 = px.scatter(
+            governance_roi,
+            x='implementation_cost',
+            y='risk_reduction',
+            size='regulatory_importance',
+            color='governance_area',
+            title='Governance Investment Analysis: Cost vs Risk Reduction',
+            labels={
+                'implementation_cost': 'Implementation Cost (1-5)',
+                'risk_reduction': 'Risk Reduction (%)',
+                'regulatory_importance': 'Regulatory Importance (%)'
+            },
+            height=400
+        )
+        st.plotly_chart(fig4, use_container_width=True)
+        
+        # Download governance data
+        csv = ai_governance.to_csv(index=False)
+        st.download_button(
+            label="📥 Download Governance Data (CSV)",
+            data=csv,
+            file_name="ai_governance_analysis.csv",
+            mime="text/csv"
+        )
