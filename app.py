@@ -383,7 +383,7 @@ def assess_competitive_position(industry, company_size):
 apply_executive_styling()
 
 # Load data first to ensure all variables are available
-historical_data, sector_2018, sector_2025, firm_size, ai_maturity, geographic, state_data, tech_stack, productivity_data, productivity_by_skill, ai_productivity_estimates, oecd_g7_adoption, oecd_applications, barriers_data = load_data()
+# historical_data, sector_2018, sector_2025, firm_size, ai_maturity, geographic, state_data, tech_stack, productivity_data, productivity_by_skill, ai_productivity_estimates, oecd_g7_adoption, oecd_applications, barriers_data = load_data()
 
 # Determine navigation mode
 current_view, is_detailed = determine_navigation_mode()
