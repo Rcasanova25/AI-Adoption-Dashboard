@@ -1315,13 +1315,533 @@ if view_type == "🎯 Competitive Position Assessor":
         """)
 
 elif view_type == "💰 Investment Decision Engine":
-    st.write("# 💰 Investment Decision Engine")
-    st.info("🚧 **Coming Soon** - Advanced investment planning and ROI optimization tools")
-    st.write("This module will help you:")
-    st.write("• Optimize AI investment portfolio across different use cases")
-    st.write("• Calculate risk-adjusted ROI expectations") 
-    st.write("• Determine optimal timing for AI investments")
-    st.write("• Compare make vs. buy vs. partner decisions")
+    st.write("# 💰 AI Investment Decision Engine")
+    st.write("**Optimize your AI investment portfolio for maximum strategic impact**")
+    
+    # Value proposition
+    col1, col2, col3 = st.columns(3)
+    with col1:
+        st.info("🎯 **Portfolio Optimization**\nAllocate budget across high-ROI use cases")
+    with col2:
+        st.info("⏰ **Timing Strategy**\nWhen to invest based on market dynamics")
+    with col3:
+        st.info("🤝 **Implementation Path**\nBuild vs buy vs partner decisions")
+    
+    st.markdown("---")
+    
+    # INVESTMENT PARAMETERS SECTION
+    st.subheader("📊 Investment Parameters")
+    
+    col1, col2 = st.columns(2)
+    
+    with col1:
+        # Basic parameters
+        annual_budget = st.selectbox(
+            "Annual AI Budget",
+            ["<$500K", "$500K-$2M", "$2M-$10M", "$10M-$50M", "$50M+"],
+            help="Your total annual AI technology and implementation budget"
+        )
+        
+        investment_horizon = st.selectbox(
+            "Investment Timeline",
+            ["6 months", "1 year", "2 years", "3+ years"],
+            index=1,
+            help="Your strategic planning horizon for AI investments"
+        )
+        
+        risk_tolerance = st.radio(
+            "Risk Tolerance",
+            ["Conservative", "Balanced", "Aggressive"],
+            index=1,
+            help="Conservative: Proven ROI. Balanced: Mix of proven and emerging. Aggressive: Cutting-edge for competitive advantage"
+        )
+    
+    with col2:
+        # Strategic context
+        primary_goals = st.multiselect(
+            "Primary AI Investment Goals",
+            ["Cost Reduction", "Revenue Growth", "Competitive Advantage", "Operational Efficiency", 
+             "Customer Experience", "Innovation", "Risk Management", "Compliance"],
+            default=["Cost Reduction", "Operational Efficiency"],
+            help="Select your top 2-3 strategic objectives for AI investment"
+        )
+        
+        competitive_urgency = st.slider(
+            "Competitive Pressure (1-10)",
+            1, 10, 5,
+            help="How urgent is AI adoption for competitive survival? 1=Low pressure, 10=Critical"
+        )
+        
+        current_maturity = st.selectbox(
+            "Current AI Maturity",
+            ["No AI (Starting from zero)", "Pilot Stage (1-2 projects)", "Early Adoption (3-10 projects)", 
+             "Scaling (10+ projects)", "Advanced (AI-first organization)"],
+            index=1,
+            help="Your organization's current AI implementation maturity level"
+        )
+    
+    # CALCULATE INVESTMENT STRATEGY
+    if st.button("🔍 Generate Investment Strategy", type="primary", use_container_width=True):
+        
+        # INVESTMENT CALCULATION ENGINE
+        
+        # Budget mapping
+        budget_ranges = {
+            "<$500K": {"min": 100000, "max": 500000, "category": "Starter"},
+            "$500K-$2M": {"min": 500000, "max": 2000000, "category": "Growth"},
+            "$2M-$10M": {"min": 2000000, "max": 10000000, "category": "Scale"},
+            "$10M-$50M": {"min": 10000000, "max": 50000000, "category": "Enterprise"},
+            "$50M+": {"min": 50000000, "max": 200000000, "category": "Leader"}
+        }
+        
+        budget_info = budget_ranges[annual_budget]
+        budget_midpoint = (budget_info["min"] + budget_info["max"]) / 2
+        
+        # Risk and timeline adjustments
+        risk_multipliers = {"Conservative": 0.7, "Balanced": 1.0, "Aggressive": 1.4}
+        timeline_factors = {"6 months": 0.5, "1 year": 1.0, "2 years": 1.3, "3+ years": 1.6}
+        
+        adjusted_budget = budget_midpoint * risk_multipliers[risk_tolerance] * timeline_factors[investment_horizon]
+        
+        # USE CASE PORTFOLIO OPTIMIZATION
+        use_cases = {
+            "Process Automation": {
+                "roi_range": (2.5, 4.0), "implementation_time": 3, "risk": "Low",
+                "best_for": ["Cost Reduction", "Operational Efficiency"],
+                "investment_pct": 0.25
+            },
+            "Customer Service AI": {
+                "roi_range": (1.8, 3.2), "implementation_time": 4, "risk": "Low",
+                "best_for": ["Cost Reduction", "Customer Experience"],
+                "investment_pct": 0.20
+            },
+            "Predictive Analytics": {
+                "roi_range": (2.0, 3.5), "implementation_time": 6, "risk": "Medium",
+                "best_for": ["Operational Efficiency", "Risk Management"],
+                "investment_pct": 0.15
+            },
+            "Content Generation": {
+                "roi_range": (1.5, 2.8), "implementation_time": 2, "risk": "Low",
+                "best_for": ["Operational Efficiency", "Innovation"],
+                "investment_pct": 0.15
+            },
+            "Sales & Marketing AI": {
+                "roi_range": (2.2, 4.5), "implementation_time": 5, "risk": "Medium",
+                "best_for": ["Revenue Growth", "Customer Experience"],
+                "investment_pct": 0.15
+            },
+            "Product Innovation": {
+                "roi_range": (1.2, 5.0), "implementation_time": 12, "risk": "High",
+                "best_for": ["Innovation", "Competitive Advantage"],
+                "investment_pct": 0.10
+            }
+        }
+        
+        # Adjust portfolio based on goals and risk tolerance
+        portfolio = {}
+        for use_case, data in use_cases.items():
+            # Calculate relevance score based on goals
+            relevance = sum(1 for goal in primary_goals if goal in data["best_for"])
+            
+            # Adjust for risk tolerance
+            if risk_tolerance == "Conservative":
+                if data["risk"] == "High":
+                    relevance *= 0.3
+                elif data["risk"] == "Medium":
+                    relevance *= 0.7
+            elif risk_tolerance == "Aggressive":
+                if data["risk"] == "High":
+                    relevance *= 1.5
+                elif data["risk"] == "Medium":
+                    relevance *= 1.2
+            
+            # Calculate investment allocation
+            base_allocation = data["investment_pct"]
+            adjusted_allocation = base_allocation * (1 + relevance * 0.3)
+            investment_amount = adjusted_budget * adjusted_allocation
+            
+            portfolio[use_case] = {
+                "allocation": adjusted_allocation,
+                "investment": investment_amount,
+                "expected_roi": sum(data["roi_range"]) / 2,
+                "timeline": data["implementation_time"],
+                "risk": data["risk"],
+                "relevance": relevance
+            }
+        
+        # Normalize allocations to 100%
+        total_allocation = sum(p["allocation"] for p in portfolio.values())
+        for use_case in portfolio:
+            portfolio[use_case]["allocation"] = portfolio[use_case]["allocation"] / total_allocation
+            portfolio[use_case]["investment"] = adjusted_budget * portfolio[use_case]["allocation"]
+        
+        # IMPLEMENTATION STRATEGY
+        maturity_strategies = {
+            "No AI (Starting from zero)": {
+                "approach": "Foundation First",
+                "focus": "Basic automation and productivity tools",
+                "timeline": "Start with 2-3 pilot projects",
+                "build_vs_buy": "Buy: 80%, Build: 10%, Partner: 10%"
+            },
+            "Pilot Stage (1-2 projects)": {
+                "approach": "Expand & Learn",
+                "focus": "Scale successful pilots, add new use cases",
+                "timeline": "3-5 concurrent projects",
+                "build_vs_buy": "Buy: 60%, Build: 20%, Partner: 20%"
+            },
+            "Early Adoption (3-10 projects)": {
+                "approach": "Strategic Scale",
+                "focus": "Platform approach, governance, integration",
+                "timeline": "Portfolio of 5-8 initiatives",
+                "build_vs_buy": "Buy: 40%, Build: 35%, Partner: 25%"
+            },
+            "Scaling (10+ projects)": {
+                "approach": "Optimization & Innovation",
+                "focus": "Advanced use cases, competitive differentiation",
+                "timeline": "Enterprise transformation",
+                "build_vs_buy": "Buy: 30%, Build: 50%, Partner: 20%"
+            },
+            "Advanced (AI-first organization)": {
+                "approach": "Innovation Leadership",
+                "focus": "Cutting-edge AI, industry disruption",
+                "timeline": "Continuous innovation pipeline",
+                "build_vs_buy": "Buy: 20%, Build: 60%, Partner: 20%"
+            }
+        }
+        
+        strategy = maturity_strategies[current_maturity]
+        
+        # TIMING RECOMMENDATIONS
+        urgency_timeline = {
+            (1, 3): "18-24 months - Gradual adoption acceptable",
+            (4, 6): "12-18 months - Moderate urgency",
+            (7, 8): "6-12 months - High urgency",
+            (9, 10): "3-6 months - Critical urgency"
+        }
+        
+        timeline_rec = next(v for k, v in urgency_timeline.items() if k[0] <= competitive_urgency <= k[1])
+        
+        # RESULTS DISPLAY
+        st.markdown("---")
+        st.subheader("🎯 Your Optimized AI Investment Strategy")
+        
+        # Strategic overview metrics
+        col1, col2, col3, col4 = st.columns(4)
+        
+        with col1:
+            st.metric(
+                "Recommended Budget",
+                f"${adjusted_budget/1000000:.1f}M",
+                f"{budget_info['category']} tier"
+            )
+        
+        with col2:
+            expected_total_roi = sum(p["expected_roi"] * p["allocation"] for p in portfolio.values())
+            st.metric(
+                "Portfolio ROI",
+                f"{expected_total_roi:.1f}x",
+                f"{risk_tolerance} risk profile"
+            )
+        
+        with col3:
+            avg_timeline = sum(p["timeline"] * p["allocation"] for p in portfolio.values())
+            st.metric(
+                "Avg. Implementation",
+                f"{avg_timeline:.0f} months",
+                "Weighted average"
+            )
+        
+        with col4:
+            st.metric(
+                "Competitive Timeline",
+                timeline_rec.split(" - ")[0],
+                "Based on urgency"
+            )
+        
+        # PORTFOLIO ALLOCATION
+        st.subheader("📊 Recommended Investment Portfolio")
+        
+        # Create portfolio visualization
+        portfolio_df = pd.DataFrame({
+            'Use Case': list(portfolio.keys()),
+            'Investment ($)': [p["investment"] for p in portfolio.values()],
+            'Allocation (%)': [p["allocation"] * 100 for p in portfolio.values()],
+            'Expected ROI': [f"{p['expected_roi']:.1f}x" for p in portfolio.values()],
+            'Timeline (months)': [p["timeline"] for p in portfolio.values()],
+            'Risk Level': [p["risk"] for p in portfolio.values()]
+        })
+        
+        # Sort by investment amount
+        portfolio_df = portfolio_df.sort_values('Investment ($)', ascending=False)
+        
+        # Create portfolio chart
+        fig = go.Figure()
+        
+        colors = ['#2E86AB', '#A23B72', '#F18F01', '#C73E1D', '#4ECDC4', '#45B7D1']
+        
+        fig.add_trace(go.Bar(
+            x=portfolio_df['Use Case'],
+            y=portfolio_df['Investment ($)'],
+            marker_color=colors[:len(portfolio_df)],
+            text=[f'${x/1000:.0f}K<br>{y:.1f}%' for x, y in zip(portfolio_df['Investment ($)'], portfolio_df['Allocation (%)'])],
+            textposition='outside',
+            hovertemplate='<b>%{x}</b><br>Investment: $%{y:,.0f}<br>ROI: %{customdata}<extra></extra>',
+            customdata=portfolio_df['Expected ROI']
+        ))
+        
+        fig.update_layout(
+            title="AI Investment Portfolio Allocation",
+            xaxis_title="Use Case",
+            yaxis_title="Investment Amount ($)",
+            height=400,
+            showlegend=False,
+            xaxis_tickangle=45
+        )
+        
+        st.plotly_chart(fig, use_container_width=True)
+        
+        # Detailed portfolio table
+        st.dataframe(
+            portfolio_df.style.format({
+                'Investment ($)': '${:,.0f}',
+                'Allocation (%)': '{:.1f}%'
+            }),
+            hide_index=True,
+            use_container_width=True
+        )
+        
+        # IMPLEMENTATION ROADMAP
+        st.subheader("🗓️ Implementation Roadmap")
+        
+        col1, col2 = st.columns(2)
+        
+        with col1:
+            st.markdown(f"""
+            **📋 Strategic Approach: {strategy['approach']}**
+            
+            **Focus Areas:**
+            {strategy['focus']}
+            
+            **Implementation Scale:**
+            {strategy['timeline']}
+            
+            **Build vs Buy vs Partner:**
+            {strategy['build_vs_buy']}
+            """)
+        
+        with col2:
+            st.markdown(f"""
+            **⏰ Timing Strategy:**
+            {timeline_rec}
+            
+            **Priority Sequence:**
+            1. **Quick Wins** (0-6 months): Process Automation, Content Generation
+            2. **Core Value** (6-12 months): Customer Service, Predictive Analytics  
+            3. **Strategic Advantage** (12+ months): Sales/Marketing AI, Product Innovation
+            
+            **Risk Management:**
+            Start with low-risk, high-ROI initiatives to build confidence and capability
+            """)
+        
+        # DETAILED RECOMMENDATIONS
+        st.subheader("🎯 Specific Investment Recommendations")
+        
+        # Top 3 recommended investments
+        top_investments = portfolio_df.head(3)
+        
+        for idx, (_, investment) in enumerate(top_investments.iterrows(), 1):
+            with st.expander(f"#{idx} Priority: {investment['Use Case']} (${investment['Investment ($)']/1000:.0f}K investment)", expanded=idx==1):
+                use_case_name = investment['Use Case']
+                use_case_data = use_cases[use_case_name]
+                
+                col1, col2, col3 = st.columns(3)
+                
+                with col1:
+                    st.write("**💰 Financial Impact:**")
+                    st.write(f"• Investment: ${investment['Investment ($)']/1000:.0f}K")
+                    st.write(f"• Expected ROI: {investment['Expected ROI']}")
+                    st.write(f"• Timeline: {investment['Timeline (months)']} months")
+                    st.write(f"• Risk Level: {investment['Risk Level']}")
+                
+                with col2:
+                    st.write("**🎯 Strategic Fit:**")
+                    st.write(f"• Supports: {', '.join(use_case_data['best_for'])}")
+                    st.write(f"• Portfolio allocation: {investment['Allocation (%)']:.1f}%")
+                    relevant_goals = [g for g in primary_goals if g in use_case_data['best_for']]
+                    st.write(f"• Matches your goals: {', '.join(relevant_goals) if relevant_goals else 'Indirect fit'}")
+                
+                with col3:
+                    st.write("**⚡ Implementation:**")
+                    if use_case_name == "Process Automation":
+                        st.write("• **Tools**: UiPath, Microsoft Power Automate")
+                        st.write("• **Approach**: Start with repetitive back-office tasks")
+                        st.write("• **Success metrics**: Hours saved, error reduction")
+                    elif use_case_name == "Customer Service AI":
+                        st.write("• **Tools**: Zendesk AI, Intercom, ChatGPT API")
+                        st.write("• **Approach**: Deploy chatbots for common queries")
+                        st.write("• **Success metrics**: Response time, satisfaction")
+                    elif use_case_name == "Content Generation":
+                        st.write("• **Tools**: GPT-4, Jasper, Copy.ai")
+                        st.write("• **Approach**: Marketing content, documentation")
+                        st.write("• **Success metrics**: Content volume, quality scores")
+                    else:
+                        st.write("• **Approach**: Phased implementation recommended")
+                        st.write("• **Partners**: Consider specialist vendors")
+                        st.write("• **Success metrics**: Domain-specific KPIs")
+        
+        # RISK ANALYSIS
+        st.subheader("⚠️ Investment Risk Analysis")
+        
+        # Calculate portfolio risk
+        risk_distribution = portfolio_df['Risk Level'].value_counts()
+        total_low_risk = portfolio_df[portfolio_df['Risk Level'] == 'Low']['Allocation (%)'].sum()
+        total_high_risk = portfolio_df[portfolio_df['Risk Level'] == 'High']['Allocation (%)'].sum()
+        
+        col1, col2 = st.columns(2)
+        
+        with col1:
+            # Risk distribution pie chart
+            fig_risk = go.Figure(data=[go.Pie(
+                labels=risk_distribution.index,
+                values=risk_distribution.values,
+                hole=.3,
+                marker_colors=['#2ECC71', '#F39C12', '#E74C3C']
+            )])
+            
+            fig_risk.update_layout(
+                title="Portfolio Risk Distribution",
+                height=300,
+                showlegend=True
+            )
+            
+            st.plotly_chart(fig_risk, use_container_width=True)
+        
+        with col2:
+            st.markdown(f"""
+            **🎯 Risk Assessment:**
+            
+            **Low Risk Projects:** {total_low_risk:.0f}% of budget
+            - Proven ROI, established vendors
+            - Recommended for immediate implementation
+            
+            **High Risk Projects:** {total_high_risk:.0f}% of budget  
+            - Higher potential returns but uncertain outcomes
+            - Implement after establishing AI capabilities
+            
+            **Risk Mitigation:**
+            - Start with low-risk, high-ROI projects
+            - Build internal AI expertise gradually
+            - Maintain 20% budget buffer for adjustments
+            """)
+        
+        # DOWNLOAD INVESTMENT PLAN
+        st.subheader("📥 Investment Strategy Report")
+        
+        # Generate investment report
+        investment_report = f"""
+AI INVESTMENT STRATEGY REPORT
+Generated: {datetime.now().strftime('%B %d, %Y')}
+
+═══════════════════════════════════════════════════════════════
+
+INVESTMENT PARAMETERS
+═══════════════════════════════════════════════════════════════
+Annual Budget: {annual_budget}
+Investment Timeline: {investment_horizon}
+Risk Tolerance: {risk_tolerance}
+Current Maturity: {current_maturity}
+Primary Goals: {', '.join(primary_goals)}
+Competitive Urgency: {competitive_urgency}/10
+
+STRATEGIC RECOMMENDATIONS
+═══════════════════════════════════════════════════════════════
+Recommended Budget: ${adjusted_budget/1000000:.1f}M
+Expected Portfolio ROI: {expected_total_roi:.1f}x
+Average Implementation: {avg_timeline:.0f} months
+Competitive Timeline: {timeline_rec}
+
+INVESTMENT PORTFOLIO ALLOCATION
+═══════════════════════════════════════════════════════════════
+{chr(10).join([f"{row['Use Case']}: ${row['Investment ($)']/1000:.0f}K ({row['Allocation (%)']:.1f}%) - ROI: {row['Expected ROI']}" for _, row in portfolio_df.iterrows()])}
+
+IMPLEMENTATION STRATEGY
+═══════════════════════════════════════════════════════════════
+Strategic Approach: {strategy['approach']}
+Focus: {strategy['focus']}
+Timeline: {strategy['timeline']}
+Build vs Buy vs Partner: {strategy['build_vs_buy']}
+
+TOP 3 PRIORITY INVESTMENTS
+═══════════════════════════════════════════════════════════════
+{chr(10).join([f"{idx}. {row['Use Case']}: ${row['Investment ($)']/1000:.0f}K investment, {row['Expected ROI']} ROI, {row['Timeline (months)']} months" for idx, (_, row) in enumerate(top_investments.iterrows(), 1)])}
+
+RISK ANALYSIS
+═══════════════════════════════════════════════════════════════
+Low Risk Allocation: {total_low_risk:.0f}% of budget
+High Risk Allocation: {total_high_risk:.0f}% of budget
+Risk Management: Phased implementation with proven solutions first
+
+NEXT STEPS
+═══════════════════════════════════════════════════════════════
+1. Secure budget approval for recommended investment level
+2. Establish AI governance and project management framework
+3. Begin with highest-priority, lowest-risk initiatives
+4. Build internal AI capabilities through implementation
+5. Monitor ROI and adjust portfolio quarterly
+
+═══════════════════════════════════════════════════════════════
+Report Source: AI Adoption Dashboard v2.2.0 - Investment Decision Engine
+Methodology: Portfolio optimization based on risk-adjusted ROI, strategic fit, and implementation complexity
+Contact: [Your organization contact information]
+═══════════════════════════════════════════════════════════════
+"""
+        
+        st.download_button(
+            label="📥 Download Complete Investment Strategy",
+            data=investment_report,
+            file_name=f"AI_Investment_Strategy_{datetime.now().strftime('%Y%m%d')}.txt",
+            mime="text/plain",
+            use_container_width=True,
+            help="Download your complete AI investment strategy and implementation plan"
+        )
+        
+        st.success("✅ Investment strategy generated! Use this plan for budget planning and implementation roadmap.")
+    
+    # Help section
+    with st.expander("ℹ️ How the Investment Engine Works"):
+        st.markdown("""
+        ### Investment Optimization Methodology
+        
+        This investment decision engine uses a multi-factor optimization approach:
+        
+        **Portfolio Construction:**
+        - **ROI Analysis**: Expected returns based on industry benchmarks and implementation data
+        - **Strategic Fit**: Alignment with your stated business objectives and competitive context
+        - **Risk Assessment**: Implementation complexity, vendor maturity, and success probability
+        - **Timeline Optimization**: Sequencing based on dependencies and capability building
+        
+        **Allocation Algorithm:**
+        - **Base Portfolio**: Industry-standard allocation across proven AI use cases
+        - **Goal Weighting**: Increases allocation to use cases that match your primary objectives
+        - **Risk Adjustment**: Shifts allocation based on your risk tolerance profile
+        - **Maturity Scaling**: Adjusts complexity based on your current AI implementation experience
+        
+        **Implementation Strategy:**
+        - **Build vs Buy vs Partner**: Recommendations based on your organizational maturity and budget
+        - **Timing Sequence**: Phased approach balancing quick wins with strategic investments
+        - **Risk Management**: Portfolio diversification and contingency planning
+        
+        **Data Sources:**
+        - ROI ranges based on McKinsey Global Survey, Stanford AI Index, and industry case studies
+        - Implementation timelines from vendor data and consulting firm benchmarks
+        - Risk assessments from enterprise AI project success/failure analysis
+        
+        **Limitations:**
+        - Generic recommendations may not account for industry-specific factors
+        - ROI estimates are based on industry averages, actual results vary by implementation quality
+        - Does not include detailed vendor selection or technical architecture decisions
+        - Assumes standard enterprise implementation capabilities and change management
+        """)
 
 elif view_type == "⚖️ Regulatory Risk Radar":
     st.write("# ⚖️ Regulatory Risk Radar")
