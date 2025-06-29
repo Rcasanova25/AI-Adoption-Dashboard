@@ -1279,7 +1279,7 @@ st.download_button(
     help="Click to download your complete strategic assessment report"
 )
 
-	st.success("✅ Report ready for download! Use this for leadership presentations and strategic planning.")
+    st.success("✅ Report ready for download! Use this for leadership presentations and strategic planning.")
     
     # Help section
     with st.expander("ℹ️ How This Assessment Works"):
