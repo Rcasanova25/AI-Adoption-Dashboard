@@ -2471,17 +2471,98 @@ Contact: Robert.casanova82@gmail.com
     
     st.success("✅ Strategic Market Intelligence compiled! Use this analysis for board presentations and strategic planning.")
 
+# Complete the view type implementations to fix the syntax error
+# This should replace the problematic section around line 2474
+
 elif view_type == "⚖️ Regulatory Risk Radar":
     st.write("# ⚖️ Regulatory Risk Radar")
-    st.info("🚧 **Coming Soon** - Regulatory change monitoring and compliance planning")
-    st.write("This module will help you:")
-    st.write("• Track upcoming AI regulations and their business impact")
-    st.write("• Assess compliance costs and requirements")
-    st.write("• Plan for regulatory scenario changes")
-    st.write("• Identify policy engagement opportunities")
+    st.write("**Monitor regulatory changes and assess compliance requirements**")
+    
+    # Value proposition
+    col1, col2, col3 = st.columns(3)
+    with col1:
+        st.info("📊 **Risk Monitoring**\nTrack regulatory developments in real-time")
+    with col2:
+        st.info("⚖️ **Compliance Planning**\nAssess requirements and prepare for changes")
+    with col3:
+        st.info("🌍 **Global Coverage**\nMonitor regulations across major jurisdictions")
+    
+    st.markdown("---")
+    
+    # Current regulatory landscape
+    st.subheader("🌍 Global Regulatory Landscape")
+    
+    # Regulatory activity by region
+    regulatory_activity = pd.DataFrame({
+        'region': ['United States', 'European Union', 'United Kingdom', 'China', 'Canada', 'Japan', 'Australia'],
+        'regulations_2024': [59, 43, 28, 35, 15, 12, 8],
+        'growth_rate': [97, 34, 75, 56, 25, 20, 60],
+        'compliance_burden': [7.5, 8.9, 6.8, 7.2, 5.5, 4.8, 5.2],  # 1-10 scale
+        'enforcement_level': ['High', 'Very High', 'Medium', 'High', 'Medium', 'Low', 'Medium']
+    })
+    
+    # Simple visualization to avoid complex plotting issues
+    fig = go.Figure()
+    
+    fig.add_trace(go.Bar(
+        x=regulatory_activity['region'],
+        y=regulatory_activity['regulations_2024'],
+        marker_color='#3498DB',
+        text=regulatory_activity['regulations_2024'],
+        textposition='outside',
+        name='AI Regulations (2024)'
+    ))
+    
+    fig.update_layout(
+        title='AI Regulatory Activity by Region (2024)',
+        xaxis_title='Region',
+        yaxis_title='Number of AI Regulations',
+        height=400,
+        xaxis_tickangle=45
+    )
+    
+    st.plotly_chart(fig, use_container_width=True)
+    
+    st.info("""
+    **🚨 Key Regulatory Trends:**
+    - **U.S. leads** with 59 new AI regulations (97% increase)
+    - **EU AI Act** implementation driving compliance requirements
+    - **Cross-border coordination** increasing through international frameworks
+    - **Sector-specific guidance** emerging in finance, healthcare, hiring
+    """)
 
-# [Continue with your existing view implementations...]
+elif view_type == "🗺️ Industry Benchmarking":
+    st.write("# 🗺️ Industry Benchmarking")
+    st.info("🚧 **Coming Soon** - Detailed industry-specific AI adoption analysis")
+    st.write("This module will provide:")
+    st.write("• Industry-specific adoption rates and use cases")
+    st.write("• Competitive positioning within your sector")
+    st.write("• Best practices from industry leaders")
+    st.write("• ROI benchmarks by industry vertical")
 
+elif view_type == "🔍 Detailed Analysis":
+    st.write("# 🔍 Detailed Analysis Gateway")
+    st.write("**Access comprehensive data views and technical analysis**")
+    
+    st.info("Select from detailed analysis options below:")
+    
+    detailed_options = [
+        "Token Economics", "Labor Impact", "Environmental Impact", 
+        "Skill Gap Analysis", "AI Governance", "Productivity Research",
+        "AI Technology Maturity", "Barriers & Support", "ROI Analysis"
+    ]
+    
+    selected_detailed = st.selectbox("Choose detailed analysis:", detailed_options)
+    
+    if st.button(f"🔍 Analyze {selected_detailed}"):
+        st.info(f"Redirecting to {selected_detailed} analysis...")
+        # This would typically trigger a view change in a more complex app
+
+elif view_type == "Historical Trends":
+    # [Your existing Historical Trends code continues here...]
+    pass  # Replace with your actual implementation
+
+# Add all other view types that follow...
 if view_type == "Historical Trends":
     # Apply year filter if set
     if 'compare_mode' in locals() and compare_mode:
