@@ -709,8 +709,7 @@ view_type = st.sidebar.selectbox(
 # Create organized menu structure
 all_views = strategic_views + ["---"] + core_views + ["---"] + detailed_views + ["---"] + legacy_views
 
-if persona != "General":
-    st.sidebar.info(f"💡 **Recommended views for {persona}:**\n" + "\n".join([f"• {v}" for v in persona_views[persona]]))
+persona = st.session_state.selected_persona
 
 data_year = st.sidebar.selectbox(
     "Select Data Year", 
