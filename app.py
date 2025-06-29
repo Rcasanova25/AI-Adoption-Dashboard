@@ -1,3 +1,126 @@
+[⚠️ Suspicious Content] Gemini
+
+2.5 Pro
+
+
+PRO
+
+
+New chat
+
+Explore Gems
+Recent
+Code Review and Implementation Request
+AI Dashboard Code Review & Fixes
+AI Adoption Dashboard Assessment
+Python Code Error Review Report
+Python Indentation Error Explained
+
+Show more
+
+Settings & help
+Conversation with Gemini
+
+app
+PY
+
+You are a executive/strategic director that wants to understand AI adoption and its underlining economic impact on the U.S. broadly but also your business.
+
+You find my dashboard and review it.
+
+What are you first impressions?
+
+What is your general takeaway?
+
+What specific takeways do you have from studying the dashboard?
+
+What questions come up after viewing the dashboard?
+
+
+
+Be brutally honest in your assessment of the dashboard.
+
+
+
+
+Show thinking
+Of course. Here is a brutally honest assessment of the AI Adoption Dashboard from the perspective of an executive and strategic director.
+
+To whom it may concern,
+
+I’ve spent time reviewing the AI Adoption Dashboard v2.2.0. My team knows I value directness, so I’ll provide my assessment in that spirit.
+
+Overall, this is an impressive and strategically valuable tool—one of the best I’ve seen for this topic. It avoids the common trap of being a pure data dump and is clearly built for decision-making.
+
+Here are my detailed thoughts.
+
+First Impressions
+Strategically Aligned: The title, "Strategic Decision Intelligence," and the opening framing around assessing my position, optimizing investment, and managing risk immediately got my attention. It shows you understand what matters to me. I don’t have time for academic exercises; I need a competitive edge.
+
+Credibility is High, but Almost Too High: You lead with "AI Index Report 2025," "McKinsey," "OECD," and "Stanford HAI." This is excellent; I can trust the data. However, the sheer volume of sources and the massive "Bibliography" section are almost intimidating. It gives the impression of being an exhaustive academic report, which could cause some executives to disengage before they find the actionable tools.
+
+Action-Oriented Hook: The "Executive Quick Start" and the "Start Strategic Assessment" button are brilliant. You recognized that I need a personalized entry point that gets straight to the point. This is the single best feature on the landing page.
+
+A Bit Overwhelming: Frankly, the sidebar is a mess. The long list of "Core," "Detailed," and "Legacy" views is too much. The persona-based recommendations help, but it’s still cluttered. I would likely live in the "Strategic" and "Core" views and never touch the others.
+
+General Takeaway
+My primary takeaway is one of extreme urgency. We are at a critical market inflection point. The narrative is clear: AI is not an "IT project" or something for next year's budget; it is a fundamental, top-level strategic priority that will determine the winners and losers in our industry for the next decade.
+
+The metrics showing AI use rocketing to 78% of businesses and GenAI to 71% in a single year, coupled with a 280x collapse in cost, tell me that the barriers to entry have been obliterated. Competitors are gaining real productivity advantages right now. My focus instantly shifts from "Should we do more with AI?" to "How fast can we close the gap and what is the most effective way to deploy capital?"
+
+Specific Takeaways from Studying the Dashboard
+This dashboard provided several data points that I would immediately bring to my leadership team:
+
+Our Competitive Position is Now Quantifiable (and Alarming). The Competitive Position Assessor is the most powerful tool here. Getting a stark, data-backed assessment like "Laggard" or "At Risk" is invaluable. The "Industry Gap" metric and the "Action Timeline" (e.g., "18 months before competitive disadvantage") are the kinds of numbers that force an organization to mobilize.
+
+Financial Impact is Realistic, Not Hype. The Financial Impact view is a crucial dose of reality. Seeing that revenue gains average 2-4% and cost savings average 5-10%—even for companies reporting success—helps me set realistic expectations. This isn't a magic bullet for the P&L, but a source of significant, compounding incremental advantage.
+
+Investment is No Longer a Guessing Game. The Investment Decision Engine is a fantastic tool for moving from abstract goals to a concrete portfolio. The ability to model our budget allocation based on our specific goals (e.g., efficiency vs. growth) and risk tolerance is exactly what I need to build a defensible business case for the board.
+
+The Talent War is Geographically Focused. The Geographic Distribution map makes it painfully clear that AI talent and investment are not evenly distributed. The heavy concentration in California, Massachusetts, and New York is a direct threat if we are not located there. The NSF AI Institutes map provides a practical guide for where we need to build partnerships or recruit from.
+
+AI is a Tool for the Entire Workforce. The Labor Impact data showing the largest productivity gains for low-skilled workers (14%) is a game-changer. This isn't just about empowering our data scientists; it’s a strategy for uplifting our entire operational base, reducing inequality, and accelerating skills development from the bottom up.
+
+The Biggest Barrier is Our Own People. The Skill Gap Analysis and Barriers charts are a call to action for my Chief Human Resources Officer. The #1 barrier is a "Lack of skilled personnel." We can't buy our way out of this; we have to build the talent internally, and this data shows us exactly where to focus (AI/ML Engineering, Data Science).
+
+Questions That Come Up After Viewing
+While the dashboard is excellent, it leaves me with several critical, unanswered questions. This is where the analysis falls short from my perspective.
+
+What Does "Adoption" Actually Mean? The dashboard admits that the 78% "adoption" rate includes "pilots, experiments, and production." This is a critically flawed metric. A competitor running a 10-person ChatGPT pilot is not the same as a competitor who has integrated AI into their core manufacturing process. I need a maturity model, not an adoption rate. Show me the difference between dabblers, implementers, and transformers.
+
+Where is the "How-To" for Success? The dashboard shows me what leaders are doing (investing more, adopting faster) but not how. The Competitive Position Assessor tells me I'm a "Laggard," but it doesn't give me a clear case study or playbook of how a "Leader" in my specific industry got there. What were their first three moves? How did they structure their teams?
+
+The ROI Analysis is Too High-Level. An "average ROI" for a whole sector like "Manufacturing" is borderline useless for strategic planning. The ROI of an AI-powered predictive maintenance system is completely different from an AI-driven marketing tool. I need this broken down by specific, common use cases within my industry.
+
+This is a Rear-View Mirror. The dashboard provides a fantastic analysis of what has happened up to today. But strategy is about the future. What are the forward-looking scenarios? What happens to my business if compute costs fall another 10x? Or if the US-China investment gap widens or narrows? The tool lacks a predictive or scenario-planning capability.
+
+How Do I Integrate This? To be truly useful, I need to input my company’s actual spending, adoption, and productivity data and benchmark it directly against the industry. As it stands, it's a powerful but separate reference tool. I need it to be an integrated part of my own strategic intelligence workflow.
+
+In summary, this is a top-tier strategic resource that successfully elevates a data-heavy topic to an executive level. It provides the "why" and the "what" with incredible clarity and credibility. To reach the next level, it needs to focus more on the "how," provide deeper, use-case-specific data, and incorporate forward-looking scenario analysis.
+
+Regards,
+
+A Strategic Director
+
+
+
+
+
+
+
+
+
+
+
+
+Video
+
+Deep Research
+
+Canvas
+
+Gemini can make mistakes, so double-check it
+
 import streamlit as st
 import plotly.express as px
 import plotly.graph_objects as go
@@ -5,25 +128,6 @@ import pandas as pd
 import numpy as np
 from datetime import datetime
 from plotly.subplots import make_subplots
-
-# Safe plotting function with error handling
-def safe_plotly_chart(fig, **kwargs):
-    """Wrapper for plotly charts with error handling"""
-    try:
-        st.plotly_chart(fig, **kwargs)
-    except Exception as e:
-        st.error(f"Visualization temporarily unavailable: {str(e)}")
-        st.info("Please try refreshing the page or contact support if this persists.")
-
-def safe_download_button(label, data, filename, mime_type="text/plain", **kwargs):
-    """Safe download button with validation"""
-    try:
-        if data and len(str(data)) > 0:
-            st.download_button(label=label, data=data, file_name=filename, mime=mime_type, **kwargs)
-        else:
-            st.warning("No data available for download")
-    except Exception as e:
-        st.error(f"Download temporarily unavailable: {str(e)}")
 
 # Page config
 st.set_page_config(
@@ -323,22 +427,16 @@ def load_data():
         raise
 
 # Initialize session state
-def initialize_session_state():
-    """Initialize all required session state variables"""
-    if 'first_visit' not in st.session_state:
-        st.session_state.first_visit = True
-    if 'selected_persona' not in st.session_state:
-        st.session_state.selected_persona = "General"
-    if 'show_changelog' not in st.session_state:
-        st.session_state.show_changelog = False
-    if 'assessment_completed' not in st.session_state:
-        st.session_state.assessment_completed = False
-    if 'investment_analysis' not in st.session_state:
-        st.session_state.investment_analysis = {}
-    if 'show_quick_assessment' not in st.session_state:
-        st.session_state.show_quick_assessment = False
-
-initialize_session_state()
+if 'first_visit' not in st.session_state:
+    st.session_state.first_visit = True
+if 'selected_persona' not in st.session_state:
+    st.session_state.selected_persona = "General"
+if 'show_changelog' not in st.session_state:
+    st.session_state.show_changelog = False
+if 'year_filter' not in st.session_state:
+    st.session_state.year_filter = None
+if 'compare_years' not in st.session_state:
+    st.session_state.compare_years = False
 
 # Helper function for source info
 def show_source_info(source_key):
@@ -588,100 +686,22 @@ OECD AI Policy Observatory, and US Census Bureau AI Use Supplement.
 # Sidebar controls
 st.sidebar.header("📊 Dashboard Controls")
 
-if st.session_state.selected_persona == "Business Leader":
-    # EXECUTIVE-FOCUSED: Only strategic tools + essential insights
-    all_views = [
-        "🎯 Competitive Position Assessor",
-        "💰 Investment Decision Engine", 
-        "📊 Strategic Market Intelligence",  # NEW - combines key metrics
-        "🗺️ Industry Benchmarking",         # NEW - focused industry analysis
-        "---",
-        "🔍 Detailed Analysis",              # NEW - gateway to detailed views
-        "Bibliography & Sources"
-    ]
-    
-    # Executive gets strategic recommendations first
-    recommended_views = [
-        "🎯 Competitive Position Assessor", 
-        "💰 Investment Decision Engine",
-        "📊 Strategic Market Intelligence"
-    ]
+# Show persona selection
+persona = st.sidebar.selectbox(
+    "Select Your Role",
+    ["General", "Business Leader", "Policymaker", "Researcher"],
+    index=["General", "Business Leader", "Policymaker", "Researcher"].index(st.session_state.selected_persona)
+)
+st.session_state.selected_persona = persona
 
-elif st.session_state.selected_persona == "Policymaker":
-    # POLICY-FOCUSED: Regulatory and geographic emphasis
-    all_views = [
-        "🎯 Competitive Position Assessor",
-        "⚖️ Regulatory Risk Radar",
-        "🗺️ Geographic Distribution", 
-        "📊 Strategic Market Intelligence",
-        "---",
-        "OECD 2025 Findings",
-        "AI Governance", 
-        "🔍 Detailed Analysis",
-        "Bibliography & Sources"
-    ]
-    
-    recommended_views = [
-        "⚖️ Regulatory Risk Radar",
-        "🗺️ Geographic Distribution",
-        "OECD 2025 Findings"
-    ]
-
-elif st.session_state.selected_persona == "Researcher":
-    # RESEARCH-FOCUSED: Full access with academic emphasis
-    all_views = [
-        "📊 Strategic Market Intelligence",
-        "Historical Trends",
-        "Productivity Research",
-        "Environmental Impact",
-        "---",
-        "🎯 Competitive Position Assessor",
-        "💰 Investment Decision Engine",
-        "---",
-        "🔍 Detailed Analysis",
-        "Bibliography & Sources"
-    ]
-    
-    recommended_views = [
-        "Historical Trends",
-        "Productivity Research", 
-        "Environmental Impact",
-        "Bibliography & Sources"
-    ]
-
-else:  # General users
-    # BALANCED: Strategic tools + core analysis
-    all_views = [
-        "🎯 Competitive Position Assessor",
-        "💰 Investment Decision Engine",
-        "📊 Strategic Market Intelligence",
-        "Historical Trends",
-        "---",
-        "🗺️ Industry Benchmarking", 
-        "Investment Trends",
-        "🔍 Detailed Analysis",
-        "Bibliography & Sources"
-    ]
-    
-    recommended_views = [
-        "🎯 Competitive Position Assessor",
-        "📊 Strategic Market Intelligence",
-        "Historical Trends"
-    ]
-
-persona_info = {
-    "Business Leader": "👔 Strategic focus with executive tools",
-    "Policymaker": "🏛️ Policy and regulatory emphasis", 
-    "Researcher": "🔬 Comprehensive data and methodology",
-    "General": "👤 Balanced strategic and analytical views"
+# Update persona recommendations to focus on strategic views
+persona_views = {
+    "Business Leader": ["🎯 Competitive Position Assessor", "💰 Investment Decision Engine", "Financial Impact", "ROI Analysis"],
+    "Policymaker": ["⚖️ Regulatory Risk Radar", "Geographic Distribution", "OECD 2025 Findings", "AI Governance"],
+    "Researcher": ["Historical Trends", "Productivity Research", "Environmental Impact", "Bibliography & Sources"],
+    "General": ["🎯 Competitive Position Assessor", "Historical Trends", "Investment Trends", "Industry Analysis"]
 }
 
-st.sidebar.info(f"""
-**Current View Mode:** {st.session_state.selected_persona}
-{persona_info[st.session_state.selected_persona]}
-
-**Recommended:** {', '.join(recommended_views[:2])}...
-""")
 
 # Strategic views (top priority)
 strategic_views = [
@@ -723,21 +743,22 @@ legacy_views = [
     "Bibliography & Sources"
 ]
 
-# Show view selector
-# Show view selector based on persona
-view_type = st.sidebar.selectbox(
-    "Analysis View", 
-    all_views,
-    index=0,  # Always start with first recommended view
-    help="Curated views based on your selected role"
-)
+# Create organized menu structure
+all_views = strategic_views + ["---"] + core_views + ["---"] + detailed_views + ["---"] + legacy_views
 
-persona = st.session_state.selected_persona
+if persona != "General":
+    st.sidebar.info(f"💡 **Recommended views for {persona}:**\n" + "\n".join([f"• {v}" for v in persona_views[persona]]))
 
 data_year = st.sidebar.selectbox(
     "Select Data Year", 
     ["2018 (Early AI)", "2025 (GenAI Era)"],
     index=1
+)
+
+view_type = st.sidebar.selectbox(
+    "Analysis View", 
+    all_views,
+    index=all_views.index(persona_views[persona][0]) if persona != "General" else 0
 )
 
 # Advanced filters
@@ -1963,650 +1984,17 @@ Contact: [Your organization contact information]
         - Assumes standard enterprise implementation capabilities and change management
         """)
 
-elif view_type == "📊 Strategic Market Intelligence":
-    st.write("# 📊 Strategic Market Intelligence Dashboard")
-    st.write("**Real-time insights for executive decision-making**")
-    
-    # Executive summary with key insights
-    col1, col2, col3 = st.columns(3)
-    with col1:
-        st.info("📈 **Market Status**\nAI adoption accelerating faster than any technology in history")
-    with col2:
-        st.info("💰 **Investment Climate**\nRecord funding levels creating competitive advantages")
-    with col3:
-        st.info("⚡ **Urgency Level**\nAction window closing rapidly for competitive positioning")
-    
-    st.markdown("---")
-    
-    # Create comprehensive intelligence tabs
-    intel_tabs = st.tabs(["🎯 Market Position", "💰 Investment Landscape", "⚖️ Competitive Dynamics", "🔮 Forward Outlook", "🚨 Risk Monitor"])
-    
-    with intel_tabs[0]:
-        st.subheader("🎯 Market Position Analysis")
-        
-        # Market maturity assessment
-        col1, col2 = st.columns(2)
-        
-        with col1:
-            # Industry leadership matrix
-            fig = px.scatter(
-                sector_2025,
-                x='adoption_rate',
-                y='avg_roi',
-                size='genai_adoption',
-                color='sector',
-                title='Industry AI Maturity Matrix',
-                labels={
-                    'adoption_rate': 'AI Adoption Rate (%)',
-                    'avg_roi': 'Average ROI (x)',
-                    'genai_adoption': 'GenAI Adoption (%)'
-                },
-                height=400
-            )
-            
-            # Add quadrant lines
-            fig.add_hline(y=sector_2025['avg_roi'].mean(), line_dash="dash", line_color="gray")
-            fig.add_vline(x=sector_2025['adoption_rate'].mean(), line_dash="dash", line_color="gray")
-            
-            # Quadrant labels
-            fig.add_annotation(x=60, y=4.0, text="Leaders", showarrow=False, font=dict(color="green", size=14))
-            fig.add_annotation(x=90, y=3.0, text="Mature", showarrow=False, font=dict(color="blue", size=14))
-            fig.add_annotation(x=60, y=2.5, text="Emerging", showarrow=False, font=dict(color="orange", size=14))
-            fig.add_annotation(x=90, y=4.0, text="Optimized", showarrow=False, font=dict(color="purple", size=14))
-            
-            st.plotly_chart(fig, use_container_width=True)
-            
-        with col2:
-            st.write("**🎯 Strategic Positioning Insights:**")
-            
-            # Calculate market insights
-            leader_threshold = sector_2025['adoption_rate'].quantile(0.75)
-            leaders = sector_2025[sector_2025['adoption_rate'] >= leader_threshold]
-            laggards = sector_2025[sector_2025['adoption_rate'] <= sector_2025['adoption_rate'].quantile(0.25)]
-            
-            st.write(f"**📊 Market Segmentation:**")
-            st.write(f"• **Market Leaders:** {', '.join(leaders['sector'])}")
-            st.write(f"• **Average ROI:** {sector_2025['avg_roi'].mean():.1f}x")
-            st.write(f"• **Adoption Spread:** {sector_2025['adoption_rate'].max() - sector_2025['adoption_rate'].min():.0f}pp gap")
-            
-            st.write(f"**⚡ Competitive Gaps:**")
-            st.write(f"• **Technology leads** with {sector_2025.loc[sector_2025['sector']=='Technology', 'adoption_rate'].iloc[0]}% adoption")
-            st.write(f"• **Largest opportunity:** {laggards.iloc[0]['sector']} sector ({laggards.iloc[0]['adoption_rate']}% adoption)")
-            st.write(f"• **GenAI penetration:** {sector_2025['genai_adoption'].mean():.0f}% average across sectors")
-            
-            # Strategic recommendations
-            st.success("""
-            **🎯 Strategic Recommendations:**
-            - Technology sector setting pace - other industries must accelerate
-            - GenAI adoption critical for maintaining competitiveness  
-            - ROI varies significantly - focus on proven use cases first
-            - Cross-industry benchmarking essential for strategy
-            """)
-    
-    with intel_tabs[1]:
-        st.subheader("💰 Investment Landscape Intelligence")
-        
-        # Investment flow analysis
-        col1, col2 = st.columns(2)
-        
-        with col1:
-            # Investment trajectory
-            fig = go.Figure()
-            
-            fig.add_trace(go.Scatter(
-                x=ai_investment_data['year'],
-                y=ai_investment_data['total_investment'],
-                mode='lines+markers',
-                name='Total Investment',
-                line=dict(width=4, color='#2E86AB'),
-                marker=dict(size=12),
-                fill='tonexty'
-            ))
-            
-            fig.add_trace(go.Scatter(
-                x=ai_investment_data['year'][ai_investment_data['genai_investment'] > 0],
-                y=ai_investment_data['genai_investment'][ai_investment_data['genai_investment'] > 0],
-                mode='lines+markers',
-                name='GenAI Investment',
-                line=dict(width=3, color='#F24236'),
-                marker=dict(size=8),
-                fill='tozeroy'
-            ))
-            
-            fig.update_layout(
-                title='AI Investment Explosion: $252.3B in 2024',
-                xaxis_title='Year',
-                yaxis_title='Investment ($B)',
-                height=400,
-                hovermode='x unified'
-            )
-            
-            st.plotly_chart(fig, use_container_width=True)
-            
-        with col2:
-            st.write("**💰 Investment Intelligence:**")
-            
-            # Calculate investment metrics
-            total_2024 = ai_investment_data[ai_investment_data['year'] == 2024]['total_investment'].iloc[0]
-            genai_2024 = ai_investment_data[ai_investment_data['year'] == 2024]['genai_investment'].iloc[0]
-            us_2024 = ai_investment_data[ai_investment_data['year'] == 2024]['us_investment'].iloc[0]
-            
-            st.metric("2024 Total", f"${total_2024:.1f}B", f"+{((total_2024/174.6)-1)*100:.1f}% YoY")
-            st.metric("GenAI Share", f"${genai_2024:.1f}B", f"{(genai_2024/total_2024)*100:.1f}% of total")
-            st.metric("US Dominance", f"${us_2024:.1f}B", f"{(us_2024/total_2024)*100:.1f}% global share")
-            
-            st.write("**🌍 Geographic Concentration:**")
-            st.write(f"• **US Investment:** ${us_2024:.1f}B (12x larger than China)")
-            st.write(f"• **Market concentration:** Top 3 countries control 85% of investment")
-            st.write(f"• **Regional gaps:** Significant investment disparities globally")
-            
-            st.warning("""
-            **⚠️ Investment Implications:**
-            - Record funding creating competitive moats
-            - Geographic concentration increasing inequality
-            - GenAI investment surge may indicate bubble risk
-            - Early movers gaining sustainable advantages
-            """)
-    
-    with intel_tabs[2]:
-        st.subheader("⚖️ Competitive Dynamics Radar")
-        
-        # Competitive forces analysis
-        competitive_forces = pd.DataFrame({
-            'force': ['New AI Entrants', 'Substitute Technologies', 'Supplier Power (Cloud/Compute)', 
-                     'Buyer Power (Customers)', 'Competitive Rivalry', 'Regulatory Pressure'],
-            'intensity': [85, 45, 75, 60, 90, 70],
-            'trend': ['Increasing', 'Stable', 'Increasing', 'Increasing', 'Intensifying', 'Increasing'],
-            'impact': ['High', 'Medium', 'High', 'Medium', 'Very High', 'High']
-        })
-        
-        # Create radar chart for competitive forces
-        fig = go.Figure()
-        
-        fig.add_trace(go.Scatterpolar(
-            r=competitive_forces['intensity'],
-            theta=competitive_forces['force'],
-            fill='toself',
-            name='Current Intensity',
-            line_color='red',
-            fillcolor='rgba(255,0,0,0.1)'
-        ))
-        
-        fig.update_layout(
-            polar=dict(
-                radialaxis=dict(
-                    visible=True,
-                    range=[0, 100]
-                )),
-            showlegend=True,
-            title="Porter's Five Forces: AI Market Dynamics",
-            height=450
-        )
-        
-        st.plotly_chart(fig, use_container_width=True)
-        
-        # Competitive intelligence insights
-        col1, col2 = st.columns(2)
-        
-        with col1:
-            st.write("**🔥 Intensity Drivers:**")
-            st.write("• **New entrants (85%):** Low barriers, massive opportunity")
-            st.write("• **Competitive rivalry (90%):** Winner-take-most dynamics")
-            st.write("• **Supplier power (75%):** Cloud infrastructure concentration")
-            st.write("• **Regulatory pressure (70%):** Increasing government oversight")
-        
-        with col2:
-            st.write("**📈 Trend Analysis:**")
-            st.write("• **Market fragmentation** accelerating across all sectors")
-            st.write("• **Technology commoditization** reducing differentiation")
-            st.write("• **Scale advantages** becoming more pronounced")
-            st.write("• **Regulatory complexity** increasing compliance costs")
-            
-        st.error("""
-        **🚨 Strategic Threats:**
-        - Competitive intensity at historically high levels
-        - New entrants disrupting established players rapidly
-        - Technology evolution outpacing organizational adaptation
-        - Winner-take-most dynamics creating market concentration
-        """)
-    
-    with intel_tabs[3]:
-        st.subheader("🔮 Forward Outlook & Scenario Planning")
-        
-        # Scenario planning matrix - FIXED
-        scenarios = pd.DataFrame({
-            'scenario': ['AI Winter 2.0', 'Steady Growth', 'Explosive Acceleration', 'Regulatory Clampdown'],
-            'probability': [15, 35, 40, 10],
-            'impact_adoption': [-30, 15, 85, -20],
-            'impact_investment': [-60, 25, 150, -40],
-            'timeline': ['2026-2027', '2025-2030', '2025-2026', '2025-2027']
-        })
-        
-        # Scenario visualization - FIXED VERSION
-        fig = go.Figure()
-        
-        # Create scatter plot manually to avoid the plotly express issue
-        for i, scenario in scenarios.iterrows():
-            fig.add_trace(go.Scatter(
-                x=[scenario['probability']],
-                y=[scenario['impact_adoption']],
-                mode='markers+text',
-                marker=dict(
-                    size=abs(scenario['impact_investment']) / 3,  # Use absolute value for size
-                    color=scenario['impact_investment'],
-                    colorscale='RdYlGn',
-                    showscale=True if i == 0 else False,  # Only show colorbar once
-                    colorbar=dict(title="Investment Impact (%)") if i == 0 else None,
-                    line=dict(width=2, color='black')
-                ),
-                text=scenario['scenario'],
-                textposition='top center',
-                name=scenario['scenario'],
-                hovertemplate='<b>%{text}</b><br>' +
-                             f'Probability: {scenario["probability"]}%<br>' +
-                             f'Adoption Impact: {scenario["impact_adoption"]:+d}%<br>' +
-                             f'Investment Impact: {scenario["impact_investment"]:+d}%<br>' +
-                             f'Timeline: {scenario["timeline"]}<extra></extra>'
-            ))
-        
-        fig.update_layout(
-            title='AI Future Scenarios: Probability vs Impact',
-            xaxis_title='Probability (%)',
-            yaxis_title='Adoption Impact (%)',
-            height=400,
-            showlegend=False,  # Hide legend since we have text labels
-            xaxis=dict(range=[0, 50]),
-            yaxis=dict(range=[-40, 100])
-        )
-        
-        st.plotly_chart(fig, use_container_width=True)
-        
-        # Scenario details
-        col1, col2 = st.columns(2)
-        
-        with col1:
-            st.write("**🎯 Most Likely: Explosive Acceleration (40%)**")
-            st.write("• Continued breakthrough innovations")
-            st.write("• Mass market adoption across all sectors") 
-            st.write("• 85% increase in adoption rates")
-            st.write("• 150% investment growth")
-            
-            st.write("**📊 Conservative: Steady Growth (35%)**")
-            st.write("• Gradual, sustainable adoption")
-            st.write("• Measured investment growth")
-            st.write("• Focus on proven use cases")
-            st.write("• Regulatory clarity emerges")
-        
-        with col2:
-            st.write("**❄️ Downside: AI Winter 2.0 (15%)**")
-            st.write("• Technology limitations hit wall")
-            st.write("• Investment bubble bursts")
-            st.write("• Disillusionment with ROI")
-            st.write("• Market consolidation")
-            
-            st.write("**⚖️ Wild Card: Regulatory Clampdown (10%)**")
-            st.write("• Strict AI regulations imposed")
-            st.write("• Innovation significantly slowed")
-            st.write("• Compliance costs skyrocket")
-            st.write("• Market fragmentation by region")
-        
-        # Strategic recommendations by scenario
-        st.info("""
-        **🎯 Scenario-Based Strategy:**
-        - **Explosive Acceleration:** Invest aggressively now, build capabilities fast
-        - **Steady Growth:** Balanced approach, focus on ROI and sustainability  
-        - **AI Winter 2.0:** Defensive strategy, focus on core use cases only
-        - **Regulatory Clampdown:** Invest in compliance and governance early
-        """)
-    
-    with intel_tabs[4]:
-        st.subheader("🚨 Risk Monitor & Early Warning System")
-        
-        # Risk dashboard
-        risk_categories = pd.DataFrame({
-            'category': ['Technology Risk', 'Market Risk', 'Regulatory Risk', 'Competitive Risk', 
-                        'Operational Risk', 'Reputational Risk'],
-            'current_level': [65, 75, 80, 85, 70, 60],
-            'trend': ['Stable', 'Increasing', 'Increasing', 'Critical', 'Stable', 'Increasing'],
-            'time_horizon': ['Medium', 'Short', 'Short', 'Immediate', 'Medium', 'Long']
-        })
-        
-        # Risk level visualization
-        fig = go.Figure()
-        
-        risk_colors = ['orange' if x >= 80 else 'red' if x >= 85 else 'yellow' if x >= 70 else 'green' for x in risk_categories['current_level']]
-        
-        fig.add_trace(go.Bar(
-            x=risk_categories['category'],
-            y=risk_categories['current_level'],
-            marker_color=risk_colors,
-            text=[f'{x}%' for x in risk_categories['current_level']],
-            textposition='outside',
-            hovertemplate='<b>%{x}</b><br>Risk Level: %{y}%<br>Trend: %{customdata}<extra></extra>',
-            customdata=risk_categories['trend']
-        ))
-        
-        # Add risk threshold lines
-        fig.add_hline(y=75, line_dash="dash", line_color="orange", annotation_text="High Risk Threshold")
-        fig.add_hline(y=85, line_dash="dash", line_color="red", annotation_text="Critical Risk Threshold")
-        
-        fig.update_layout(
-            title='Enterprise AI Risk Monitor',
-            xaxis_title='Risk Category',
-            yaxis_title='Risk Level (%)',
-            height=400,
-            xaxis_tickangle=45
-        )
-        
-        st.plotly_chart(fig, use_container_width=True)
-        
-        # Risk alerts and mitigation
-        col1, col2 = st.columns(2)
-        
-        with col1:
-            st.write("**🚨 Critical Alerts:**")
-            critical_risks = risk_categories[risk_categories['current_level'] >= 85]
-            for _, risk in critical_risks.iterrows():
-                st.error(f"**{risk['category']}:** {risk['current_level']}% - {risk['trend']}")
-            
-            st.write("**⚠️ High Risk Areas:**")
-            high_risks = risk_categories[(risk_categories['current_level'] >= 75) & (risk_categories['current_level'] < 85)]
-            for _, risk in high_risks.iterrows():
-                st.warning(f"**{risk['category']}:** {risk['current_level']}% - {risk['trend']}")
-        
-        with col2:
-            st.write("**🛡️ Risk Mitigation Priorities:**")
-            st.write("**1. Competitive Risk (Critical)**")
-            st.write("• Accelerate AI capability development")
-            st.write("• Monitor competitor AI implementations")
-            st.write("• Develop defensive AI strategies")
-            
-            st.write("**2. Regulatory Risk (High)**") 
-            st.write("• Establish AI governance framework")
-            st.write("• Engage with regulatory developments")
-            st.write("• Implement compliance monitoring")
-            
-            st.write("**3. Market Risk (High)**")
-            st.write("• Diversify AI investment portfolio")
-            st.write("• Monitor bubble indicators")
-            st.write("• Develop scenario contingency plans")
-        
-        # Early warning indicators
-        st.subheader("📊 Early Warning Indicators")
-        
-        warning_indicators = pd.DataFrame({
-            'indicator': ['Competitor AI Announcements', 'Regulatory Proposals', 'Investment Velocity', 
-                         'Talent Shortage', 'Technology Limitations', 'Customer Expectations'],
-            'status': ['Red', 'Yellow', 'Red', 'Red', 'Green', 'Yellow'],
-            'last_update': ['2 days ago', '1 week ago', '3 days ago', '1 day ago', '1 week ago', '4 days ago']
-        })
-        
-        for _, indicator in warning_indicators.iterrows():
-            color = '🔴' if indicator['status'] == 'Red' else '🟡' if indicator['status'] == 'Yellow' else '🟢'
-            st.write(f"{color} **{indicator['indicator']}** - {indicator['status']} ({indicator['last_update']})")
-    
-    # Strategic recommendations summary
-    st.markdown("---")
-    st.subheader("🎯 Executive Action Framework")
-    
-    col1, col2, col3 = st.columns(3)
-    
-    with col1:
-        st.markdown("""
-        **⚡ Immediate Actions (0-3 months)**
-        - [ ] Complete competitive AI assessment
-        - [ ] Establish AI investment budget
-        - [ ] Identify quick-win AI use cases
-        - [ ] Begin talent acquisition/training
-        - [ ] Set up risk monitoring system
-        """)
-    
-    with col2:
-        st.markdown("""
-        **🎯 Strategic Initiatives (3-12 months)**
-        - [ ] Launch pilot AI implementations
-        - [ ] Develop AI governance framework
-        - [ ] Build AI capability roadmap
-        - [ ] Establish vendor partnerships
-        - [ ] Create change management plan
-        """)
-    
-    with col3:
-        st.markdown("""
-        **🚀 Transformational Goals (12+ months)**
-        - [ ] Achieve competitive AI advantage
-        - [ ] Scale successful AI implementations
-        - [ ] Develop proprietary AI capabilities
-        - [ ] Lead industry AI best practices
-        - [ ] Create AI-driven business models
-        """)
-    
-    # Download strategic report
-    st.subheader("📥 Strategic Intelligence Report")
-    
-    strategic_report = f"""
-STRATEGIC MARKET INTELLIGENCE REPORT
-AI Adoption Dashboard v2.2.0
-Generated: {datetime.now().strftime('%B %d, %Y')}
-
-EXECUTIVE SUMMARY
-═══════════════════════════════════════════════════════════════
-Market Status: AI adoption accelerating at unprecedented pace (78% enterprise adoption)
-Investment Climate: Record $252.3B invested in 2024 (+44.5% YoY)
-Competitive Intensity: Critical level (90/100) with winner-take-most dynamics
-Strategic Urgency: Immediate action required to maintain competitive position
-
-MARKET POSITION ANALYSIS
-═══════════════════════════════════════════════════════════════
-Industry Leaders: Technology (92%), Financial Services (85%), Healthcare (78%)
-Adoption Spread: 40 percentage point gap between leaders and laggards
-GenAI Penetration: 71% average adoption, doubling from previous year
-ROI Performance: Average 3.2x return, varying significantly by implementation
-
-INVESTMENT LANDSCAPE INTELLIGENCE
-═══════════════════════════════════════════════════════════════
-Total 2024 Investment: $252.3B globally
-GenAI Share: $33.9B (13.4% of total AI investment)
-US Dominance: $109.1B (43% global share, 12x larger than China)
-Geographic Concentration: Top 3 countries control 85% of global investment
-
-COMPETITIVE DYNAMICS ASSESSMENT
-═══════════════════════════════════════════════════════════════
-New Entrants Threat: 85/100 (High - Low barriers to entry)
-Competitive Rivalry: 90/100 (Critical - Winner-take-most dynamics)
-Supplier Power: 75/100 (High - Cloud infrastructure concentration)
-Regulatory Pressure: 70/100 (High - Increasing government oversight)
-
-RISK MONITOR STATUS
-═══════════════════════════════════════════════════════════════
-CRITICAL RISKS:
-- Competitive Risk: 85% (Immediate threat to market position)
-
-HIGH RISKS:
-- Regulatory Risk: 80% (Increasing compliance requirements)
-- Market Risk: 75% (Investment bubble and volatility concerns)
-
-STRATEGIC RECOMMENDATIONS
-═══════════════════════════════════════════════════════════════
-IMMEDIATE ACTIONS (0-3 months):
-1. Complete competitive AI capability assessment
-2. Establish dedicated AI investment budget
-3. Identify and prioritize quick-win use cases
-4. Begin AI talent acquisition and training programs
-5. Implement comprehensive risk monitoring system
-
-STRATEGIC INITIATIVES (3-12 months):
-1. Launch multiple AI pilot implementations
-2. Develop comprehensive AI governance framework
-3. Build multi-year AI capability roadmap
-4. Establish strategic vendor partnerships
-5. Create organization-wide change management plan
-
-TRANSFORMATIONAL GOALS (12+ months):
-1. Achieve sustainable competitive AI advantage
-2. Scale successful implementations enterprise-wide
-3. Develop proprietary AI capabilities and IP
-4. Lead industry AI adoption best practices
-5. Create new AI-driven business models and revenue streams
-
-SCENARIO PLANNING OUTLOOK
-═══════════════════════════════════════════════════════════════
-Most Likely Scenario: Explosive Acceleration (40% probability)
-- 85% increase in adoption rates
-- 150% investment growth
-- Mass market adoption across all sectors
-- Continued breakthrough innovations
-
-Contingency Planning:
-- AI Winter 2.0 (15%): Focus on defensive strategy, core use cases only
-- Regulatory Clampdown (10%): Invest heavily in compliance and governance
-- Steady Growth (35%): Balanced approach with ROI focus
-
-BOTTOM LINE ASSESSMENT
-═══════════════════════════════════════════════════════════════
-The AI market has reached a critical inflection point where competitive advantages
-are being permanently established. Organizations failing to act decisively within
-the next 6-12 months risk falling irreversibly behind competitors gaining 15-40%
-productivity advantages through AI implementation.
-
-Recommended immediate investment: 2-5% of annual revenue in AI capabilities
-Timeline for competitive parity: 12-18 months maximum
-Risk of inaction: Loss of market position and long-term competitive viability
-
-═══════════════════════════════════════════════════════════════
-This report is based on analysis of multiple authoritative sources including
-Stanford AI Index 2025, McKinsey Global Survey, OECD data, and Federal Reserve research.
-Contact: Robert.casanova82@gmail.com
-═══════════════════════════════════════════════════════════════
-"""
-    
-    st.download_button(
-        label="📥 Download Strategic Intelligence Report",
-        data=strategic_report,
-        file_name=f"Strategic_Market_Intelligence_{datetime.now().strftime('%Y%m%d')}.txt",
-        mime="text/plain",
-        use_container_width=True,
-        help="Complete strategic analysis and recommendations for executive leadership"
-    )
-    
-    st.success("✅ Strategic Market Intelligence compiled! Use this analysis for board presentations and strategic planning.")
-
-
 elif view_type == "⚖️ Regulatory Risk Radar":
     st.write("# ⚖️ Regulatory Risk Radar")
-    st.write("**Monitor regulatory changes and assess compliance requirements**")
-    
-    # Value proposition
-    col1, col2, col3 = st.columns(3)
-    with col1:
-        st.info("📊 **Risk Monitoring**\nTrack regulatory developments in real-time")
-    with col2:
-        st.info("⚖️ **Compliance Planning**\nAssess requirements and prepare for changes")
-    with col3:
-        st.info("🌍 **Global Coverage**\nMonitor regulations across major jurisdictions")
-    
-    st.markdown("---")
-    
-    # Current regulatory landscape
-    st.subheader("🌍 Global Regulatory Landscape")
-    
-    # Regulatory activity by region
-    regulatory_activity = pd.DataFrame({
-        'region': ['United States', 'European Union', 'United Kingdom', 'China', 'Canada', 'Japan', 'Australia'],
-        'regulations_2024': [59, 43, 28, 35, 15, 12, 8],
-        'growth_rate': [97, 34, 75, 56, 25, 20, 60],
-        'compliance_burden': [7.5, 8.9, 6.8, 7.2, 5.5, 4.8, 5.2],  # 1-10 scale
-        'enforcement_level': ['High', 'Very High', 'Medium', 'High', 'Medium', 'Low', 'Medium']
-    })
-    
-    # Simple visualization to avoid complex plotting issues
-    fig = go.Figure()
-    
-    fig.add_trace(go.Bar(
-        x=regulatory_activity['region'],
-        y=regulatory_activity['regulations_2024'],
-        marker_color='#3498DB',
-        text=regulatory_activity['regulations_2024'],
-        textposition='outside',
-        name='AI Regulations (2024)'
-    ))
-    
-    fig.update_layout(
-        title='AI Regulatory Activity by Region (2024)',
-        xaxis_title='Region',
-        yaxis_title='Number of AI Regulations',
-        height=400,
-        xaxis_tickangle=45
-    )
-    
-    st.plotly_chart(fig, use_container_width=True)
-    
-    st.info("""
-    **🚨 Key Regulatory Trends:**
-    - **U.S. leads** with 59 new AI regulations (97% increase)
-    - **EU AI Act** implementation driving compliance requirements
-    - **Cross-border coordination** increasing through international frameworks
-    - **Sector-specific guidance** emerging in finance, healthcare, hiring
-    """)
+    st.info("🚧 **Coming Soon** - Regulatory change monitoring and compliance planning")
+    st.write("This module will help you:")
+    st.write("• Track upcoming AI regulations and their business impact")
+    st.write("• Assess compliance costs and requirements")
+    st.write("• Plan for regulatory scenario changes")
+    st.write("• Identify policy engagement opportunities")
 
-elif view_type == "🗺️ Industry Benchmarking":
-    st.write("# 🗺️ Industry Benchmarking")
-    st.info("🚧 **Coming Soon** - Detailed industry-specific AI adoption analysis")
-    st.write("This module will provide:")
-    st.write("• Industry-specific adoption rates and use cases")
-    st.write("• Competitive positioning within your sector")
-    st.write("• Best practices from industry leaders")
-    st.write("• ROI benchmarks by industry vertical")
+# [Continue with your existing view implementations...]
 
-elif view_type == "🔍 Detailed Analysis":
-    st.write("# 🔍 Detailed Analysis Gateway")
-    st.write("**Access comprehensive data views and technical analysis**")
-    
-    st.info("Select from detailed analysis options below:")
-    
-    detailed_options = [
-        "Token Economics", "Labor Impact", "Environmental Impact", 
-        "Skill Gap Analysis", "AI Governance", "Productivity Research",
-        "AI Technology Maturity", "Barriers & Support", "ROI Analysis"
-    ]
-    
-    selected_detailed = st.selectbox("Choose detailed analysis:", detailed_options)
-    
-    if st.button(f"🔍 Analyze {selected_detailed}"):
-        st.info(f"Redirecting to {selected_detailed} analysis...")
-        # This would typically trigger a view change in a more complex app
-
-elif view_type == "Historical Trends":
-    # [Your existing Historical Trends code continues here...]
-    pass  # Replace with your actual implementation
-
-# Initialize variables to prevent scope errors
-    compare_mode = False
-    year_range = (2017, 2025)
-    year1 = 2018
-    year2 = 2024
-    
-    # Add controls in sidebar for Historical Trends
-    st.sidebar.markdown("---")
-    st.sidebar.markdown("### 📊 Historical Analysis Options")
-    
-    year_range = st.sidebar.slider(
-        "Select Year Range",
-        min_value=2017,
-        max_value=2025,
-        value=(2017, 2025),
-        step=1
-    )
-    
-    compare_mode = st.sidebar.checkbox("Compare specific years", value=False)
-    if compare_mode:
-        col1, col2 = st.sidebar.columns(2)
-        with col1:
-            year1 = st.selectbox("Year 1", range(2017, 2026), index=1)
-        with col2:
-            year2 = st.selectbox("Year 2", range(2017, 2026), index=7)
-
-# Add all other view types that follow...
 if view_type == "Historical Trends":
     # Apply year filter if set
     if 'compare_mode' in locals() and compare_mode:
@@ -2694,7 +2082,7 @@ if view_type == "Historical Trends":
             hovermode='x unified'
         )
         
-        safe_plotly_chart(fig2, use_container_width=True)
+        st.plotly_chart(fig, use_container_width=True)
         
         # Add insights for comparison
         st.info(f"""
@@ -3153,11 +2541,11 @@ if view_type == "Historical Trends":
         
         with col1:
             csv = export_data.to_csv(index=False)
-            safe_download_button(
+            st.download_button(
                 label="📥 Download Historical Data (CSV)",
                 data=csv,
-                filename="ai_adoption_historical_trends.csv",
-                mime_type="text/csv"
+                file_name="ai_adoption_historical_trends.csv",
+                mime="text/csv"
             )
         
         with col2:
@@ -3173,8 +2561,8 @@ if view_type == "Historical Trends":
         st.download_button(
             label="📥 Download Historical Data (CSV)",
             data=csv,
-           filename="ai_adoption_milestones.csv",
-           mime_type="text/csv"
+            file_name="ai_adoption_historical_trends.csv",
+            mime="text/csv"
         )
         
     # NEW: Research methodology note
@@ -6727,596 +6115,6 @@ elif view_type == "Bibliography & Sources":
         
     with bib_tabs[4]:
         st.markdown("""
-        ### Multi-Source Collections and Databases
-        
-        35. **Federal Reserve Banks.** "Multiple Economic Impact Analyses on AI." Various working papers and research documents, 2023-2025.
-
-        36. **United Nations, European Union, African Union.** "AI Frameworks and Governance Documents." Various policy papers and frameworks, 2023-2025.
-
-        37. **Various Academic Institutions.** "University AI Research Center Mapping Data." Compiled from multiple university sources, 2024-2025.
-
-        38. **Various Federal Agencies.** "Grant and Funding Allocation Data for AI Research." Compiled from NSF, DOD, NIH databases, 2020-2025.
-        """)
-    
-    # Add methodology and verification section
-    st.markdown("---")
-    st.subheader("📋 Source Verification Methodology")
-    
-    st.info("""
-    **Source Quality Assurance Process:**
-    
-    ✅ **Primary Source Verification** - All data traced to original publications and reports
-    
-    ✅ **Cross-Validation** - Key findings confirmed across multiple independent sources
-    
-    ✅ **Institutional Authority** - Preference for government agencies, academic institutions, and established research organizations
-    
-    ✅ **Recency Standards** - Data sources from 2020-2025, with emphasis on 2024-2025 findings
-    
-    ✅ **Methodological Transparency** - Survey sizes, geographic scope, and collection methods documented
-    
-    ✅ **Peer Review Preference** - Academic sources prioritized when available
-    """)
-    
-    # Add download option for bibliography
-    st.subheader("📥 Export Bibliography")
-    
-    # Create downloadable bibliography text
-    bibliography_text = """AI ADOPTION DASHBOARD - COMPLETE BIBLIOGRAPHY
-Generated: June 28, 2025
-
-GOVERNMENT AND INSTITUTIONAL SOURCES
-
-1. Stanford Human-Centered AI Institute. "AI Index Report 2025." Stanford University. Accessed June 28, 2025. https://aiindex.stanford.edu/ai-index-report-2025/.
-
-2. Stanford Human-Centered AI Institute. "AI Index Report 2023." Stanford University. Accessed June 28, 2025. https://aiindex.stanford.edu/ai-index-report-2023/.
-
-3. U.S. Census Bureau. "AI Use Supplement." Washington, DC: U.S. Department of Commerce. Accessed June 28, 2025. https://www.census.gov.
-
-4. National Science Foundation. "National AI Research Institutes." Washington, DC: NSF. Accessed June 28, 2025. https://www.nsf.gov/focus-areas/artificial-intelligence.
-
-5. National Science Foundation. "NSF Partnerships Expand National AI Research." Press Release, 2020. https://www.nsf.gov/news/nsf-partnerships-expand-national-ai-research.
-
-6. National Institute of Standards and Technology. "AI Risk Management Framework (AI RMF 1.0)." NIST AI 100-1. Gaithersburg, MD: NIST, January 2023. https://nvlpubs.nist.gov/nistpubs/ai/nist.ai.100-1.pdf.
-
-7. National Institute of Standards and Technology. "AI Risk Management Framework." Accessed June 28, 2025. https://www.nist.gov/itl/ai-risk-management-framework.
-
-8. Organisation for Economic Co-operation and Development. "OECD AI Policy Observatory." Accessed June 28, 2025. https://oecd.ai.
-
-9. U.S. Food and Drug Administration. "AI-Enabled Medical Device Approvals Database." Washington, DC: FDA. Accessed June 28, 2025.
-
-CORPORATE AND INDUSTRY SOURCES
-
-10. McKinsey & Company. "The State of AI: McKinsey Global Survey on AI." McKinsey Global Institute. Accessed June 28, 2025. https://www.mckinsey.com/capabilities/quantumblack/our-insights/the-state-of-ai.
-
-11. OpenAI. "Introducing DALL-E." OpenAI Blog, January 5, 2021. https://openai.com/blog/dall-e/.
-
-12. OpenAI. "OpenAI Research." Accessed June 28, 2025. https://openai.com/research/.
-
-13. GitHub. "Introducing GitHub Copilot: AI Pair Programmer." GitHub Blog, June 29, 2021. https://github.blog/2021-06-29-introducing-github-copilot-ai-pair-programmer/.
-
-14. GitHub. "GitHub Copilot is Generally Available to All Developers." GitHub Blog, June 21, 2022. https://github.blog/2022-06-21-github-copilot-is-generally-available-to-all-developers/.
-
-15. GitHub. "GitHub Blog." Accessed June 28, 2025. https://github.blog/.
-
-16. DeepMind. "DeepMind Publications." Accessed June 28, 2025. https://deepmind.google/research/.
-
-17. Goldman Sachs Research. "The Potentially Large Effects of Artificial Intelligence on Economic Growth." Economic Research, 2023.
-
-18. NVIDIA Corporation. "AI Infrastructure and Token Economics Case Studies." 2024-2025.
-
-ACADEMIC PUBLICATIONS
-
-19. Bick, Alexander, Adam Blandin, and David Deming. "The Rapid Adoption of Generative AI." Federal Reserve Bank working paper, 2024.
-
-20. Bick, Alexander, Adam Blandin, and David Deming. "Productivity and Workforce Impact Studies." Federal Reserve Bank working paper, 2025a.
-
-21. Eloundou, Tyna, Sam Manning, Pamela Mishkin, and Daniel Rock. "GPTs are GPTs: An Early Look at the Labor Market Impact Potential of Large Language Models." Working paper, 2023.
-
-22. Briggs, Joseph, and Devesh Kodnani. "The Potentially Large Effects of Artificial Intelligence on Economic Growth." Goldman Sachs Economic Research, 2023.
-
-23. Korinek, Anton. "Language Models and Cognitive Automation for Economic Research." Working paper, 2023.
-
-24. Sevilla, Jaime, Lennart Heim, Anson Ho, Tamay Besiroglu, Marius Hobbhahn, and Pablo Villalobos. "Compute Trends Across Three Eras of Machine Learning." arXiv preprint, 2022.
-
-25. Acemoglu, Daron. "The Simple Macroeconomics of AI." MIT Economics working paper, 2024.
-
-26. Brynjolfsson, Erik, Danielle Li, and Lindsey R. Raymond. "Generative AI at Work." National Bureau of Economic Research Working Paper, 2023.
-
-27. Jumper, John, Richard Evans, Alexander Pritzel, Tim Green, Michael Figurnov, Olaf Ronneberger, Kathryn Tunyasuvunakool, et al. "Highly Accurate Protein Structure Prediction with AlphaFold." Nature 596, no. 7873 (2021): 583-589. https://www.nature.com/articles/s41586-021-03819-2.
-
-28. Richmond Federal Reserve Bank. "AI Productivity Estimates." Economic research papers, 2024.
-
-29. BCG and INSEAD. "OECD/BCG/INSEAD Report 2025: Enterprise AI Adoption." Organisation for Economic Co-operation and Development, 2025.
-
-NEWS AND ANALYSIS SOURCES
-
-30. MIT Technology Review. "Artificial Intelligence." Accessed June 28, 2025. https://www.technologyreview.com/topic/artificial-intelligence/.
-
-31. MIT Technology Review. "How DALL-E 2 Actually Works." April 6, 2022. https://www.technologyreview.com/2022/04/06/1049061/dalle-openai-gpt3-ai-agi-multimodal-image-generation/.
-
-32. Nature Machine Intelligence. "Nature Machine Intelligence Journal." Accessed June 28, 2025. https://www.nature.com/natmachintell/.
-
-33. IEEE Computer Society. "IEEE Computer Society Publications." Accessed June 28, 2025. https://www.computer.org/publications/.
-
-34. Gartner, Inc. "AI Technology Maturity Analysis." Technology research reports, 2025.
-
-MULTI-SOURCE COLLECTIONS AND DATABASES
-
-35. Federal Reserve Banks. "Multiple Economic Impact Analyses on AI." Various working papers and research documents, 2023-2025.
-
-36. United Nations, European Union, African Union. "AI Frameworks and Governance Documents." Various policy papers and frameworks, 2023-2025.
-
-37. Various Academic Institutions. "University AI Research Center Mapping Data." Compiled from multiple university sources, 2024-2025.
-
-38. Various Federal Agencies. "Grant and Funding Allocation Data for AI Research." Compiled from NSF, DOD, NIH databases, 2020-2025.
-
-SOURCE VERIFICATION METHODOLOGY
-
-All sources verified through:
-- Cross-validation across multiple independent data sources
-- Primary source documentation where available
-- Peer-reviewed publication verification
-- Official government agency confirmation
-- Multiple independent confirmations required for each milestone and data point
-
-Citation Format: Chicago Manual of Style (17th edition)
-Dashboard Version: 2.2.0
-Last Updated: June 28, 2025
-Created by: Robert Casanova"""
-    
-    st.download_button(
-        label="📥 Download Complete Bibliography",
-        data=bibliography_text,
-        file_name="ai_adoption_dashboard_bibliography.txt",
-        mime="text/plain"
-    )
-
-# Comprehensive Analysis Integration - UPDATED VERSION
-st.subheader("📋 Comprehensive AI Impact Analysis")
-
-# Add comprehensive analysis from the document with new insights
-with st.expander("📊 Comprehensive AI Impact Analysis - Full Report", expanded=False):
-    st.markdown("""
-    ### Executive Summary
-    
-    This comprehensive analysis synthesizes insights from multiple authoritative sources including the AI Index Report 2025, 
-    Federal Reserve research, MIT studies, OECD reports, and industry analyses to provide a complete picture of AI's 
-    current state and projected impacts across all sectors of society and economy.
-    
-    **New Analysis Highlights:**
-    - Growing AI incidents involving misuse, bias, and safety failures requiring stronger RAI frameworks
-    - Geographic talent concentration in select global hubs creating innovation disparities
-    - Multimodal AI breakthroughs (GPT-4V, robotics) expanding beyond text processing
-    - AI integration in participatory governance and civic engagement tools
-    """)
-    
-    # Create comprehensive analysis tabs with enhanced content
-    comp_tabs = st.tabs(["📈 Performance & Capabilities", "💰 Economics & Investment", "👥 Labor & Productivity", 
-                         "🏛️ Policy & Governance", "🔬 Technical Evolution", "🌍 Global Dynamics", "⚠️ Risks & Safety"])
-    
-    with comp_tabs[0]:
-        st.markdown("""
-        #### AI Performance and Capabilities
-        
-        **Breakthrough Performance Improvements (2024):**
-        - **MMMU benchmark:** +18.8 percentage points vs 2023
-        - **GPQA scores:** +48.9 percentage points improvement  
-        - **SWE-bench:** +67.3 percentage points increase
-        - **Programming tasks:** Language model agents now outperform humans with limited time budgets
-        - **Medical devices:** FDA approvals grew from 6 (2015) to 223 (2023)
-        
-        **Cost Revolution - 280x Improvement:**
-        - **Token costs:** $20/M (Nov 2022) → $0.07/M (Oct 2024) for GPT-3.5 equivalent
-        - **Hardware performance:** +43% annually
-        - **Energy efficiency:** +40% annual improvement  
-        - **Price-performance:** -30% per year for same capability
-        - **Processing speed:** Up to 200 tokens/second for latest models
-        
-        **Multimodal AI Breakthroughs:**
-        - **GPT-4V:** Vision capabilities enabling image understanding
-        - **Robotics integration:** AI systems controlling physical robots
-        - **Voice and audio:** Real-time speech processing and generation
-        - **Video analysis:** Frame-by-frame understanding and generation
-        
-        **Adoption Acceleration:**
-        - **Business AI use:** 55% (2023) → 78% (2024) - fastest tech adoption in history
-        - **GenAI adoption:** More than doubled from 33% to 71%
-        - **Worker usage:** 28% of U.S. workers use GenAI at work (Aug 2024)
-        - **Daily usage:** 9% of workers use GenAI every workday, 14% weekly
-        - **Education correlation:** Strong association with education and income levels
-        """)
-        
-    with comp_tabs[1]:
-        st.markdown("""
-        #### Economics and Investment Impact
-        
-        **Record Investment Levels (2024):**
-        - **U.S. dominance:** $109.1 billion (vs China: $9.3B, UK: $4.5B) - 12x larger than China
-        - **Global GenAI:** $33.9 billion (+18.7% from 2023), now 20% of all AI investment
-        - **Sector leaders:** AI infrastructure ($37.3B), Data management ($16.6B), Healthcare ($11B)
-        - **Investment growth:** 13x increase since 2014 baseline of $19.4B
-        
-        **GDP Impact Projections - Wide Range:**
-        
-        **Optimistic Scenarios:**
-        - **Goldman Sachs:** +7% global GDP (~$7 trillion) over 10 years
-        - **McKinsey:** $17.1-25.6 trillion global economic addition
-        - **Productivity boost:** +1.5-3.4 percentage points annually in advanced economies
-        
-        **Conservative Estimates:**
-        - **MIT (Acemoglu):** +0.66% total factor productivity over 10 years
-        - **Fed analysis:** "Nontrivial but modest" macroeconomic effects
-        - **Task-level focus:** Effects may be lower (0.53%) due to "hard-to-learn" tasks
-        
-        **AI Automation vs Augmentation:**
-        - **Automation AI:** Substitutes human labor, may increase inequality
-        - **Augmentation AI:** Complements humans, potentially reduces inequality
-        - **Policy implications:** Need progressive taxation and new task creation
-        
-        **Tokens as Economic Currency:**
-        - **AI factories:** Process tokens as fundamental units converting data into intelligence
-        - **Value creation:** More tokens at lower computational cost = higher margins
-        - **Enterprise optimization:** 25x revenue increases documented in case studies
-        - **NVIDIA case study:** 20x cost reduction led to 25x revenue growth in 4 weeks
-        """)
-        
-    with comp_tabs[2]:
-        st.markdown("""
-        #### Labor Market and Productivity Impact
-        
-        **Measured Productivity Gains:**
-        - **Worker estimates:** 15% longer completion time without AI (Nov 2024 survey)
-        - **Aggregate potential:** 0.4% productivity gain assuming full beneficial adoption
-        - **Voluntary vs mandated:** Self-initiated AI use shows stronger productivity correlation
-        - **Knowledge work caveat:** Official statistics may undercount true productivity boost
-        
-        **Workforce Exposure Analysis:**
-        - **80% of workforce:** At least 10% of tasks affected by LLMs
-        - **19% of workers:** At least 50% of tasks impacted  
-        - **15% task acceleration:** Direct LLM access enables significantly faster completion
-        - **47-56% task enhancement:** Including AI-powered software and tools
-        - **Income correlation:** Higher-income jobs face greater exposure to AI capabilities
-        
-        **Skill-Based Impact (Inequality Reduction Potential):**
-        - **Low-skilled workers:** 14% productivity gain (highest benefit)
-        - **Medium-skilled workers:** 9% productivity improvement
-        - **High-skilled workers:** 5% productivity enhancement
-        - **Skill gap narrowing:** AI helps reduce workplace inequality
-        - **Task substitution:** 15% of tasks can be done significantly faster
-        
-        **Industry and Wage Exposure:**
-        - **Information processing:** Highest exposure to AI capabilities
-        - **Manufacturing/agriculture/mining:** Lower exposure levels
-        - **All wage levels affected:** Not limited to recent high-productivity sectors
-        - **Geographic concentration:** AI talent clustering in SF, London creates disparities
-        
-        **Career Transitions:**
-        - **Into AI engineering:** Software engineers (26.9%), Data scientists (13.3%)
-        - **Net talent flow:** U.S. maintains positive flow (1.07 per 10,000 members)
-        - **Workforce development:** Organizations hiring AI roles and retraining existing staff
-        """)
-        
-    with comp_tabs[3]:
-        st.markdown("""
-        #### Policy and Governance Developments
-        
-        **Regulatory Acceleration (2024):**
-        - **U.S. federal agencies:** 59 AI-related regulations (2x increase from 2023)
-        - **Global legislative activity:** +21.3% AI mentions across 75 countries
-        - **International frameworks:** OECD, EU, UN, African Union emphasizing transparency
-        - **Responsible AI focus:** Growing recognition of need for effective RAI frameworks
-        
-        **Education Policy Transformation:**
-        - **K-12 computer science:** 2/3 of countries now offer/plan (2x from 2019)
-        - **Teacher readiness gap:** 81% believe AI should be in education, <50% feel equipped
-        - **Curriculum development:** Need for policy initiatives supporting teacher training
-        
-        **Key Regulatory Areas:**
-        - **Competition:** UK CMA reports on AI foundation models, antitrust concerns
-        - **Privacy & Data:** GDPR framework applicable to AI systems
-        - **Intellectual Property:** UK developing AI copyright code of practice
-        - **Military & Security:** UK MOD ethical AI guidelines for defense applications
-        - **Ethics & Bias:** Multiple national guidance frameworks for algorithmic fairness
-        
-        **OECD AI Capability Assessment:**
-        - **Assessment framework:** 9 domains including Language and Manipulation
-        - **International comparability:** Trusted information for policy decisions
-        - **Beyond benchmarking:** Evaluation tools for education, healthcare, and law
-        - **Conceptual challenges:** Human-AI comparison doesn't imply direct substitution
-        
-        **Emerging Policy Areas:**
-        - **Participatory governance:** AI tools for civic engagement
-        - **Negative social value:** Addressing algorithms designed for manipulation
-        - **Public-private partnerships:** Facilitating firm adoption through collaboration
-        - **International coordination:** Need for greater survey comparability
-        """)
-        
-    with comp_tabs[4]:
-        st.markdown("""
-        #### Technical Evolution and Compute Trends
-        
-        **Historical Compute Growth Phases:**
-        - **Pre-2010 (Pre-Deep Learning):** Doubling every 20 months (Moore's Law pace)
-        - **2010+ (Deep Learning Era):** Acceleration to 6-month doubling
-        - **2015+ (Large-Scale Era):** 10-100x larger training requirements
-        - **Recent variation:** 2-3.4 month doubling (2012-2018) to >2 years (2018-2020)
-        - **Current constraints:** Hardware and chip limitations may limit exponential growth
-        
-        **Model Development Leadership:**
-        - **U.S. institutions:** 40 notable AI models in 2024
-        - **China:** 15 notable models  
-        - **Europe:** 3 notable models
-        - **Parameter scaling:** 18-24 month doubling (2000-2021)
-        - **Language models:** 4-8 month doubling (2016-2018)
-        
-        **Research Output Explosion:**
-        - **Publication growth:** AI papers tripled (2013-2023): 102k → 242k
-        - **CS share increase:** 21.6% → 41.8% of computer science publications
-        - **Geographic leadership:** China leads publications (23.2%) and citations (22.6%)
-        - **U.S. specialization:** Excels in highly influential research (top 100 cited)
-        - **Patent surge:** 3,833 (2010) → 122,511 (2023), China holds 69.7%
-        
-        **Compute Centralization Concerns:**
-        - **Private firm concentration:** Centralized access undermining academic transparency
-        - **Reproducibility challenges:** Limited access to compute resources
-        - **Energy intensity:** Future AI systems may rival global cloud infrastructure
-        - **Environmental constraints:** Growing carbon footprint requiring sustainable solutions
-        
-        **Technical Breakthroughs:**
-        - **Multimodal systems:** Beyond text to vision, audio, and robotics
-        - **Efficiency improvements:** Hardware performance gains outpacing energy use
-        - **Context windows:** Expansion to 1M+ tokens enabling new applications
-        - **Real-time processing:** Reduced latency enabling interactive applications
-        """)
-        
-    with comp_tabs[5]:
-        st.markdown("""
-        #### Global Dynamics and Competition
-        
-        **Regional Optimism Disparities:**
-        - **High optimism:** China (83%), Indonesia (80%), Thailand (77%)
-        - **Moderate optimism:** Most European countries (50-65%)
-        - **Lower optimism:** Canada (40%), U.S. (39%), Netherlands (36%)
-        - **Cultural factors:** Policy environment and economic expectations drive differences
-        
-        **Investment and Development Competition:**
-        - **U.S. leadership:** Dominates private investment (43% of global)
-        - **China's focus:** Leading in patents and publications, strong government support
-        - **Europe's approach:** Regulatory leadership with GDPR and AI Act frameworks
-        - **Emerging markets:** Growing adoption in Asia-Pacific and Latin America
-        
-        **Talent Flow Dynamics:**
-        - **U.S. advantage:** Positive net AI talent flow despite visa restrictions
-        - **Geographic concentration:** SF Bay Area, London creating innovation clusters
-        - **Brain drain risks:** Developing countries losing AI talent to advanced economies
-        - **Skills shortage:** Global shortage of AI/ML engineers and data scientists
-        
-        **Adoption Barriers by Region:**
-        - **Advanced economies:** Focus on workforce training and regulatory clarity
-        - **Developing nations:** Digital infrastructure and organizational readiness challenges
-        - **Regional disparities:** Widening gap between AI leaders and followers
-        - **Policy coordination:** Need for international frameworks and standards
-        
-        **Emerging Applications by Region:**
-        - **Healthcare AI:** FDA approvals in U.S., regulatory pathways in EU
-        - **Financial services:** Widespread adoption in developed markets
-        - **Manufacturing:** Germany and Japan leading industrial AI
-        - **Smart cities:** China and Singapore pioneering urban AI deployment
-        """)
-        
-    with comp_tabs[6]:
-        st.markdown("""
-        #### Risks, Safety, and Responsible AI
-        
-        **Growing Safety Incidents:**
-        - **Incident tracking:** AI Index reports increasing misuse, bias, and safety failures
-        - **Types of incidents:** Algorithmic bias, privacy violations, safety-critical failures
-        - **Response lag:** Organizations acknowledge risks but slow to implement mitigation
-        - **Governance gaps:** Need for effective responsible AI (RAI) frameworks
-        
-        **Key Risk Categories:**
-        
-        **Technical Risks:**
-        - **Model reliability:** Hallucinations and factual inaccuracies
-        - **Security vulnerabilities:** Adversarial attacks and data poisoning
-        - **System failures:** Critical infrastructure and safety-critical applications
-        - **Scalability challenges:** Performance degradation with wider deployment
-        
-        **Societal Risks:**
-        - **Labor displacement:** Potential job losses without adequate retraining
-        - **Inequality amplification:** AI benefits concentrated among educated/wealthy
-        - **Democratic risks:** Misinformation and manipulation tools
-        - **Privacy erosion:** Surveillance capabilities and data collection
-        
-        **Economic Risks:**
-        - **Market concentration:** AI capabilities concentrated in few large firms
-        - **Systemic risks:** Over-reliance on AI systems in critical sectors
-        - **Economic disruption:** Rapid changes outpacing adaptation mechanisms
-        - **Investment bubbles:** Overvaluation of AI capabilities and companies
-        
-        **Mitigation Strategies:**
-        - **Regulatory frameworks:** Proactive governance rather than reactive regulation
-        - **Industry standards:** Technical standards for safety and reliability
-        - **Education and training:** Workforce development for AI transition
-        - **International cooperation:** Global coordination on AI governance
-        - **Research investment:** Public funding for AI safety and alignment research
-        
-        **Responsible AI Implementation:**
-        - **Organizational governance:** Senior leadership roles for AI oversight
-        - **Risk assessment:** Systematic evaluation of AI system impacts
-        - **Transparency requirements:** Explainable AI and algorithmic auditing
-        - **Stakeholder engagement:** Including affected communities in AI development
-        """)
-    
-    # Enhanced sources section with more detail
-    st.markdown("---")
-    st.markdown("""
-    #### 📚 Comprehensive Analysis Sources & Methodology
-    
-    **Primary Authoritative Sources:**
-    
-    **🎓 Academic Research:**
-    - **AI Index Report 2025** - Stanford Human-Centered AI Institute (Global AI metrics and trends)
-    - **Federal Reserve Research** - Bick, Blandin, Deming (Productivity and workforce impact studies)
-    - **MIT Economics** - Daron Acemoglu "The Simple Macroeconomics of AI" (Economic theory and modeling)
-    - **OECD AI Observatory** - Firm adoption analysis and capability indicators
-    - **Compute Trends Research** - Sevilla et al. (Historical analysis of ML training requirements)
-    
-    **🏢 Industry Analysis:**
-    - **McKinsey Global Survey** - Enterprise AI adoption patterns (1,491 participants, 101 nations)
-    - **Goldman Sachs Research** - Economic growth projections and GDP impact analysis
-    - **NVIDIA Research** - Token economics and AI infrastructure analysis
-    - **Various industry reports** - Sector-specific adoption and impact studies
-    
-    **🏛️ Government Sources:**
-    - **U.S. Census Bureau** - AI Use Supplement (850,000 firms surveyed)
-    - **Federal Reserve Banks** - Multiple economic impact analyses
-    - **FDA** - AI-enabled medical device approvals and regulations
-    - **International organizations** - UN, EU, African Union AI frameworks
-    
-    **Key Research Papers Referenced:**
-    - Bick, Blandin, and Deming (2024, 2025a) - "The Rapid Adoption of Generative AI" and productivity impact
-    - Eloundou et al. (2023) - "GPTs are GPTs: An Early Look at the Labor Market Impact Potential"
-    - Briggs & Kodnani (2023) - "The Potentially Large Effects of Artificial Intelligence on Economic Growth"
-    - Korinek (2023) - "Language Models and Cognitive Automation for Economic Research"
-    - Sevilla et al. (2022) - "Compute Trends Across Three Eras of Machine Learning"
-    - Multiple Federal Reserve working papers on AI's macroeconomic effects
-    
-    **Methodology Notes:**
-    - **Cross-source validation** - Key findings confirmed across multiple independent sources
-    - **Temporal analysis** - Tracking changes from 2018 early adoption through 2025 GenAI era
-    - **Geographic scope** - Global coverage with detailed focus on G7 countries and major economies
-    - **Sector analysis** - Industry-specific impacts across technology, finance, healthcare, manufacturing
-    - **Multi-dimensional assessment** - Technical capabilities, economic impact, policy implications, social effects
-    """)
-
-# [Rest of the file continues with all the remaining sections...]
-
-# Footer - Enhanced with trust indicators
-st.markdown("---")
-
-# Trust and quality indicators
-trust_cols = st.columns(5)
-
-with trust_cols[0]:
-    st.markdown("""
-    <div style='text-align: center;'>
-        <h4>📊 Data Quality</h4>
-        <div style='background-color: #28a745; color: white; padding: 8px; border-radius: 20px; display: inline-block;'>
-            ✓ Verified Sources
-        </div>
-    </div>
-    """, unsafe_allow_html=True)
-
-with trust_cols[1]:
-    st.markdown("""
-    <div style='text-align: center;'>
-        <h4>🔄 Update Status</h4>
-        <div style='color: #28a745;'>
-            ✅ June 2025
-        </div>
-    </div>
-    """, unsafe_allow_html=True)
-
-with trust_cols[2]:
-    st.markdown("""
-    <div style='text-align: center;'>
-        <h4>📈 Coverage</h4>
-        <div>
-            Global Scope<br>
-            <small>101+ countries</small>
-        </div>
-    </div>
-    """, unsafe_allow_html=True)
-
-with trust_cols[3]:
-    st.markdown("""
-    <div style='text-align: center;'>
-        <h4>🔍 Transparency</h4>
-        <div>
-            Open Source<br>
-            <small>MIT License</small>
-        </div>
-    </div>
-    """, unsafe_allow_html=True)
-
-with trust_cols[4]:
-    st.markdown("""
-    <div style='text-align: center;'>
-        <h4>🔒 Privacy</h4>
-        <div style='color: #28a745;'>
-            GDPR Compliant<br>
-            <small>No tracking</small>
-        </div>
-    </div>
-    """, unsafe_allow_html=True)
-
-st.markdown("---")
-
-# Enhanced footer with resources
-footer_cols = st.columns(4)
-
-with footer_cols[0]:
-    st.markdown("""
-    ### 📚 Resources
-    - [📖 GitHub Repository](https://github.com/Rcasanova25/AI-Adoption-Dashboard)
-    - [🚀 Live Dashboard](https://ai-adoption-dashboard.streamlit.app/)
-    - [📊 View Source Code](https://github.com/Rcasanova25/AI-Adoption-Dashboard/blob/main/app.py)
-    - [🐛 Report Issues](https://github.com/Rcasanova25/AI-Adoption-Dashboard/issues)
-    - [📄 Documentation](https://github.com/Rcasanova25/AI-Adoption-Dashboard/wiki)
-    """)
-
-with footer_cols[1]:
-    st.markdown("""
-    ### 🔬 Research Partners
-    - [Stanford HAI](https://hai.stanford.edu)
-    - [AI Index Report](https://aiindex.stanford.edu)
-    - [McKinsey AI](https://www.mckinsey.com/capabilities/quantumblack)
-    - [OECD.AI](https://oecd.ai)
-    - [MIT CSAIL](https://www.csail.mit.edu)
-    """)
-
-with footer_cols[2]:
-    st.markdown("""
-    ### 🤝 Connect
-    - [LinkedIn - Robert Casanova](https://linkedin.com/in/robert-casanova)
-    - [GitHub - @Rcasanova25](https://github.com/Rcasanova25)
-    - [Email](mailto:Robert.casanova82@gmail.com)
-    - [Twitter/X](https://twitter.com)
-    - [Star on GitHub ⭐](https://github.com/Rcasanova25/AI-Adoption-Dashboard)
-    """)
-
-with footer_cols[3]:
-    st.markdown("""
-    ### 🛟 Support
-    - [User Guide](https://github.com/Rcasanova25/AI-Adoption-Dashboard/wiki/User-Guide)
-    - [FAQ](https://github.com/Rcasanova25/AI-Adoption-Dashboard/wiki/FAQ)
-    - [Report Bug](https://github.com/Rcasanova25/AI-Adoption-Dashboard/issues/new?labels=bug)
-    - [Request Feature](https://github.com/Rcasanova25/AI-Adoption-Dashboard/issues/new?labels=enhancement)
-    - [Discussions](https://github.com/Rcasanova25/AI-Adoption-Dashboard/discussions)
-    """)
-
-# Final attribution
-st.markdown("""
-<div style='text-align: center; color: #666; padding: 30px 20px 20px 20px; margin-top: 40px; border-top: 1px solid #ddd;'>
-    <p style='font-size: 20px; margin-bottom: 10px;'>
-        🤖 <strong>AI Adoption Dashboard</strong> v2.2.0
-    </p>
-    <p style='margin-bottom: 5px; font-size: 16px;'>
-        Comprehensive AI adoption insights from 2018 to 2025
-    </p>
-    <p style='font-size: 14px; color: #888; margin-top: 15px;'>
-        Enhanced with AI Index Report 2025 findings | Last updated: June 17, 2025
-    </p>
-    <p style='font-size: 14px; margin-top: 20px;'>
-        Created by <a href='https://linkedin.com/in/robert-casanova' style='color: #1f77b4;'>Robert Casanova</a> | 
-        Powered by <a href='https://streamlit.io' style='color: #1f77b4;'>Streamlit</a> & 
-        <a href='https://plotly.com' style='color: #1f77b4;'>Plotly</a> | 
-        <a href='https://github.com/Rcasanova25/AI-Adoption-Dashboard/blob/main/LICENSE' style='color: #1f77b4;'>MIT License</a>
-    </p>
-    <p style='font-size: 12px; margin-top: 15px; color: #999;'>
-        <i>Data sources: AI Index Report 2025 (Stanford HAI), McKinsey Global Survey on AI, OECD AI Policy Observatory</i>
-    </p>
-</div>
-""", unsafe_allow_html=True)
+        ### Multi-Source Collections and Databas
+app.py
+Displaying app.py.
