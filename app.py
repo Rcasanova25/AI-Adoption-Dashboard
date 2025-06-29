@@ -784,10 +784,310 @@ if not is_detailed:
         """) 
 
     elif current_view == "📊 Market Intelligence":
-        # Key market data
-        st.title("📊 Market Intelligence")
-        # Curated market insights
-        pass
+        st.subheader("📊 Market Intelligence Dashboard")
+        st.markdown("*Key market trends and competitive dynamics for strategic decision-making*")
+        
+        # Market overview metrics
+        st.markdown("### 🌍 Global AI Market Overview")
+        
+        col1, col2, col3, col4 = st.columns(4)
+        
+        with col1:
+            st.metric("Global Adoption", "78%", "+23pp vs 2023", 
+                     help="Businesses using any AI technology")
+        with col2:
+            st.metric("GenAI Adoption", "71%", "+38pp vs 2023", 
+                     help="More than doubled in one year")
+        with col3:
+            st.metric("Investment Growth", "+44.5%", "$252.3B in 2024", 
+                     help="Record year-over-year growth")
+        with col4:
+            st.metric("Cost Reduction", "280x", "Since Nov 2022", 
+                     help="AI processing costs collapsed")
+        
+        # Market trends visualization
+        st.markdown("### 📈 Market Adoption Acceleration")
+        
+        col1, col2 = st.columns(2)
+        
+        with col1:
+            # Historical trends chart
+            fig = go.Figure()
+            
+            fig.add_trace(go.Scatter(
+                x=historical_data['year'], 
+                y=historical_data['ai_use'], 
+                mode='lines+markers', 
+                name='Overall AI Use',
+                line=dict(width=4, color='#1f77b4'),
+                marker=dict(size=8),
+                text=[f'{x}%' for x in historical_data['ai_use']],
+                textposition='top center'
+            ))
+            
+            fig.add_trace(go.Scatter(
+                x=historical_data['year'], 
+                y=historical_data['genai_use'], 
+                mode='lines+markers', 
+                name='GenAI Use',
+                line=dict(width=4, color='#ff7f0e'),
+                marker=dict(size=8),
+                text=[f'{x}%' for x in historical_data['genai_use']],
+                textposition='bottom center'
+            ))
+            
+            # Add key milestone annotations
+            fig.add_annotation(
+                x=2022, y=33,
+                text="ChatGPT Launch<br>GenAI Revolution",
+                showarrow=True,
+                arrowhead=2,
+                arrowcolor="#ff7f0e",
+                ax=-30, ay=-40,
+                bgcolor="rgba(255,127,14,0.1)",
+                bordercolor="#ff7f0e"
+            )
+            
+            fig.update_layout(
+                title="AI Adoption Explosion: 2017-2025",
+                xaxis_title="Year",
+                yaxis_title="Adoption Rate (%)",
+                height=400,
+                hovermode='x unified'
+            )
+            
+            st.plotly_chart(fig, use_container_width=True)
+        
+        with col2:
+            st.markdown("**📊 Market Intelligence:**")
+            st.success("""
+            **Tipping Point Reached**
+            - 78% adoption = AI is now mainstream
+            - GenAI doubled to 71% in one year
+            - Non-adopters becoming minority
+            """)
+            
+            st.info("""
+            **Cost Revolution**
+            - 280x cost reduction enables mass deployment
+            - Processing barriers eliminated
+            - SMEs can now afford enterprise AI
+            """)
+            
+            st.warning("""
+            **Competitive Urgency**
+            - First-mover advantages accelerating
+            - Talent market tightening rapidly
+            - Technology maturity enabling scale
+            """)
+        
+        # Industry leadership analysis
+        st.markdown("### 🏭 Industry Leadership Landscape")
+        
+        # Use your existing sector data
+        industry_leaders = pd.DataFrame({
+            'sector': ['Technology', 'Financial Services', 'Healthcare', 'Manufacturing', 
+                      'Retail & E-commerce', 'Education', 'Energy & Utilities', 'Government'],
+            'adoption_rate': [92, 85, 78, 75, 72, 65, 58, 52],
+            'genai_adoption': [88, 78, 65, 58, 70, 62, 45, 38],
+            'momentum': ['High', 'High', 'Very High', 'Medium', 'High', 'Medium', 'Low', 'Low']
+        })
+        
+        fig = go.Figure()
+        
+        # Create bubble chart
+        fig.add_trace(go.Scatter(
+            x=industry_leaders['adoption_rate'],
+            y=industry_leaders['genai_adoption'],
+            mode='markers+text',
+            marker=dict(
+                size=[20, 18, 16, 14, 12, 10, 8, 6],  # Size by market importance
+                color=['#1f77b4', '#ff7f0e', '#2ca02c', '#d62728', '#9467bd', '#8c564b', '#e377c2', '#7f7f7f'],
+                opacity=0.7,
+                line=dict(width=2, color='white')
+            ),
+            text=industry_leaders['sector'],
+            textposition='middle center',
+            textfont=dict(size=10, color='white'),
+            hovertemplate='<b>%{text}</b><br>Overall AI: %{x}%<br>GenAI: %{y}%<extra></extra>'
+        ))
+        
+        # Add quadrant lines
+        fig.add_hline(y=65, line_dash="dash", line_color="gray", opacity=0.5)
+        fig.add_vline(x=70, line_dash="dash", line_color="gray", opacity=0.5)
+        
+        # Add quadrant labels
+        fig.add_annotation(x=85, y=80, text="Leaders<br>(High AI + High GenAI)", 
+                          showarrow=False, font=dict(color="green", size=12))
+        fig.add_annotation(x=85, y=50, text="Traditional AI Leaders<br>(High AI + Low GenAI)", 
+                          showarrow=False, font=dict(color="blue", size=12))
+        fig.add_annotation(x=55, y=80, text="GenAI Early Adopters<br>(Low AI + High GenAI)", 
+                          showarrow=False, font=dict(color="orange", size=12))
+        fig.add_annotation(x=55, y=50, text="Emerging Markets<br>(Low AI + Low GenAI)", 
+                          showarrow=False, font=dict(color="red", size=12))
+        
+        fig.update_layout(
+            title='Industry AI Leadership Matrix: Overall vs GenAI Adoption',
+            xaxis_title='Overall AI Adoption Rate (%)',
+            yaxis_title='GenAI Adoption Rate (%)',
+            height=500,
+            showlegend=False
+        )
+        
+        st.plotly_chart(fig, use_container_width=True)
+        
+        # Regional intelligence
+        st.markdown("### 🌍 Regional Market Dynamics")
+        
+        col1, col2 = st.columns(2)
+        
+        with col1:
+            # Regional growth chart
+            regions = ['North America', 'Greater China', 'Europe', 'Asia-Pacific', 'Latin America']
+            adoption_rates = [82, 68, 65, 58, 45]
+            growth_rates = [15, 27, 23, 18, 12]
+            
+            fig = go.Figure()
+            
+            fig.add_trace(go.Bar(
+                name='Current Adoption',
+                x=regions,
+                y=adoption_rates,
+                marker_color='#3498DB',
+                text=[f'{x}%' for x in adoption_rates],
+                textposition='outside'
+            ))
+            
+            # Add growth rate as line
+            fig.add_trace(go.Scatter(
+                name='2024 Growth Rate',
+                x=regions,
+                y=growth_rates,
+                mode='lines+markers',
+                line=dict(width=3, color='#E74C3C'),
+                marker=dict(size=10),
+                yaxis='y2',
+                text=[f'+{x}pp' for x in growth_rates],
+                textposition='top center'
+            ))
+            
+            fig.update_layout(
+                title='Regional AI Adoption vs Growth Rates',
+                xaxis_title='Region',
+                yaxis=dict(title='Adoption Rate (%)', side='left'),
+                yaxis2=dict(title='Growth Rate (pp)', side='right', overlaying='y'),
+                height=400,
+                hovermode='x unified'
+            )
+            
+            st.plotly_chart(fig, use_container_width=True)
+        
+        with col2:
+            st.markdown("**🌍 Regional Intelligence:**")
+            
+            st.info("""
+            **North America**
+            - Leads adoption at 82%
+            - Mature market with slower growth
+            - Focus on advanced applications
+            """)
+            
+            st.warning("""
+            **Greater China** 
+            - Fastest growth at +27pp
+            - Rapid catch-up trajectory
+            - Government-backed initiatives
+            """)
+            
+            st.success("""
+            **Europe**
+            - Balanced growth at +23pp
+            - Strong regulatory framework
+            - Focus on ethical AI
+            """)
+        
+        # Investment flow analysis
+        st.markdown("### 💰 Global Investment Intelligence")
+        
+        # Investment by region
+        investment_regions = pd.DataFrame({
+            'region': ['United States', 'China', 'United Kingdom', 'Germany', 'Rest of World'],
+            'investment_2024': [109.1, 9.3, 4.5, 3.2, 126.2],
+            'share': [43.2, 3.7, 1.8, 1.3, 50.0]
+        })
+        
+        col1, col2 = st.columns(2)
+        
+        with col1:
+            # Investment pie chart
+            fig = px.pie(
+                investment_regions,
+                values='investment_2024',
+                names='region',
+                title='2024 AI Investment by Region ($252.3B Total)',
+                color_discrete_sequence=px.colors.qualitative.Set3
+            )
+            
+            fig.update_traces(textposition='inside', textinfo='percent+label')
+            fig.update_layout(height=400)
+            
+            st.plotly_chart(fig, use_container_width=True)
+        
+        with col2:
+            st.markdown("**💰 Investment Insights:**")
+            
+            st.metric("US Dominance", "43.2%", "12x larger than China")
+            st.metric("Top 4 Countries", "59%", "Concentrated investment")
+            st.metric("Growth Rate", "+44.5%", "Record investment year")
+            
+            st.info("""
+            **Investment Patterns:**
+            - US leads with $109.1B (12x China)
+            - Europe combined: ~$15B
+            - Asia-Pacific growing rapidly
+            - Private investment concentrated in coastal hubs
+            """)
+        
+        # Market predictions
+        st.markdown("### 🔮 Market Outlook & Predictions")
+        
+        col1, col2, col3 = st.columns(3)
+        
+        with col1:
+            st.markdown("**📈 2025 Predictions**")
+            st.write("• Adoption plateaus around 85-90%")
+            st.write("• Focus shifts to AI quality & ROI")
+            st.write("• Consolidation in AI vendor market")
+            st.write("• Regulatory frameworks solidify")
+            
+        with col2:
+            st.markdown("**⚡ Key Accelerators**")
+            st.write("• Continued cost reduction (10-100x)")
+            st.write("• Multi-modal AI capabilities")
+            st.write("• Enterprise-ready AI platforms")
+            st.write("• Skills development programs")
+        
+        with col3:
+            st.markdown("**⚠️ Risk Factors**")
+            st.write("• Talent shortage intensifying")
+            st.write("• Regulatory uncertainty")
+            st.write("• Technology complexity")
+            st.write("• Economic downturn impact")
+        
+        # Market intelligence summary
+        st.markdown("### 🎯 Strategic Market Intelligence Summary")
+        
+        st.success("""
+        **Bottom Line for Leadership:**
+        
+        **Market Reality:** AI adoption has crossed the mainstream threshold (78%). The question is no longer "Should we adopt AI?" but "How fast can we scale high-quality AI implementations?"
+        
+        **Competitive Dynamics:** Technology and Financial Services sectors have pulled ahead (85-92% adoption). Other sectors have 6-18 month window to catch up before significant competitive disadvantages emerge.
+        
+        **Investment Environment:** Record $252B investment validates market opportunity. 280x cost reduction has eliminated economic barriers. Focus should shift from proof-of-concept to production scaling.
+        
+        **Strategic Imperative:** Move immediately from pilot projects to production deployment. Prioritize talent development, full-stack integration, and measurable business outcomes.
+        """)
     elif current_view == "🎯 Action Planning":
         # Strategic action planning
         st.title("🎯 Strategic Action Planning")
