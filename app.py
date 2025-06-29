@@ -644,6 +644,19 @@ else:  # General users
         "Historical Trends"
     ]
 
+persona_info = {
+    "Business Leader": "👔 Strategic focus with executive tools",
+    "Policymaker": "🏛️ Policy and regulatory emphasis", 
+    "Researcher": "🔬 Comprehensive data and methodology",
+    "General": "👤 Balanced strategic and analytical views"
+}
+
+st.sidebar.info(f"""
+**Current View Mode:** {st.session_state.selected_persona}
+{persona_info[st.session_state.selected_persona]}
+
+**Recommended:** {', '.join(recommended_views[:2])}...
+""")
 
 # Strategic views (top priority)
 strategic_views = [
@@ -684,20 +697,6 @@ legacy_views = [
     "Barriers & Support",
     "Bibliography & Sources"
 ]
-
-persona_info = {
-    "Business Leader": "👔 Strategic focus with executive tools",
-    "Policymaker": "🏛️ Policy and regulatory emphasis", 
-    "Researcher": "🔬 Comprehensive data and methodology",
-    "General": "👤 Balanced strategic and analytical views"
-}
-
-st.sidebar.info(f"""
-**Current View Mode:** {st.session_state.selected_persona}
-{persona_info[st.session_state.selected_persona]}
-
-**Recommended:** {', '.join(recommended_views[:2])}...
-""")
 
 # Show view selector
 view_type = st.sidebar.selectbox(
