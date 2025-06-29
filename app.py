@@ -717,10 +717,13 @@ data_year = st.sidebar.selectbox(
     index=1
 )
 
+# REPLACE the old selectbox with this clean version:
+
 view_type = st.sidebar.selectbox(
     "Analysis View", 
     all_views,
-    index=all_views.index(persona_views[persona][0]) if persona != "General" else 0
+    index=0,  # Always start with first view (which is the main strategic tool)
+    help="Curated views based on your selected role"
 )
 
 # Advanced filters
