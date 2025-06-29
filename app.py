@@ -6,6 +6,25 @@ import numpy as np
 from datetime import datetime
 from plotly.subplots import make_subplots
 
+# Safe plotting function with error handling
+def safe_plotly_chart(fig, **kwargs):
+    """Wrapper for plotly charts with error handling"""
+    try:
+        st.plotly_chart(fig, **kwargs)
+    except Exception as e:
+        st.error(f"Visualization temporarily unavailable: {str(e)}")
+        st.info("Please try refreshing the page or contact support if this persists.")
+
+def safe_download_button(label, data, filename, mime_type="text/plain", **kwargs):
+    """Safe download button with validation"""
+    try:
+        if data and len(str(data)) > 0:
+            st.download_button(label=label, data=data, file_name=filename, mime=mime_type, **kwargs)
+        else:
+            st.warning("No data available for download")
+    except Exception as e:
+        st.error(f"Download temporarily unavailable: {str(e)}")
+
 # Page config
 st.set_page_config(
     page_title="AI Adoption Dashboard | 2018-2025 Analysis",
@@ -304,16 +323,22 @@ def load_data():
         raise
 
 # Initialize session state
-if 'first_visit' not in st.session_state:
-    st.session_state.first_visit = True
-if 'selected_persona' not in st.session_state:
-    st.session_state.selected_persona = "General"
-if 'show_changelog' not in st.session_state:
-    st.session_state.show_changelog = False
-if 'year_filter' not in st.session_state:
-    st.session_state.year_filter = None
-if 'compare_years' not in st.session_state:
-    st.session_state.compare_years = False
+def initialize_session_state():
+    """Initialize all required session state variables"""
+    if 'first_visit' not in st.session_state:
+        st.session_state.first_visit = True
+    if 'selected_persona' not in st.session_state:
+        st.session_state.selected_persona = "General"
+    if 'show_changelog' not in st.session_state:
+        st.session_state.show_changelog = False
+    if 'assessment_completed' not in st.session_state:
+        st.session_state.assessment_completed = False
+    if 'investment_analysis' not in st.session_state:
+        st.session_state.investment_analysis = {}
+    if 'show_quick_assessment' not in st.session_state:
+        st.session_state.show_quick_assessment = False
+
+initialize_session_state()
 
 # Helper function for source info
 def show_source_info(source_key):
@@ -2555,6 +2580,32 @@ elif view_type == "Historical Trends":
     # [Your existing Historical Trends code continues here...]
     pass  # Replace with your actual implementation
 
+# Initialize variables to prevent scope errors
+    compare_mode = False
+    year_range = (2017, 2025)
+    year1 = 2018
+    year2 = 2024
+    
+    # Add controls in sidebar for Historical Trends
+    st.sidebar.markdown("---")
+    st.sidebar.markdown("### 📊 Historical Analysis Options")
+    
+    year_range = st.sidebar.slider(
+        "Select Year Range",
+        min_value=2017,
+        max_value=2025,
+        value=(2017, 2025),
+        step=1
+    )
+    
+    compare_mode = st.sidebar.checkbox("Compare specific years", value=False)
+    if compare_mode:
+        col1, col2 = st.sidebar.columns(2)
+        with col1:
+            year1 = st.selectbox("Year 1", range(2017, 2026), index=1)
+        with col2:
+            year2 = st.selectbox("Year 2", range(2017, 2026), index=7)
+
 # Add all other view types that follow...
 if view_type == "Historical Trends":
     # Apply year filter if set
@@ -2643,7 +2694,7 @@ if view_type == "Historical Trends":
             hovermode='x unified'
         )
         
-        st.plotly_chart(fig, use_container_width=True)
+        safe_plotly_chart(fig2, use_container_width=True)
         
         # Add insights for comparison
         st.info(f"""
@@ -3102,11 +3153,11 @@ if view_type == "Historical Trends":
         
         with col1:
             csv = export_data.to_csv(index=False)
-            st.download_button(
+            safe_download_button(
                 label="📥 Download Historical Data (CSV)",
                 data=csv,
-                file_name="ai_adoption_historical_trends.csv",
-                mime="text/csv"
+                filename="ai_adoption_historical_trends.csv",
+                mime_type="text/csv"
             )
         
         with col2:
@@ -3122,8 +3173,8 @@ if view_type == "Historical Trends":
         st.download_button(
             label="📥 Download Historical Data (CSV)",
             data=csv,
-            file_name="ai_adoption_historical_trends.csv",
-            mime="text/csv"
+           filename="ai_adoption_milestones.csv",
+           mime_type="text/csv"
         )
         
     # NEW: Research methodology note

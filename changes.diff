@@ -1,0 +1,468 @@
+--- app.py (original)
++++ app.py (fixed)
+@@ -5,6 +5,20 @@
+ from datetime import datetime
+ from plotly.subplots import make_subplots
+ 
++# Safe plotting function with error handling
++def safe_plotly_chart(fig, **kwargs):
++    """Wrapper for plotly charts with error handling"""
++    try:
++        st.plotly_chart(fig, **kwargs)
++    except Exception as e:
++        st.error(f"Visualization temporarily unavailable: {str(e)}")
++        st.info("Please try refreshing the page or contact support if this persists.")
++
++def safe_download_button(label, data, filename, mime_type="text/plain", **kwargs):
++    """Safe download button with validation"""
++    try:
++        if data and len(str(data)) > 0:
++            st.download_button(label=label, data=data, file_name=filename, mime=mime_type, **kwargs)
++        else:
++            st.warning("No data available for download")
++    except Exception as e:
++        st.error(f"Download temporarily unavailable: {str(e)}")
++
+ # Page config
+ st.set_page_config(
+     page_title="AI Adoption Dashboard | 2018-2025 Analysis",
+@@ -368,6 +382,16 @@
+             'models_available': [5, 8, 12, 18, 25, 35, 45, 58, 72, 85, 95]
+         })
+         
++        # Validate data integrity before returning
++        datasets = [historical_data, sector_2018, sector_2025, firm_size, ai_maturity, 
++                   geographic, tech_stack, productivity_data, productivity_by_skill,
++                   ai_productivity_estimates, oecd_g7_adoption, oecd_applications, 
++                   barriers_data, support_effectiveness, state_data, ai_investment_data, 
++                   regional_growth, ai_cost_reduction, financial_impact, ai_perception, 
++                   training_emissions, skill_gap_data, ai_governance, genai_2025,
++                   token_economics, token_usage_patterns, token_optimization, token_pricing_evolution]
++        
++        for i, dataset in enumerate(datasets):
++            if dataset is None or len(dataset) == 0:
++                st.warning(f"Dataset {i} is empty - some features may be limited")
++        
+         return (historical_data, sector_2018, sector_2025, firm_size, ai_maturity, 
+                 geographic, tech_stack, productivity_data, productivity_by_skill,
+                 ai_productivity_estimates, oecd_g7_adoption, oecd_applications, 
+@@ -382,12 +406,21 @@
+         raise
+ 
+ # Initialize session state
+-if 'first_visit' not in st.session_state:
+-    st.session_state.first_visit = True
+-if 'selected_persona' not in st.session_state:
+-    st.session_state.selected_persona = "General"
+-if 'show_changelog' not in st.session_state:
+-    st.session_state.show_changelog = False
++def initialize_session_state():
++    """Initialize all required session state variables"""
++    if 'first_visit' not in st.session_state:
++        st.session_state.first_visit = True
++    if 'selected_persona' not in st.session_state:
++        st.session_state.selected_persona = "General"
++    if 'show_changelog' not in st.session_state:
++        st.session_state.show_changelog = False
++    if 'assessment_completed' not in st.session_state:
++        st.session_state.assessment_completed = False
++    if 'investment_analysis' not in st.session_state:
++        st.session_state.investment_analysis = {}
++    if 'show_quick_assessment' not in st.session_state:
++        st.session_state.show_quick_assessment = False
++
++initialize_session_state()
+ 
+ # Helper function for source info
+ def show_source_info(source_key):
+@@ -576,7 +609,7 @@
+         
+         # Add more states
+         additional_states = pd.DataFrame({
+-        state_data = pd.concat([state_data, additional_states], ignore_index=True)
++        try:
++            state_data = pd.concat([state_data, additional_states], ignore_index=True)
++        except Exception as e:
++            st.warning(f"Geographic data merge issue: {str(e)}")
+         
+         # Technology stack - Fixed percentages to sum to 100
+         tech_stack = pd.DataFrame({
+@@ -1048,7 +1081,7 @@
+         with col1:
+-            st.plotly_chart(fig, use_container_width=True)
++            safe_plotly_chart(fig, use_container_width=True)
+         with col2:
+             if st.button("📊", key="hist_source", help="View data sources"):
+                 with st.expander("Authoritative Sources", expanded=True):
+@@ -1191,7 +1224,7 @@
+             fig2.update_layout(height=300, showlegend=False)
+-        st.plotly_chart(fig2, use_container_width=True)
++        safe_plotly_chart(fig2, use_container_width=True)
+         
+         # NEW: Show milestone timeline if requested
+         if st.checkbox("📅 Show Detailed Milestone Timeline", value=False):
+@@ -1843,6 +1876,25 @@
+ elif view_type == "Historical Trends":
++    # Initialize variables to prevent scope errors
++    compare_mode = False
++    year_range = (2017, 2025)
++    year1 = 2018
++    year2 = 2024
++    
++    # Add controls in sidebar for Historical Trends
++    st.sidebar.markdown("---")
++    st.sidebar.markdown("### 📊 Historical Analysis Options")
++    
++    year_range = st.sidebar.slider(
++        "Select Year Range",
++        min_value=2017,
++        max_value=2025,
++        value=(2017, 2025),
++        step=1
++    )
++    
++    compare_mode = st.sidebar.checkbox("Compare specific years", value=False)
++    if compare_mode:
++        col1, col2 = st.sidebar.columns(2)
++        with col1:
++            year1 = st.selectbox("Year 1", range(2017, 2026), index=1)
++        with col2:
++            year2 = st.selectbox("Year 2", range(2017, 2026), index=7)
++    
+     # Apply year filter if set
+-    if 'compare_mode' in locals() and compare_mode:
++    if compare_mode:
+         # Compare mode: Show specific years comparison (existing functionality preserved)
+         st.write(f"📊 **Comparing AI Adoption: {year1} vs {year2}**")
+@@ -1906,7 +1958,7 @@
+             hovermode='x unified'
+         )
+         
+-        st.plotly_chart(fig, use_container_width=True)
++        safe_plotly_chart(fig, use_container_width=True)
+         
+         # Add insights for comparison
+         st.info(f"""
+@@ -2154,7 +2206,7 @@
+             showlegend=True
+         )
+         
+-        st.plotly_chart(fig, use_container_width=True)
++        safe_plotly_chart(fig, use_container_width=True)
+         
+         # Enhanced insights with academic backing
+         st.info("""
+@@ -2184,7 +2236,7 @@
+         with col1:
+             csv = export_data.to_csv(index=False)
+-            st.download_button(
++            safe_download_button(
+                 label="📥 Download Historical Data (CSV)",
+                 data=csv,
+-                file_name="ai_adoption_historical_trends.csv",
+-                mime="text/csv"
++                filename="ai_adoption_historical_trends.csv",
++                mime_type="text/csv"
+             )
+         
+         with col2:
+             milestone_csv = milestone_df.to_csv(index=False)
+-            st.download_button(
++            safe_download_button(
+                 label="📥 Download Milestones (CSV)",
+                 data=milestone_csv,
+-                file_name="ai_adoption_milestones.csv",
+-                mime="text/csv"
++                filename="ai_adoption_milestones.csv",
++                mime_type="text/csv"
+             )
+     else:
+         csv = export_data.to_csv(index=False)
+-        st.download_button(
++        safe_download_button(
+             label="📥 Download Historical Data (CSV)",
+             data=csv,
+-            file_name="ai_adoption_historical_trends.csv",
+-            mime="text/csv"
++            filename="ai_adoption_historical_trends.csv",
++            mime_type="text/csv"
+         )
+ 
+ elif view_type == "Industry Analysis":
+@@ -2243,7 +2295,7 @@
+         hovermode='x unified'
+     )
+     
+-    st.plotly_chart(fig, use_container_width=True)
++    safe_plotly_chart(fig, use_container_width=True)
+     
+     # Industry insights
+     col1, col2, col3 = st.columns(3)
+@@ -2257,11 +2309,11 @@
+     
+     # Export option
+     csv = sector_2025.to_csv(index=False)
+-    st.download_button(
++    safe_download_button(
+         label="📥 Download Industry Data (CSV)",
+         data=csv,
+-        file_name="ai_adoption_by_industry_2025.csv",
+-        mime="text/csv"
++        filename="ai_adoption_by_industry_2025.csv",
++        mime_type="text/csv"
+     )
+ 
+ elif view_type == "Financial Impact":
+@@ -2309,7 +2361,7 @@
+         legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1)
+     )
+     
+-    st.plotly_chart(fig, use_container_width=True)
++    safe_plotly_chart(fig, use_container_width=True)
+     
+     # Function-specific insights with magnitude clarification
+     col1, col2 = st.columns(2)
+@@ -2363,7 +2415,7 @@
+         col1, col2 = st.columns([10, 1])
+         with col1:
+-            st.plotly_chart(fig, use_container_width=True)
++            safe_plotly_chart(fig, use_container_width=True)
+         with col2:
+             if st.button("📊", key="inv_source", help="View data source"):
+                 with st.expander("Data Source", expanded=True):
+@@ -2374,11 +2426,11 @@
+         # Export option
+         csv = ai_investment_data.to_csv(index=False)
+-        st.download_button(
++        safe_download_button(
+             label="📥 Download Investment Data (CSV)",
+             data=csv,
+-            file_name="ai_investment_trends_2014_2024.csv",
+-            mime="text/csv"
++            filename="ai_investment_trends_2014_2024.csv",
++            mime_type="text/csv"
+         )
+     
+     with tab2:
+@@ -2420,7 +2472,7 @@
+             horizontal_spacing=0.12
+         )
+         
+-        st.plotly_chart(fig, use_container_width=True)
++        safe_plotly_chart(fig, use_container_width=True)
+         
+         col1, col2 = st.columns(2)
+         with col1:
+@@ -2471,7 +2523,7 @@
+             )
+         )
+         
+-        st.plotly_chart(fig, use_container_width=True)
++        safe_plotly_chart(fig, use_container_width=True)
+         
+         st.success("**🚀 GenAI represents over 20% of all AI-related private investment, up from near zero in 2021**")
+     
+@@ -2502,7 +2554,7 @@
+             height=400
+         )
+         
+-        st.plotly_chart(fig, use_container_width=True)
++        safe_plotly_chart(fig, use_container_width=True)
+         
+         st.info("**Note:** GenAI shows exceptional 5-year CAGR due to starting from near-zero base in 2019")
+ 
+@@ -2528,7 +2580,7 @@
+     
+     fig.update_layout(height=450, title_text="Regional AI Adoption and Investment Dynamics")
+     
+-    st.plotly_chart(fig, use_container_width=True)
++    safe_plotly_chart(fig, use_container_width=True)
+     
+     # Regional insights with metrics
+     col1, col2, col3 = st.columns(3)
+@@ -2571,7 +2623,7 @@
+     fig2.add_annotation(x=75, y=13, text="Low Growth<br>High Base", showarrow=False, font=dict(color="gray"))
+     
+-    st.plotly_chart(fig2, use_container_width=True)
++    safe_plotly_chart(fig2, use_container_width=True)
+     
+     st.info("""
+     **Strategic Insights:**
+@@ -2616,7 +2668,7 @@
+             showlegend=False
+         )
+         
+-        st.plotly_chart(fig, use_container_width=True)
++        safe_plotly_chart(fig, use_container_width=True)
+         
+         # Cost impact analysis
+         col1, col2 = st.columns(2)
+@@ -2647,7 +2699,7 @@
+         
+         fig.update_layout(height=400, showlegend=False)
+-        st.plotly_chart(fig, use_container_width=True)
++        safe_plotly_chart(fig, use_container_width=True)
+         
+         st.success("""
+         **🚀 Hardware Revolution:**
+@@ -2686,7 +2738,7 @@
+             hovermode='x unified'
+         )
+         
+-        st.plotly_chart(fig, use_container_width=True)
++        safe_plotly_chart(fig, use_container_width=True)
+         
+         st.info("""
+         **📊 Projection Assumptions:**
+@@ -2894,7 +2946,7 @@
+         
+         st.plotly_chart(fig1, use_container_width=True)
+         
+-        st.plotly_chart(fig2, use_container_width=True)
++        safe_plotly_chart(fig2, use_container_width=True)
+         
+         # Usage pattern insights
+         col1, col2 = st.columns(2)
+@@ -2953,7 +3005,7 @@
+         fig.update_traces(textposition='top center')
+         
+-        st.plotly_chart(fig, use_container_width=True)
++        safe_plotly_chart(fig, use_container_width=True)
+         
+         # Optimization recommendations
+         col1, col2 = st.columns(2)
+@@ -3103,7 +3155,7 @@
+         
+         st.plotly_chart(fig, use_container_width=True)
+         
+-        st.download_button(
++        safe_download_button(
+             label="📥 Download Complete Investment Strategy",
+             data=investment_report,
+-            file_name=f"AI_Investment_Strategy_{datetime.now().strftime('%Y%m%d')}.txt",
+-            mime="text/plain",
++            filename=f"AI_Investment_Strategy_{datetime.now().strftime('%Y%m%d')}.txt",
++            mime_type="text/plain",
+             use_container_width=True,
+             help="Download your complete AI investment strategy and implementation plan"
+         )
+@@ -3243,7 +3295,7 @@
+         
+         st.plotly_chart(fig, use_container_width=True)
+         
+-        st.download_button(
++        safe_download_button(
+             label="📥 Download Strategic Intelligence Report",
+             data=strategic_report,
+-            file_name=f"Strategic_Market_Intelligence_{datetime.now().strftime('%Y%m%d')}.txt",
+-            mime="text/plain",
++            filename=f"Strategic_Market_Intelligence_{datetime.now().strftime('%Y%m%d')}.txt",
++            mime_type="text/plain",
+             use_container_width=True,
+             help="Complete strategic analysis and recommendations for executive leadership"
+         )
+@@ -3294,7 +3346,7 @@
+             hovermode='x unified'
+         )
+         
+-        st.plotly_chart(fig, use_container_width=True)
++        safe_plotly_chart(fig, use_container_width=True)
+         
+         st.info("""
+         **📈 Key Findings:**
+@@ -3332,7 +3384,7 @@
+             hovermode='x unified'
+         )
+         
+-        st.plotly_chart(fig, use_container_width=True)
++        safe_plotly_chart(fig, use_container_width=True)
+         
+         st.success("**Key Trend:** GenAI applications (content generation, code generation, chatbots) now lead adoption rates")
+     
+@@ -3375,7 +3427,7 @@
+             xaxis_tickangle=45
+         )
+         
+-        st.plotly_chart(fig, use_container_width=True)
++        safe_plotly_chart(fig, use_container_width=True)
+         
+         st.warning("**Critical Gap:** Talent availability shows the largest readiness gap (40pp), highlighting the global AI skills shortage")
+ 
+@@ -3415,7 +3467,7 @@
+         showlegend=False
+     )
+     
+-    st.plotly_chart(fig, use_container_width=True)
++    safe_plotly_chart(fig, use_container_width=True)
+     
+     # Support effectiveness with implementation roadmap
+     st.subheader("🎯 Support Measures & Implementation Roadmap")
+@@ -3453,7 +3505,7 @@
+     
+     fig2.update_traces(textposition='top center')
+     
+-    st.plotly_chart(fig2, use_container_width=True)
++    safe_plotly_chart(fig2, use_container_width=True)
+     
+     # Policy recommendations
+     col1, col2 = st.columns(2)
+@@ -3491,7 +3543,7 @@
+         hovermode='x unified'
+     )
+     
+-    st.plotly_chart(fig, use_container_width=True)
++    safe_plotly_chart(fig, use_container_width=True)
+     
+     st.info("""
+     **Key Insights:**
+@@ -3524,7 +3576,7 @@
+         height=350
+     )
+     
+-    st.plotly_chart(fig, use_container_width=True)
++    safe_plotly_chart(fig, use_container_width=True)
+     
+     # Factors affecting payback
+     col1, col2 = st.columns(2)
+@@ -3555,7 +3607,7 @@
+         showlegend=False
+     )
+     
+-    st.plotly_chart(fig, use_container_width=True)
++    safe_plotly_chart(fig, use_container_width=True)
+     
+     # Top performers analysis
+     top_sectors = sector_2025.nlargest(3, 'avg_roi')
+@@ -3633,11 +3685,11 @@
+         if st.button("📥 Export ROI Analysis"):
+             analysis_text = f"""
+             # ... (analysis text content) ...
+             """
+             
+-            st.download_button(
++            safe_download_button(
+                 label="Download Analysis",
+                 data=analysis_text,
+-                file_name=f"ai_roi_analysis_{datetime.now().strftime('%Y%m%d')}.txt",
+-                mime="text/plain"
++                filename=f"ai_roi_analysis_{datetime.now().strftime('%Y%m%d')}.txt",
++                mime_type="text/plain"
+             )
+ 
+ elif view_type == "Bibliography & Sources":
+@@ -4549,11 +4601,11 @@
+ Contact: Robert.casanova82@gmail.com
+ ═══════════════════════════════════════════════════════════════
+ """
+     
+-    st.download_button(
++    safe_download_button(
+         label="📥 Download Complete Bibliography",
+         data=bibliography_text,
+-        file_name="ai_adoption_dashboard_bibliography.txt",
+-        mime="text/plain"
++        filename="ai_adoption_dashboard_bibliography.txt",
++        mime_type="text/plain"
+     )
+ 
+ # Comprehensive Analysis Integration - UPDATED VERSION
