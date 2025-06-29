@@ -563,21 +563,108 @@ OECD AI Policy Observatory, and US Census Bureau AI Use Supplement.
 # Sidebar controls
 st.sidebar.header("📊 Dashboard Controls")
 
-# Show persona selection
-persona = st.sidebar.selectbox(
-    "Select Your Role",
-    ["General", "Business Leader", "Policymaker", "Researcher"],
-    index=["General", "Business Leader", "Policymaker", "Researcher"].index(st.session_state.selected_persona)
-)
-st.session_state.selected_persona = persona
-
-# Update persona recommendations to focus on strategic views
-persona_views = {
-    "Business Leader": ["🎯 Competitive Position Assessor", "💰 Investment Decision Engine", "Financial Impact", "ROI Analysis"],
-    "Policymaker": ["⚖️ Regulatory Risk Radar", "Geographic Distribution", "OECD 2025 Findings", "AI Governance"],
-    "Researcher": ["Historical Trends", "Productivity Research", "Environmental Impact", "Bibliography & Sources"],
-    "General": ["🎯 Competitive Position Assessor", "Historical Trends", "Investment Trends", "Industry Analysis"]
+persona_info = {
+    "Business Leader": "👔 Strategic focus with executive tools",
+    "Policymaker": "🏛️ Policy and regulatory emphasis", 
+    "Researcher": "🔬 Comprehensive data and methodology",
+    "General": "👤 Balanced strategic and analytical views"
 }
+
+st.sidebar.info(f"""
+**Current View Mode:** {st.session_state.selected_persona}
+{persona_info[st.session_state.selected_persona]}
+
+**Recommended:** {', '.join(recommended_views[:2])}...
+""")
+
+# Show view selector
+view_type = st.sidebar.selectbox(
+    "Analysis View", 
+    all_views,
+    index=0,  # Always start with first recommended view
+    help="Curated views based on your selected role"
+)
+
+if st.session_state.selected_persona == "Business Leader":
+    # EXECUTIVE-FOCUSED: Only strategic tools + essential insights
+    all_views = [
+        "🎯 Competitive Position Assessor",
+        "💰 Investment Decision Engine", 
+        "📊 Strategic Market Intelligence",  # NEW - combines key metrics
+        "🗺️ Industry Benchmarking",         # NEW - focused industry analysis
+        "---",
+        "🔍 Detailed Analysis",              # NEW - gateway to detailed views
+        "Bibliography & Sources"
+    ]
+    
+    # Executive gets strategic recommendations first
+    recommended_views = [
+        "🎯 Competitive Position Assessor", 
+        "💰 Investment Decision Engine",
+        "📊 Strategic Market Intelligence"
+    ]
+
+elif st.session_state.selected_persona == "Policymaker":
+    # POLICY-FOCUSED: Regulatory and geographic emphasis
+    all_views = [
+        "🎯 Competitive Position Assessor",
+        "⚖️ Regulatory Risk Radar",
+        "🗺️ Geographic Distribution", 
+        "📊 Strategic Market Intelligence",
+        "---",
+        "OECD 2025 Findings",
+        "AI Governance", 
+        "🔍 Detailed Analysis",
+        "Bibliography & Sources"
+    ]
+    
+    recommended_views = [
+        "⚖️ Regulatory Risk Radar",
+        "🗺️ Geographic Distribution",
+        "OECD 2025 Findings"
+    ]
+
+elif st.session_state.selected_persona == "Researcher":
+    # RESEARCH-FOCUSED: Full access with academic emphasis
+    all_views = [
+        "📊 Strategic Market Intelligence",
+        "Historical Trends",
+        "Productivity Research",
+        "Environmental Impact",
+        "---",
+        "🎯 Competitive Position Assessor",
+        "💰 Investment Decision Engine",
+        "---",
+        "🔍 Detailed Analysis",
+        "Bibliography & Sources"
+    ]
+    
+    recommended_views = [
+        "Historical Trends",
+        "Productivity Research", 
+        "Environmental Impact",
+        "Bibliography & Sources"
+    ]
+
+else:  # General users
+    # BALANCED: Strategic tools + core analysis
+    all_views = [
+        "🎯 Competitive Position Assessor",
+        "💰 Investment Decision Engine",
+        "📊 Strategic Market Intelligence",
+        "Historical Trends",
+        "---",
+        "🗺️ Industry Benchmarking", 
+        "Investment Trends",
+        "🔍 Detailed Analysis",
+        "Bibliography & Sources"
+    ]
+    
+    recommended_views = [
+        "🎯 Competitive Position Assessor",
+        "📊 Strategic Market Intelligence",
+        "Historical Trends"
+    ]
 
 
 # Strategic views (top priority)
