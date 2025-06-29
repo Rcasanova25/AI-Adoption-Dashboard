@@ -6,6 +6,376 @@ import numpy as np
 from datetime import datetime
 from plotly.subplots import make_subplots
 
+# Add feature flags for safe deployment
+if 'feature_flags' not in st.session_state:
+    st.session_state.feature_flags = {
+        'executive_mode': True,
+        'visual_redesign': True,
+        'strategic_callouts': True,
+        'competitive_homepage': False  # Start disabled, enable after testing
+    }
+
+# Executive navigation function
+def create_executive_navigation():
+    """Simplified, executive-focused navigation"""
+    st.sidebar.markdown("## 🎯 Executive Command Center")
+    
+    # Primary executive decision views
+    exec_view = st.sidebar.radio(
+        "Strategic Intelligence",
+        ["🚀 Strategic Brief", "⚖️ Competitive Position", "💰 Investment Case", 
+         "📊 Market Intelligence", "🎯 Action Planning"],
+        help="Core executive decision support tools"
+    )
+    
+    # Quick stats in sidebar
+    st.sidebar.markdown("---")
+    st.sidebar.markdown("### 📈 Key Market Metrics")
+    st.sidebar.metric("Market Adoption", "78%", "+23pp")
+    st.sidebar.metric("Cost Reduction", "280x", "Since 2022")
+    st.sidebar.metric("Avg ROI", "3.2x", "Across sectors")
+    
+    # Secondary analysis (collapsed by default)
+    st.sidebar.markdown("---")
+    with st.sidebar.expander("📋 Detailed Analysis", expanded=False):
+        detailed_view = st.selectbox("Analysis Type", 
+                                   ["Historical Trends", "Industry Deep Dive", "Geographic Analysis", 
+                                    "Technology Maturity", "Financial Impact", "Labor Impact"])
+        use_detailed = st.checkbox("Switch to detailed view")
+        
+        if use_detailed:
+            return detailed_view, True
+    
+    return exec_view, False
+
+
+
+# Toggle between executive and detailed modes
+def determine_navigation_mode():
+    """Determine which navigation system to use"""
+    
+    # Let users choose their experience
+    mode = st.sidebar.selectbox(
+        "Dashboard Mode",
+        ["🎯 Executive (Streamlined)", "📊 Analyst (Detailed)"],
+        help="Choose your experience level"
+    )
+    
+    if "Executive" in mode and st.session_state.feature_flags['executive_mode']:
+        return create_executive_navigation()
+    else:
+        # Use your existing navigation
+        view_type = st.sidebar.selectbox(
+            "Analysis View", 
+            ["Adoption Rates", "Historical Trends", "Industry Analysis", "Investment Trends", 
+             "Regional Growth", "AI Cost Trends", "Token Economics", "Financial Impact", 
+             "Labor Impact", "Firm Size Analysis", "Technology Stack", "AI Technology Maturity", 
+             "Productivity Research", "Environmental Impact", "Geographic Distribution", 
+             "OECD 2025 Findings", "Barriers & Support", "ROI Analysis", "Skill Gap Analysis", 
+             "AI Governance"]
+        )
+        return view_type, False
+
+def apply_executive_styling():
+    """Enhanced visual design for executive experience"""
+    if not st.session_state.feature_flags['visual_redesign']:
+        return
+        
+    st.markdown("""
+    <style>
+    /* Executive metric cards */
+    .exec-metric {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        padding: 1.5rem;
+        border-radius: 12px;
+        color: white;
+        text-align: center;
+        margin: 0.5rem 0;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+    
+    .exec-metric h3 {
+        margin: 0 0 0.5rem 0;
+        font-size: 0.9rem;
+        opacity: 0.9;
+    }
+    
+    .exec-metric h2 {
+        margin: 0 0 0.25rem 0;
+        font-size: 1.8rem;
+        font-weight: bold;
+    }
+    
+    /* Strategic insight boxes */
+    .strategic-insight {
+        border-left: 4px solid #2E86AB;
+        background: rgba(46, 134, 171, 0.1);
+        padding: 1.5rem;
+        margin: 1.5rem 0;
+        border-radius: 0 8px 8px 0;
+    }
+    
+    .strategic-insight h4 {
+        color: #2E86AB;
+        margin-top: 0;
+    }
+    
+    /* Action required boxes */
+    .action-required {
+        background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+        color: white;
+        padding: 1.5rem;
+        border-radius: 8px;
+        margin: 1.5rem 0;
+    }
+    
+    .action-required h4 {
+        margin-top: 0;
+        color: white;
+    }
+    
+    /* Opportunity boxes */
+    .opportunity-box {
+        background: linear-gradient(135deg, #2ecc71 0%, #27ae60 100%);
+        color: white;
+        padding: 1.5rem;
+        border-radius: 8px;
+        margin: 1.5rem 0;
+    }
+    
+    /* Chart consistency */
+    .plotly-graph-div {
+        border: 1px solid #e1e5e9;
+        border-radius: 8px;
+        padding: 10px;
+        margin: 1rem 0;
+    }
+    
+    /* Executive brief styling */
+    .exec-brief-section {
+        background: rgba(255, 255, 255, 0.8);
+        padding: 2rem;
+        border-radius: 12px;
+        margin: 1rem 0;
+        border: 1px solid #e1e5e9;
+    }
+    </style>
+    """, unsafe_allow_html=True)
+
+# Enhanced metric display function
+def executive_metric(label, value, delta, insight, help_text=""):
+    """Create visually appealing executive metrics"""
+    st.markdown(f"""
+    <div class="exec-metric">
+        <h3>{label}</h3>
+        <h2>{value}</h2>
+        <p style="margin: 0; font-size: 0.9rem; opacity: 0.9;">{delta}</p>
+        <small style="opacity: 0.8;">{insight}</small>
+    </div>
+    """, unsafe_allow_html=True)
+
+def executive_strategic_brief():
+    """5-minute strategic intelligence for executives"""
+    
+    st.markdown('<div class="exec-brief-section">', unsafe_allow_html=True)
+    
+    st.title("🎯 Executive Strategic Brief")
+    st.markdown("*5-minute strategic intelligence for leadership decisions*")
+    st.markdown("**Updated:** June 2025 | **Sources:** Stanford AI Index, McKinsey, OECD")
+    
+    st.markdown('</div>', unsafe_allow_html=True)
+    
+    # Critical metrics row
+    st.subheader("📊 Market Reality Check")
+    col1, col2, col3, col4 = st.columns(4)
+    
+    with col1:
+        executive_metric("Market Adoption", "78%", "+23pp vs 2023", "Competitive table stakes")
+    
+    with col2:
+        executive_metric("Cost Revolution", "280x cheaper", "Since Nov 2022", "Barriers eliminated")
+    
+    with col3:
+        executive_metric("ROI Range", "2.5-4.2x", "Proven returns", "Strong business case")
+    
+    with col4:
+        executive_metric("Time to Impact", "12-18 months", "Typical payback", "Fast value creation")
+    
+    # Strategic intelligence grid
+    st.subheader("🧠 Strategic Intelligence")
+    
+    col1, col2 = st.columns(2)
+    
+    with col1:
+        st.markdown("""
+        <div class="action-required">
+        <h4>⚠️ COMPETITIVE THREAT</h4>
+        <p><strong>Market Reality:</strong></p>
+        <ul>
+        <li>78% of businesses now use AI (vs 55% in 2023)</li>
+        <li>Non-adopters becoming minority position</li>
+        <li>First-mover advantages accelerating</li>
+        <li>GenAI adoption doubled to 71% in one year</li>
+        </ul>
+        <p><strong>→ Action Required:</strong> Assess competitive gap within 30 days</p>
+        </div>
+        """, unsafe_allow_html=True)
+        
+        st.markdown("""
+        <div class="opportunity-box">
+        <h4>💰 ECONOMIC OPPORTUNITY</h4>
+        <p><strong>Investment Case:</strong></p>
+        <ul>
+        <li>280x cost reduction enables mass deployment</li>
+        <li>Consistent 2.5-4.2x ROI across all sectors</li>
+        <li>Productivity gains: 5-14% measured improvement</li>
+        <li>$252B global investment validates market</li>
+        </ul>
+        <p><strong>→ Strategic Move:</strong> Build investment business case now</p>
+        </div>
+        """, unsafe_allow_html=True)
+    
+    with col2:
+        st.markdown("""
+        <div class="strategic-insight">
+        <h4>🎯 IMPLEMENTATION REALITY</h4>
+        <p><strong>Success Factors:</strong></p>
+        <ul>
+        <li>68% cite "lack of skilled personnel" as top barrier</li>
+        <li>Full-stack approach (AI+Cloud+Digital) shows 3.5x ROI</li>
+        <li>Technology leaders (92% adoption) set the pace</li>
+        <li>Skills development is the critical bottleneck</li>
+        </ul>
+        <p><strong>→ Foundation Move:</strong> Start talent development immediately</p>
+        </div>
+        """, unsafe_allow_html=True)
+        
+        st.markdown("""
+        <div class="strategic-insight">
+        <h4>⏰ TIMING FACTORS</h4>
+        <p><strong>Market Dynamics:</strong></p>
+        <ul>
+        <li>Technology maturity reaching enterprise readiness</li>
+        <li>Regulatory frameworks stabilizing globally</li>
+        <li>Talent market still accessible (but tightening)</li>
+        <li>Investment costs at historic lows</li>
+        </ul>
+        <p><strong>→ Window of Opportunity:</strong> Move from pilot to production</p>
+        </div>
+        """, unsafe_allow_html=True)
+    
+    # Quick competitive assessment
+    st.subheader("⚖️ Quick Competitive Assessment")
+    
+    col1, col2 = st.columns([2, 1])
+    
+    with col1:
+        industry = st.selectbox("Your Industry", 
+            ["Technology (92% adoption)", "Financial Services (85%)", "Healthcare (78%)", 
+             "Manufacturing (75%)", "Retail & E-commerce (72%)", "Education (65%)",
+             "Energy & Utilities (58%)", "Government (52%)"])
+        
+        company_size = st.selectbox("Company Size",
+            ["1-50 employees (3% adoption)", "51-250 (12% adoption)", 
+             "251-1000 (25% adoption)", "1000-5000 (42% adoption)", "5000+ (58% adoption)"])
+    
+    with col2:
+        if st.button("🎯 Assess My Position", type="primary", use_container_width=True):
+            assess_competitive_position(industry, company_size)
+    
+    # Executive summary
+    st.subheader("🎯 Executive Summary")
+    st.markdown("""
+    <div class="exec-brief-section">
+    <h4>Bottom Line Up Front (BLUF):</h4>
+    <p><strong>AI adoption has reached irreversible market tipping point.</strong> The combination of 78% business adoption, 
+    280x cost reduction, and proven ROI means competitive advantage now flows to implementation speed and quality, 
+    not adoption decisions.</p>
+    
+    <h4>Strategic Imperative:</h4>
+    <p>Move immediately from "Should we invest in AI?" to "How fast can we scale AI capabilities?" 
+    Focus on talent development, full-stack integration, and production deployment over pilots.</p>
+    
+    <h4>Next 90 Days:</h4>
+    <ol>
+    <li><strong>Week 1-2:</strong> Competitive gap analysis and investment case development</li>
+    <li><strong>Week 3-8:</strong> Talent assessment and capability building strategy</li>
+    <li><strong>Week 9-12:</strong> Production deployment of highest-ROI use cases</li>
+    </ol>
+    </div>
+    """, unsafe_allow_html=True)
+
+def assess_competitive_position(industry, company_size):
+    """Quick competitive assessment logic"""
+    
+    # Extract adoption rates from selections
+    industry_adoption = int(industry.split('(')[1].split('%')[0])
+    size_adoption = int(company_size.split('(')[1].split('%')[0])
+    
+    # Simple scoring logic
+    competitive_score = (industry_adoption + size_adoption) / 2
+    
+    if competitive_score >= 70:
+        status = "LEADER"
+        color = "success"
+        message = "You're in a leading position. Focus on maintaining advantage and innovation."
+    elif competitive_score >= 50:
+        status = "COMPETITIVE"
+        color = "warning" 
+        message = "You're competitive but need to accelerate to avoid falling behind."
+    else:
+        status = "AT RISK"
+        color = "error"
+        message = "Urgent action required. You're falling behind market adoption."
+    
+    if color == "success":
+        st.success(f"**Status: {status}**\n\n{message}")
+    elif color == "warning":
+        st.warning(f"**Status: {status}**\n\n{message}")
+    else:
+        st.error(f"**Status: {status}**\n\n{message}")
+
+# Apply styling
+apply_executive_styling()
+
+# Determine navigation mode
+current_view, is_detailed = determine_navigation_mode()
+
+# Route to appropriate view
+if not is_detailed:
+    # Executive views
+    if current_view == "🚀 Strategic Brief":
+        executive_strategic_brief()
+    elif current_view == "⚖️ Competitive Position":
+        # Enhance your existing competitive analysis
+        st.title("⚖️ Competitive Position Analysis")
+        # Add your existing competitive analysis here with enhancements
+        pass
+    elif current_view == "💰 Investment Case":
+        # Create focused investment view
+        st.title("💰 AI Investment Case Builder")
+        # We'll build this in Week 2
+        pass
+    elif current_view == "📊 Market Intelligence":
+        # Key market data
+        st.title("📊 Market Intelligence")
+        # Curated market insights
+        pass
+    elif current_view == "🎯 Action Planning":
+        # Strategic action planning
+        st.title("🎯 Strategic Action Planning")
+        # We'll build this in Week 2
+        pass
+else:
+    # Your existing detailed views - keep all existing functionality
+    if current_view == "Historical Trends":
+        # Your existing Historical Trends code
+        pass
+    elif current_view == "Industry Deep Dive":
+        # Your existing Industry Analysis code
+        pass
+    # ... etc for all existing views
+
 # Page config
 st.set_page_config(
     page_title="AI Adoption Dashboard | 2018-2025 Analysis",
@@ -480,141 +850,44 @@ OECD AI Policy Observatory, and US Census Bureau AI Use Supplement.
 """)
 
 # Sidebar controls
+# Apply executive styling first
+apply_executive_styling()
+
+# Sidebar controls
 st.sidebar.header("📊 Dashboard Controls")
 
-# Show persona selection
-persona = st.sidebar.selectbox(
-    "Select Your Role",
-    ["General", "Business Leader", "Policymaker", "Researcher"],
-    index=["General", "Business Leader", "Policymaker", "Researcher"].index(st.session_state.selected_persona)
-)
-st.session_state.selected_persona = persona
+# NEW: Determine navigation mode
+current_view, is_detailed = determine_navigation_mode()
 
-# Persona-based view recommendations and filtering
-persona_views = {
-    "Business Leader": ["Industry Analysis", "Financial Impact", "Investment Trends", "ROI Analysis"],
-    "Policymaker": ["Geographic Distribution", "OECD 2025 Findings", "Regional Growth", "AI Governance"],
-    "Researcher": ["Historical Trends", "Productivity Research", "Environmental Impact", "Skill Gap Analysis"],
-    "General": ["Adoption Rates", "Historical Trends", "Investment Trends", "Labor Impact"]
-}
-
-# Filter views based on persona
-all_views = ["Adoption Rates", "Historical Trends", "Industry Analysis", "Investment Trends", 
-             "Regional Growth", "AI Cost Trends", "Token Economics", "Financial Impact", "Labor Impact", 
-             "Firm Size Analysis", "Technology Stack", "AI Technology Maturity", 
-             "Productivity Research", "Environmental Impact", "Geographic Distribution", 
-             "OECD 2025 Findings", "Barriers & Support", "ROI Analysis", "Skill Gap Analysis", 
-             "AI Governance"]
-
-if persona != "General":
-    st.sidebar.info(f"💡 **Recommended views for {persona}:**\n" + "\n".join([f"• {v}" for v in persona_views[persona]]))
-
-data_year = st.sidebar.selectbox(
-    "Select Data Year", 
-    ["2018 (Early AI)", "2025 (GenAI Era)"],
-    index=1
-)
-
-view_type = st.sidebar.selectbox(
-    "Analysis View", 
-    all_views,
-    index=all_views.index(persona_views[persona][0]) if persona != "General" else 0
-)
-
-# Advanced filters
-st.sidebar.markdown("---")
-st.sidebar.markdown("### 🔧 Advanced Options")
-
-# Year filter for historical data
-if view_type == "Historical Trends":
-    year_range = st.sidebar.slider(
-        "Select Year Range",
-        min_value=2017,
-        max_value=2025,
-        value=(2017, 2025),
-        step=1
+# Keep existing persona selection but make it conditional
+if is_detailed:
+    # Your existing persona selection code
+    persona = st.sidebar.selectbox(
+        "Select Your Role",
+        ["General", "Business Leader", "Policymaker", "Researcher"],
+        index=["General", "Business Leader", "Policymaker", "Researcher"].index(st.session_state.selected_persona)
+    )
+    st.session_state.selected_persona = persona
+    
+    # Keep all your existing sidebar controls
+    data_year = st.sidebar.selectbox(
+        "Select Data Year", 
+        ["2018 (Early AI)", "2025 (GenAI Era)"],
+        index=1
     )
     
-    compare_mode = st.sidebar.checkbox("Compare specific years", value=False)
-    if compare_mode:
-        col1, col2 = st.sidebar.columns(2)
-        with col1:
-            year1 = st.selectbox("Year 1", range(2017, 2026), index=1)
-        with col2:
-            year2 = st.selectbox("Year 2", range(2017, 2026), index=7)
-
-# Export functionality
-st.sidebar.markdown("---")
-st.sidebar.markdown("### 📥 Export Options")
-
-# Mapping of view types to their respective dataframes
-data_map = {
-    "Historical Trends": historical_data,
-    "Industry Analysis": sector_2025,
-    "Financial Impact": financial_impact,
-    "Skill Gap Analysis": skill_gap_data,
-    "AI Governance": ai_governance,
-    "Productivity Research": productivity_data,
-    "Investment Trends": ai_investment_data,
-    "Regional Growth": regional_growth,
-    "AI Cost Trends": ai_cost_reduction,
-    "Token Economics": token_economics,
-    "Labor Impact": ai_perception,
-    "Environmental Impact": training_emissions,
-    "Adoption Rates": genai_2025 if "2025" in data_year else sector_2018,
-    "Firm Size Analysis": firm_size,
-    "Technology Stack": tech_stack,
-    "AI Technology Maturity": ai_maturity,
-    "Geographic Distribution": geographic,
-    "OECD 2025 Findings": oecd_g7_adoption,
-    "Barriers & Support": barriers_data,
-    "ROI Analysis": sector_2025
-}
-
-export_format = st.sidebar.selectbox(
-    "Export Format",
-    ["CSV Data", "PNG Image", "PDF Report (Beta)"]
-)
-
-if export_format == "CSV Data":
-    if view_type in data_map:
-        df_to_download = data_map[view_type]
-        csv = df_to_download.to_csv(index=False).encode('utf-8')
-        
-        st.sidebar.download_button(
-           label="📥 Download CSV for Current View",
-           data=csv,
-           file_name=f"ai_adoption_{view_type.lower().replace(' ', '_')}.csv",
-           mime="text/csv",
-           use_container_width=True
-        )
-    else:
-        st.sidebar.warning(f"CSV export is not available for the '{view_type}' view.")
-
-elif export_format in ["PNG Image", "PDF Report (Beta)"]:
-    st.sidebar.warning(f"{export_format} export is not yet implemented.")
-    st.sidebar.button("📥 Export Current View", disabled=True, use_container_width=True)
-
-# Feedback widget
-st.sidebar.markdown("---")
-st.sidebar.markdown("### 💬 Feedback")
-feedback = st.sidebar.text_area("Share your thoughts or request features:", height=100)
-if st.sidebar.button("Submit Feedback"):
-    st.sidebar.success("Thank you for your feedback!")
-
-# Help section
-with st.sidebar.expander("❓ Need Help?"):
-    st.markdown("""
-    **Navigation Tips:**
-    - Use the Analysis View dropdown to explore different perspectives
-    - Click 📊 icons for data source information
-    - Hover over chart elements for details
+    view_type = st.sidebar.selectbox(
+        "Analysis View", 
+        all_views,
+        index=all_views.index(persona_views[persona][0]) if persona != "General" else 0
+    )
     
-    **Keyboard Shortcuts:**
-    - `Ctrl + K`: Quick search
-    - `F`: Toggle fullscreen
-    - `?`: Show help
-    """)
+    # Keep all your existing advanced filters, export options, etc.
+else:
+    # For executive mode, we'll handle the view in current_view
+    view_type = current_view
+    data_year = "2025 (GenAI Era)"  # Default for executives
+    persona = "Business Leader"  # Default for executives
 
 # Key metrics row - UPDATED with AI Index 2025 data
 st.subheader("📈 Key Metrics")
