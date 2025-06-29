@@ -1964,19 +1964,22 @@ elif view_type == "📊 Strategic Market Intelligence":
         
         with col1:
             # Industry leadership matrix
+           # Scenario visualization
+        
             fig = px.scatter(
-                sector_2025,
-                x='adoption_rate',
-                y='avg_roi',
-                size='genai_adoption',
-                color='sector',
-                title='Industry Leadership Matrix: Adoption vs ROI',
+                scenarios,
+                x='probability',
+                y='impact_adoption',
+                size='size_for_plot',
+                color='scenario',
+                title='AI Future Scenarios: Probability vs Impact',
                 labels={
-                    'adoption_rate': 'AI Adoption Rate (%)',
-                    'avg_roi': 'Average ROI (x)',
-                    'genai_adoption': 'GenAI Adoption (%)'
+                    'probability': 'Probability (%)',
+                    'impact_adoption': 'Adoption Impact (%)',
+                    'impact_investment': 'Investment Impact (%)'
                 },
-                height=400
+                height=400,
+                hover_data={'size_for_plot': False, 'impact_investment': True}  # Hide size_for_plot in hover
             )
             
             # Add quadrant lines
