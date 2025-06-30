@@ -411,8 +411,8 @@ def safe_data_check(data, data_name):
     return True
 
 # Data loading function - updated with AI Index 2025 data
-@st.cache_data
 def load_data():
+    """Load all dashboard data with comprehensive error handling"""
     try:
         # Historical trends data - UPDATED with AI Index 2025 findings
         historical_data = pd.DataFrame({
@@ -619,6 +619,7 @@ def load_data():
             'gap_severity': [85, 78, 72, 68, 65, 62, 58, 55],
             'training_initiatives': [45, 52, 28, 38, 32, 35, 22, 48]
         })
+        
         # NEW: AI governance data
         ai_governance = pd.DataFrame({
             'aspect': ['Ethics Guidelines', 'Data Privacy', 'Bias Detection', 'Transparency',
@@ -626,6 +627,7 @@ def load_data():
             'adoption_rate': [62, 78, 45, 52, 48, 55, 72],
             'maturity_score': [3.2, 3.8, 2.5, 2.8, 2.6, 3.0, 3.5]  # Out of 5
         })
+        
         # NEW: Token economics data
         token_economics = pd.DataFrame({
             'model': ['GPT-3.5 (Nov 2022)', 'GPT-3.5 (Oct 2024)', 'Gemini-1.5-Flash-8B', 
@@ -635,6 +637,7 @@ def load_data():
             'context_window': [4096, 16385, 1000000, 200000, 8192, 128000, 200000],
             'tokens_per_second': [50, 150, 200, 180, 120, 80, 100]
         })
+        
         # Token usage patterns
         token_usage_patterns = pd.DataFrame({
             'use_case': ['Simple Chat', 'Document Analysis', 'Code Generation', 
@@ -643,6 +646,7 @@ def load_data():
             'avg_output_tokens': [200, 500, 1500, 2000, 1000, 5000],
             'input_output_ratio': [0.25, 10.0, 0.33, 0.10, 2.0, 0.20]
         })
+        
         # Token optimization strategies
         token_optimization = pd.DataFrame({
             'strategy': ['Prompt Engineering', 'Context Caching', 'Batch Processing', 
@@ -651,14 +655,16 @@ def load_data():
             'implementation_complexity': [2, 4, 3, 1, 2, 5],  # 1-5 scale
             'time_to_implement': [1.0, 7.0, 3.0, 0.5, 2.0, 14.0]  # days as float
         })
-        # Token pricing evolution
+        
+        # Token pricing evolution - Simplified to avoid datetime issues
         token_pricing_evolution = pd.DataFrame({
-            'date': pd.to_datetime(['2022-11-01', '2023-02-01', '2023-05-01', '2023-08-01', '2023-11-01',
-                                   '2024-02-01', '2024-05-01', '2024-08-01', '2024-11-01', '2025-02-01', '2025-05-01']),
+            'date': ['2022-11-01', '2023-02-01', '2023-05-01', '2023-08-01', '2023-11-01',
+                     '2024-02-01', '2024-05-01', '2024-08-01', '2024-11-01', '2025-02-01', '2025-05-01'],
             'avg_price_input': [20.0, 18.0, 15.0, 10.0, 5.0, 3.0, 1.5, 0.8, 0.5, 0.3, 0.2],
             'avg_price_output': [20.0, 19.0, 16.0, 12.0, 8.0, 5.0, 3.0, 2.0, 1.5, 1.0, 0.8],
             'models_available': [5, 8, 12, 18, 25, 35, 45, 58, 72, 85, 95]
         })
+        
         return (historical_data, sector_2018, sector_2025, firm_size, ai_maturity, geographic, 
                 state_data, tech_stack, productivity_data, productivity_by_skill, ai_productivity_estimates, 
                 oecd_g7_adoption, oecd_applications, barriers_data, support_effectiveness, 
@@ -666,15 +672,64 @@ def load_data():
                 skill_gap_data, ai_governance, token_economics, token_usage_patterns, token_optimization, token_pricing_evolution)
         
     except Exception as e:
-        st.error(f"Error loading data: {e}")
+        st.error(f"❌ Error loading data: {str(e)}")
         return None
 
 # Load data first to ensure all variables are available
-loaded_data = load_data()
-if loaded_data is not None:
-    (historical_data, sector_2018, sector_2025, firm_size, ai_maturity, geographic, state_data, tech_stack, productivity_data, productivity_by_skill, ai_productivity_estimates, oecd_g7_adoption, oecd_applications, barriers_data, support_effectiveness, ai_investment_data, regional_growth, ai_cost_reduction, financial_impact, ai_perception, skill_gap_data, ai_governance, token_economics, token_usage_patterns, token_optimization, token_pricing_evolution) = loaded_data
-else:
+try:
+    loaded_data = load_data()
+    
+    # Initialize all variables to None first
     historical_data = sector_2018 = sector_2025 = firm_size = ai_maturity = geographic = state_data = tech_stack = productivity_data = productivity_by_skill = ai_productivity_estimates = oecd_g7_adoption = oecd_applications = barriers_data = support_effectiveness = ai_investment_data = regional_growth = ai_cost_reduction = financial_impact = ai_perception = skill_gap_data = ai_governance = token_economics = token_usage_patterns = token_optimization = token_pricing_evolution = None
+    
+    # Only unpack if data loading was successful
+    if loaded_data is not None:
+        try:
+            (historical_data, sector_2018, sector_2025, firm_size, ai_maturity, geographic, 
+             state_data, tech_stack, productivity_data, productivity_by_skill, ai_productivity_estimates, 
+             oecd_g7_adoption, oecd_applications, barriers_data, support_effectiveness, 
+             ai_investment_data, regional_growth, ai_cost_reduction, financial_impact, ai_perception, 
+             skill_gap_data, ai_governance, token_economics, token_usage_patterns, token_optimization, token_pricing_evolution) = loaded_data
+            st.success("✓ Data loaded and unpacked successfully!")
+        except Exception as e:
+            st.error(f"❌ Error unpacking data: {str(e)}")
+            st.error("Dashboard will run with limited functionality.")
+    else:
+        st.error("❌ Data loading failed. Dashboard will run with limited functionality.")
+        st.info("Please refresh the page or contact support if the issue persists.")
+        
+except Exception as e:
+    st.error(f"❌ Critical error in data loading: {str(e)}")
+    # Create minimal fallback data to prevent crashes
+    historical_data = pd.DataFrame({'year': [2024], 'ai_use': [78], 'genai_use': [71]})
+    ai_cost_reduction = pd.DataFrame({'model': ['Test'], 'cost_per_million_tokens': [0.07], 'year': [2024]})
+    token_economics = pd.DataFrame({'model': ['Test'], 'cost_per_million_input': [0.07], 'cost_per_million_output': [0.07]})
+    financial_impact = pd.DataFrame({'function': ['Test'], 'companies_reporting_cost_savings': [49], 'companies_reporting_revenue_gains': [57]})
+    ai_perception = pd.DataFrame({'generation': ['Test'], 'expect_job_change': [65], 'expect_job_replacement': [40]})
+    firm_size = pd.DataFrame({'size': ['Test'], 'adoption': [25]})
+    tech_stack = pd.DataFrame({'technology': ['Test'], 'percentage': [100]})
+    ai_maturity = pd.DataFrame({'technology': ['Test'], 'adoption_rate': [50], 'risk_score': [50], 'time_to_value': [3]})
+    productivity_data = pd.DataFrame({'year': [2025], 'productivity_growth': [0.4], 'young_workers_share': [38]})
+    geographic = pd.DataFrame({'city': ['Test'], 'state': ['Test'], 'lat': [0], 'lon': [0], 'rate': [7], 'state_code': ['XX']})
+    state_data = pd.DataFrame({'state': ['Test'], 'state_code': ['XX'], 'rate': [7]})
+    oecd_g7_adoption = pd.DataFrame({'country': ['Test'], 'adoption_rate': [45], 'manufacturing': [52], 'ict_sector': [68]})
+    oecd_applications = pd.DataFrame({'application': ['Test'], 'usage_rate': [50], 'category': ['Traditional AI']})
+    barriers_data = pd.DataFrame({'barrier': ['Test'], 'percentage': [68]})
+    support_effectiveness = pd.DataFrame({'support_type': ['Test'], 'effectiveness_score': [82]})
+    ai_investment_data = pd.DataFrame({'year': [2024], 'total_investment': [252.3], 'genai_investment': [33.9]})
+    regional_growth = pd.DataFrame({'region': ['Test'], 'growth_2024': [20], 'adoption_rate': [70]})
+    ai_perception = pd.DataFrame({'generation': ['Test'], 'expect_job_change': [65], 'expect_job_replacement': [40]})
+    skill_gap_data = pd.DataFrame({'skill': ['Test'], 'gap_severity': [85], 'training_initiatives': [45]})
+    ai_governance = pd.DataFrame({'aspect': ['Test'], 'adoption_rate': [62], 'maturity_score': [3.2]})
+    token_usage_patterns = pd.DataFrame({'use_case': ['Test'], 'avg_input_tokens': [100], 'avg_output_tokens': [200]})
+    token_optimization = pd.DataFrame({'strategy': ['Test'], 'cost_reduction': [30], 'implementation_complexity': [2]})
+    token_pricing_evolution = pd.DataFrame({'date': ['2024-01-01'], 'avg_price_input': [0.2], 'avg_price_output': [0.8]})
+    sector_2018 = pd.DataFrame({'sector': ['Test'], 'firm_weighted': [10], 'employment_weighted': [15]})
+    sector_2025 = pd.DataFrame({'sector': ['Test'], 'adoption_rate': [75], 'genai_adoption': [60], 'avg_roi': [3.0]})
+    productivity_by_skill = pd.DataFrame({'skill_level': ['Test'], 'productivity_gain': [10], 'skill_gap_reduction': [20]})
+    ai_productivity_estimates = pd.DataFrame({'source': ['Test'], 'annual_impact': [1.0]})
+    
+    st.warning("⚠️ Using fallback data due to loading error. Some features may be limited.")
 
 # Determine navigation mode
 current_view, is_detailed = determine_navigation_mode()
