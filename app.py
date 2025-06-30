@@ -1441,6 +1441,302 @@ elif is_detailed:
         st.info("🚧 **Full competitive position assessor implementation would continue here...**")
         st.markdown("This would include the complete assessment form, analysis engine, and report generation from the original implementation.")
 
+    elif current_view == "Adoption Rates":
+        st.write("📊 **Comprehensive AI Adoption Rates Analysis**")
+        st.markdown("*Multi-dimensional analysis of AI adoption across industries, geographies, and firm sizes*")
+        
+        # Create tabs for different adoption perspectives
+        adoption_tabs = st.tabs(["🏭 Industry Analysis", "🏢 Firm Size", "🌍 Geographic", "📈 Trends", "🔍 Deep Dive"])
+        
+        with adoption_tabs[0]:
+            st.markdown("### 🏭 Industry-Specific Adoption Rates")
+            
+            if safe_data_check(sector_2025, "Industry adoption data") and sector_2025 is not None:
+                # Industry adoption comparison
+                fig = go.Figure()
+                
+                fig.add_trace(go.Bar(
+                    name='Overall AI Adoption',
+                    x=sector_2025['sector'],
+                    y=sector_2025['adoption_rate'],
+                    marker_color='#3498DB',
+                    text=[f'{x}%' for x in sector_2025['adoption_rate']],
+                    textposition='outside',
+                    hovertemplate='<b>%{x}</b><br>Adoption: %{y}%<br>GenAI: %{customdata}%<extra></extra>',
+                    customdata=sector_2025['genai_adoption']
+                ))
+                
+                fig.add_trace(go.Bar(
+                    name='GenAI Adoption',
+                    x=sector_2025['sector'],
+                    y=sector_2025['genai_adoption'],
+                    marker_color='#E74C3C',
+                    text=[f'{x}%' for x in sector_2025['genai_adoption']],
+                    textposition='outside'
+                ))
+                
+                fig.update_layout(
+                    title="AI Adoption by Industry: Technology Leads, Government Lags",
+                    xaxis_title="Industry Sector",
+                    yaxis_title="Adoption Rate (%)",
+                    barmode='group',
+                    height=500,
+                    xaxis_tickangle=45,
+                    hovermode='x unified'
+                )
+                
+                st.plotly_chart(fig, use_container_width=True)
+                
+                # Industry insights
+                col1, col2, col3 = st.columns(3)
+                
+                top_adopter = sector_2025.loc[sector_2025['adoption_rate'].idxmax()]
+                lowest_adopter = sector_2025.loc[sector_2025['adoption_rate'].idxmin()]
+                avg_adoption = sector_2025['adoption_rate'].mean()
+                
+                with col1:
+                    st.metric("Top Adopter", top_adopter['sector'], f"{top_adopter['adoption_rate']}%")
+                with col2:
+                    st.metric("Lowest Adopter", lowest_adopter['sector'], f"{lowest_adopter['adoption_rate']}%")
+                with col3:
+                    st.metric("Average Adoption", f"{avg_adoption:.1f}%", "Across all sectors")
+                
+                # Adoption gap analysis
+                st.markdown("### 📊 Adoption Gap Analysis")
+                adoption_gap = top_adopter['adoption_rate'] - lowest_adopter['adoption_rate']
+                st.info(f"**Adoption Gap:** {adoption_gap} percentage points between highest and lowest adopters")
+                
+                if adoption_gap > 30:
+                    st.warning("**High Gap Alert:** Significant adoption disparities suggest competitive advantages for early adopters")
+                elif adoption_gap > 20:
+                    st.info("**Moderate Gap:** Industry-specific factors influence adoption rates")
+                else:
+                    st.success("**Low Gap:** Relatively uniform adoption across sectors")
+        
+        with adoption_tabs[1]:
+            st.markdown("### 🏢 Firm Size Adoption Analysis")
+            
+            if safe_data_check(firm_size, "Firm size data") and firm_size is not None:
+                # Firm size adoption chart
+                fig = go.Figure()
+                
+                fig.add_trace(go.Bar(
+                    x=firm_size['size'],
+                    y=firm_size['adoption'],
+                    marker=dict(
+                        color=firm_size['adoption'],
+                        colorscale='RdYlGn',
+                        colorbar=dict(title="Adoption Rate (%)")
+                    ),
+                    text=[f'{x}%' for x in firm_size['adoption']],
+                    textposition='outside',
+                    hovertemplate='<b>%{x}</b><br>Adoption: %{y}%<extra></extra>'
+                ))
+                
+                # Add threshold lines
+                fig.add_hline(y=25, line_dash="dash", line_color="orange", 
+                              annotation_text="Competitive Threshold (25%)")
+                fig.add_hline(y=50, line_dash="dash", line_color="green",
+                              annotation_text="Strong Position (50%)")
+                
+                fig.update_layout(
+                    title="AI Adoption by Firm Size: Scale Matters",
+                    xaxis_title="Firm Size (Employees)",
+                    yaxis_title="Adoption Rate (%)",
+                    height=500,
+                    xaxis_tickangle=45
+                )
+                
+                st.plotly_chart(fig, use_container_width=True)
+                
+                # Size-based insights
+                col1, col2 = st.columns(2)
+                
+                with col1:
+                    st.success("**Large Firm Advantage:**")
+                    st.write("• 5000+ employees: 58.5% adoption")
+                    st.write("• 1000-2499 employees: 42.8% adoption")
+                    st.write("• Resource advantage enables faster adoption")
+                
+                with col2:
+                    st.warning("**Small Firm Challenge:**")
+                    st.write("• 1-4 employees: 3.2% adoption")
+                    st.write("• 5-9 employees: 3.8% adoption")
+                    st.write("• Limited resources and expertise barriers")
+        
+        with adoption_tabs[2]:
+            st.markdown("### 🌍 Geographic Adoption Patterns")
+            
+            if safe_data_check(geographic, "Geographic data") and geographic is not None:
+                # Geographic adoption map
+                fig = px.scatter_mapbox(
+                    geographic,
+                    lat='lat',
+                    lon='lon',
+                    size='rate',
+                    color='rate',
+                    hover_name='city',
+                    hover_data=['state', 'population_millions', 'gdp_billions'],
+                    color_continuous_scale='Viridis',
+                    size_max=20,
+                    title="AI Adoption by Geographic Region"
+                )
+                
+                fig.update_layout(
+                    mapbox_style="carto-positron",
+                    height=500,
+                    mapbox=dict(
+                        center=dict(lat=39.8283, lon=-98.5795),
+                        zoom=3
+                    )
+                )
+                
+                st.plotly_chart(fig, use_container_width=True)
+                
+                # Geographic insights
+                col1, col2 = st.columns(2)
+                
+                with col1:
+                    st.markdown("**Top AI Hubs:**")
+                    top_cities = geographic.nlargest(5, 'rate')
+                    for _, city in top_cities.iterrows():
+                        st.write(f"• **{city['city']}**: {city['rate']}% adoption")
+                
+                with col2:
+                    st.markdown("**Regional Patterns:**")
+                    st.write("• **West Coast**: Technology concentration")
+                    st.write("• **Northeast**: Financial services hub")
+                    st.write("• **Texas**: Energy and manufacturing")
+                    st.write("• **Southeast**: Emerging tech centers")
+        
+        with adoption_tabs[3]:
+            st.markdown("### 📈 Adoption Trends Over Time")
+            
+            if safe_data_check(historical_data, "Historical data") and historical_data is not None:
+                # Historical trends
+                fig = go.Figure()
+                
+                fig.add_trace(go.Scatter(
+                    x=historical_data['year'],
+                    y=historical_data['ai_use'],
+                    mode='lines+markers',
+                    name='Overall AI Use',
+                    line=dict(width=4, color='#3498DB'),
+                    marker=dict(size=8),
+                    text=[f'{x}%' for x in historical_data['ai_use']],
+                    textposition='top center'
+                ))
+                
+                fig.add_trace(go.Scatter(
+                    x=historical_data['year'],
+                    y=historical_data['genai_use'],
+                    mode='lines+markers',
+                    name='GenAI Use',
+                    line=dict(width=4, color='#E74C3C'),
+                    marker=dict(size=8),
+                    text=[f'{x}%' for x in historical_data['genai_use']],
+                    textposition='bottom center'
+                ))
+                
+                # Add milestone annotations
+                fig.add_annotation(
+                    x=2022, y=33,
+                    text="ChatGPT Launch<br>GenAI Revolution",
+                    showarrow=True,
+                    arrowhead=2,
+                    arrowcolor="#E74C3C",
+                    ax=-30, ay=-40,
+                    bgcolor="rgba(231,76,60,0.1)",
+                    bordercolor="#E74C3C"
+                )
+                
+                fig.add_annotation(
+                    x=2024, y=78,
+                    text="2024 Acceleration<br>AI Index Report",
+                    showarrow=True,
+                    arrowhead=2,
+                    arrowcolor="#3498DB",
+                    ax=30, ay=-30,
+                    bgcolor="rgba(52,152,219,0.1)",
+                    bordercolor="#3498DB"
+                )
+                
+                fig.update_layout(
+                    title="AI Adoption Explosion: 2017-2025",
+                    xaxis_title="Year",
+                    yaxis_title="Adoption Rate (%)",
+                    height=500,
+                    hovermode='x unified'
+                )
+                
+                st.plotly_chart(fig, use_container_width=True)
+                
+                # Trend insights
+                st.success("**Key Trend Insights:**")
+                st.write("• **2017-2021**: Steady growth in traditional AI adoption")
+                st.write("• **2022**: ChatGPT launch triggers GenAI revolution")
+                st.write("• **2023-2024**: Explosive growth in both AI and GenAI adoption")
+                st.write("• **2025**: AI becomes mainstream with 78% business adoption")
+        
+        with adoption_tabs[4]:
+            st.markdown("### 🔍 Deep Dive: Adoption Drivers")
+            
+            # Adoption barriers analysis
+            if safe_data_check(barriers_data, "Barriers data") and barriers_data is not None:
+                st.markdown("#### 🚧 Barriers to AI Adoption")
+                
+                fig = px.bar(barriers_data, x='percentage', y='barrier', orientation='h',
+                            title="Top Barriers to AI Adoption",
+                            color='percentage',
+                            color_continuous_scale='Reds')
+                
+                fig.update_layout(height=400, yaxis={'categoryorder':'total ascending'})
+                st.plotly_chart(fig, use_container_width=True)
+                
+                # Barrier insights
+                top_barrier = barriers_data.loc[barriers_data['percentage'].idxmax()]
+                st.warning(f"**Primary Barrier:** {top_barrier['barrier']} ({top_barrier['percentage']}% of firms)")
+            
+            # Support effectiveness
+            if safe_data_check(support_effectiveness, "Support data") and support_effectiveness is not None:
+                st.markdown("#### 🛠️ Support Program Effectiveness")
+                
+                fig = px.bar(support_effectiveness, x='effectiveness_score', y='support_type', orientation='h',
+                            title="Effectiveness of AI Support Programs",
+                            color='effectiveness_score',
+                            color_continuous_scale='Greens')
+                
+                fig.update_layout(height=400, yaxis={'categoryorder':'total ascending'})
+                st.plotly_chart(fig, use_container_width=True)
+                
+                # Support insights
+                most_effective = support_effectiveness.loc[support_effectiveness['effectiveness_score'].idxmax()]
+                st.success(f"**Most Effective Support:** {most_effective['support_type']} ({most_effective['effectiveness_score']}/100)")
+        
+        # Executive summary
+        st.markdown("---")
+        st.markdown("### 📋 Executive Summary")
+        
+        col1, col2, col3, col4 = st.columns(4)
+        
+        with col1:
+            st.metric("Overall Adoption", "78%", "+23pp vs 2023")
+        with col2:
+            st.metric("GenAI Adoption", "71%", "+38pp vs 2023")
+        with col3:
+            st.metric("Top Industry", "Technology", "92% adoption")
+        with col4:
+            st.metric("Size Advantage", "Large Firms", "58.5% vs 3.2%")
+        
+        st.info("""
+        **Strategic Implications:**
+        - AI adoption has reached mainstream levels (78%)
+        - GenAI adoption more than doubled in one year
+        - Significant competitive advantages for early adopters
+        - Technology and financial services lead adoption
+        - Large firms have 18x higher adoption than small firms
+        """)
+
     elif current_view == "Historical Trends":
         st.write("📊 **AI Adoption Historical Trends (2017-2025)**")
         
