@@ -1693,7 +1693,7 @@ elif is_detailed:
     elif current_view == "Historical Trends":
         st.write("📊 **AI Adoption Historical Trends (2017-2025)**")
         
-        if historical_data is not None:
+        if safe_data_check(historical_data, "Historical data"):
             # Apply year filter if set
             if 'year_range' in locals():
                 filtered_data = historical_data[
@@ -1788,7 +1788,7 @@ elif is_detailed:
     elif current_view == "Industry Analysis":
         st.write("🏭 **AI Adoption by Industry (2025)**")
         
-        if sector_2025 is not None:
+        if safe_data_check(sector_2025, "Industry analysis data"):
             # Industry comparison
             fig = go.Figure()
             
@@ -1852,7 +1852,7 @@ elif is_detailed:
     elif current_view == "AI Cost Trends":
         st.write("💰 **AI Cost Evolution & Trends**")
         
-        if ai_cost_reduction is not None:
+        if safe_data_check(ai_cost_reduction, "AI cost data"):
             # Cost reduction visualization
             fig = px.bar(ai_cost_reduction, x='model', y='cost_per_million_tokens',
                         title="Dramatic AI Cost Reduction: November 2022 to October 2024",
@@ -1915,7 +1915,7 @@ elif is_detailed:
     elif current_view == "Technology Stack":
         st.write("🔧 **AI Technology Stack Analysis**")
         
-        if tech_stack is not None:
+        if safe_data_check(tech_stack, "Technology stack data"):
             # Technology stack distribution
             fig = px.pie(tech_stack, values='percentage', names='technology',
                         title="AI Implementation Approaches: Integration Strategies")
@@ -1949,7 +1949,7 @@ elif is_detailed:
     elif current_view == "Productivity Research":
         st.write("📈 **AI Productivity Research Findings**")
         
-        if productivity_data is not None:
+        if safe_data_check(productivity_data, "Productivity research data"):
             # Productivity trends over time
             fig = go.Figure()
             
@@ -2013,7 +2013,7 @@ elif is_detailed:
     elif current_view == "ROI Analysis":
         st.write("💹 **AI Return on Investment Analysis**")
         
-        if sector_2025 is not None:
+        if safe_data_check(sector_2025, "ROI analysis data"):
             # ROI by sector
             fig = go.Figure()
             
