@@ -17,7 +17,12 @@ from performance import (
     PerformanceMonitor, 
     smart_cache,
     _global_cache,
-    performance_monitor
+    performance_monitor,
+    MemoryMonitor,
+    DataFrameOptimizer,
+    SessionStateManager,
+    memory_profiler,
+    memory_efficient_operation
 )
 
 # Page config must be the first Streamlit command.
@@ -1013,6 +1018,13 @@ if st.sidebar.button("Submit Feedback"):
 
 # Performance monitoring section
 performance_monitor.render_performance_sidebar()
+
+# Memory management initialization
+if 'memory_monitor' not in st.session_state:
+    st.session_state.memory_monitor = MemoryMonitor()
+
+# Render memory dashboard in sidebar
+st.session_state.memory_monitor.render_memory_dashboard()
 
 # Help section
 with st.sidebar.expander("❓ Need Help?"):

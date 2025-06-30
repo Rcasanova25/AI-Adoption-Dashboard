@@ -38,6 +38,16 @@ from .chart_optimization import (
     demo_chart_optimization
 )
 
+from .memory_management import (
+    MemoryConfig,
+    MemoryMonitor,
+    DataFrameOptimizer,
+    SessionStateManager,
+    memory_profiler,
+    memory_efficient_operation,
+    demo_memory_management
+)
+
 __all__ = [
     'AdvancedCache',
     'CacheConfig', 
@@ -53,7 +63,14 @@ __all__ = [
     'ChartOptimizer',
     'LazyChartLoader',
     'OptimizedCharts',
-    'demo_chart_optimization'
+    'demo_chart_optimization',
+    'MemoryConfig',
+    'MemoryMonitor',
+    'DataFrameOptimizer',
+    'SessionStateManager',
+    'memory_profiler',
+    'memory_efficient_operation',
+    'demo_memory_management'
 ]
 
 __version__ = "1.1.0"
