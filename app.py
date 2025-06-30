@@ -5,7 +5,7 @@ import plotly.express as px
 import re
 from datetime import datetime
 from Utils.helpers import safe_execute, safe_data_check, clean_filename, monitor_performance
-from data.loaders import load_all_datasets, get_dynamic_metrics
+from data.loaders import load_all_datasets, get_dynamic_metrics, load_complete_datasets
 from config.settings import DashboardConfig, FEATURE_FLAGS
 from data.models import safe_validate_data, ValidationResult
 from data.loaders import validate_all_loaded_data
@@ -152,93 +152,8 @@ def show_source_info(source_key):
         """
     return ""
 
-# Dynamic data extraction functions - FIXED: Remove hardcoded values
-def get_dynamic_metrics(historical_data, ai_cost_reduction, ai_investment_data, sector_2025):
-    """Extract dynamic metrics from loaded data"""
-    metrics = {}
-    
-    # Market acceleration calculation
-    if historical_data is not None and len(historical_data) >= 2:
-        try:
-            latest_adoption = historical_data['ai_use'].iloc[-1]
-            previous_adoption = historical_data['ai_use'].iloc[-3] if len(historical_data) >= 3 else historical_data['ai_use'].iloc[-2]
-            adoption_delta = latest_adoption - previous_adoption
-            metrics['market_adoption'] = f"{latest_adoption}%"
-            metrics['market_delta'] = f"+{adoption_delta}pp vs 2023"
-            
-            # GenAI adoption
-            latest_genai = historical_data['genai_use'].iloc[-1]
-            previous_genai = historical_data['genai_use'].iloc[-3] if len(historical_data) >= 3 else historical_data['genai_use'].iloc[-2]
-            genai_delta = latest_genai - previous_genai
-            metrics['genai_adoption'] = f"{latest_genai}%"
-            metrics['genai_delta'] = f"+{genai_delta}pp from 2023"
-            
-        except Exception as e:
-            st.error(f"❌ Error in historical data calculation: {e}")
-            # Use fallback values
-            metrics['market_adoption'] = "78%"
-            metrics['market_delta'] = "+23pp vs 2023"
-            metrics['genai_adoption'] = "71%"
-            metrics['genai_delta'] = "+38pp from 2023"
-    else:
-        metrics['market_adoption'] = "78%"
-        metrics['market_delta'] = "+23pp vs 2023"
-        metrics['genai_adoption'] = "71%"
-        metrics['genai_delta'] = "+38pp from 2023"
-    
-    # Cost reduction calculation
-    if ai_cost_reduction is not None and len(ai_cost_reduction) >= 2:
-        try:
-            earliest_cost = ai_cost_reduction['cost_per_million_tokens'].iloc[0]
-            latest_cost = ai_cost_reduction['cost_per_million_tokens'].iloc[-1]
-            cost_multiplier = earliest_cost / latest_cost
-            metrics['cost_reduction'] = f"{cost_multiplier:.0f}x cheaper"
-            metrics['cost_period'] = "Since Nov 2022"
-            
-        except Exception as e:
-            st.error(f"❌ Error in cost reduction calculation: {e}")
-            # Use fallback values
-            metrics['cost_reduction'] = "280x cheaper"
-            metrics['cost_period'] = "Since Nov 2022"
-    else:
-        metrics['cost_reduction'] = "280x cheaper"
-        metrics['cost_period'] = "Since Nov 2022"
-    
-    # Investment growth calculation
-    if ai_investment_data is not None and len(ai_investment_data) >= 2:
-        try:
-            latest_investment = ai_investment_data['total_investment'].iloc[-1]
-            previous_investment = ai_investment_data['total_investment'].iloc[-2]
-            investment_growth = ((latest_investment - previous_investment) / previous_investment) * 100
-            metrics['investment_value'] = f"${latest_investment}B"
-            metrics['investment_delta'] = f"+{investment_growth:.1f}% YoY"
-            
-        except Exception as e:
-            st.error(f"❌ Error in investment calculation: {e}")
-            # Use fallback values
-            metrics['investment_value'] = "$252.3B"
-            metrics['investment_delta'] = "+44.5% YoY"
-    else:
-        metrics['investment_value'] = "$252.3B"
-        metrics['investment_delta'] = "+44.5% YoY"
-    
-    # Average ROI calculation
-    if sector_2025 is not None and 'avg_roi' in sector_2025.columns:
-        try:
-            avg_roi = sector_2025['avg_roi'].mean()
-            metrics['avg_roi'] = f"{avg_roi:.1f}x"
-            metrics['roi_desc'] = "Across sectors"
-            
-        except Exception as e:
-            st.error(f"❌ Error in ROI calculation: {e}")
-            # Use fallback values
-            metrics['avg_roi'] = "3.2x"
-            metrics['roi_desc'] = "Across sectors"
-    else:
-        metrics['avg_roi'] = "3.2x"
-        metrics['roi_desc'] = "Across sectors"
-    
-    return metrics
+# Dynamic metrics are now handled by the comprehensive data loading system
+# See data/loaders.py for the updated get_dynamic_metrics function
 
 # Executive navigation function - FIXED: Use dynamic data
 def create_executive_navigation(dynamic_metrics):
@@ -725,36 +640,54 @@ def _create_fallback_data():
     st.warning("⚠️ Using fallback data due to loading error. Some features may be limited.")
 
 # Load all data
-loaded_data = safe_execute(
+# Load all data using complete dataset function
+loaded_datasets = safe_execute(
     load_data,
     default_value=None,
     error_message="Critical error in data loading"
 )
 
-# Initialize all variables to None first
+# Initialize all variables
 historical_data = sector_2018 = sector_2025 = firm_size = ai_maturity = geographic = state_data = tech_stack = productivity_data = productivity_by_skill = ai_productivity_estimates = oecd_g7_adoption = oecd_applications = barriers_data = support_effectiveness = ai_investment_data = regional_growth = ai_cost_reduction = financial_impact = ai_perception = training_emissions = skill_gap_data = ai_governance = token_economics = token_usage_patterns = token_optimization = token_pricing_evolution = genai_2025 = None
 
-if loaded_data is not None:
-    # New modular system returns a dictionary
-    datasets = loaded_data
+if loaded_datasets is not None:
+    # Extract all datasets from the complete collection
+    historical_data = loaded_datasets.get('historical_data')
+    sector_2018 = loaded_datasets.get('sector_2018')
+    sector_2025 = loaded_datasets.get('sector_2025')
+    firm_size = loaded_datasets.get('firm_size')
+    ai_maturity = loaded_datasets.get('ai_maturity')
+    geographic = loaded_datasets.get('geographic')
+    state_data = loaded_datasets.get('state_data')
+    tech_stack = loaded_datasets.get('tech_stack')
+    productivity_data = loaded_datasets.get('productivity_data')
+    productivity_by_skill = loaded_datasets.get('productivity_by_skill')
+    ai_productivity_estimates = loaded_datasets.get('ai_productivity_estimates')
+    oecd_g7_adoption = loaded_datasets.get('oecd_g7_adoption')
+    oecd_applications = loaded_datasets.get('oecd_applications')
+    barriers_data = loaded_datasets.get('barriers_data')
+    support_effectiveness = loaded_datasets.get('support_effectiveness')
+    ai_investment_data = loaded_datasets.get('ai_investment_data')
+    regional_growth = loaded_datasets.get('regional_growth')
+    ai_cost_reduction = loaded_datasets.get('ai_cost_reduction')
+    financial_impact = loaded_datasets.get('financial_impact')
+    ai_perception = loaded_datasets.get('ai_perception')
+    training_emissions = loaded_datasets.get('training_emissions')
+    skill_gap_data = loaded_datasets.get('skill_gap_data')
+    ai_governance = loaded_datasets.get('ai_governance')
+    genai_2025 = loaded_datasets.get('genai_2025')
+    token_economics = loaded_datasets.get('token_economics')
+    token_usage_patterns = loaded_datasets.get('token_usage_patterns')
+    token_optimization = loaded_datasets.get('token_optimization')
+    token_pricing_evolution = loaded_datasets.get('token_pricing_evolution')
     
-    # Extract datasets from dictionary
-    historical_data = datasets.get('historical_data')
-    sector_2025 = datasets.get('sector_2025')
-    ai_investment_data = datasets.get('investment_data')
-    
-    # For now, use fallback data for missing datasets
-    if historical_data is not None and sector_2025 is not None and ai_investment_data is not None:
-        st.success("✓ Modular data loaded successfully!")
-    else:
-        st.warning("⚠️ Some datasets missing, using fallback data.")
-        _create_fallback_data()
+    st.success("✅ Complete datasets loaded successfully!")
 else:
-    st.error("❌ Data loading failed. Using fallback data.")
+    st.error("❌ Complete data loading failed. Using fallback data.")
     _create_fallback_data()
 
-# FIXED: Generate dynamic metrics after data is loaded
-dynamic_metrics = get_dynamic_metrics(historical_data, ai_cost_reduction, ai_investment_data, sector_2025)
+# Generate dynamic metrics using complete datasets
+dynamic_metrics = get_dynamic_metrics(loaded_datasets)
 
 # Custom CSS
 st.markdown("""
