@@ -8,6 +8,7 @@ import streamlit as st
 import pandas as pd
 import plotly.graph_objects as go
 from datetime import datetime
+import numpy as np
 
 # Import your new components
 from components.charts import MetricCard, TrendChart, ComparisonChart, ROIChart
@@ -334,15 +335,22 @@ def render_enhanced_executive_dashboard(datasets, dynamic_metrics):
         sector_data = datasets['sector_2025'].copy()
         if 'risk_score' not in sector_data.columns:
             # Generate realistic risk scores inversely correlated with adoption
-            # Create a risk adjustment array that matches the exact length of sector_data
+            sector_data = sector_data.reset_index(drop=True)
             num_sectors = len(sector_data)
-            risk_adjustments = [5, -5, 10, 15, 0, -10, 8, -3]  # Base adjustments
-            # Extend or truncate to match the exact number of sectors
-            while len(risk_adjustments) < num_sectors:
-                risk_adjustments.extend([0, 5, -5, 10])  # Repeat pattern
-            risk_adjustments = risk_adjustments[:num_sectors]  # Truncate if too long
-            
-            sector_data['risk_score'] = 100 - sector_data['adoption_rate'] + pd.Series(risk_adjustments)
+            base_adjustments = np.array([5, -5, 10, 15, 0, -10, 8, -3])
+            risk_adjustments = np.resize(base_adjustments, num_sectors)
+            # Debug output
+            st.write(f"adoption_rate length: {len(sector_data['adoption_rate'].values)}")
+            st.write(f"risk_adjustments length: {len(risk_adjustments)}")
+            st.write(f"adoption_rate: {sector_data['adoption_rate'].values}")
+            st.write(f"risk_adjustments: {risk_adjustments}")
+            st.stop()
+            # Guarantee lengths match
+            if len(sector_data['adoption_rate'].values) == len(risk_adjustments):
+                sector_data['risk_score'] = 100 - sector_data['adoption_rate'].values + risk_adjustments
+            else:
+                st.error(f"Length mismatch: adoption_rate {len(sector_data['adoption_rate'].values)}, risk_adjustments {len(risk_adjustments)}")
+                sector_data['risk_score'] = 100 - sector_data['adoption_rate'].values
         
         roi_chart.render_roi_analysis(
             data=sector_data,
