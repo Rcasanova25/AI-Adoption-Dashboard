@@ -14,9 +14,7 @@ from .charts import (
     MetricCard,
     TrendChart, 
     ComparisonChart,
-    ROIChart,
-    GeographicChart,
-    IndustryChart
+    ROIChart
 )
 
 from .layouts import (
@@ -46,8 +44,6 @@ __all__ = [
     'TrendChart', 
     'ComparisonChart',
     'ROIChart',
-    'GeographicChart',
-    'IndustryChart',
     
     # Layouts
     'ExecutiveDashboard',

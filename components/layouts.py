@@ -216,6 +216,16 @@ class ExecutiveDashboard:
         
         st.markdown(card_html, unsafe_allow_html=True)
 
+    def render_insights_section(self, insights: str, section_title: str = "Executive Insights") -> None:
+        """
+        Render a professional insights section in the executive dashboard.
+        Args:
+            insights: The insights text or HTML to display
+            section_title: Optional section header
+        """
+        st.markdown(f"### {section_title}")
+        st.info(insights)
+
 
 class AnalyticalDashboard:
     """Professional analytical dashboard layout"""
