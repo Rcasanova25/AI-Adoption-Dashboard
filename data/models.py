@@ -608,7 +608,7 @@ class TokenPricingEvolutionData(BaseModel):
     """Model for token pricing evolution"""
     model_config = ConfigDict(str_strip_whitespace=True)
     
-    date: pd.Timestamp = Field(..., description="Date of pricing")
+    date: datetime = Field(..., description="Date of pricing")
     avg_price_input: float = Field(..., description="Average input token price")
     avg_price_output: float = Field(..., description="Average output token price")
     models_available: int = Field(..., description="Number of models available")
