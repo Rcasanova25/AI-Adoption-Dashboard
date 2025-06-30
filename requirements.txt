@@ -3,6 +3,7 @@ plotly
 pandas
 numpy
 pydantic>=2.5.0
+psutil>=5.9.0  # For memory management and system monitoring
 pytest>=7.0.0
 pytest-cov>=4.0.0
 pytest-mock>=3.10.0

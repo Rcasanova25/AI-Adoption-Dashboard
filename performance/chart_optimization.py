@@ -200,7 +200,6 @@ class ChartOptimizer:
             
             # Performance optimizations
             'dragmode': 'pan',  # Faster than zoom
-            'doubleClick': 'reset',
             
             # Reduce memory usage
             'uirevision': 'constant',  # Prevent unnecessary re-renders
@@ -246,7 +245,7 @@ class ChartOptimizer:
         
         # Convert appropriate traces to WebGL
         for i, trace in enumerate(fig.data):
-            if isinstance(trace, go.Scatter) and len(trace.x or []) > 1000:
+            if isinstance(trace, go.Scatter) and trace.x is not None and len(trace.x) > 1000:
                 # Convert to Scattergl for better performance
                 fig.data = list(fig.data)
                 fig.data[i] = go.Scattergl(

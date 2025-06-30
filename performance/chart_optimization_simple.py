@@ -206,7 +206,6 @@ class ChartOptimizer:
             
             # Performance optimizations
             'dragmode': 'pan',  # Faster than zoom
-            'doubleClick': 'reset',
             
             # Reduce memory usage
             'uirevision': 'constant',  # Prevent unnecessary re-renders

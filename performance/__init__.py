@@ -48,6 +48,13 @@ from .memory_management import (
     demo_memory_management
 )
 
+from .integration import (
+    PerformanceConfig,
+    DatabaseOptimizer,
+    PerformanceIntegrator,
+    demo_complete_performance_system
+)
+
 __all__ = [
     'AdvancedCache',
     'CacheConfig', 
@@ -70,7 +77,11 @@ __all__ = [
     'SessionStateManager',
     'memory_profiler',
     'memory_efficient_operation',
-    'demo_memory_management'
+    'demo_memory_management',
+    'PerformanceConfig',
+    'DatabaseOptimizer',
+    'PerformanceIntegrator',
+    'demo_complete_performance_system'
 ]
 
 __version__ = "1.1.0"

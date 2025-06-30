@@ -24,6 +24,7 @@ from performance import (
     memory_profiler,
     memory_efficient_operation
 )
+from performance.integration import PerformanceIntegrator
 
 # Page config must be the first Streamlit command.
 st.set_page_config(
@@ -2027,3 +2028,19 @@ if current_view in data_map and data_map[current_view] is not None:
             file_name=f"ai_adoption_{safe_filename}.csv",
             mime="text/csv"
         )
+
+# --- Performance Integration Toggle ---
+if 'performance_integrator' not in st.session_state:
+    st.session_state.performance_integrator = PerformanceIntegrator()
+
+st.sidebar.markdown("---")
+use_optimized_dashboard = st.sidebar.checkbox(
+    "⚡ Use Optimized Performance Dashboard (Beta)",
+    value=False,
+    help="Switch to the new fully optimized dashboard with advanced caching, chart, and memory management."
+)
+
+if use_optimized_dashboard:
+    integrator = st.session_state.performance_integrator
+    integrator.render_optimized_dashboard()
+    st.stop()
