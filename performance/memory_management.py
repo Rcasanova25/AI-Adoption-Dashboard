@@ -253,7 +253,7 @@ class MemoryMonitor:
                 st.success("🟢 Normal memory usage")
             
             # Manual cleanup button
-            if st.button("🧹 Clean Memory", help="Force memory cleanup", key="clean_memory_btn"):
+            if st.button("🧹 Clean Memory", help="Force memory cleanup", key=f"clean_memory_btn_{id(self)}"):
                 cleanup_results = self.trigger_cleanup(force=True)
                 st.json(cleanup_results)
 
