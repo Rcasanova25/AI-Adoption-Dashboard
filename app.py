@@ -1221,56 +1221,58 @@ if not is_detailed:
         
         with col1:
             # Historical trends chart
-            if historical_data is not None:
-                def create_historical_chart():
-                    fig = go.Figure()
-                    fig.add_trace(go.Scatter(
-                        x=historical_data['year'], 
-                        y=historical_data['ai_use'], 
-                        mode='lines+markers',
-                        name='Overall AI Use',
-                        line=dict(width=4, color='#1f77b4'),
-                        marker=dict(size=8),
-                        text=[f'{x}%' for x in historical_data['ai_use']],
-                        textposition='top center'
-                    ))
-                    fig.add_trace(go.Scatter(
-                        x=historical_data['year'], 
-                        y=historical_data['genai_use'], 
-                        mode='lines+markers',
-                        name='GenAI Use',
-                        line=dict(width=4, color='#ff7f0e'),
-                        marker=dict(size=8),
-                        text=[f'{x}%' for x in historical_data['genai_use']],
-                        textposition='bottom center'
-                    ))
-                    fig.add_annotation(
-                        x=2022, y=33,
-                        text="ChatGPT Launch<br>GenAI Revolution",
-                        showarrow=True,
-                        arrowhead=2,
-                        arrowcolor="#ff7f0e",
-                        ax=-30, ay=-40,
-                        bgcolor="rgba(255,127,14,0.1)",
-                        bordercolor="#ff7f0e"
-                    )
-                    fig.update_layout(
-                        title="AI Adoption Explosion: 2017-2025",
-                        xaxis_title="Year",
-                        yaxis_title="Adoption Rate (%)",
-                        height=400,
-                        hovermode='x unified'
-                    )
-                    return fig
-
-                chart = safe_execute(
-                    create_historical_chart,
-                    default_value=None,
-                    error_message="Could not create historical chart"
+            def create_historical_chart():
+                if historical_data is None or historical_data.empty:
+                    return None
+                    
+                fig = go.Figure()
+                fig.add_trace(go.Scatter(
+                    x=historical_data['year'], 
+                    y=historical_data['ai_use'], 
+                    mode='lines+markers',
+                    name='Overall AI Use',
+                    line=dict(width=4, color='#1f77b4'),
+                    marker=dict(size=8),
+                    text=[f'{x}%' for x in historical_data['ai_use']],
+                    textposition='top center'
+                ))
+                fig.add_trace(go.Scatter(
+                    x=historical_data['year'], 
+                    y=historical_data['genai_use'], 
+                    mode='lines+markers',
+                    name='GenAI Use',
+                    line=dict(width=4, color='#ff7f0e'),
+                    marker=dict(size=8),
+                    text=[f'{x}%' for x in historical_data['genai_use']],
+                    textposition='bottom center'
+                ))
+                fig.add_annotation(
+                    x=2022, y=33,
+                    text="ChatGPT Launch<br>GenAI Revolution",
+                    showarrow=True,
+                    arrowhead=2,
+                    arrowcolor="#ff7f0e",
+                    ax=-30, ay=-40,
+                    bgcolor="rgba(255,127,14,0.1)",
+                    bordercolor="#ff7f0e"
                 )
+                fig.update_layout(
+                    title="AI Adoption Explosion: 2017-2025",
+                    xaxis_title="Year",
+                    yaxis_title="Adoption Rate (%)",
+                    height=400,
+                    hovermode='x unified'
+                )
+                return fig
 
-                if chart:
-                    st.plotly_chart(chart, use_container_width=True)
+            chart = safe_execute(
+                create_historical_chart,
+                default_value=None,
+                error_message="Could not create historical chart"
+            )
+
+            if chart:
+                st.plotly_chart(chart, use_container_width=True)
             else:
                 st.info("Historical data not available.")
         
@@ -1913,9 +1915,14 @@ elif is_detailed:
             # Cost metrics
             col1, col2, col3 = st.columns(3)
             
-            highest_cost = ai_cost_reduction['cost_per_million_tokens'].max()
-            lowest_cost = ai_cost_reduction['cost_per_million_tokens'].min()
-            reduction_factor = highest_cost / lowest_cost
+            if ai_cost_reduction is not None and not ai_cost_reduction.empty:
+                highest_cost = ai_cost_reduction['cost_per_million_tokens'].max()
+                lowest_cost = ai_cost_reduction['cost_per_million_tokens'].min()
+                reduction_factor = highest_cost / lowest_cost
+            else:
+                highest_cost = 0.0
+                lowest_cost = 0.0
+                reduction_factor = 0.0
             
             with col1:
                 st.metric("Starting Cost (Nov 2022)", f"${highest_cost:.2f}", "Per million tokens")
@@ -1976,8 +1983,11 @@ elif is_detailed:
             
             with col1:
                 st.success("**Most Common Approach**")
-                max_approach = tech_stack.loc[tech_stack['percentage'].idxmax()]
-                st.write(f"**{max_approach['technology']}**: {max_approach['percentage']}%")
+                if tech_stack is not None and not tech_stack.empty:
+                    max_approach = tech_stack.loc[tech_stack['percentage'].idxmax()]
+                    st.write(f"**{max_approach['technology']}**: {max_approach['percentage']}%")
+                else:
+                    st.write("**Data not available**")
                 
                 st.info("**Integration Benefits**")
                 st.write("• Higher ROI with combined approaches")
@@ -1986,9 +1996,12 @@ elif is_detailed:
             
             with col2:
                 st.markdown("**Technology Stack Breakdown:**")
-                for _, row in tech_stack.iterrows():
-                    st.metric(str(row['technology']), f"{row['percentage']}%", 
-                             f"of implementations")
+                if tech_stack is not None and not tech_stack.empty:
+                    for _, row in tech_stack.iterrows():
+                        st.metric(str(row['technology']), f"{row['percentage']}%", 
+                                 f"of implementations")
+                else:
+                    st.write("Data not available")
                 
         else:
             st.error("Technology stack data not available.")
@@ -2000,24 +2013,28 @@ elif is_detailed:
             # Productivity trends over time
             fig = go.Figure()
             
-            fig.add_trace(go.Scatter(
-                x=productivity_data['year'],
-                y=productivity_data['productivity_growth'],
-                mode='lines+markers',
-                name='Productivity Growth',
-                line=dict(width=4, color='#3498DB'),
-                marker=dict(size=8)
-            ))
-            
-            fig.add_trace(go.Scatter(
-                x=productivity_data['year'],
-                y=productivity_data['young_workers_share'],
-                mode='lines+markers',
-                name='Young Workers Share',
-                line=dict(width=4, color='#E74C3C'),
-                marker=dict(size=8),
-                yaxis='y2'
-            ))
+            if productivity_data is not None and not productivity_data.empty:
+                fig.add_trace(go.Scatter(
+                    x=productivity_data['year'],
+                    y=productivity_data['productivity_growth'],
+                    mode='lines+markers',
+                    name='Productivity Growth',
+                    line=dict(width=4, color='#3498DB'),
+                    marker=dict(size=8)
+                ))
+                
+                fig.add_trace(go.Scatter(
+                    x=productivity_data['year'],
+                    y=productivity_data['young_workers_share'],
+                    mode='lines+markers',
+                    name='Young Workers Share',
+                    line=dict(width=4, color='#E74C3C'),
+                    marker=dict(size=8),
+                    yaxis='y2'
+                ))
+            else:
+                st.error("Productivity data not available for chart creation.")
+                st.stop()
             
             fig.update_layout(
                 title="Productivity Growth and Workforce Demographics (1980-2025)",
@@ -2064,19 +2081,23 @@ elif is_detailed:
             # ROI by sector
             fig = go.Figure()
             
-            fig.add_trace(go.Bar(
-                x=sector_2025['sector'],
-                y=sector_2025['avg_roi'],
-                marker=dict(
-                    color=sector_2025['avg_roi'],
-                    colorscale='RdYlGn',
-                    colorbar=dict(title="ROI Multiplier")
-                ),
-                text=[f'{x}x' for x in sector_2025['avg_roi']],
-                textposition='outside',
-                hovertemplate='<b>%{x}</b><br>ROI: %{y}x<br>Adoption: %{customdata}%<extra></extra>',
-                customdata=sector_2025['adoption_rate']
-            ))
+            if sector_2025 is not None and not sector_2025.empty:
+                fig.add_trace(go.Bar(
+                    x=sector_2025['sector'],
+                    y=sector_2025['avg_roi'],
+                    marker=dict(
+                        color=sector_2025['avg_roi'],
+                        colorscale='RdYlGn',
+                        colorbar=dict(title="ROI Multiplier")
+                    ),
+                    text=[f'{x}x' for x in sector_2025['avg_roi']],
+                    textposition='outside',
+                    hovertemplate='<b>%{x}</b><br>ROI: %{y}x<br>Adoption: %{customdata}%<extra></extra>',
+                    customdata=sector_2025['adoption_rate']
+                ))
+            else:
+                st.error("ROI data not available for chart creation.")
+                st.stop()
             
             # Add ROI threshold lines
             fig.add_hline(y=2.0, line_dash="dash", line_color="orange", 

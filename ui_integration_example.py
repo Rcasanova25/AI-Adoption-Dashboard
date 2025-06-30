@@ -350,27 +350,34 @@ def render_enhanced_executive_dashboard(datasets, dynamic_metrics):
             sector_data = sector_data.reset_index(drop=True)
             num_sectors = len(sector_data)
             
-            # Use a pattern that can be repeated or truncated as needed
+            # FIXED: Ensure risk_adjustments array matches the number of sectors exactly
             base_pattern = [5, -5, 10, 15, 0, -10, 8, -3]
             
+            # Create risk_adjustments array that exactly matches num_sectors
             if num_sectors <= len(base_pattern):
-                base_adjustments = np.array(base_pattern[:num_sectors])
+                risk_adjustments = np.array(base_pattern[:num_sectors])
             else:
-                # If we have more sectors than the pattern, repeat the pattern
+                # If we have more sectors than the pattern, repeat the pattern to fill exactly
                 repeats_needed = (num_sectors // len(base_pattern)) + 1
                 extended_pattern = base_pattern * repeats_needed
-                base_adjustments = np.array(extended_pattern[:num_sectors])
+                risk_adjustments = np.array(extended_pattern[:num_sectors])
             
-            risk_adjustments = base_adjustments
+            # Ensure both arrays have the same length
             adoption_values = sector_data['adoption_rate'].values
             
-            try:
-                base_risk = 100 - adoption_values
-                final_risk = base_risk + risk_adjustments
-                sector_data['risk_score'] = final_risk
-            except Exception as e:
-                st.error(f"❌ Error in risk score calculation: {e}")
+            # Debug: Verify array shapes match
+            if len(risk_adjustments) != len(adoption_values):
+                st.error(f"❌ Array length mismatch: risk_adjustments={len(risk_adjustments)}, adoption_values={len(adoption_values)}")
+                # Fallback: use simple calculation without adjustments
                 sector_data['risk_score'] = 100 - adoption_values
+            else:
+                try:
+                    base_risk = 100 - adoption_values
+                    final_risk = base_risk + risk_adjustments
+                    sector_data['risk_score'] = final_risk
+                except Exception as e:
+                    st.error(f"❌ Error in risk score calculation: {e}")
+                    sector_data['risk_score'] = 100 - adoption_values
         
         roi_chart.render_roi_analysis(
             data=sector_data,
