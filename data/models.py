@@ -274,23 +274,393 @@ class AIMaturityData(BaseModel):
     @validator('technology')
     def technology_name_valid(cls, v):
         """Validate technology names"""
-        ai_technologies = {
-            'Generative AI', 'AI Agents', 'Foundation Models', 'ModelOps', 'AI Engineering',
-            'Cloud AI Services', 'Knowledge Graphs', 'Composite AI', 'Machine Learning',
-            'Natural Language Processing', 'Computer Vision', 'Robotics', 'Deep Learning'
+        valid_technologies = {
+            'Machine Learning', 'Deep Learning', 'Natural Language Processing',
+            'Computer Vision', 'Robotic Process Automation', 'Predictive Analytics',
+            'Generative AI', 'Large Language Models', 'Computer Vision',
+            'Speech Recognition', 'Recommendation Systems', 'Autonomous Systems'
         }
-        if v not in ai_technologies:
-            logger.warning(f'Technology "{v}" not in standard AI technologies list')
+        if v not in valid_technologies:
+            logger.warning(f'Technology "{v}" not in standard list')
         return v
     
     @validator('risk_score')
     def risk_score_correlation(cls, v, values):
         """Risk score should correlate with maturity stage"""
         maturity = values.get('maturity')
-        if maturity == 'Peak of Expectations' and v < 60:
-            logger.warning(f'Risk score {v} seems low for "Peak of Expectations" stage')
-        elif maturity == 'Plateau of Productivity' and v > 40:
-            logger.warning(f'Risk score {v} seems high for "Plateau of Productivity" stage')
+        if maturity == 'Innovation Trigger' and v < 70:
+            logger.warning(f'Innovation Trigger technology should have high risk score')
+        elif maturity == 'Plateau of Productivity' and v > 30:
+            logger.warning(f'Plateau technology should have low risk score')
+        return v
+
+
+class ProductivityData(BaseModel):
+    """Model for productivity research data"""
+    model_config = ConfigDict(str_strip_whitespace=True)
+    
+    function: str = Field(..., min_length=2, max_length=50, description="Business function")
+    productivity_gain: float = Field(..., ge=0, le=1000, description="Productivity gain percentage")
+    confidence_level: Optional[str] = Field(None, description="Confidence level (High/Medium/Low)")
+    
+    @validator('productivity_gain')
+    def productivity_gain_reasonable(cls, v):
+        """Productivity gains should be reasonable"""
+        if v > 500:
+            logger.warning(f'Productivity gain {v}% is very high - please verify')
+        return v
+
+
+class ProductivityBySkillData(BaseModel):
+    """Model for productivity by skill level"""
+    model_config = ConfigDict(str_strip_whitespace=True)
+    
+    skill_level: str = Field(..., description="Skill level category")
+    productivity_gain: float = Field(..., ge=0, le=1000, description="Productivity gain percentage")
+    adoption_rate: float = Field(..., ge=0, le=100, description="Adoption rate percentage")
+    
+    @validator('skill_level')
+    def skill_level_valid(cls, v):
+        """Validate skill level categories"""
+        valid_levels = {'Low', 'Medium', 'High', 'Expert', 'Beginner', 'Advanced'}
+        if v not in valid_levels:
+            logger.warning(f'Skill level "{v}" not in standard categories')
+        return v
+
+
+class AIProductivityEstimatesData(BaseModel):
+    """Model for AI productivity estimates"""
+    model_config = ConfigDict(str_strip_whitespace=True)
+    
+    estimate_type: str = Field(..., description="Type of productivity estimate")
+    value: float = Field(..., ge=0, description="Productivity value")
+    
+    @validator('estimate_type')
+    def estimate_type_valid(cls, v):
+        """Validate estimate types"""
+        valid_types = {'Conservative', 'Moderate', 'Optimistic', 'Aggressive'}
+        if v not in valid_types:
+            logger.warning(f'Estimate type "{v}" not in standard categories')
+        return v
+
+
+class OECDG7AdoptionData(BaseModel):
+    """Model for OECD G7 adoption data"""
+    model_config = ConfigDict(str_strip_whitespace=True)
+    
+    country: str = Field(..., description="G7 country name")
+    adoption_rate: float = Field(..., ge=0, le=100, description="AI adoption rate percentage")
+    genai_adoption: Optional[float] = Field(None, ge=0, le=100, description="GenAI adoption rate")
+    digital_readiness: Optional[float] = Field(None, ge=0, le=100, description="Digital readiness score")
+    
+    @validator('country')
+    def country_must_be_g7(cls, v):
+        """Validate G7 country names"""
+        g7_countries = {'Canada', 'France', 'Germany', 'Italy', 'Japan', 'United Kingdom', 'United States'}
+        if v not in g7_countries:
+            logger.warning(f'Country "{v}" not in G7 list')
+        return v
+
+
+class OECDApplicationsData(BaseModel):
+    """Model for OECD AI applications data"""
+    model_config = ConfigDict(str_strip_whitespace=True)
+    
+    application: str = Field(..., description="AI application name")
+    adoption_rate: float = Field(..., ge=0, le=100, description="Adoption rate percentage")
+    impact_score: Optional[float] = Field(None, ge=0, le=10, description="Impact score (0-10)")
+    
+    @validator('application')
+    def application_name_valid(cls, v):
+        """Validate AI application names"""
+        valid_applications = {
+            'Customer Service', 'Marketing', 'Sales', 'Product Development',
+            'Supply Chain', 'HR', 'Finance', 'IT Operations', 'Research',
+            'Quality Control', 'Predictive Maintenance', 'Fraud Detection'
+        }
+        if v not in valid_applications:
+            logger.warning(f'Application "{v}" not in standard list')
+        return v
+
+
+class BarriersData(BaseModel):
+    """Model for AI adoption barriers"""
+    model_config = ConfigDict(str_strip_whitespace=True)
+    
+    barrier: str = Field(..., description="Barrier description")
+    percentage: float = Field(..., ge=0, le=100, description="Percentage of companies reporting barrier")
+    
+    @validator('barrier')
+    def barrier_name_valid(cls, v):
+        """Validate barrier names"""
+        valid_barriers = {
+            'Lack of Skills', 'High Costs', 'Data Quality Issues', 'Integration Challenges',
+            'Security Concerns', 'Regulatory Uncertainty', 'Change Management', 'ROI Uncertainty'
+        }
+        if v not in valid_barriers:
+            logger.warning(f'Barrier "{v}" not in standard list')
+        return v
+
+
+class SupportEffectivenessData(BaseModel):
+    """Model for support effectiveness data"""
+    model_config = ConfigDict(str_strip_whitespace=True)
+    
+    support_type: str = Field(..., description="Type of support")
+    effectiveness_score: float = Field(..., ge=0, le=10, description="Effectiveness score (0-10)")
+    
+    @validator('support_type')
+    def support_type_valid(cls, v):
+        """Validate support types"""
+        valid_types = {
+            'Training Programs', 'Consulting Services', 'Technical Support',
+            'Financial Incentives', 'Regulatory Guidance', 'Best Practices'
+        }
+        if v not in valid_types:
+            logger.warning(f'Support type "{v}" not in standard list')
+        return v
+
+
+class RegionalGrowthData(BaseModel):
+    """Model for regional growth data"""
+    model_config = ConfigDict(str_strip_whitespace=True)
+    
+    region: str = Field(..., description="Geographic region")
+    growth_rate: float = Field(..., ge=-100, le=1000, description="Growth rate percentage")
+    adoption_rate: float = Field(..., ge=0, le=100, description="Current adoption rate")
+    investment_level: Optional[str] = Field(None, description="Investment level category")
+    
+    @validator('region')
+    def region_name_valid(cls, v):
+        """Validate region names"""
+        valid_regions = {
+            'North America', 'Europe', 'Asia Pacific', 'Latin America',
+            'Middle East', 'Africa', 'Global'
+        }
+        if v not in valid_regions:
+            logger.warning(f'Region "{v}" not in standard list')
+        return v
+
+
+class AICostReductionData(BaseModel):
+    """Model for AI cost reduction data"""
+    model_config = ConfigDict(str_strip_whitespace=True)
+    
+    model: str = Field(..., description="AI model name")
+    cost_per_million_tokens: float = Field(..., ge=0, description="Cost per million tokens in USD")
+    reduction_factor: Optional[float] = Field(None, gt=0, description="Cost reduction factor")
+    
+    @validator('cost_per_million_tokens')
+    def cost_reasonable(cls, v):
+        """Cost should be reasonable"""
+        if v > 100:
+            logger.warning(f'Cost {v} per million tokens seems high')
+        return v
+
+
+class AIPerceptionData(BaseModel):
+    """Model for AI perception data"""
+    model_config = ConfigDict(str_strip_whitespace=True)
+    
+    perception: str = Field(..., description="Perception category")
+    percentage: float = Field(..., ge=0, le=100, description="Percentage of respondents")
+    sentiment: Optional[str] = Field(None, description="Sentiment (Positive/Negative/Neutral)")
+    
+    @validator('perception')
+    def perception_valid(cls, v):
+        """Validate perception categories"""
+        valid_perceptions = {
+            'Job Enhancement', 'Job Replacement', 'Productivity Boost',
+            'Quality Improvement', 'Cost Reduction', 'Innovation Driver'
+        }
+        if v not in valid_perceptions:
+            logger.warning(f'Perception "{v}" not in standard list')
+        return v
+
+
+class TrainingEmissionsData(BaseModel):
+    """Model for AI training emissions data"""
+    model_config = ConfigDict(str_strip_whitespace=True)
+    
+    model: str = Field(..., description="AI model name")
+    emissions_kg_co2: float = Field(..., ge=0, description="Emissions in kg CO2")
+    
+    @validator('emissions_kg_co2')
+    def emissions_reasonable(cls, v):
+        """Emissions should be reasonable"""
+        if v > 1000000:  # 1 million kg CO2
+            logger.warning(f'Emissions {v} kg CO2 seems very high')
+        return v
+
+
+class SkillGapData(BaseModel):
+    """Model for skill gap analysis data"""
+    model_config = ConfigDict(str_strip_whitespace=True)
+    
+    skill: str = Field(..., description="Skill name")
+    demand_percentage: float = Field(..., ge=0, le=100, description="Demand percentage")
+    supply_percentage: float = Field(..., ge=0, le=100, description="Supply percentage")
+    
+    @validator('skill')
+    def skill_name_valid(cls, v):
+        """Validate skill names"""
+        valid_skills = {
+            'Machine Learning', 'Data Science', 'Python Programming', 'AI Ethics',
+            'Natural Language Processing', 'Computer Vision', 'Cloud Computing',
+            'Data Engineering', 'AI Governance', 'Prompt Engineering'
+        }
+        if v not in valid_skills:
+            logger.warning(f'Skill "{v}" not in standard list')
+        return v
+    
+    @validator('supply_percentage')
+    def supply_cannot_exceed_demand(cls, v, values):
+        """Supply should not exceed demand by too much"""
+        demand = values.get('demand_percentage')
+        if demand is not None and v > demand * 1.5:
+            logger.warning(f'Supply {v}% significantly exceeds demand {demand}%')
+        return v
+
+
+class AIGovernanceData(BaseModel):
+    """Model for AI governance data"""
+    model_config = ConfigDict(str_strip_whitespace=True)
+    
+    governance_area: str = Field(..., description="Governance area")
+    implementation_rate: float = Field(..., ge=0, le=100, description="Implementation rate percentage")
+    maturity_level: Optional[str] = Field(None, description="Maturity level")
+    
+    @validator('governance_area')
+    def governance_area_valid(cls, v):
+        """Validate governance areas"""
+        valid_areas = {
+            'Data Privacy', 'Algorithmic Bias', 'Transparency', 'Accountability',
+            'Security', 'Compliance', 'Ethics Review', 'Risk Management'
+        }
+        if v not in valid_areas:
+            logger.warning(f'Governance area "{v}" not in standard list')
+        return v
+
+
+class GenAI2025Data(BaseModel):
+    """Model for GenAI 2025 data"""
+    model_config = ConfigDict(str_strip_whitespace=True)
+    
+    sector: str = Field(..., description="Industry sector")
+    genai_adoption: float = Field(..., ge=0, le=100, description="GenAI adoption rate percentage")
+    
+    @validator('sector')
+    def sector_must_be_valid(cls, v):
+        """Validate sector names"""
+        allowed_sectors = {
+            'Technology', 'Financial Services', 'Healthcare', 'Manufacturing',
+            'Retail & E-commerce', 'Education', 'Energy & Utilities', 'Government'
+        }
+        if v not in allowed_sectors:
+            logger.warning(f'Sector "{v}" not in predefined list')
+        return v
+
+
+class TokenUsagePatternsData(BaseModel):
+    """Model for token usage patterns"""
+    model_config = ConfigDict(str_strip_whitespace=True)
+    
+    pattern_type: str = Field(..., description="Usage pattern type")
+    percentage: float = Field(..., ge=0, le=100, description="Percentage of usage")
+    efficiency_score: Optional[float] = Field(None, ge=0, le=10, description="Efficiency score")
+    
+    @validator('pattern_type')
+    def pattern_type_valid(cls, v):
+        """Validate pattern types"""
+        valid_patterns = {
+            'Conversational', 'Document Processing', 'Code Generation',
+            'Creative Writing', 'Analysis', 'Translation'
+        }
+        if v not in valid_patterns:
+            logger.warning(f'Pattern type "{v}" not in standard list')
+        return v
+
+
+class TokenOptimizationData(BaseModel):
+    """Model for token optimization data"""
+    model_config = ConfigDict(str_strip_whitespace=True)
+    
+    optimization_technique: str = Field(..., description="Optimization technique")
+    efficiency_gain: float = Field(..., ge=0, le=100, description="Efficiency gain percentage")
+    complexity_score: Optional[float] = Field(None, ge=0, le=10, description="Complexity score")
+    
+    @validator('optimization_technique')
+    def technique_valid(cls, v):
+        """Validate optimization techniques"""
+        valid_techniques = {
+            'Prompt Engineering', 'Context Window Optimization', 'Model Selection',
+            'Batch Processing', 'Caching', 'Compression'
+        }
+        if v not in valid_techniques:
+            logger.warning(f'Technique "{v}" not in standard list')
+        return v
+
+
+class TokenPricingEvolutionData(BaseModel):
+    """Model for token pricing evolution"""
+    model_config = ConfigDict(str_strip_whitespace=True)
+    
+    date: str = Field(..., description="Date of pricing")
+    avg_price_input: float = Field(..., ge=0, description="Average input token price")
+    avg_price_output: float = Field(..., ge=0, description="Average output token price")
+    model_count: Optional[int] = Field(None, gt=0, description="Number of models in sample")
+    
+    @validator('date')
+    def date_format_valid(cls, v):
+        """Validate date format"""
+        import re
+        if not re.match(r'\d{4}-\d{2}-\d{2}', v):
+            logger.warning(f'Date "{v}" not in YYYY-MM-DD format')
+        return v
+
+
+class StateData(BaseModel):
+    """Model for state-level data"""
+    model_config = ConfigDict(str_strip_whitespace=True)
+    
+    state: str = Field(..., description="State name")
+    adoption_rate: float = Field(..., ge=0, le=100, description="Adoption rate percentage")
+    population_millions: Optional[float] = Field(None, gt=0, description="Population in millions")
+    
+    @validator('state')
+    def state_name_valid(cls, v):
+        """Validate US state names"""
+        us_states = {
+            'Alabama', 'Alaska', 'Arizona', 'Arkansas', 'California', 'Colorado', 'Connecticut',
+            'Delaware', 'Florida', 'Georgia', 'Hawaii', 'Idaho', 'Illinois', 'Indiana', 'Iowa',
+            'Kansas', 'Kentucky', 'Louisiana', 'Maine', 'Maryland', 'Massachusetts', 'Michigan',
+            'Minnesota', 'Mississippi', 'Missouri', 'Montana', 'Nebraska', 'Nevada', 'New Hampshire',
+            'New Jersey', 'New Mexico', 'New York', 'North Carolina', 'North Dakota', 'Ohio',
+            'Oklahoma', 'Oregon', 'Pennsylvania', 'Rhode Island', 'South Carolina', 'South Dakota',
+            'Tennessee', 'Texas', 'Utah', 'Vermont', 'Virginia', 'Washington', 'West Virginia',
+            'Wisconsin', 'Wyoming'
+        }
+        if v not in us_states:
+            logger.warning(f'State "{v}" not in US states list')
+        return v
+
+
+class TechStackData(BaseModel):
+    """Model for technology stack data"""
+    model_config = ConfigDict(str_strip_whitespace=True)
+    
+    technology: str = Field(..., description="Technology name")
+    percentage: float = Field(..., ge=0, le=100, description="Usage percentage")
+    
+    @validator('technology')
+    def technology_valid(cls, v):
+        """Validate technology names"""
+        valid_technologies = {
+            'Cloud-based AI', 'On-premise AI', 'Hybrid AI', 'Edge AI',
+            'Multi-technology', 'Single Platform', 'Custom Solutions'
+        }
+        if v not in valid_technologies:
+            logger.warning(f'Technology "{v}" not in standard list')
         return v
 
 
@@ -327,16 +697,405 @@ class DatasetInfo(BaseModel):
     validation_status: ValidationResult = Field(..., description="Validation result")
 
 
-# Model registry for easy access
+class ProductivityData(BaseModel):
+    """Model for productivity research data"""
+    model_config = ConfigDict(str_strip_whitespace=True)
+    
+    function: str = Field(..., min_length=2, max_length=50, description="Business function")
+    productivity_gain: float = Field(..., ge=0, le=1000, description="Productivity gain percentage")
+    confidence_level: Optional[str] = Field(None, description="Confidence level (High/Medium/Low)")
+    
+    @validator('productivity_gain')
+    def productivity_gain_reasonable(cls, v):
+        """Productivity gains should be reasonable"""
+        if v > 500:
+            logger.warning(f'Productivity gain {v}% is very high - please verify')
+        return v
+
+
+class ProductivityBySkillData(BaseModel):
+    """Model for productivity by skill level"""
+    model_config = ConfigDict(str_strip_whitespace=True)
+    
+    skill_level: str = Field(..., description="Skill level category")
+    productivity_gain: float = Field(..., ge=0, le=1000, description="Productivity gain percentage")
+    adoption_rate: float = Field(..., ge=0, le=100, description="Adoption rate percentage")
+    
+    @validator('skill_level')
+    def skill_level_valid(cls, v):
+        """Validate skill level categories"""
+        valid_levels = {'Low', 'Medium', 'High', 'Expert', 'Beginner', 'Advanced'}
+        if v not in valid_levels:
+            logger.warning(f'Skill level "{v}" not in standard categories')
+        return v
+
+
+class AIProductivityEstimatesData(BaseModel):
+    """Model for AI productivity estimates"""
+    model_config = ConfigDict(str_strip_whitespace=True)
+    
+    estimate_type: str = Field(..., description="Type of productivity estimate")
+    value: float = Field(..., ge=0, description="Productivity value")
+    
+    @validator('estimate_type')
+    def estimate_type_valid(cls, v):
+        """Validate estimate types"""
+        valid_types = {'Conservative', 'Moderate', 'Optimistic', 'Aggressive'}
+        if v not in valid_types:
+            logger.warning(f'Estimate type "{v}" not in standard categories')
+        return v
+
+
+class OECDG7AdoptionData(BaseModel):
+    """Model for OECD G7 adoption data"""
+    model_config = ConfigDict(str_strip_whitespace=True)
+    
+    country: str = Field(..., description="G7 country name")
+    adoption_rate: float = Field(..., ge=0, le=100, description="AI adoption rate percentage")
+    genai_adoption: Optional[float] = Field(None, ge=0, le=100, description="GenAI adoption rate")
+    digital_readiness: Optional[float] = Field(None, ge=0, le=100, description="Digital readiness score")
+    
+    @validator('country')
+    def country_must_be_g7(cls, v):
+        """Validate G7 country names"""
+        g7_countries = {'Canada', 'France', 'Germany', 'Italy', 'Japan', 'United Kingdom', 'United States'}
+        if v not in g7_countries:
+            logger.warning(f'Country "{v}" not in G7 list')
+        return v
+
+
+class OECDApplicationsData(BaseModel):
+    """Model for OECD AI applications data"""
+    model_config = ConfigDict(str_strip_whitespace=True)
+    
+    application: str = Field(..., description="AI application name")
+    adoption_rate: float = Field(..., ge=0, le=100, description="Adoption rate percentage")
+    impact_score: Optional[float] = Field(None, ge=0, le=10, description="Impact score (0-10)")
+    
+    @validator('application')
+    def application_name_valid(cls, v):
+        """Validate AI application names"""
+        valid_applications = {
+            'Customer Service', 'Marketing', 'Sales', 'Product Development',
+            'Supply Chain', 'HR', 'Finance', 'IT Operations', 'Research',
+            'Quality Control', 'Predictive Maintenance', 'Fraud Detection'
+        }
+        if v not in valid_applications:
+            logger.warning(f'Application "{v}" not in standard list')
+        return v
+
+
+class BarriersData(BaseModel):
+    """Model for AI adoption barriers"""
+    model_config = ConfigDict(str_strip_whitespace=True)
+    
+    barrier: str = Field(..., description="Barrier description")
+    percentage: float = Field(..., ge=0, le=100, description="Percentage of companies reporting barrier")
+    
+    @validator('barrier')
+    def barrier_name_valid(cls, v):
+        """Validate barrier names"""
+        valid_barriers = {
+            'Lack of Skills', 'High Costs', 'Data Quality Issues', 'Integration Challenges',
+            'Security Concerns', 'Regulatory Uncertainty', 'Change Management', 'ROI Uncertainty'
+        }
+        if v not in valid_barriers:
+            logger.warning(f'Barrier "{v}" not in standard list')
+        return v
+
+
+class SupportEffectivenessData(BaseModel):
+    """Model for support effectiveness data"""
+    model_config = ConfigDict(str_strip_whitespace=True)
+    
+    support_type: str = Field(..., description="Type of support")
+    effectiveness_score: float = Field(..., ge=0, le=10, description="Effectiveness score (0-10)")
+    
+    @validator('support_type')
+    def support_type_valid(cls, v):
+        """Validate support types"""
+        valid_types = {
+            'Training Programs', 'Consulting Services', 'Technical Support',
+            'Financial Incentives', 'Regulatory Guidance', 'Best Practices'
+        }
+        if v not in valid_types:
+            logger.warning(f'Support type "{v}" not in standard list')
+        return v
+
+
+class RegionalGrowthData(BaseModel):
+    """Model for regional growth data"""
+    model_config = ConfigDict(str_strip_whitespace=True)
+    
+    region: str = Field(..., description="Geographic region")
+    growth_rate: float = Field(..., ge=-100, le=1000, description="Growth rate percentage")
+    adoption_rate: float = Field(..., ge=0, le=100, description="Current adoption rate")
+    investment_level: Optional[str] = Field(None, description="Investment level category")
+    
+    @validator('region')
+    def region_name_valid(cls, v):
+        """Validate region names"""
+        valid_regions = {
+            'North America', 'Europe', 'Asia Pacific', 'Latin America',
+            'Middle East', 'Africa', 'Global'
+        }
+        if v not in valid_regions:
+            logger.warning(f'Region "{v}" not in standard list')
+        return v
+
+
+class AICostReductionData(BaseModel):
+    """Model for AI cost reduction data"""
+    model_config = ConfigDict(str_strip_whitespace=True)
+    
+    model: str = Field(..., description="AI model name")
+    cost_per_million_tokens: float = Field(..., ge=0, description="Cost per million tokens in USD")
+    reduction_factor: Optional[float] = Field(None, gt=0, description="Cost reduction factor")
+    
+    @validator('cost_per_million_tokens')
+    def cost_reasonable(cls, v):
+        """Cost should be reasonable"""
+        if v > 100:
+            logger.warning(f'Cost {v} per million tokens seems high')
+        return v
+
+
+class AIPerceptionData(BaseModel):
+    """Model for AI perception data"""
+    model_config = ConfigDict(str_strip_whitespace=True)
+    
+    perception: str = Field(..., description="Perception category")
+    percentage: float = Field(..., ge=0, le=100, description="Percentage of respondents")
+    sentiment: Optional[str] = Field(None, description="Sentiment (Positive/Negative/Neutral)")
+    
+    @validator('perception')
+    def perception_valid(cls, v):
+        """Validate perception categories"""
+        valid_perceptions = {
+            'Job Enhancement', 'Job Replacement', 'Productivity Boost',
+            'Quality Improvement', 'Cost Reduction', 'Innovation Driver'
+        }
+        if v not in valid_perceptions:
+            logger.warning(f'Perception "{v}" not in standard list')
+        return v
+
+
+class TrainingEmissionsData(BaseModel):
+    """Model for AI training emissions data"""
+    model_config = ConfigDict(str_strip_whitespace=True)
+    
+    model: str = Field(..., description="AI model name")
+    emissions_kg_co2: float = Field(..., ge=0, description="Emissions in kg CO2")
+    
+    @validator('emissions_kg_co2')
+    def emissions_reasonable(cls, v):
+        """Emissions should be reasonable"""
+        if v > 1000000:  # 1 million kg CO2
+            logger.warning(f'Emissions {v} kg CO2 seems very high')
+        return v
+
+
+class SkillGapData(BaseModel):
+    """Model for skill gap analysis data"""
+    model_config = ConfigDict(str_strip_whitespace=True)
+    
+    skill: str = Field(..., description="Skill name")
+    demand_percentage: float = Field(..., ge=0, le=100, description="Demand percentage")
+    supply_percentage: float = Field(..., ge=0, le=100, description="Supply percentage")
+    
+    @validator('skill')
+    def skill_name_valid(cls, v):
+        """Validate skill names"""
+        valid_skills = {
+            'Machine Learning', 'Data Science', 'Python Programming', 'AI Ethics',
+            'Natural Language Processing', 'Computer Vision', 'Cloud Computing',
+            'Data Engineering', 'AI Governance', 'Prompt Engineering'
+        }
+        if v not in valid_skills:
+            logger.warning(f'Skill "{v}" not in standard list')
+        return v
+    
+    @validator('supply_percentage')
+    def supply_cannot_exceed_demand(cls, v, values):
+        """Supply should not exceed demand by too much"""
+        demand = values.get('demand_percentage')
+        if demand is not None and v > demand * 1.5:
+            logger.warning(f'Supply {v}% significantly exceeds demand {demand}%')
+        return v
+
+
+class AIGovernanceData(BaseModel):
+    """Model for AI governance data"""
+    model_config = ConfigDict(str_strip_whitespace=True)
+    
+    governance_area: str = Field(..., description="Governance area")
+    implementation_rate: float = Field(..., ge=0, le=100, description="Implementation rate percentage")
+    maturity_level: Optional[str] = Field(None, description="Maturity level")
+    
+    @validator('governance_area')
+    def governance_area_valid(cls, v):
+        """Validate governance areas"""
+        valid_areas = {
+            'Data Privacy', 'Algorithmic Bias', 'Transparency', 'Accountability',
+            'Security', 'Compliance', 'Ethics Review', 'Risk Management'
+        }
+        if v not in valid_areas:
+            logger.warning(f'Governance area "{v}" not in standard list')
+        return v
+
+
+class GenAI2025Data(BaseModel):
+    """Model for GenAI 2025 data"""
+    model_config = ConfigDict(str_strip_whitespace=True)
+    
+    sector: str = Field(..., description="Industry sector")
+    genai_adoption: float = Field(..., ge=0, le=100, description="GenAI adoption rate percentage")
+    
+    @validator('sector')
+    def sector_must_be_valid(cls, v):
+        """Validate sector names"""
+        allowed_sectors = {
+            'Technology', 'Financial Services', 'Healthcare', 'Manufacturing',
+            'Retail & E-commerce', 'Education', 'Energy & Utilities', 'Government'
+        }
+        if v not in allowed_sectors:
+            logger.warning(f'Sector "{v}" not in predefined list')
+        return v
+
+
+class TokenUsagePatternsData(BaseModel):
+    """Model for token usage patterns"""
+    model_config = ConfigDict(str_strip_whitespace=True)
+    
+    pattern_type: str = Field(..., description="Usage pattern type")
+    percentage: float = Field(..., ge=0, le=100, description="Percentage of usage")
+    efficiency_score: Optional[float] = Field(None, ge=0, le=10, description="Efficiency score")
+    
+    @validator('pattern_type')
+    def pattern_type_valid(cls, v):
+        """Validate pattern types"""
+        valid_patterns = {
+            'Conversational', 'Document Processing', 'Code Generation',
+            'Creative Writing', 'Analysis', 'Translation'
+        }
+        if v not in valid_patterns:
+            logger.warning(f'Pattern type "{v}" not in standard list')
+        return v
+
+
+class TokenOptimizationData(BaseModel):
+    """Model for token optimization data"""
+    model_config = ConfigDict(str_strip_whitespace=True)
+    
+    optimization_technique: str = Field(..., description="Optimization technique")
+    efficiency_gain: float = Field(..., ge=0, le=100, description="Efficiency gain percentage")
+    complexity_score: Optional[float] = Field(None, ge=0, le=10, description="Complexity score")
+    
+    @validator('optimization_technique')
+    def technique_valid(cls, v):
+        """Validate optimization techniques"""
+        valid_techniques = {
+            'Prompt Engineering', 'Context Window Optimization', 'Model Selection',
+            'Batch Processing', 'Caching', 'Compression'
+        }
+        if v not in valid_techniques:
+            logger.warning(f'Technique "{v}" not in standard list')
+        return v
+
+
+class TokenPricingEvolutionData(BaseModel):
+    """Model for token pricing evolution"""
+    model_config = ConfigDict(str_strip_whitespace=True)
+    
+    date: str = Field(..., description="Date of pricing")
+    avg_price_input: float = Field(..., ge=0, description="Average input token price")
+    avg_price_output: float = Field(..., ge=0, description="Average output token price")
+    model_count: Optional[int] = Field(None, gt=0, description="Number of models in sample")
+    
+    @validator('date')
+    def date_format_valid(cls, v):
+        """Validate date format"""
+        import re
+        if not re.match(r'\d{4}-\d{2}-\d{2}', v):
+            logger.warning(f'Date "{v}" not in YYYY-MM-DD format')
+        return v
+
+
+class StateData(BaseModel):
+    """Model for state-level data"""
+    model_config = ConfigDict(str_strip_whitespace=True)
+    
+    state: str = Field(..., description="State name")
+    adoption_rate: float = Field(..., ge=0, le=100, description="Adoption rate percentage")
+    population_millions: Optional[float] = Field(None, gt=0, description="Population in millions")
+    
+    @validator('state')
+    def state_name_valid(cls, v):
+        """Validate US state names"""
+        us_states = {
+            'Alabama', 'Alaska', 'Arizona', 'Arkansas', 'California', 'Colorado', 'Connecticut',
+            'Delaware', 'Florida', 'Georgia', 'Hawaii', 'Idaho', 'Illinois', 'Indiana', 'Iowa',
+            'Kansas', 'Kentucky', 'Louisiana', 'Maine', 'Maryland', 'Massachusetts', 'Michigan',
+            'Minnesota', 'Mississippi', 'Missouri', 'Montana', 'Nebraska', 'Nevada', 'New Hampshire',
+            'New Jersey', 'New Mexico', 'New York', 'North Carolina', 'North Dakota', 'Ohio',
+            'Oklahoma', 'Oregon', 'Pennsylvania', 'Rhode Island', 'South Carolina', 'South Dakota',
+            'Tennessee', 'Texas', 'Utah', 'Vermont', 'Virginia', 'Washington', 'West Virginia',
+            'Wisconsin', 'Wyoming'
+        }
+        if v not in us_states:
+            logger.warning(f'State "{v}" not in US states list')
+        return v
+
+
+class TechStackData(BaseModel):
+    """Model for technology stack data"""
+    model_config = ConfigDict(str_strip_whitespace=True)
+    
+    technology: str = Field(..., description="Technology name")
+    percentage: float = Field(..., ge=0, le=100, description="Usage percentage")
+    
+    @validator('technology')
+    def technology_valid(cls, v):
+        """Validate technology names"""
+        valid_technologies = {
+            'Cloud-based AI', 'On-premise AI', 'Hybrid AI', 'Edge AI',
+            'Multi-technology', 'Single Platform', 'Custom Solutions'
+        }
+        if v not in valid_technologies:
+            logger.warning(f'Technology "{v}" not in standard list')
+        return v
+
+
+# Model registry for easy access - UPDATED with all datasets
 MODEL_REGISTRY: Dict[str, BaseModel] = {
     "historical_data": HistoricalDataPoint,
-    "sector_data": SectorData,
+    "sector_2018": SectorData,
+    "sector_2025": SectorData,
     "firm_size": FirmSizeData,
-    "investment_data": InvestmentData,
+    "ai_maturity": AIMaturityData,
+    "geographic": GeographicData,
+    "state_data": StateData,
+    "tech_stack": TechStackData,
+    "productivity_data": ProductivityData,
+    "productivity_by_skill": ProductivityBySkillData,
+    "ai_productivity_estimates": AIProductivityEstimatesData,
+    "oecd_g7_adoption": OECDG7AdoptionData,
+    "oecd_applications": OECDApplicationsData,
+    "barriers_data": BarriersData,
+    "support_effectiveness": SupportEffectivenessData,
+    "ai_investment_data": InvestmentData,
+    "regional_growth": RegionalGrowthData,
+    "ai_cost_reduction": AICostReductionData,
     "financial_impact": FinancialImpactData,
-    "geographic_data": GeographicData,
+    "ai_perception": AIPerceptionData,
+    "training_emissions": TrainingEmissionsData,
+    "skill_gap_data": SkillGapData,
+    "ai_governance": AIGovernanceData,
+    "genai_2025": GenAI2025Data,
     "token_economics": TokenEconomicsData,
-    "ai_maturity": AIMaturityData
+    "token_usage_patterns": TokenUsagePatternsData,
+    "token_optimization": TokenOptimizationData,
+    "token_pricing_evolution": TokenPricingEvolutionData
 }
 
 
