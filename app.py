@@ -7,6 +7,9 @@ from datetime import datetime
 from plotly.subplots import make_subplots
 import re
 from config.settings import DashboardConfig, FEATURE_FLAGS
+from utils.helpers import safe_execute, safe_data_check
+from data.loaders import load_all_datasets, get_dynamic_metrics
+from ui.components import UIComponents, ChartFactory
 
 # Page config must be the first Streamlit command.
 st.set_page_config(
@@ -812,25 +815,59 @@ try:
     historical_data = sector_2018 = sector_2025 = firm_size = ai_maturity = geographic = state_data = tech_stack = productivity_data = productivity_by_skill = ai_productivity_estimates = oecd_g7_adoption = oecd_applications = barriers_data = support_effectiveness = ai_investment_data = regional_growth = ai_cost_reduction = financial_impact = ai_perception = training_emissions = skill_gap_data = ai_governance = token_economics = token_usage_patterns = token_optimization = token_pricing_evolution = genai_2025 = None
     
     # Only unpack if data loading was successful
-    if loaded_data is not None:
-        try:
-            (historical_data, sector_2018, sector_2025, firm_size, ai_maturity, geographic, 
-             state_data, tech_stack, productivity_data, productivity_by_skill, ai_productivity_estimates, 
-             oecd_g7_adoption, oecd_applications, barriers_data, support_effectiveness, 
-             ai_investment_data, regional_growth, ai_cost_reduction, financial_impact, ai_perception, 
-             training_emissions, skill_gap_data, ai_governance, token_economics, token_usage_patterns, 
-             token_optimization, token_pricing_evolution, genai_2025) = loaded_data
-            st.success("✓ Data loaded and unpacked successfully!")
-        except Exception as e:
-            st.error(f"❌ Error unpacking data: {str(e)}")
-            st.error("Dashboard will run with limited functionality.")
-    else:
-        st.error("❌ Data loading failed. Dashboard will run with limited functionality.")
-        st.info("Please refresh the page or contact support if the issue persists.")
+# NEW - Replace the entire block you showed me with this:
+loaded_data = safe_execute(
+    load_data,
+    default_value=None,
+    error_message="Critical error in data loading"
+)
+
+if loaded_data is not None:
+    # Try to unpack the data using safe_execute
+    unpacked_data = safe_execute(
+        lambda: (
+            # Your exact unpacking - keep this the same
+            loaded_data[0], loaded_data[1], loaded_data[2], loaded_data[3], loaded_data[4], 
+            loaded_data[5], loaded_data[6], loaded_data[7], loaded_data[8], loaded_data[9], 
+            loaded_data[10], loaded_data[11], loaded_data[12], loaded_data[13], loaded_data[14], 
+            loaded_data[15], loaded_data[16], loaded_data[17], loaded_data[18], loaded_data[19], 
+            loaded_data[20], loaded_data[21], loaded_data[22], loaded_data[23], loaded_data[24], 
+            loaded_data[25], loaded_data[26], loaded_data[27]
+        ),
+        default_value=None,
+        error_message="Error unpacking data"
+    )
+    
+    if unpacked_data is not None:
+        # Assign the unpacked data - keep your exact variable names
+        (historical_data, sector_2018, sector_2025, firm_size, ai_maturity, geographic, 
+         state_data, tech_stack, productivity_data, productivity_by_skill, ai_productivity_estimates, 
+         oecd_g7_adoption, oecd_applications, barriers_data, support_effectiveness, 
+         ai_investment_data, regional_growth, ai_cost_reduction, financial_impact, ai_perception, 
+         training_emissions, skill_gap_data, ai_governance, token_economics, token_usage_patterns, 
+         token_optimization, token_pricing_evolution, genai_2025) = unpacked_data
         
-except Exception as e:
-    st.error(f"❌ Critical error in data loading: {str(e)}")
-    # Create minimal fallback data to prevent crashes
+        st.success("✓ Data loaded and unpacked successfully!")
+    else:
+        # Fallback data creation - KEEP YOUR EXACT FALLBACK DATA
+        st.warning("⚠️ Using fallback data due to unpacking error. Some features may be limited.")
+        _create_fallback_data()
+else:
+    # Data loading failed completely - use fallback
+    st.warning("⚠️ Using fallback data due to loading error. Some features may be limited.")
+    _create_fallback_data()
+
+# Helper function to create fallback data - move your fallback data here
+def _create_fallback_data():
+    """Create fallback data when loading fails"""
+    global historical_data, sector_2018, sector_2025, firm_size, ai_maturity, geographic
+    global state_data, tech_stack, productivity_data, productivity_by_skill, ai_productivity_estimates
+    global oecd_g7_adoption, oecd_applications, barriers_data, support_effectiveness
+    global ai_investment_data, regional_growth, ai_cost_reduction, financial_impact, ai_perception
+    global training_emissions, skill_gap_data, ai_governance, token_economics, token_usage_patterns
+    global token_optimization, token_pricing_evolution, genai_2025, sector_2025
+    
+    # KEEP ALL YOUR EXISTING FALLBACK DATA EXACTLY AS IS:
     historical_data = pd.DataFrame({'year': [2024], 'ai_use': [78], 'genai_use': [71]})
     ai_cost_reduction = pd.DataFrame({'model': ['Test'], 'cost_per_million_tokens': [0.07], 'year': [2024]})
     token_economics = pd.DataFrame({'model': ['Test'], 'cost_per_million_input': [0.07], 'cost_per_million_output': [0.07]})
@@ -856,8 +893,6 @@ except Exception as e:
     training_emissions = pd.DataFrame({'model': ['Test'], 'carbon_tons': [500]})
     genai_2025 = pd.DataFrame({'function': ['Test'], 'adoption': [25]})
     sector_2025 = pd.DataFrame({'sector': ['Test'], 'adoption_rate': [78], 'avg_roi': [3.2]})
-    
-    st.warning("⚠️ Using fallback data due to loading error. Some features may be limited.")
 
 # FIXED: Generate dynamic metrics after data is loaded
 dynamic_metrics = get_dynamic_metrics(historical_data, ai_cost_reduction, ai_investment_data, sector_2025)
