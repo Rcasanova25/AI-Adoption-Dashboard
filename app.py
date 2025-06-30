@@ -1872,8 +1872,1202 @@ else:
         else:
             st.error("Industry analysis data not available.")
 
+    elif current_view == "Investment Trends":
+        st.write("💰 **AI Investment Trends (2014-2024)**")
+        
+        if ai_investment_data is not None:
+            # Investment overview metrics
+            col1, col2, col3, col4 = st.columns(4)
+            
+            latest_investment = ai_investment_data['total_investment'].iloc[-1]
+            previous_investment = ai_investment_data['total_investment'].iloc[-2]
+            growth_rate = ((latest_investment - previous_investment) / previous_investment * 100)
+            
+            with col1:
+                st.metric("2024 Total Investment", f"${latest_investment}B", f"+{growth_rate:.1f}% YoY")
+            with col2:
+                st.metric("GenAI Investment", f"${ai_investment_data['genai_investment'].iloc[-1]}B", 
+                         "13.4% of total")
+            with col3:
+                st.metric("US Market Share", f"${ai_investment_data['us_investment'].iloc[-1]}B", 
+                         "43% of global")
+            with col4:
+                st.metric("10-Year CAGR", "34.2%", "Exponential growth")
+            
+            # Investment trends chart
+            fig = go.Figure()
+            
+            fig.add_trace(go.Scatter(
+                x=ai_investment_data['year'],
+                y=ai_investment_data['total_investment'],
+                mode='lines+markers',
+                name='Total AI Investment',
+                line=dict(width=4, color='#1f77b4'),
+                marker=dict(size=8),
+                hovertemplate='Year: %{x}<br>Investment: $%{y}B<extra></extra>'
+            ))
+            
+            fig.add_trace(go.Scatter(
+                x=ai_investment_data['year'],
+                y=ai_investment_data['genai_investment'],
+                mode='lines+markers',
+                name='GenAI Investment',
+                line=dict(width=4, color='#ff7f0e'),
+                marker=dict(size=8),
+                hovertemplate='Year: %{x}<br>GenAI Investment: $%{y}B<extra></extra>'
+            ))
+            
+            fig.update_layout(
+                title="Global AI Investment Growth: The $250B+ Market",
+                xaxis_title="Year",
+                yaxis_title="Investment (Billions USD)",
+                height=500,
+                hovermode='x unified'
+            )
+            
+            st.plotly_chart(fig, use_container_width=True)
+            
+            # Regional breakdown
+            st.subheader("🌍 Regional Investment Distribution (2024)")
+            
+            regional_data = pd.DataFrame({
+                'Region': ['United States', 'China', 'United Kingdom', 'Rest of World'],
+                'Investment': [ai_investment_data['us_investment'].iloc[-1], 
+                              ai_investment_data['china_investment'].iloc[-1],
+                              ai_investment_data['uk_investment'].iloc[-1],
+                              latest_investment - ai_investment_data['us_investment'].iloc[-1] - 
+                              ai_investment_data['china_investment'].iloc[-1] - ai_investment_data['uk_investment'].iloc[-1]]
+            })
+            
+            fig_pie = px.pie(regional_data, values='Investment', names='Region',
+                            title="AI Investment by Region (2024)")
+            st.plotly_chart(fig_pie, use_container_width=True)
+            
+        else:
+            st.error("Investment data not available.")
+
+    elif current_view == "Financial Impact":
+        st.write("💼 **AI Financial Impact Analysis**")
+        
+        if financial_impact is not None:
+            st.markdown("### 📊 Cost Savings vs Revenue Gains by Function")
+            
+            # Create dual-axis chart
+            fig = make_subplots(specs=[[{"secondary_y": True}]])
+            
+            fig.add_trace(
+                go.Bar(name='Companies Reporting Cost Savings',
+                       x=financial_impact['function'],
+                       y=financial_impact['companies_reporting_cost_savings'],
+                       marker_color='#3498DB',
+                       text=[f'{x}%' for x in financial_impact['companies_reporting_cost_savings']],
+                       textposition='outside'),
+                secondary_y=False,
+            )
+            
+            fig.add_trace(
+                go.Bar(name='Companies Reporting Revenue Gains',
+                       x=financial_impact['function'],
+                       y=financial_impact['companies_reporting_revenue_gains'],
+                       marker_color='#2ECC71',
+                       text=[f'{x}%' for x in financial_impact['companies_reporting_revenue_gains']],
+                       textposition='outside'),
+                secondary_y=False,
+            )
+            
+            fig.update_xaxes(title_text="Business Function")
+            fig.update_yaxes(title_text="% of Companies Reporting Benefits", secondary_y=False)
+            
+            fig.update_layout(
+                title="AI Financial Impact by Business Function",
+                barmode='group',
+                height=500,
+                xaxis_tickangle=45
+            )
+            
+            st.plotly_chart(fig, use_container_width=True)
+            
+            # Impact metrics
+            st.markdown("### 💰 Average Impact Magnitude")
+            
+            col1, col2 = st.columns(2)
+            
+            with col1:
+                st.markdown("**Cost Reduction by Function**")
+                for i, row in financial_impact.iterrows():
+                    st.metric(row['function'], 
+                             f"{row['avg_cost_reduction']}%", 
+                             f"{row['companies_reporting_cost_savings']}% report savings")
+            
+            with col2:
+                st.markdown("**Revenue Increase by Function**")
+                for i, row in financial_impact.iterrows():
+                    st.metric(row['function'], 
+                             f"{row['avg_revenue_increase']}%", 
+                             f"{row['companies_reporting_revenue_gains']}% report gains")
+            
+        else:
+            st.error("Financial impact data not available.")
+
+    elif current_view == "Firm Size Analysis":
+        st.write("🏢 **AI Adoption by Company Size**")
+        
+        if firm_size is not None:
+            # Size distribution chart
+            fig = go.Figure()
+            
+            fig.add_trace(go.Bar(
+                x=firm_size['size'],
+                y=firm_size['adoption'],
+                marker=dict(
+                    color=firm_size['adoption'],
+                    colorscale='Viridis',
+                    colorbar=dict(title="Adoption Rate (%)")
+                ),
+                text=[f'{x}%' for x in firm_size['adoption']],
+                textposition='outside',
+                hovertemplate='<b>%{x} employees</b><br>Adoption Rate: %{y}%<extra></extra>'
+            ))
+            
+            # Add trend line
+            fig.add_trace(go.Scatter(
+                x=firm_size['size'],
+                y=firm_size['adoption'],
+                mode='lines',
+                name='Adoption Trend',
+                line=dict(color='red', width=3, dash='dash'),
+                hovertemplate='Trend: %{y}%<extra></extra>'
+            ))
+            
+            fig.update_layout(
+                title="AI Adoption Scales Dramatically with Company Size",
+                xaxis_title="Company Size (Number of Employees)",
+                yaxis_title="AI Adoption Rate (%)",
+                height=500,
+                showlegend=True
+            )
+            
+            st.plotly_chart(fig, use_container_width=True)
+            
+            # Size insights
+            col1, col2, col3 = st.columns(3)
+            
+            with col1:
+                st.metric("Small Firms (1-49)", "4.4%", "Limited adoption")
+            with col2:
+                st.metric("Medium Firms (50-999)", "18.6%", "Growing adoption")
+            with col3:
+                st.metric("Large Firms (5000+)", "58.5%", "Market leaders")
+                
+            st.info("""
+            **Key Insight:** Large enterprises adopt AI at 13x the rate of small businesses, 
+            creating a significant competitive advantage gap.
+            """)
+            
+        else:
+            st.error("Firm size data not available.")
+
+    elif current_view == "AI Technology Maturity":
+        st.write("🔬 **AI Technology Maturity Assessment**")
+        
+        if ai_maturity is not None:
+            # Technology maturity heatmap
+            fig = go.Figure()
+            
+            # Create bubble chart
+            fig.add_trace(go.Scatter(
+                x=ai_maturity['adoption_rate'],
+                y=ai_maturity['risk_score'],
+                mode='markers+text',
+                marker=dict(
+                    size=ai_maturity['time_to_value'] * 10,
+                    color=ai_maturity['adoption_rate'],
+                    colorscale='RdYlGn',
+                    showscale=True,
+                    colorbar=dict(title="Adoption Rate (%)")
+                ),
+                text=ai_maturity['technology'],
+                textposition="middle center",
+                textfont=dict(size=10, color="white"),
+                hovertemplate='<b>%{text}</b><br>Adoption: %{x}%<br>Risk Score: %{y}<br>Time to Value: %{marker.size} months<extra></extra>'
+            ))
+            
+            # Add quadrant lines
+            fig.add_hline(y=50, line_dash="dash", line_color="gray", opacity=0.5)
+            fig.add_vline(x=50, line_dash="dash", line_color="gray", opacity=0.5)
+            
+            # Add quadrant labels
+            fig.add_annotation(x=75, y=25, text="<b>Leaders</b><br>High Adoption, Low Risk", 
+                              showarrow=False, bgcolor="rgba(0,255,0,0.1)")
+            fig.add_annotation(x=25, y=25, text="<b>Emerging</b><br>Low Adoption, Low Risk", 
+                              showarrow=False, bgcolor="rgba(255,255,0,0.1)")
+            fig.add_annotation(x=75, y=75, text="<b>High Risk</b><br>High Adoption, High Risk", 
+                              showarrow=False, bgcolor="rgba(255,0,0,0.1)")
+            fig.add_annotation(x=25, y=75, text="<b>Experimental</b><br>Low Adoption, High Risk", 
+                              showarrow=False, bgcolor="rgba(255,165,0,0.1)")
+            
+            fig.update_layout(
+                title="AI Technology Maturity Matrix: Risk vs Adoption",
+                xaxis_title="Adoption Rate (%)",
+                yaxis_title="Risk Score (0-100)",
+                height=600,
+                showlegend=False
+            )
+            
+            st.plotly_chart(fig, use_container_width=True)
+            
+            # Maturity recommendations
+            st.markdown("### 📋 Technology Recommendations")
+            
+            leaders = ai_maturity[ai_maturity['risk_score'] < 50]
+            high_risk = ai_maturity[ai_maturity['risk_score'] >= 80]
+            
+            col1, col2 = st.columns(2)
+            
+            with col1:
+                st.success("**✅ Recommended for Production**")
+                for tech in leaders['technology']:
+                    st.write(f"• {tech}")
+            
+            with col2:
+                st.warning("**⚠️ Proceed with Caution**")
+                for tech in high_risk['technology']:
+                    st.write(f"• {tech}")
+            
+        else:
+            st.error("AI maturity data not available.")
+
+    elif current_view == "Token Economics":
+        st.write("🪙 **AI Token Economics & Cost Analysis**")
+        
+        if token_economics is not None:
+            # Token pricing comparison
+            st.markdown("### 💰 Token Pricing Comparison (Per Million Tokens)")
+            
+            fig = go.Figure()
+            
+            fig.add_trace(go.Bar(
+                name='Input Tokens',
+                x=token_economics['model'],
+                y=token_economics['cost_per_million_input'],
+                marker_color='#3498DB',
+                text=[f'${x:.2f}' for x in token_economics['cost_per_million_input']],
+                textposition='outside'
+            ))
+            
+            fig.add_trace(go.Bar(
+                name='Output Tokens',
+                x=token_economics['model'],
+                y=token_economics['cost_per_million_output'],
+                marker_color='#E74C3C',
+                text=[f'${x:.2f}' for x in token_economics['cost_per_million_output']],
+                textposition='outside'
+            ))
+            
+            fig.update_layout(
+                title="Token Pricing: Dramatic Cost Variations Across Models",
+                xaxis_title="AI Model",
+                yaxis_title="Cost per Million Tokens ($)",
+                barmode='group',
+                height=500,
+                xaxis_tickangle=45
+            )
+            
+            st.plotly_chart(fig, use_container_width=True)
+            
+            # Cost efficiency metrics
+            col1, col2, col3 = st.columns(3)
+            
+            cheapest_input = token_economics.loc[token_economics['cost_per_million_input'].idxmin()]
+            most_expensive = token_economics.loc[token_economics['cost_per_million_input'].idxmax()]
+            cost_difference = most_expensive['cost_per_million_input'] / cheapest_input['cost_per_million_input']
+            
+            with col1:
+                st.metric("Cheapest Model", cheapest_input['model'], 
+                         f"${cheapest_input['cost_per_million_input']:.3f}/M tokens")
+            with col2:
+                st.metric("Most Expensive", most_expensive['model'], 
+                         f"${most_expensive['cost_per_million_input']:.2f}/M tokens")
+            with col3:
+                st.metric("Price Range", f"{cost_difference:.0f}x difference", 
+                         "Choose wisely!")
+            
+            # Token usage patterns
+            if token_usage_patterns is not None:
+                st.markdown("### 📊 Token Usage by Use Case")
+                
+                fig_usage = go.Figure()
+                
+                fig_usage.add_trace(go.Bar(
+                    name='Input Tokens',
+                    x=token_usage_patterns['use_case'],
+                    y=token_usage_patterns['avg_input_tokens'],
+                    marker_color='#3498DB'
+                ))
+                
+                fig_usage.add_trace(go.Bar(
+                    name='Output Tokens',
+                    x=token_usage_patterns['use_case'],
+                    y=token_usage_patterns['avg_output_tokens'],
+                    marker_color='#E74C3C'
+                ))
+                
+                fig_usage.update_layout(
+                    title="Average Token Usage by Use Case",
+                    xaxis_title="Use Case",
+                    yaxis_title="Average Tokens",
+                    barmode='group',
+                    height=400
+                )
+                
+                st.plotly_chart(fig_usage, use_container_width=True)
+            
+        else:
+            st.error("Token economics data not available.")
+
+    elif current_view == "Labor Impact":
+        st.write("👥 **AI Labor Market Impact**")
+        
+        if ai_perception is not None:
+            # Generational differences
+            fig = go.Figure()
+            
+            fig.add_trace(go.Bar(
+                name='Expect Job Change',
+                x=ai_perception['generation'],
+                y=ai_perception['expect_job_change'],
+                marker_color='#3498DB',
+                text=[f'{x}%' for x in ai_perception['expect_job_change']],
+                textposition='outside'
+            ))
+            
+            fig.add_trace(go.Bar(
+                name='Expect Job Replacement',
+                x=ai_perception['generation'],
+                y=ai_perception['expect_job_replacement'],
+                marker_color='#E74C3C',
+                text=[f'{x}%' for x in ai_perception['expect_job_replacement']],
+                textposition='outside'
+            ))
+            
+            fig.update_layout(
+                title="AI Labor Impact Expectations by Generation",
+                xaxis_title="Generation",
+                yaxis_title="Percentage Expecting Impact (%)",
+                barmode='group',
+                height=500
+            )
+            
+            st.plotly_chart(fig, use_container_width=True)
+            
+            # Skills impact
+            if productivity_by_skill is not None:
+                st.markdown("### 📈 Productivity Impact by Skill Level")
+                
+                col1, col2 = st.columns(2)
+                
+                with col1:
+                    fig_skill = px.bar(productivity_by_skill, x='skill_level', y='productivity_gain',
+                                      title="AI Productivity Gains by Skill Level",
+                                      color='productivity_gain',
+                                      color_continuous_scale='RdYlGn')
+                    st.plotly_chart(fig_skill, use_container_width=True)
+                
+                with col2:
+                    fig_gap = px.bar(productivity_by_skill, x='skill_level', y='skill_gap_reduction',
+                                    title="Skill Gap Reduction by Level",
+                                    color='skill_gap_reduction',
+                                    color_continuous_scale='Blues')
+                    st.plotly_chart(fig_gap, use_container_width=True)
+            
+            # Labor insights
+            st.info("""
+            **Key Labor Market Insights:**
+            - Younger generations are more optimistic about AI transformation
+            - Low-skilled workers benefit most from AI productivity gains (14% improvement)
+            - AI helps reduce skill gaps across all worker categories
+            """)
+            
+        else:
+            st.error("Labor impact data not available.")
+
+    elif current_view == "Geographic Distribution":
+        st.write("🗺️ **Geographic AI Adoption Distribution**")
+        
+        if geographic is not None and state_data is not None:
+            # US map visualization
+            fig_map = px.choropleth(
+                state_data,
+                locations='state_code',
+                color='rate',
+                hover_name='state',
+                locationmode='USA-states',
+                color_continuous_scale='Viridis',
+                title='AI Adoption Rate by US State',
+                labels={'rate': 'Adoption Rate (%)'}
+            )
+            
+            fig_map.update_layout(
+                geo_scope='usa',
+                height=500
+            )
+            
+            st.plotly_chart(fig_map, use_container_width=True)
+            
+            # City-level analysis
+            st.markdown("### 🏙️ Top AI Innovation Cities")
+            
+            top_cities = geographic.nlargest(10, 'rate')
+            
+            fig_cities = px.bar(top_cities, x='rate', y='city', orientation='h',
+                               title="Top 10 Cities by AI Adoption Rate",
+                               color='rate',
+                               color_continuous_scale='Viridis')
+            
+            fig_cities.update_layout(height=500, yaxis={'categoryorder': 'total ascending'})
+            st.plotly_chart(fig_cities, use_container_width=True)
+            
+            # Geographic insights
+            col1, col2, col3 = st.columns(3)
+            
+            with col1:
+                st.metric("Leading Region", "San Francisco Bay", "9.5% adoption rate")
+            with col2:
+                st.metric("State Leader", "California", "Multiple innovation hubs")
+            with col3:
+                st.metric("Geographic Spread", "20 major cities", "Nationwide adoption")
+            
+        else:
+            st.error("Geographic data not available.")
+
+    elif current_view == "OECD 2025 Findings":
+        st.write("🌍 **OECD 2025 AI Report Findings**")
+        
+        if oecd_g7_adoption is not None:
+            # G7 country comparison
+            fig = go.Figure()
+            
+            fig.add_trace(go.Bar(
+                name='Overall Adoption',
+                x=oecd_g7_adoption['country'],
+                y=oecd_g7_adoption['adoption_rate'],
+                marker_color='#3498DB'
+            ))
+            
+            fig.add_trace(go.Bar(
+                name='Manufacturing',
+                x=oecd_g7_adoption['country'],
+                y=oecd_g7_adoption['manufacturing'],
+                marker_color='#2ECC71'
+            ))
+            
+            fig.add_trace(go.Bar(
+                name='ICT Sector',
+                x=oecd_g7_adoption['country'],
+                y=oecd_g7_adoption['ict_sector'],
+                marker_color='#E74C3C'
+            ))
+            
+            fig.update_layout(
+                title="AI Adoption Rates Across G7 Countries (OECD 2025)",
+                xaxis_title="Country",
+                yaxis_title="Adoption Rate (%)",
+                barmode='group',
+                height=500,
+                xaxis_tickangle=45
+            )
+            
+            st.plotly_chart(fig, use_container_width=True)
+            
+            # OECD applications analysis
+            if oecd_applications is not None:
+                st.markdown("### 📊 AI Application Usage Rates")
+                
+                # Separate GenAI from traditional AI
+                genai_apps = oecd_applications[oecd_applications['category'] == 'GenAI']
+                traditional_apps = oecd_applications[oecd_applications['category'] == 'Traditional AI']
+                
+                col1, col2 = st.columns(2)
+                
+                with col1:
+                    fig_genai = px.bar(genai_apps.head(8), x='usage_rate', y='application',
+                                      orientation='h', title="Top GenAI Applications",
+                                      color='usage_rate', color_continuous_scale='Reds')
+                    fig_genai.update_layout(yaxis={'categoryorder': 'total ascending'})
+                    st.plotly_chart(fig_genai, use_container_width=True)
+                
+                with col2:
+                    fig_trad = px.bar(traditional_apps.head(8), x='usage_rate', y='application',
+                                     orientation='h', title="Top Traditional AI Applications",
+                                     color='usage_rate', color_continuous_scale='Blues')
+                    fig_trad.update_layout(yaxis={'categoryorder': 'total ascending'})
+                    st.plotly_chart(fig_trad, use_container_width=True)
+            
+        else:
+            st.error("OECD data not available.")
+
+    elif current_view == "Barriers & Support":
+        st.write("🚧 **AI Adoption Barriers & Support Mechanisms**")
+        
+        if barriers_data is not None:
+            # Barriers analysis
+            fig_barriers = px.bar(barriers_data, x='percentage', y='barrier',
+                                 orientation='h', title="Top Barriers to AI Adoption",
+                                 color='percentage', color_continuous_scale='Reds')
+            
+            fig_barriers.update_layout(
+                height=500,
+                yaxis={'categoryorder': 'total ascending'}
+            )
+            
+            st.plotly_chart(fig_barriers, use_container_width=True)
+            
+            # Support effectiveness
+            if support_effectiveness is not None:
+                fig_support = px.bar(support_effectiveness, x='effectiveness_score', y='support_type',
+                                    orientation='h', title="Effectiveness of Support Mechanisms",
+                                    color='effectiveness_score', color_continuous_scale='Greens')
+                
+                fig_support.update_layout(
+                    height=400,
+                    yaxis={'categoryorder': 'total ascending'}
+                )
+                
+                st.plotly_chart(fig_support, use_container_width=True)
+            
+            # Key insights
+            st.markdown("### 🎯 Key Insights")
+            
+            col1, col2 = st.columns(2)
+            
+            with col1:
+                st.error("**Top Barrier: Skills Gap**")
+                st.write("68% cite lack of skilled personnel as the primary obstacle")
+                
+                st.warning("**Data Quality Issues**")
+                st.write("62% struggle with data availability and quality")
+            
+            with col2:
+                st.success("**Most Effective Support**")
+                st.write("Government education investment (82% effectiveness)")
+                
+                st.info("**Partnership Opportunities**")
+                st.write("University partnerships show 78% effectiveness")
+            
+        else:
+            st.error("Barriers and support data not available.")
+
+    elif current_view == "Environmental Impact":
+        st.write("🌱 **AI Environmental Impact Analysis**")
+        
+        if training_emissions is not None:
+            # Carbon emissions by model
+            fig = px.bar(training_emissions, x='model', y='carbon_tons',
+                        title="Carbon Emissions from AI Model Training",
+                        color='carbon_tons',
+                        color_continuous_scale='Reds',
+                        log_y=True)
+            
+            fig.update_layout(
+                height=500,
+                xaxis_tickangle=45,
+                yaxis_title="Carbon Emissions (Tons CO2)"
+            )
+            
+            st.plotly_chart(fig, use_container_width=True)
+            
+            # Environmental insights
+            col1, col2, col3 = st.columns(3)
+            
+            with col1:
+                st.metric("Largest Model", "Llama 3.1 405B", "8,930 tons CO2")
+            with col2:
+                st.metric("Growth Factor", "892,000x", "From AlexNet to Llama")
+            with col3:
+                st.metric("Efficiency Trend", "Improving", "Per-parameter efficiency")
+            
+            st.warning("""
+            **Environmental Consideration:** While individual model training emissions are significant, 
+            the operational efficiency gains from AI deployment often offset training costs over time.
+            """)
+            
+        else:
+            st.error("Environmental impact data not available.")
+
+    elif current_view == "Skill Gap Analysis":
+        st.write("🎓 **AI Skills Gap Analysis**")
+        
+        if skill_gap_data is not None:
+            # Skills gap severity
+            fig = go.Figure()
+            
+            fig.add_trace(go.Bar(
+                name='Gap Severity',
+                x=skill_gap_data['skill'],
+                y=skill_gap_data['gap_severity'],
+                marker_color='#E74C3C',
+                text=[f'{x}%' for x in skill_gap_data['gap_severity']],
+                textposition='outside'
+            ))
+            
+            fig.add_trace(go.Bar(
+                name='Training Initiatives',
+                x=skill_gap_data['skill'],
+                y=skill_gap_data['training_initiatives'],
+                marker_color='#2ECC71',
+                text=[f'{x}%' for x in skill_gap_data['training_initiatives']],
+                textposition='outside'
+            ))
+            
+            fig.update_layout(
+                title="AI Skills Gap vs Training Initiative Coverage",
+                xaxis_title="Skill Area",
+                yaxis_title="Percentage",
+                barmode='group',
+                height=500,
+                xaxis_tickangle=45
+            )
+            
+            st.plotly_chart(fig, use_container_width=True)
+            
+            # Skills recommendations
+            st.markdown("### 📋 Priority Skills Development")
+            
+            high_gap_low_training = skill_gap_data[
+                (skill_gap_data['gap_severity'] > 70) & 
+                (skill_gap_data['training_initiatives'] < 40)
+            ]
+            
+            if not high_gap_low_training.empty:
+                st.error("**Critical Skills Shortages:**")
+                for skill in high_gap_low_training['skill']:
+                    st.write(f"• {skill}")
+            
+            # Training effectiveness
+            skill_gap_data['training_effectiveness'] = (
+                skill_gap_data['training_initiatives'] / skill_gap_data['gap_severity'] * 100
+            )
+            
+            most_effective = skill_gap_data.loc[skill_gap_data['training_effectiveness'].idxmax()]
+            least_effective = skill_gap_data.loc[skill_gap_data['training_effectiveness'].idxmin()]
+            
+            col1, col2 = st.columns(2)
+            
+            with col1:
+                st.success(f"**Best Covered Skill**\n{most_effective['skill']}")
+            with col2:
+                st.warning(f"**Needs More Training**\n{least_effective['skill']}")
+            
+        else:
+            st.error("Skill gap data not available.")
+
+    elif current_view == "AI Governance":
+        st.write("⚖️ **AI Governance & Risk Management**")
+        
+        if ai_governance is not None:
+            # Governance maturity
+            fig = go.Figure()
+            
+            fig.add_trace(go.Bar(
+                name='Adoption Rate',
+                x=ai_governance['aspect'],
+                y=ai_governance['adoption_rate'],
+                marker_color='#3498DB',
+                yaxis='y',
+                text=[f'{x}%' for x in ai_governance['adoption_rate']],
+                textposition='outside'
+            ))
+            
+            fig.add_trace(go.Scatter(
+                name='Maturity Score',
+                x=ai_governance['aspect'],
+                y=ai_governance['maturity_score'],
+                mode='lines+markers',
+                line=dict(color='#E74C3C', width=3),
+                marker=dict(size=8),
+                yaxis='y2',
+                text=[f'{x}/5' for x in ai_governance['maturity_score']],
+                textposition='top center'
+            ))
+            
+            fig.update_layout(
+                title="AI Governance: Adoption vs Maturity",
+                xaxis_title="Governance Aspect",
+                yaxis=dict(title="Adoption Rate (%)", side="left"),
+                yaxis2=dict(title="Maturity Score (1-5)", side="right", overlaying="y"),
+                height=500,
+                xaxis_tickangle=45
+            )
+            
+            st.plotly_chart(fig, use_container_width=True)
+            
+            # Governance insights
+            col1, col2, col3 = st.columns(3)
+            
+            highest_adoption = ai_governance.loc[ai_governance['adoption_rate'].idxmax()]
+            highest_maturity = ai_governance.loc[ai_governance['maturity_score'].idxmax()]
+            lowest_maturity = ai_governance.loc[ai_governance['maturity_score'].idxmin()]
+            
+            with col1:
+                st.metric("Most Adopted", highest_adoption['aspect'], 
+                         f"{highest_adoption['adoption_rate']}%")
+            with col2:
+                st.metric("Most Mature", highest_maturity['aspect'], 
+                         f"{highest_maturity['maturity_score']}/5")
+            with col3:
+                st.metric("Needs Development", lowest_maturity['aspect'], 
+                         f"{lowest_maturity['maturity_score']}/5")
+            
+        else:
+            st.error("AI governance data not available.")
+
+    elif current_view == "Adoption Rates":
+        st.write("📊 **AI Adoption Rates Overview**")
+        
+        if "2025" in data_year and genai_2025 is not None:
+            # 2025 GenAI adoption by function
+            fig = px.bar(genai_2025, x='function', y='adoption',
+                        title="GenAI Adoption by Business Function (2025)",
+                        color='adoption',
+                        color_continuous_scale='Blues')
+            fig.update_layout(height=500, xaxis_tickangle=45)
+            st.plotly_chart(fig, use_container_width=True)
+            
+            # Key metrics
+            col1, col2, col3 = st.columns(3)
+            with col1:
+                st.metric("Top Function", genai_2025.loc[genai_2025['adoption'].idxmax(), 'function'], 
+                         f"{genai_2025['adoption'].max()}%")
+            with col2:
+                st.metric("Average Adoption", f"{genai_2025['adoption'].mean():.1f}%", 
+                         "Across functions")
+            with col3:
+                st.metric("Adoption Range", f"{genai_2025['adoption'].max() - genai_2025['adoption'].min()}pp", 
+                         "Function variation")
+                
+        elif "2018" in data_year and sector_2018 is not None:
+            # 2018 early adoption data
+            fig = go.Figure()
+            
+            fig.add_trace(go.Bar(
+                name='Firm-Weighted',
+                x=sector_2018['sector'],
+                y=sector_2018['firm_weighted'],
+                marker_color='#3498DB'
+            ))
+            
+            fig.add_trace(go.Bar(
+                name='Employment-Weighted',
+                x=sector_2018['sector'],
+                y=sector_2018['employment_weighted'],
+                marker_color='#2ECC71'
+            ))
+            
+            fig.update_layout(
+                title="Early AI Adoption by Sector (2018)",
+                xaxis_title="Sector",
+                yaxis_title="Adoption Rate (%)",
+                barmode='group',
+                height=500,
+                xaxis_tickangle=45
+            )
+            
+            st.plotly_chart(fig, use_container_width=True)
+            
+        else:
+            st.error("Adoption rates data not available for selected year.")
+
+    elif current_view == "Regional Growth":
+        st.write("🌍 **Regional AI Growth Analysis**")
+        
+        if regional_growth is not None:
+            # Regional growth metrics
+            col1, col2, col3 = st.columns(3)
+            
+            top_growth = regional_growth.loc[regional_growth['growth_2024'].idxmax()]
+            top_adoption = regional_growth.loc[regional_growth['adoption_rate'].idxmax()]
+            
+            with col1:
+                st.metric("Fastest Growing", top_growth['region'], f"+{top_growth['growth_2024']}%")
+            with col2:
+                st.metric("Highest Adoption", top_adoption['region'], f"{top_adoption['adoption_rate']}%")
+            with col3:
+                st.metric("Global Average", f"{regional_growth['adoption_rate'].mean():.0f}%", 
+                         "Across regions")
+            
+            # Regional comparison chart
+            fig = go.Figure()
+            
+            fig.add_trace(go.Bar(
+                name='2024 Growth',
+                x=regional_growth['region'],
+                y=regional_growth['growth_2024'],
+                marker_color='#E74C3C',
+                yaxis='y',
+                text=[f'+{x}%' for x in regional_growth['growth_2024']],
+                textposition='outside'
+            ))
+            
+            fig.add_trace(go.Scatter(
+                name='Adoption Rate',
+                x=regional_growth['region'],
+                y=regional_growth['adoption_rate'],
+                mode='lines+markers',
+                line=dict(color='#3498DB', width=3),
+                marker=dict(size=10),
+                yaxis='y2'
+            ))
+            
+            fig.update_layout(
+                title="Regional AI Growth vs Current Adoption",
+                xaxis_title="Region",
+                yaxis=dict(title="Growth Rate (%)", side="left"),
+                yaxis2=dict(title="Adoption Rate (%)", side="right", overlaying="y"),
+                height=500
+            )
+            
+            st.plotly_chart(fig, use_container_width=True)
+            
+        else:
+            st.error("Regional growth data not available.")
+
+    elif current_view == "AI Cost Trends":
+        st.write("💰 **AI Cost Evolution & Trends**")
+        
+        if ai_cost_reduction is not None:
+            # Cost reduction visualization
+            fig = px.bar(ai_cost_reduction, x='model', y='cost_per_million_tokens',
+                        title="Dramatic AI Cost Reduction: November 2022 to October 2024",
+                        color='cost_per_million_tokens',
+                        color_continuous_scale='Reds_r',
+                        log_y=True)
+            
+            fig.update_layout(height=500, xaxis_tickangle=45)
+            st.plotly_chart(fig, use_container_width=True)
+            
+            # Cost metrics
+            col1, col2, col3 = st.columns(3)
+            
+            highest_cost = ai_cost_reduction['cost_per_million_tokens'].max()
+            lowest_cost = ai_cost_reduction['cost_per_million_tokens'].min()
+            reduction_factor = highest_cost / lowest_cost
+            
+            with col1:
+                st.metric("Starting Cost (Nov 2022)", f"${highest_cost:.2f}", "Per million tokens")
+            with col2:
+                st.metric("Current Cost (2024)", f"${lowest_cost:.3f}", "Per million tokens")
+            with col3:
+                st.metric("Total Reduction", f"{reduction_factor:.0f}x cheaper", "Dramatic deflation")
+            
+            # Token pricing evolution
+            if token_pricing_evolution is not None:
+                st.markdown("### 📈 Token Pricing Evolution Over Time")
+                
+                fig_evolution = go.Figure()
+                
+                fig_evolution.add_trace(go.Scatter(
+                    x=token_pricing_evolution['date'],
+                    y=token_pricing_evolution['avg_price_input'],
+                    mode='lines+markers',
+                    name='Input Token Price',
+                    line=dict(width=3, color='#3498DB')
+                ))
+                
+                fig_evolution.add_trace(go.Scatter(
+                    x=token_pricing_evolution['date'],
+                    y=token_pricing_evolution['avg_price_output'],
+                    mode='lines+markers',
+                    name='Output Token Price',
+                    line=dict(width=3, color='#E74C3C')
+                ))
+                
+                fig_evolution.update_layout(
+                    title="Token Price Evolution: Continuous Cost Deflation",
+                    xaxis_title="Date",
+                    yaxis_title="Price per Million Tokens ($)",
+                    height=400,
+                    yaxis_type="log"
+                )
+                
+                st.plotly_chart(fig_evolution, use_container_width=True)
+                
+        else:
+            st.error("AI cost data not available.")
+
+    elif current_view == "Technology Stack":
+        st.write("🔧 **AI Technology Stack Analysis**")
+        
+        if tech_stack is not None:
+            # Technology stack distribution
+            fig = px.pie(tech_stack, values='percentage', names='technology',
+                        title="AI Implementation Approaches: Integration Strategies")
+            
+            fig.update_traces(textposition='inside', textinfo='percent+label')
+            fig.update_layout(height=500)
+            st.plotly_chart(fig, use_container_width=True)
+            
+            # Stack insights
+            col1, col2 = st.columns(2)
+            
+            with col1:
+                st.success("**Most Common Approach**")
+                max_approach = tech_stack.loc[tech_stack['percentage'].idxmax()]
+                st.write(f"**{max_approach['technology']}**: {max_approach['percentage']}%")
+                
+                st.info("**Integration Benefits**")
+                st.write("• Higher ROI with combined approaches")
+                st.write("• Better scalability and performance")
+                st.write("• Reduced implementation risk")
+            
+            with col2:
+                st.markdown("**Technology Stack Breakdown:**")
+                for _, row in tech_stack.iterrows():
+                    st.metric(row['technology'], f"{row['percentage']}%", 
+                             f"of implementations")
+                
+        else:
+            st.error("Technology stack data not available.")
+
+    elif current_view == "Productivity Research":
+        st.write("📈 **AI Productivity Research Findings**")
+        
+        if productivity_data is not None:
+            # Productivity trends over time
+            fig = go.Figure()
+            
+            fig.add_trace(go.Scatter(
+                x=productivity_data['year'],
+                y=productivity_data['productivity_growth'],
+                mode='lines+markers',
+                name='Productivity Growth',
+                line=dict(width=4, color='#3498DB'),
+                marker=dict(size=8)
+            ))
+            
+            fig.add_trace(go.Scatter(
+                x=productivity_data['year'],
+                y=productivity_data['young_workers_share'],
+                mode='lines+markers',
+                name='Young Workers Share',
+                line=dict(width=4, color='#E74C3C'),
+                marker=dict(size=8),
+                yaxis='y2'
+            ))
+            
+            fig.update_layout(
+                title="Productivity Growth and Workforce Demographics (1980-2025)",
+                xaxis_title="Year",
+                yaxis=dict(title="Productivity Growth (%)", side="left"),
+                yaxis2=dict(title="Young Workers Share (%)", side="right", overlaying="y"),
+                height=500
+            )
+            
+            st.plotly_chart(fig, use_container_width=True)
+            
+            # Research estimates
+            if ai_productivity_estimates is not None:
+                st.markdown("### 🔬 AI Productivity Impact Estimates")
+                
+                fig_estimates = px.bar(ai_productivity_estimates, x='source', y='annual_impact',
+                                      title="Annual Productivity Impact Estimates by Research Source",
+                                      color='annual_impact',
+                                      color_continuous_scale='Greens')
+                
+                fig_estimates.update_layout(height=400, xaxis_tickangle=45)
+                st.plotly_chart(fig_estimates, use_container_width=True)
+                
+                # Research insights
+                col1, col2 = st.columns(2)
+                
+                with col1:
+                    st.metric("Highest Estimate", "Goldman Sachs", "2.5% annual impact")
+                    st.metric("Conservative Estimate", "Acemoglu", "0.07% annual impact")
+                
+                with col2:
+                    st.info("**Research Consensus:**")
+                    st.write("• Wide range of productivity estimates")
+                    st.write("• Potential for significant long-term impact")
+                    st.write("• Depends on implementation quality")
+            
+        else:
+            st.error("Productivity research data not available.")
+
+    elif current_view == "ROI Analysis":
+        st.write("💹 **AI Return on Investment Analysis**")
+        
+        if sector_2025 is not None:
+            # ROI by sector
+            fig = go.Figure()
+            
+            fig.add_trace(go.Bar(
+                x=sector_2025['sector'],
+                y=sector_2025['avg_roi'],
+                marker=dict(
+                    color=sector_2025['avg_roi'],
+                    colorscale='RdYlGn',
+                    colorbar=dict(title="ROI Multiplier")
+                ),
+                text=[f'{x}x' for x in sector_2025['avg_roi']],
+                textposition='outside',
+                hovertemplate='<b>%{x}</b><br>ROI: %{y}x<br>Adoption: %{customdata}%<extra></extra>',
+                customdata=sector_2025['adoption_rate']
+            ))
+            
+            # Add ROI threshold lines
+            fig.add_hline(y=2.0, line_dash="dash", line_color="orange", 
+                          annotation_text="Minimum Viable ROI (2.0x)")
+            fig.add_hline(y=3.0, line_dash="dash", line_color="green",
+                          annotation_text="Strong ROI Threshold (3.0x)")
+            
+            fig.update_layout(
+                title="AI ROI by Industry Sector: Consistent Value Creation",
+                xaxis_title="Industry Sector",
+                yaxis_title="Average ROI (x)",
+                height=500,
+                xaxis_tickangle=45
+            )
+            
+            st.plotly_chart(fig, use_container_width=True)
+            
+            # ROI insights
+            col1, col2, col3, col4 = st.columns(4)
+            
+            best_roi = sector_2025.loc[sector_2025['avg_roi'].idxmax()]
+            worst_roi = sector_2025.loc[sector_2025['avg_roi'].idxmin()]
+            avg_roi = sector_2025['avg_roi'].mean()
+            above_threshold = (sector_2025['avg_roi'] >= 3.0).sum()
+            
+            with col1:
+                st.metric("Best ROI", best_roi['sector'], f"{best_roi['avg_roi']}x")
+            with col2:
+                st.metric("Lowest ROI", worst_roi['sector'], f"{worst_roi['avg_roi']}x")
+            with col3:
+                st.metric("Average ROI", f"{avg_roi:.1f}x", "Across all sectors")
+            with col4:
+                st.metric("Strong Performers", f"{above_threshold}/{len(sector_2025)}", "≥3.0x ROI")
+            
+            # ROI vs Adoption correlation
+            st.markdown("### 📊 ROI vs Adoption Rate Analysis")
+            
+            fig_scatter = px.scatter(sector_2025, x='adoption_rate', y='avg_roi',
+                                   size='adoption_rate', color='avg_roi',
+                                   hover_name='sector',
+                                   title="ROI vs Adoption Rate: Higher Adoption Drives Better Returns",
+                                   color_continuous_scale='Viridis')
+            
+            fig_scatter.update_layout(height=400)
+            st.plotly_chart(fig_scatter, use_container_width=True)
+            
+        else:
+            st.error("ROI analysis data not available.")
+
+    elif current_view == "Bibliography & Sources":
+        st.write("📚 **Complete Bibliography & Source Citations**")
+        
+        st.markdown("""
+        This dashboard synthesizes data from multiple authoritative sources to provide comprehensive 
+        AI adoption insights. All sources are cited using Chicago Manual of Style format.
+        """)
+        
+        # Create tabs for different source categories
+        bib_tabs = st.tabs(["🏛️ Government & Institutional", "🏢 Corporate & Industry", "🎓 Academic Research", 
+                            "📰 News & Analysis", "📊 Databases & Collections"])
+        
+        with bib_tabs[0]:
+            st.markdown("""
+            ### Government and Institutional Sources
+            
+            1. **Stanford Human-Centered AI Institute.** "AI Index Report 2025." Stanford University. Accessed June 28, 2025. https://aiindex.stanford.edu/ai-index-report-2025/.
+
+            2. **U.S. Census Bureau.** "AI Use Supplement." Washington, DC: U.S. Department of Commerce. Accessed June 28, 2025. https://www.census.gov.
+
+            3. **National Science Foundation.** "National AI Research Institutes." Washington, DC: NSF. Accessed June 28, 2025. https://www.nsf.gov/focus-areas/artificial-intelligence.
+
+            4. **National Institute of Standards and Technology.** "AI Risk Management Framework (AI RMF 1.0)." NIST AI 100-1. Gaithersburg, MD: NIST, January 2023.
+
+            5. **Organisation for Economic Co-operation and Development.** "OECD AI Policy Observatory." Accessed June 28, 2025. https://oecd.ai.
+            """)
+            
+        with bib_tabs[1]:
+            st.markdown("""
+            ### Corporate and Industry Sources
+            
+            6. **McKinsey & Company.** "The State of AI: McKinsey Global Survey on AI." McKinsey Global Institute. Accessed June 28, 2025.
+
+            7. **OpenAI.** "Introducing DALL-E." OpenAI Blog, January 5, 2021.
+
+            8. **GitHub.** "Introducing GitHub Copilot: AI Pair Programmer." GitHub Blog, June 29, 2021.
+
+            9. **Goldman Sachs Research.** "The Potentially Large Effects of Artificial Intelligence on Economic Growth." Economic Research, 2023.
+            """)
+            
+        with bib_tabs[2]:
+            st.markdown("""
+            ### Academic Publications
+            
+            10. **Bick, Alexander, Adam Blandin, and David Deming.** "The Rapid Adoption of Generative AI." Federal Reserve Bank working paper, 2024.
+
+            11. **Brynjolfsson, Erik, Danielle Li, and Lindsey R. Raymond.** "Generative AI at Work." National Bureau of Economic Research Working Paper, 2023.
+
+            12. **Acemoglu, Daron.** "The Simple Macroeconomics of AI." MIT Economics working paper, 2024.
+
+            13. **Jumper, John, et al.** "Highly Accurate Protein Structure Prediction with AlphaFold." *Nature* 596, no. 7873 (2021): 583-589.
+            """)
+            
+        with bib_tabs[3]:
+            st.markdown("""
+            ### News and Analysis Sources
+            
+            14. **MIT Technology Review.** "Artificial Intelligence." Accessed June 28, 2025.
+
+            15. **Nature Machine Intelligence.** "Nature Machine Intelligence Journal." Accessed June 28, 2025.
+
+            16. **IEEE Computer Society.** "IEEE Computer Society Publications." Accessed June 28, 2025.
+            """)
+            
+        with bib_tabs[4]:
+            st.markdown("""
+            ### Multi-Source Collections and Databases
+            
+            17. **AI Index Report Database.** Stanford HAI. Multi-year compilation of AI metrics, 2017-2025.
+
+            18. **OECD AI Database.** Cross-national AI policy and adoption metrics.
+
+            19. **US Census AI Supplement.** Comprehensive business AI usage survey, 850,000 firms.
+            """)
+
     else:
-        st.info(f"View '{current_view}' implementation would continue here with all remaining views from the original dashboard...")
+        # Generic view renderer for any unmapped views
+        st.write(f"📊 **{current_view}**")
+        
+        if current_view in data_map and data_map[current_view] is not None:
+            df = data_map[current_view]
+            
+            if safe_data_check(df, current_view):
+                st.markdown(f"### Data Overview for {current_view}")
+                st.dataframe(df, use_container_width=True)
+                
+                # Try to create a simple visualization if possible
+                try:
+                    if len(df.columns) >= 2:
+                        x_col = df.columns[0]
+                        y_col = df.columns[1]
+                        
+                        # Check if we can make a simple bar chart
+                        if pd.api.types.is_numeric_dtype(df[y_col]):
+                            fig = px.bar(df, x=x_col, y=y_col, 
+                                        title=f"{current_view}: {y_col} by {x_col}")
+                            st.plotly_chart(fig, use_container_width=True)
+                        else:
+                            st.info("Data available but not suitable for automatic visualization.")
+                    else:
+                        st.info("Data has insufficient columns for automatic visualization.")
+                        
+                except Exception as e:
+                    st.warning(f"Could not create automatic visualization: {e}")
+                    
+        else:
+            st.error(f"No data available for '{current_view}'. This view may not be implemented yet.")
 
 # Add export functionality for current view - FIXED: Use safe filename cleaning
 if current_view in data_map and data_map[current_view] is not None:
