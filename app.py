@@ -5,6 +5,9 @@ import plotly.express as px
 import re
 from datetime import datetime
 
+# Add this new import
+from Utils.helpers import safe_execute, safe_data_check, clean_filename, monitor_performance
+
 from config.settings import DashboardConfig, FEATURE_FLAGS
 
 # Page config must be the first Streamlit command.
@@ -848,32 +851,37 @@ def _create_fallback_data():
     st.warning("⚠️ Using fallback data due to loading error. Some features may be limited.")
 
 # Load all data
-loaded_data = load_data()
+loaded_data = safe_execute(
+    load_data,
+    default_value=None,
+    error_message="Critical error in data loading"
+)
 
 # Initialize all variables to None first
 historical_data = sector_2018 = sector_2025 = firm_size = ai_maturity = geographic = state_data = tech_stack = productivity_data = productivity_by_skill = ai_productivity_estimates = oecd_g7_adoption = oecd_applications = barriers_data = support_effectiveness = ai_investment_data = regional_growth = ai_cost_reduction = financial_impact = ai_perception = training_emissions = skill_gap_data = ai_governance = token_economics = token_usage_patterns = token_optimization = token_pricing_evolution = genai_2025 = None
 
-# Only unpack if data loading was successful
 if loaded_data is not None:
-    try:
-        # Assign the unpacked data
+    unpacked_data = safe_execute(
+        lambda: tuple(loaded_data),  # Your unpacking logic
+        default_value=None,
+        error_message="Error unpacking data"
+    )
+    
+    if unpacked_data:
         (historical_data, sector_2018, sector_2025, firm_size, ai_maturity, geographic, 
          state_data, tech_stack, productivity_data, productivity_by_skill, ai_productivity_estimates, 
          oecd_g7_adoption, oecd_applications, barriers_data, support_effectiveness, 
          ai_investment_data, regional_growth, ai_cost_reduction, financial_impact, ai_perception, 
          training_emissions, skill_gap_data, ai_governance, token_economics, token_usage_patterns, 
-         token_optimization, token_pricing_evolution, genai_2025) = loaded_data
-        
+         token_optimization, token_pricing_evolution, genai_2025) = unpacked_data
         st.success("✓ Data loaded and unpacked successfully!")
-    except Exception as e:
-        st.error(f"❌ Error unpacking data: {str(e)}")
-        st.error("Dashboard will run with limited functionality.")
-        # Create fallback data
+    else:
+        # Use your existing fallback data creation
+        st.warning("⚠️ Using fallback data due to unpacking error.")
         _create_fallback_data()
 else:
-    st.error("❌ Data loading failed. Dashboard will run with limited functionality.")
-    st.info("Please refresh the page or contact support if the issue persists.")
-    # Create fallback data
+    st.error("❌ Data loading failed. Using fallback data.")
+    # Use your existing fallback data creation
     _create_fallback_data()
 
 # FIXED: Generate dynamic metrics after data is loaded
@@ -1661,7 +1669,7 @@ Timeline:
         st.error(f"Executive view '{current_view}' is not fully implemented yet.")
 
 # Continue with detailed views if selected
-else:
+elif is_detailed:
     # Main view implementations continue here...
     if current_view == "🎯 Competitive Position Assessor":
         st.write("# 🎯 AI Competitive Position Assessment")
