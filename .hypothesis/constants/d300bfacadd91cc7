@@ -1,0 +1,4 @@
+# file: C:\Users\rcasa\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.13_qbz5n2kfra8p0\LocalCache\local-packages\Python313\site-packages\streamlit\elements\lib\column_config_utils.py
+# hypothesis_version: 6.135.17
+
+['_index', '_pos:', 'boolean', 'bytes', 'checkbox', 'complex', 'date', 'datetime', 'datetime64', 'decimal', 'dict', 'empty', 'float', 'floating', 'hidden', 'integer', 'interval', 'link', 'list', 'mixed-integer-float', 'number', 'object', 'period', 'selectbox', 'string', 'text', 'time', 'timedelta', 'timedelta64', 'unknown']

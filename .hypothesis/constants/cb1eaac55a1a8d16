@@ -1,0 +1,4 @@
+# file: C:\Users\rcasa\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.13_qbz5n2kfra8p0\LocalCache\local-packages\Python313\site-packages\streamlit\elements\lib\mutable_status_container.py
+# hypothesis_version: 6.135.17
+
+[0.05, ':material/check:', ':material/error:', 'StatusContainer', 'complete', 'error', 'expanded', 'running', 'spinner']

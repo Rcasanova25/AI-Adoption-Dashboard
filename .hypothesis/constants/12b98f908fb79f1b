@@ -1,0 +1,4 @@
+# file: C:\Users\rcasa\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.13_qbz5n2kfra8p0\LocalCache\local-packages\Python313\site-packages\streamlit\elements\plotly_chart.py
+# hypothesis_version: 6.135.17
+
+['BaseFigure', 'DeltaGenerator', 'PlotlyState', 'WidgetCallback', 'box', 'config', 'go.Data', 'go.Figure', 'ignore', 'lasso', 'linkText', 'link_text', 'mpl.figure.Figure', 'plotly_chart', 'point_indices', 'points', 'rerun', 'selection', 'sharing', 'showLink', 'show_link', 'streamlit', 'string_value']

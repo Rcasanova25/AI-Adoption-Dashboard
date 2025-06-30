@@ -1,0 +1,4 @@
+# file: C:\Users\rcasa\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.13_qbz5n2kfra8p0\LocalCache\local-packages\Python313\site-packages\plotly\validators\candlestick\__init__.py
+# hypothesis_version: 6.135.17
+
+['._high.HighValidator', '._ids.IdsValidator', '._line.LineValidator', '._low.LowValidator', '._meta.MetaValidator', '._name.NameValidator', '._open.OpenValidator', '._text.TextValidator', '._uid.UidValidator', '._x.XValidator', '._xsrc.XsrcValidator']

@@ -1,0 +1,4 @@
+# file: C:\Users\rcasa\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.13_qbz5n2kfra8p0\LocalCache\local-packages\Python313\site-packages\streamlit\elements\widgets\number_input.py
+# hypothesis_version: 6.135.17
+
+[0.0, 0.01, '%0.2f', '%d', '%i', '%u', 'DeltaGenerator', 'FloatOrNone', 'IntOrNone', '`max_value`', '`min_value`', '`step`', '`value`', 'double_value', 'f', 'min', 'number_input', 'visible']
