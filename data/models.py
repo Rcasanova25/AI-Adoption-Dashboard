@@ -3,7 +3,7 @@ Data models and validation for AI Adoption Dashboard
 Uses Pydantic for robust data validation and type safety
 """
 
-from typing import Dict, List, Optional, Union
+from typing import Dict, List, Optional, Union, Literal
 from datetime import datetime
 import pandas as pd
 import logging
@@ -307,9 +307,10 @@ class ValidationResult(BaseModel):
     @validator('validated_rows')
     def validated_cannot_exceed_total(cls, v, values):
         """Validated rows cannot exceed total rows"""
-        total = values.get('total_rows', 0)
-        if v > total:
-            raise ValueError(f'Validated rows ({v}) cannot exceed total rows ({total})')
+        total = values.get('total_rows')
+        if total is not None and v > total:
+            logger.warning(f'Validated rows ({v}) exceeded total rows ({total}), capping to {total}')
+            return total
         return v
 
 

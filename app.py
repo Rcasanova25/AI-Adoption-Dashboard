@@ -5,7 +5,7 @@ import plotly.express as px
 import re
 from datetime import datetime
 from Utils.helpers import safe_execute, safe_data_check, clean_filename, monitor_performance
-from data.loaders_simple import load_all_datasets, get_dynamic_metrics
+from data.loaders import load_all_datasets, get_dynamic_metrics
 from config.settings import DashboardConfig, FEATURE_FLAGS
 from data.models import safe_validate_data, ValidationResult
 from data.loaders import validate_all_loaded_data
@@ -983,7 +983,7 @@ if not is_detailed:
         
         # Competitive landscape visualization
         st.markdown("### 📊 Competitive Landscape Analysis")
-        if firm_size is not None:
+        if firm_size is not None and not firm_size.empty:
             fig = go.Figure()
             fig.add_trace(go.Bar(
                 x=firm_size['size'], 
@@ -1422,7 +1422,7 @@ elif is_detailed:
     elif current_view == "Historical Trends":
         st.write("📊 **AI Adoption Historical Trends (2017-2025)**")
         
-        if safe_data_check(historical_data, "Historical data"):
+        if safe_data_check(historical_data, "Historical data") and historical_data is not None:
             # Apply year filter if set
             if 'year_range' in locals():
                 filtered_data = historical_data[
@@ -1517,7 +1517,7 @@ elif is_detailed:
     elif current_view == "Industry Analysis":
         st.write("🏭 **AI Adoption by Industry (2025)**")
         
-        if safe_data_check(sector_2025, "Industry analysis data"):
+        if safe_data_check(sector_2025, "Industry analysis data") and sector_2025 is not None:
             # Industry comparison
             fig = go.Figure()
             

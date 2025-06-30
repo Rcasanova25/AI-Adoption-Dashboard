@@ -279,13 +279,12 @@ def validate_all_loaded_data(datasets: Dict[str, pd.DataFrame]) -> Dict[str, Val
     return validation_results
 
 
-def load_all_datasets() -> Tuple[Any, ...]:
+def load_all_datasets() -> dict:
     """
     Load all datasets with comprehensive validation
-    Returns tuple in the exact same order as your original function
+    Returns a dictionary of all datasets
     """
     datasets = {}
-    
     try:
         # Load each dataset individually with validation
         datasets['historical_data'] = load_historical_data()
@@ -296,59 +295,33 @@ def load_all_datasets() -> Tuple[Any, ...]:
         datasets['firm_size'] = load_firm_size_data()
         datasets['geographic'] = load_geographic_data()
         datasets['ai_maturity'] = load_ai_maturity_data()
-        
-        # Create derived datasets (these don't need separate validation)
         if datasets['geographic'] is not None:
             datasets['state_data'] = create_state_data(datasets['geographic'])
-        
-        # Add minimal datasets for backward compatibility
         datasets['sector_2018'] = pd.DataFrame({
             'sector': ['Manufacturing', 'Information', 'Healthcare', 'Professional Services'],
             'firm_weighted': [12, 12, 8, 7],
             'employment_weighted': [18, 22, 15, 14]
         })
-        
         datasets['tech_stack'] = pd.DataFrame({
             'technology': ['AI Only', 'AI + Cloud', 'AI + Digitization', 'AI + Cloud + Digitization'],
             'percentage': [15, 23, 24, 38]
         })
-        
         datasets['productivity_data'] = pd.DataFrame({
             'year': [1980, 1985, 1990, 1995, 2000, 2005, 2010, 2015, 2020, 2025],
             'productivity_growth': [0.8, 1.2, 1.5, 2.2, 2.5, 1.8, 1.0, 0.5, 0.3, 0.4],
             'young_workers_share': [42, 45, 43, 38, 35, 33, 32, 34, 36, 38]
         })
-        
-        # Validate all loaded data
         validation_results = validate_all_loaded_data(datasets)
-        
-        # Show validation summary
         total_datasets = len(validation_results)
         valid_datasets = sum(1 for result in validation_results.values() if result.is_valid)
-        
         if valid_datasets == total_datasets:
             logger.info(f"🎉 All {total_datasets} datasets passed validation!")
         else:
             logger.warning(f"⚠️ {valid_datasets}/{total_datasets} datasets passed validation")
-        
-        # Return in the exact same order as your original function
-        return (
-            datasets.get('historical_data'),
-            datasets.get('sector_2018'), 
-            datasets.get('sector_2025'),
-            datasets.get('firm_size'),
-            datasets.get('ai_maturity'),
-            datasets.get('geographic'),
-            datasets.get('state_data'),
-            datasets.get('tech_stack'),
-            datasets.get('productivity_data'),
-            # Add None placeholders for remaining items to match your original tuple
-            None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None
-        )
-        
+        return datasets
     except Exception as e:
         logger.error(f"Critical error in data loading: {e}")
-        return None
+        return {}
 
 
 def create_state_data(geographic_data: pd.DataFrame) -> pd.DataFrame:
