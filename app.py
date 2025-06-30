@@ -9,6 +9,7 @@ from data.loaders import load_all_datasets, get_dynamic_metrics
 from config.settings import DashboardConfig, FEATURE_FLAGS
 from data.models import safe_validate_data, ValidationResult
 from data.loaders import validate_all_loaded_data
+from business.metrics import BusinessMetrics, CompetitivePosition, InvestmentRecommendation
 
 # Page config must be the first Streamlit command.
 st.set_page_config(
@@ -450,7 +451,7 @@ def executive_strategic_brief(dynamic_metrics, historical_data):
     
     with col2:
         if st.button("🎯 Assess My Position", type="primary", use_container_width=True):
-            assess_competitive_position(industry, company_size)
+            display_competitive_assessment(industry, company_size)
     
     # Executive summary
     st.subheader("🎯 Executive Summary")
@@ -472,35 +473,134 @@ def executive_strategic_brief(dynamic_metrics, historical_data):
     3. **Week 9-12:** Production deployment of highest-ROI use cases
     """)
 
-def assess_competitive_position(industry, company_size):
-    """Quick competitive assessment logic"""
+def display_competitive_assessment(industry, company_size, maturity="Exploring", urgency=5):
+    """Display competitive assessment using business logic module"""
     
-    # Extract adoption rates from selections
-    industry_adoption = int(industry.split('(')[1].split('%')[0])
-    size_adoption = int(company_size.split('(')[1].split('%')[0])
+    # Use the business logic module
+    assessment = BusinessMetrics.assess_competitive_position(
+        industry, company_size, maturity, urgency
+    )
     
-    # Simple scoring logic
-    competitive_score = (industry_adoption + size_adoption) / 2
-    
-    if competitive_score >= 70:
-        status = "LEADER"
-        color = "success"
-        message = "You're in a leading position. Focus on maintaining advantage and innovation."
-    elif competitive_score >= 50:
-        status = "COMPETITIVE"
-        color = "warning" 
-        message = "You're competitive but need to accelerate to avoid falling behind."
+    # Display results based on position
+    if assessment.position == CompetitivePosition.LEADER:
+        st.success(f"**Status: {assessment.position.value}**\n\n{assessment.gap_analysis}")
+    elif assessment.position == CompetitivePosition.COMPETITIVE:
+        st.warning(f"**Status: {assessment.position.value}**\n\n{assessment.gap_analysis}")
     else:
-        status = "AT RISK"
-        color = "error"
-        message = "Urgent action required. You're falling behind market adoption."
+        st.error(f"**Status: {assessment.position.value}**\n\n{assessment.gap_analysis}")
     
-    if color == "success":
-        st.success(f"**Status: {status}**\n\n{message}")
-    elif color == "warning":
-        st.warning(f"**Status: {status}**\n\n{message}")
+    # Show detailed metrics
+    col1, col2, col3 = st.columns(3)
+    with col1:
+        st.metric("Competitive Score", f"{assessment.score:.1f}", f"Industry: {assessment.industry_benchmark}%")
+    with col2:
+        st.metric("Position", assessment.position.value, f"Size: {assessment.size_benchmark}%")
+    with col3:
+        st.metric("Urgency Level", f"{assessment.urgency_level}/10", "Competitive pressure")
+    
+    # Show recommendations
+    st.markdown("**🎯 Strategic Recommendations:**")
+    for i, rec in enumerate(assessment.recommendations, 1):
+        st.write(f"{i}. {rec}")
+    
+    # Show risk factors and opportunities
+    col1, col2 = st.columns(2)
+    with col1:
+        if assessment.risk_factors:
+            st.markdown("**⚠️ Risk Factors:**")
+            for risk in assessment.risk_factors:
+                st.write(f"• {risk}")
+    
+    with col2:
+        if assessment.opportunities:
+            st.markdown("**💡 Opportunities:**")
+            for opp in assessment.opportunities:
+                st.write(f"• {opp}")
+    
+    return assessment
+
+def display_investment_case(investment_amount, timeline, industry, goal, risk_tolerance="Medium"):
+    """Display investment case using business logic module"""
+    
+    # Use business logic module
+    case = BusinessMetrics.calculate_investment_case(
+        investment_amount, timeline, industry, goal, risk_tolerance
+    )
+    
+    st.markdown("---")
+    st.subheader("📊 Your AI Investment Business Case")
+    
+    # Financial metrics
+    col1, col2, col3, col4 = st.columns(4)
+    
+    with col1:
+        st.metric("Expected ROI", f"{case.expected_roi:.1f}x", f"Confidence: {case.confidence_level}")
+    with col2:
+        st.metric("Total Return", f"${case.total_return:,.0f}", f"Net: ${case.net_benefit:,.0f}")
+    with col3:
+        st.metric("Monthly Benefit", f"${case.monthly_benefit:,.0f}", "Average value creation")
+    with col4:
+        st.metric("Payback Period", f"{case.payback_months} months", "Time to ROI")
+    
+    # Recommendation
+    if case.recommendation == InvestmentRecommendation.APPROVE:
+        st.success(f"**Recommendation: {case.recommendation.value}**")
+        st.success("Strong business case with proven ROI potential")
+    elif case.recommendation == InvestmentRecommendation.CONDITIONAL:
+        st.warning(f"**Recommendation: {case.recommendation.value}**")
+        st.warning("Good ROI but monitor implementation closely")
     else:
-        st.error(f"**Status: {status}**\n\n{message}")
+        st.error(f"**Recommendation: {case.recommendation.value}**")
+        st.error("Consider reducing scope or alternative approaches")
+    
+    # Market context
+    st.info(f"**Market Context:** {case.market_context}")
+    
+    # Risk factors and success factors
+    col1, col2 = st.columns(2)
+    
+    with col1:
+        st.markdown("**⚠️ Risk Factors:**")
+        for risk in case.risk_factors:
+            st.write(f"• {risk}")
+    
+    with col2:
+        st.markdown("**✅ Success Factors:**")
+        for factor in case.success_factors:
+            st.write(f"• {factor}")
+    
+    # Generate downloadable business case
+    business_case_text = f"""
+AI INVESTMENT BUSINESS CASE
+
+Investment: ${case.investment_amount:,} over {case.timeline_months} months
+Expected ROI: {case.expected_roi:.1f}x
+Recommendation: {case.recommendation.value}
+
+Market Context: {case.market_context}
+
+Financial Projections:
+- Total Return: ${case.total_return:,.0f}
+- Net Benefit: ${case.net_benefit:,.0f}
+- Payback Period: {case.payback_months} months
+- Confidence Level: {case.confidence_level}
+
+Risk Factors:
+{chr(10).join([f'- {risk}' for risk in case.risk_factors])}
+
+Success Factors:
+{chr(10).join([f'- {factor}' for factor in case.success_factors])}
+    """
+    
+    st.download_button(
+        label="📥 Download Complete Business Case",
+        data=business_case_text,
+        file_name=f"AI_Investment_Case_{datetime.now().strftime('%Y%m%d')}.txt",
+        mime="text/plain",
+        use_container_width=True
+    )
+    
+    return case
 
 # Apply styling
 apply_executive_styling()
@@ -944,12 +1044,9 @@ if not is_detailed:
         st.subheader("⚖️ Competitive Position Intelligence")
         st.markdown("*Understand your strategic position in the AI adoption landscape*")
         
-        # Quick positioning assessment
         col1, col2 = st.columns([2, 1])
         
         with col1:
-            st.markdown("### 🎯 Position Your Company")
-            
             industry = st.selectbox("Your Industry", [
                 "Technology (92% adoption)",
                 "Financial Services (85% adoption)", 
@@ -969,17 +1066,20 @@ if not is_detailed:
                 "5000+ employees (58% adoption)"
             ], help="Select your company size range")
             
-            current_ai_maturity = st.select_slider("Current AI Maturity", [
+            maturity = st.select_slider("Current AI Maturity", [
                 "Exploring (0-10%)",
                 "Piloting (10-30%)", 
                 "Implementing (30-60%)",
                 "Scaling (60-80%)",
                 "Leading (80%+)"
             ], help="Estimate your current AI implementation level")
+            
+            urgency = st.slider("Competitive Urgency (1-10)", 1, 10, 5, 
+                               help="How urgent is it to act on AI adoption?")
         
         with col2:
             if st.button("🎯 Assess My Position", type="primary", use_container_width=True):
-                assess_competitive_position(industry, company_size)
+                assessment = display_competitive_assessment(industry, company_size, maturity, urgency)
         
         # Competitive landscape visualization
         st.markdown("### 📊 Competitive Landscape Analysis")
@@ -1049,10 +1149,8 @@ if not is_detailed:
         col1, col2 = st.columns(2)
 
         with col1:
-            st.markdown("**Investment Parameters**")
-
             investment_amount = st.number_input(
-                "Total Investment Budget ($)", 
+                "Investment Budget ($)", 
                 min_value=10000, 
                 max_value=10000000, 
                 value=500000, 
@@ -1060,115 +1158,49 @@ if not is_detailed:
                 help="Include technology, talent, and implementation costs"
             )
 
-            investment_timeline = st.selectbox(
-                "Investment Timeline",
+            timeline = st.selectbox(
+                "Timeline",
                 ["6 months", "12 months", "18 months", "24 months", "36 months"],
                 index=2,
                 help="Time horizon for full investment deployment"
             )
 
-            primary_goal = st.selectbox(
-                "Primary Investment Goal",
-                ["Operational Efficiency", "Revenue Growth", "Cost Reduction", 
-                 "Innovation & New Products", "Risk Management", "Customer Experience"],
-                help="Main strategic objective for AI investment"
-            )
-
-            industry_context = st.selectbox(
-                "Your Industry",
+            industry = st.selectbox(
+                "Industry",
                 ["Technology", "Financial Services", "Healthcare", "Manufacturing", 
                  "Retail", "Education", "Energy", "Government"],
                 help="Industry affects ROI expectations and implementation approach"
             )
 
+            goal = st.selectbox(
+                "Primary Goal",
+                ["Operational Efficiency", "Revenue Growth", "Cost Reduction", 
+                 "Innovation & New Products", "Risk Management", "Customer Experience"],
+                help="Main strategic objective for AI investment"
+            )
+
+            risk_tolerance = st.selectbox(
+                "Risk Tolerance",
+                ["Low", "Medium", "High"],
+                index=1,
+                help="Your organization's risk appetite for AI investment"
+            )
+
         with col2:
             st.markdown("**Expected Outcomes**")
-
-            # Calculate investment projections
-            timeline_months = int(investment_timeline.split()[0])
-
-            # Industry ROI multipliers
-            industry_roi = {
-                "Technology": 4.2, "Financial Services": 3.8, "Healthcare": 3.2,
-                "Manufacturing": 3.5, "Retail": 3.0, "Education": 2.5,
-                "Energy": 2.8, "Government": 2.2
-            }
-
-            base_roi = industry_roi.get(industry_context, 3.0)
-
-            # Goal impact multipliers
-            goal_multiplier = {
-                "Operational Efficiency": 1.2, "Revenue Growth": 1.1, "Cost Reduction": 1.3,
-                "Innovation & New Products": 1.0, "Risk Management": 0.9, "Customer Experience": 1.1
-            }
-
-            adjusted_roi = base_roi * goal_multiplier.get(primary_goal, 1.0)
-
-            # Calculate projections
-            total_return = investment_amount * adjusted_roi
-            net_benefit = total_return - investment_amount
-            monthly_benefit = net_benefit / timeline_months
-            payback_months = max(6, int(timeline_months / adjusted_roi))
-
-            st.metric("Projected ROI", f"{adjusted_roi:.1f}x", 
-                     f"Based on {industry_context} average")
-            st.metric("Total Expected Return", f"${total_return:,.0f}", 
-                     f"Over {timeline_months} months")
-            st.metric("Net Benefit", f"${net_benefit:,.0f}", 
-                     f"${monthly_benefit:,.0f}/month average")
-            st.metric("Payback Period", f"{payback_months} months", 
-                     "Time to recover investment")
+            
+            # Show placeholder for expected outcomes
+            st.info("📊 **Investment analysis will be generated when you click 'Generate Business Case'**")
+            st.write("The business case will include:")
+            st.write("• Expected ROI based on industry benchmarks")
+            st.write("• Total return and net benefit projections")
+            st.write("• Payback period analysis")
+            st.write("• Risk assessment and success factors")
 
         # Generate business case
         if st.button("📋 Generate Business Case", type="primary", use_container_width=True):
-
-            st.markdown("---")
-            st.subheader("📊 Your AI Investment Business Case")
-
-            # Create business case document
-            business_case = f"""
-AI Investment Business Case
-
-**Investment Request:** ${investment_amount:,} over {timeline_months} months
-
-**Strategic Objective:** {primary_goal}
-
-**Financial Projections:**
-- Expected ROI: {adjusted_roi:.1f}x
-- Total Return: ${total_return:,.0f}
-- Net Benefit: ${net_benefit:,.0f}
-- Payback Period: {payback_months} months
-- Monthly Value Creation: ${monthly_benefit:,.0f}
-
-**Market Context:**
-- Industry average ROI: {industry_roi[industry_context]:.1f}x
-- 2024 global AI investment: {dynamic_metrics['investment_value']} ({dynamic_metrics['investment_delta']})
-- {dynamic_metrics['market_adoption']} of businesses now use AI
-- Typical payback: 12-18 months
-
-**Risk Assessment:**
-- Market Risk: Low (proven ROI across sectors)
-- Technology Risk: Medium (rapid evolution)
-- Implementation Risk: Medium (depends on execution)
-- Competitive Risk: High (cost of inaction)
-
-**Recommendation:** {"APPROVE" if adjusted_roi >= 2.5 else "REVIEW SCOPE"}
-
-**Rationale:** {"Strong ROI projection above 2.5x threshold with proven market validation" if adjusted_roi >= 2.5 else "ROI below recommended threshold - consider smaller scope or different approach"}
-"""
-
-            st.markdown(business_case)
-
-            # Download business case
-            st.download_button(
-                label="📥 Download Complete Executive Report",
-                data=business_case,
-                file_name=f"AI_Investment_Case_{datetime.now().strftime('%Y%m%d')}.txt",
-                mime="text/plain",
-                use_container_width=True
-            )
-
-            st.success("✅ Investment case generated! Use this for leadership presentations and strategic planning.")
+            timeline_months = int(timeline.split()[0])
+            case = display_investment_case(investment_amount, timeline_months, industry, goal, risk_tolerance)
     
     elif current_view == "📊 Market Intelligence":
         st.subheader("📊 Market Intelligence Dashboard")
