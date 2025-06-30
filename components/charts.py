@@ -539,55 +539,13 @@ def demo_charts():
         'investment': [50, 75, 120, 180, 252, 320]
     })
     
-    # DEBUG: Add debug output for trend_data creation
-    st.write("🔍 DEBUG: Trend Data Creation in charts.py")
-    st.write(f"• trend_data shape: {trend_data.shape}")
-    st.write(f"• trend_data columns: {list(trend_data.columns)}")
-    st.write(f"• trend_data dtypes: {trend_data.dtypes.to_dict()}")
-    
     industry_data = pd.DataFrame({
-        'industry': ['Technology', 'Finance', 'Healthcare', 'Manufacturing', 'Retail'],
-        'adoption_rate': [92, 85, 78, 75, 72],
-        'avg_roi': [4.2, 3.8, 3.1, 2.9, 3.3],
-        'risk_score': [25, 35, 45, 55, 40]
+        'industry': ['Technology', 'Financial Services', 'Healthcare', 'Manufacturing', 
+                    'Retail & E-commerce', 'Education', 'Energy & Utilities', 'Government'],
+        'adoption_rate': [92, 85, 78, 75, 72, 65, 58, 52],
+        'avg_roi': [4.2, 3.8, 3.2, 3.5, 3.0, 2.5, 2.8, 2.2],
+        'risk_score': [25, 35, 45, 55, 40, 60, 70, 80]
     })
-    
-    # DEBUG: Add debug output for industry_data creation
-    st.write("🔍 DEBUG: Industry Data Creation in charts.py")
-    st.write(f"• industry_data shape: {industry_data.shape}")
-    st.write(f"• industry_data columns: {list(industry_data.columns)}")
-    st.write(f"• industry_data dtypes: {industry_data.dtypes.to_dict()}")
-    
-    # Check for potential broadcasting issues in the data
-    try:
-        # Test array operations that might cause broadcasting issues
-        adoption_values = industry_data['adoption_rate'].values
-        roi_values = industry_data['avg_roi'].values
-        risk_values = industry_data['risk_score'].values
-        
-        st.write(f"• adoption_values shape: {adoption_values.shape}")
-        st.write(f"• roi_values shape: {roi_values.shape}")
-        st.write(f"• risk_values shape: {risk_values.shape}")
-        
-        # Test potential broadcasting operations
-        test_calculation = adoption_values + roi_values
-        st.write(f"• Test calculation (adoption + roi) shape: {test_calculation.shape}")
-        st.write(f"• Test calculation result: {test_calculation}")
-        
-        # Test with numpy arrays
-        test_array = np.array([1, 2, 3, 4, 5])
-        st.write(f"• test_array shape: {test_array.shape}")
-        
-        if test_array.shape == adoption_values.shape:
-            test_broadcast = adoption_values + test_array
-            st.write(f"• Broadcast test successful: {test_broadcast}")
-        else:
-            st.write(f"• Broadcast test failed - shape mismatch: {test_array.shape} vs {adoption_values.shape}")
-            
-    except Exception as e:
-        st.error(f"❌ Error in data validation: {e}")
-        st.write(f"• Error type: {type(e)}")
-        st.write(f"• Error details: {str(e)}")
     
     # Demo metric cards
     st.subheader("📊 Metric Cards")

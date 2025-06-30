@@ -111,12 +111,13 @@ def demo_charts():
     st.title("📈 Chart Components Demo")
     
     # Create sample data
-    sectors = ['Technology', 'Finance', 'Healthcare', 'Manufacturing', 'Retail']
+    sectors = ['Technology', 'Financial Services', 'Healthcare', 'Manufacturing', 
+               'Retail & E-commerce', 'Education', 'Energy & Utilities', 'Government']
     adoption_data = pd.DataFrame({
         'sector': sectors,
-        'adoption_rate': [92, 85, 78, 75, 72],
-        'genai_adoption': [88, 82, 71, 68, 65],
-        'avg_roi': [4.2, 3.8, 3.2, 2.9, 2.7]
+        'adoption_rate': [92, 85, 78, 75, 72, 65, 58, 52],
+        'genai_adoption': [88, 78, 65, 58, 70, 62, 45, 38],
+        'avg_roi': [4.2, 3.8, 3.2, 3.5, 3.0, 2.5, 2.8, 2.2]
     })
     
     # Create chart config

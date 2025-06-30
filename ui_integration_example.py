@@ -85,10 +85,11 @@ def create_demo_datasets():
             'genai_use': [0, 2, 15, 33, 71, 75]
         }),
         'sector_2025': pd.DataFrame({
-            'sector': ['Technology', 'Financial Services', 'Healthcare', 'Manufacturing', 'Retail'],
-            'adoption_rate': [92, 85, 78, 75, 72],
-            'avg_roi': [4.2, 3.8, 3.1, 2.9, 3.3],
-            'genai_adoption': [89, 76, 68, 65, 69]
+            'sector': ['Technology', 'Financial Services', 'Healthcare', 'Manufacturing', 
+                      'Retail & E-commerce', 'Education', 'Energy & Utilities', 'Government'],
+            'adoption_rate': [92, 85, 78, 75, 72, 65, 58, 52],
+            'avg_roi': [4.2, 3.8, 3.2, 3.5, 3.0, 2.5, 2.8, 2.2],
+            'genai_adoption': [88, 78, 65, 58, 70, 62, 45, 38]
         }),
         'investment_data': pd.DataFrame({
             'year': [2022, 2023, 2024],
@@ -191,11 +192,14 @@ def render_enhanced_executive_dashboard(datasets, dynamic_metrics):
         hist_data = datasets.get('historical_data')
         trend_data = hist_data['ai_use'].tolist() if hist_data is not None else [55, 65, 71, 78]
         
+        # When calling render, ensure trend is a list of float
+        trend = [float(x) for x in trend_data] if isinstance(trend_data, list) else trend_data
+        
         metric_card.render(
             title="Market Adoption Rate",
             value=dynamic_metrics.get('market_adoption', '78%'),
             delta=dynamic_metrics.get('market_delta', '+23pp vs 2023'),
-            trend=trend_data,
+            trend=trend,
             insight="Crossed majority adoption threshold",
             color="success",
             help_text="Percentage of businesses using any AI technology"
@@ -204,11 +208,14 @@ def render_enhanced_executive_dashboard(datasets, dynamic_metrics):
     with col2:
         genai_trend = hist_data['genai_use'].tolist() if hist_data is not None else [15, 33, 65, 71]
         
+        # When calling render, ensure trend is a list of float
+        trend = [float(x) for x in genai_trend] if isinstance(genai_trend, list) else genai_trend
+        
         metric_card.render(
             title="GenAI Penetration",
             value=dynamic_metrics.get('genai_adoption', '71%'),
             delta=dynamic_metrics.get('genai_delta', '+38pp from 2023'),
-            trend=genai_trend,
+            trend=trend,
             insight="Revolutionary technology adoption",
             color="info",
             help_text="Businesses actively using Generative AI solutions"
@@ -255,6 +262,10 @@ def render_enhanced_executive_dashboard(datasets, dynamic_metrics):
             "action": "Scale successful pilots to enterprise-wide deployment"
         }
     ]
+    
+    # When calling render_insights_section, ensure insights is a string
+    if isinstance(insights, list):
+        insights = '\n'.join([str(item) for item in insights])
     
     exec_dashboard.render_insights_section(insights)
     
@@ -333,63 +344,33 @@ def render_enhanced_executive_dashboard(datasets, dynamic_metrics):
         
         # Add risk score if not present (for demo)
         sector_data = datasets['sector_2025'].copy()
+        
         if 'risk_score' not in sector_data.columns:
             # Generate realistic risk scores inversely correlated with adoption
             sector_data = sector_data.reset_index(drop=True)
             num_sectors = len(sector_data)
             
-            # DEBUG: Print detailed information about the data
-            st.write("🔍 DEBUG: Risk Score Calculation")
-            st.write(f"• sector_data shape: {sector_data.shape}")
-            st.write(f"• sector_data columns: {list(sector_data.columns)}")
-            st.write(f"• num_sectors: {num_sectors}")
-            st.write(f"• adoption_rate column type: {type(sector_data['adoption_rate'])}")
-            st.write(f"• adoption_rate values: {sector_data['adoption_rate'].tolist()}")
+            # Use a pattern that can be repeated or truncated as needed
+            base_pattern = [5, -5, 10, 15, 0, -10, 8, -3]
             
-            base_adjustments = np.array([5, -5, 10, 15, 0, -10, 8, -3])
-            st.write(f"• base_adjustments: {base_adjustments}")
-            st.write(f"• base_adjustments shape: {base_adjustments.shape}")
+            if num_sectors <= len(base_pattern):
+                base_adjustments = np.array(base_pattern[:num_sectors])
+            else:
+                # If we have more sectors than the pattern, repeat the pattern
+                repeats_needed = (num_sectors // len(base_pattern)) + 1
+                extended_pattern = base_pattern * repeats_needed
+                base_adjustments = np.array(extended_pattern[:num_sectors])
             
-            risk_adjustments = np.resize(base_adjustments, num_sectors)
-            st.write(f"• risk_adjustments after resize: {risk_adjustments}")
-            st.write(f"• risk_adjustments shape: {risk_adjustments.shape}")
-            
-            # Additional debug info
+            risk_adjustments = base_adjustments
             adoption_values = sector_data['adoption_rate'].values
-            st.write(f"• adoption_values type: {type(adoption_values)}")
-            st.write(f"• adoption_values shape: {adoption_values.shape}")
-            st.write(f"• adoption_values: {adoption_values}")
             
-            # Check for any NaN or invalid values
-            st.write(f"• adoption_values has NaN: {np.isnan(adoption_values).any()}")
-            st.write(f"• adoption_values has inf: {np.isinf(adoption_values).any()}")
-            
-            # Verify array compatibility
-            st.write(f"• Can broadcast adoption_values and risk_adjustments: {np.can_cast(adoption_values.dtype, risk_adjustments.dtype)}")
-            
-            # Try the calculation with explicit error handling
             try:
-                # Calculate risk score step by step
                 base_risk = 100 - adoption_values
-                st.write(f"• base_risk (100 - adoption_values): {base_risk}")
-                
                 final_risk = base_risk + risk_adjustments
-                st.write(f"• final_risk (base_risk + risk_adjustments): {final_risk}")
-                
                 sector_data['risk_score'] = final_risk
-                st.write("✅ Risk score calculation successful!")
-                
             except Exception as e:
                 st.error(f"❌ Error in risk score calculation: {e}")
-                st.write(f"• Error type: {type(e)}")
-                st.write(f"• Error details: {str(e)}")
-                
-                # Fallback calculation
-                st.write("🔄 Using fallback calculation...")
                 sector_data['risk_score'] = 100 - adoption_values
-                st.write(f"• Fallback risk_score: {sector_data['risk_score'].tolist()}")
-            
-            st.stop()  # Stop execution to show debug info
         
         roi_chart.render_roi_analysis(
             data=sector_data,
