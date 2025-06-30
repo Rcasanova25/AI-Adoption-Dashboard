@@ -6,6 +6,7 @@ import numpy as np
 from datetime import datetime
 from plotly.subplots import make_subplots
 import re
+from config.settings import DashboardConfig, FEATURE_FLAGS
 
 # Page config must be the first Streamlit command.
 st.set_page_config(
@@ -22,12 +23,7 @@ st.set_page_config(
 
 # Add feature flags for safe deployment
 if 'feature_flags' not in st.session_state:
-    st.session_state.feature_flags = {
-        'executive_mode': True,
-        'visual_redesign': True,
-        'strategic_callouts': True,
-        'competitive_homepage': False  # Start disabled, enable after testing
-    }
+    st.session_state.feature_flags = FEATURE_FLAGS
 
 # These view lists are created based on the options available in the script.
 all_views = [
