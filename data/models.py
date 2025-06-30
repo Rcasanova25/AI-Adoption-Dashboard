@@ -3,18 +3,46 @@ Data models and validation for AI Adoption Dashboard
 Uses Pydantic for robust data validation and type safety
 """
 
-from typing import Dict, List, Optional, Union, Literal
-from pydantic import BaseModel, validator, Field, ConfigDict
+from typing import Dict, List, Optional, Union
 from datetime import datetime
 import pandas as pd
 import logging
+
+# Handle Pydantic version compatibility
+try:
+    from pydantic import BaseModel, Field, validator
+    from pydantic import ConfigDict
+    PYDANTIC_V2 = True
+except ImportError:
+    try:
+        from pydantic import BaseModel, Field, validator
+        PYDANTIC_V2 = False
+        ConfigDict = None
+    except ImportError:
+        # Fallback: create mock classes if Pydantic not available
+        class BaseModel:
+            def __init__(self, **kwargs):
+                for k, v in kwargs.items():
+                    setattr(self, k, v)
+        
+        def Field(*args, **kwargs):
+            return None
+            
+        def validator(*args, **kwargs):
+            def decorator(func):
+                return func
+            return decorator
+            
+        PYDANTIC_V2 = False
+        ConfigDict = None
 
 logger = logging.getLogger(__name__)
 
 
 class HistoricalDataPoint(BaseModel):
     """Model for historical AI adoption data points"""
-    model_config = ConfigDict(str_strip_whitespace=True)
+    if PYDANTIC_V2 and ConfigDict:
+        model_config = ConfigDict(str_strip_whitespace=True)
     
     year: int = Field(..., ge=2017, le=2025, description="Year of the data point")
     ai_use: float = Field(..., ge=0, le=100, description="Overall AI adoption percentage")
@@ -37,7 +65,8 @@ class HistoricalDataPoint(BaseModel):
 
 class SectorData(BaseModel):
     """Model for sector-specific AI adoption data"""
-    model_config = ConfigDict(str_strip_whitespace=True)
+    if PYDANTIC_V2 and ConfigDict:
+        model_config = ConfigDict(str_strip_whitespace=True)
     
     sector: str = Field(..., min_length=2, max_length=50, description="Industry sector name")
     adoption_rate: float = Field(..., ge=0, le=100, description="AI adoption rate percentage")
@@ -278,11 +307,9 @@ class ValidationResult(BaseModel):
     @validator('validated_rows')
     def validated_cannot_exceed_total(cls, v, values):
         """Validated rows cannot exceed total rows"""
-        total = values.get('total_rows')
-        if total is not None and v > total:
-            # Instead of raising an error, just cap the validated rows
-            logger.warning(f'Validated rows ({v}) exceeded total rows ({total}), capping to {total}')
-            return total
+        total = values.get('total_rows', 0)
+        if v > total:
+            raise ValueError(f'Validated rows ({v}) cannot exceed total rows ({total})')
         return v
 
 
@@ -300,7 +327,7 @@ class DatasetInfo(BaseModel):
 
 
 # Model registry for easy access
-MODEL_REGISTRY: Dict[str, type[BaseModel]] = {
+MODEL_REGISTRY: Dict[str, BaseModel] = {
     "historical_data": HistoricalDataPoint,
     "sector_data": SectorData,
     "firm_size": FirmSizeData,
@@ -314,15 +341,17 @@ MODEL_REGISTRY: Dict[str, type[BaseModel]] = {
 
 def validate_dataframe(
     df: pd.DataFrame, 
-    model: type[BaseModel], 
+    model: BaseModel, 
     sample_size: int = 100
 ) -> ValidationResult:
     """
-    Validate a DataFrame against a Pydantic model class
+    Validate a DataFrame against a Pydantic model
+    
     Args:
         df: DataFrame to validate
-        model: Pydantic model class to validate against
+        model: Pydantic model to validate against
         sample_size: Number of rows to validate (for performance)
+    
     Returns:
         ValidationResult with validation status
     """
@@ -345,17 +374,15 @@ def validate_dataframe(
             # Validate row using Pydantic model
             validated_row = model(**row.to_dict())
             validated_rows += 1
+            
+            # Collect any warnings from model validation
+            # (Pydantic warnings are typically logged, not raised)
+            
         except Exception as e:
             errors.append(f"Row {idx}: {str(e)}")
             if len(errors) >= 10:  # Limit error reporting
                 break
-
-    # Debug output
-    print(f"DEBUG: total_rows={total_rows}, validated_rows={validated_rows}, sample_size={sample_size}, df.shape={df.shape}")
-    if validated_rows > total_rows:
-        logger.error(f"Validated rows ({validated_rows}) > total rows ({total_rows})! DataFrame shape: {df.shape}")
-        validated_rows = total_rows  # Prevents Pydantic error
-
+    
     is_valid = len(errors) == 0
     error_message = "; ".join(errors) if errors else None
     
@@ -368,17 +395,62 @@ def validate_dataframe(
     )
 
 
-def get_model_for_dataset(dataset_name: str) -> type[BaseModel] | None:
-    """Get the appropriate Pydantic model class for a dataset"""
+def validate_required_columns(df: pd.DataFrame, required_columns: List[str]) -> ValidationResult:
+    """
+    Validate that DataFrame has required columns
+    
+    Args:
+        df: DataFrame to validate
+        required_columns: List of required column names
+    
+    Returns:
+        ValidationResult with validation status
+    """
+    if df is None:
+        return ValidationResult(
+            is_valid=False,
+            error_message="DataFrame is None",
+            total_rows=0,
+            validated_rows=0
+        )
+    
+    missing_columns = [col for col in required_columns if col not in df.columns]
+    extra_columns = [col for col in df.columns if col not in required_columns]
+    
+    warnings = []
+    if extra_columns:
+        warnings.append(f"Extra columns found: {extra_columns}")
+    
+    if missing_columns:
+        return ValidationResult(
+            is_valid=False,
+            error_message=f"Missing required columns: {missing_columns}",
+            warning_messages=warnings,
+            total_rows=len(df),
+            validated_rows=0
+        )
+    
+    return ValidationResult(
+        is_valid=True,
+        warning_messages=warnings,
+        validated_rows=len(df),
+        total_rows=len(df)
+    )
+
+
+def get_model_for_dataset(dataset_name: str) -> Optional[BaseModel]:
+    """Get the appropriate Pydantic model for a dataset"""
     return MODEL_REGISTRY.get(dataset_name)
 
 
 def validate_dataset(df: pd.DataFrame, dataset_name: str) -> ValidationResult:
     """
     Validate a dataset using its registered model
+    
     Args:
         df: DataFrame to validate
         dataset_name: Name of the dataset
+    
     Returns:
         ValidationResult with validation status
     """
@@ -390,45 +462,8 @@ def validate_dataset(df: pd.DataFrame, dataset_name: str) -> ValidationResult:
             total_rows=len(df) if df is not None else 0,
             validated_rows=0
         )
+    
     return validate_dataframe(df, model)
-
-
-def validate_required_columns(df: pd.DataFrame, required_columns: List[str]) -> ValidationResult:
-    """
-    Validate that DataFrame has required columns
-    Args:
-        df: DataFrame to validate
-        required_columns: List of required column names
-    Returns:
-        ValidationResult with validation status
-    """
-    if df is None:
-        return ValidationResult(
-            is_valid=False,
-            error_message="DataFrame is None",
-            total_rows=0,
-            validated_rows=0
-        )
-    missing_columns = [col for col in required_columns if col not in df.columns]
-    extra_columns = [col for col in df.columns if col not in required_columns]
-    warnings = []
-    if extra_columns:
-        warnings.append(f"Extra columns found: {extra_columns}")
-    if missing_columns:
-        return ValidationResult(
-            is_valid=False,
-            error_message=f"Missing required columns: {missing_columns}",
-            warning_messages=warnings,
-            total_rows=len(df),
-            validated_rows=0
-        )
-    return ValidationResult(
-        is_valid=True,
-        error_message=None,
-        warning_messages=warnings,
-        validated_rows=len(df),
-        total_rows=len(df)
-    )
 
 
 def safe_validate_data(df: pd.DataFrame, dataset_name: str, show_warnings: bool = True) -> bool:

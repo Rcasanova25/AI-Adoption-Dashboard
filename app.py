@@ -5,7 +5,7 @@ import plotly.express as px
 import re
 from datetime import datetime
 from Utils.helpers import safe_execute, safe_data_check, clean_filename, monitor_performance
-from data.loaders import load_all_datasets, get_dynamic_metrics
+from data.loaders_simple import load_all_datasets, get_dynamic_metrics
 from config.settings import DashboardConfig, FEATURE_FLAGS
 from data.models import safe_validate_data, ValidationResult
 from data.loaders import validate_all_loaded_data

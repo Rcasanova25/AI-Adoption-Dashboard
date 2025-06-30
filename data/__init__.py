@@ -1,1 +1,1 @@
-"""Data loading and management module""" 
+"""Data loading and validation module"""
