@@ -4,14 +4,11 @@ import plotly.graph_objects as go
 import plotly.express as px
 import re
 from datetime import datetime
-
-# Add this new import
 from Utils.helpers import safe_execute, safe_data_check, clean_filename, monitor_performance
-
-# Add modular data loading imports
 from data.loaders import load_all_datasets, get_dynamic_metrics
-
 from config.settings import DashboardConfig, FEATURE_FLAGS
+from data.models import safe_validate_data, ValidationResult
+from data.loaders import validate_all_loaded_data
 
 # Page config must be the first Streamlit command.
 st.set_page_config(
