@@ -337,20 +337,59 @@ def render_enhanced_executive_dashboard(datasets, dynamic_metrics):
             # Generate realistic risk scores inversely correlated with adoption
             sector_data = sector_data.reset_index(drop=True)
             num_sectors = len(sector_data)
+            
+            # DEBUG: Print detailed information about the data
+            st.write("🔍 DEBUG: Risk Score Calculation")
+            st.write(f"• sector_data shape: {sector_data.shape}")
+            st.write(f"• sector_data columns: {list(sector_data.columns)}")
+            st.write(f"• num_sectors: {num_sectors}")
+            st.write(f"• adoption_rate column type: {type(sector_data['adoption_rate'])}")
+            st.write(f"• adoption_rate values: {sector_data['adoption_rate'].tolist()}")
+            
             base_adjustments = np.array([5, -5, 10, 15, 0, -10, 8, -3])
+            st.write(f"• base_adjustments: {base_adjustments}")
+            st.write(f"• base_adjustments shape: {base_adjustments.shape}")
+            
             risk_adjustments = np.resize(base_adjustments, num_sectors)
-            # Debug output
-            st.write(f"adoption_rate length: {len(sector_data['adoption_rate'].values)}")
-            st.write(f"risk_adjustments length: {len(risk_adjustments)}")
-            st.write(f"adoption_rate: {sector_data['adoption_rate'].values}")
-            st.write(f"risk_adjustments: {risk_adjustments}")
-            st.stop()
-            # Guarantee lengths match
-            if len(sector_data['adoption_rate'].values) == len(risk_adjustments):
-                sector_data['risk_score'] = 100 - sector_data['adoption_rate'].values + risk_adjustments
-            else:
-                st.error(f"Length mismatch: adoption_rate {len(sector_data['adoption_rate'].values)}, risk_adjustments {len(risk_adjustments)}")
-                sector_data['risk_score'] = 100 - sector_data['adoption_rate'].values
+            st.write(f"• risk_adjustments after resize: {risk_adjustments}")
+            st.write(f"• risk_adjustments shape: {risk_adjustments.shape}")
+            
+            # Additional debug info
+            adoption_values = sector_data['adoption_rate'].values
+            st.write(f"• adoption_values type: {type(adoption_values)}")
+            st.write(f"• adoption_values shape: {adoption_values.shape}")
+            st.write(f"• adoption_values: {adoption_values}")
+            
+            # Check for any NaN or invalid values
+            st.write(f"• adoption_values has NaN: {np.isnan(adoption_values).any()}")
+            st.write(f"• adoption_values has inf: {np.isinf(adoption_values).any()}")
+            
+            # Verify array compatibility
+            st.write(f"• Can broadcast adoption_values and risk_adjustments: {np.can_cast(adoption_values.dtype, risk_adjustments.dtype)}")
+            
+            # Try the calculation with explicit error handling
+            try:
+                # Calculate risk score step by step
+                base_risk = 100 - adoption_values
+                st.write(f"• base_risk (100 - adoption_values): {base_risk}")
+                
+                final_risk = base_risk + risk_adjustments
+                st.write(f"• final_risk (base_risk + risk_adjustments): {final_risk}")
+                
+                sector_data['risk_score'] = final_risk
+                st.write("✅ Risk score calculation successful!")
+                
+            except Exception as e:
+                st.error(f"❌ Error in risk score calculation: {e}")
+                st.write(f"• Error type: {type(e)}")
+                st.write(f"• Error details: {str(e)}")
+                
+                # Fallback calculation
+                st.write("🔄 Using fallback calculation...")
+                sector_data['risk_score'] = 100 - adoption_values
+                st.write(f"• Fallback risk_score: {sector_data['risk_score'].tolist()}")
+            
+            st.stop()  # Stop execution to show debug info
         
         roi_chart.render_roi_analysis(
             data=sector_data,

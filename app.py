@@ -142,18 +142,47 @@ def get_dynamic_metrics(historical_data, ai_cost_reduction, ai_investment_data, 
     
     # Market acceleration calculation
     if historical_data is not None and len(historical_data) >= 2:
-        latest_adoption = historical_data['ai_use'].iloc[-1]
-        previous_adoption = historical_data['ai_use'].iloc[-3] if len(historical_data) >= 3 else historical_data['ai_use'].iloc[-2]
-        adoption_delta = latest_adoption - previous_adoption
-        metrics['market_adoption'] = f"{latest_adoption}%"
-        metrics['market_delta'] = f"+{adoption_delta}pp vs 2023"
+        # DEBUG: Add debug output for historical data operations
+        st.write("🔍 DEBUG: Historical Data Operations")
+        st.write(f"• historical_data shape: {historical_data.shape}")
+        st.write(f"• historical_data columns: {list(historical_data.columns)}")
+        st.write(f"• historical_data length: {len(historical_data)}")
         
-        # GenAI adoption
-        latest_genai = historical_data['genai_use'].iloc[-1]
-        previous_genai = historical_data['genai_use'].iloc[-3] if len(historical_data) >= 3 else historical_data['genai_use'].iloc[-2]
-        genai_delta = latest_genai - previous_genai
-        metrics['genai_adoption'] = f"{latest_genai}%"
-        metrics['genai_delta'] = f"+{genai_delta}pp from 2023"
+        try:
+            latest_adoption = historical_data['ai_use'].iloc[-1]
+            st.write(f"• latest_adoption: {latest_adoption}")
+            st.write(f"• latest_adoption type: {type(latest_adoption)}")
+            
+            previous_adoption = historical_data['ai_use'].iloc[-3] if len(historical_data) >= 3 else historical_data['ai_use'].iloc[-2]
+            st.write(f"• previous_adoption: {previous_adoption}")
+            st.write(f"• previous_adoption type: {type(previous_adoption)}")
+            
+            adoption_delta = latest_adoption - previous_adoption
+            st.write(f"• adoption_delta: {adoption_delta}")
+            
+            metrics['market_adoption'] = f"{latest_adoption}%"
+            metrics['market_delta'] = f"+{adoption_delta}pp vs 2023"
+            
+            # GenAI adoption
+            latest_genai = historical_data['genai_use'].iloc[-1]
+            st.write(f"• latest_genai: {latest_genai}")
+            previous_genai = historical_data['genai_use'].iloc[-3] if len(historical_data) >= 3 else historical_data['genai_use'].iloc[-2]
+            st.write(f"• previous_genai: {previous_genai}")
+            genai_delta = latest_genai - previous_genai
+            st.write(f"• genai_delta: {genai_delta}")
+            
+            metrics['genai_adoption'] = f"{latest_genai}%"
+            metrics['genai_delta'] = f"+{genai_delta}pp from 2023"
+            
+        except Exception as e:
+            st.error(f"❌ Error in historical data calculation: {e}")
+            st.write(f"• Error type: {type(e)}")
+            st.write(f"• Error details: {str(e)}")
+            # Use fallback values
+            metrics['market_adoption'] = "78%"
+            metrics['market_delta'] = "+23pp vs 2023"
+            metrics['genai_adoption'] = "71%"
+            metrics['genai_delta'] = "+38pp from 2023"
     else:
         metrics['market_adoption'] = "78%"
         metrics['market_delta'] = "+23pp vs 2023"
@@ -162,31 +191,92 @@ def get_dynamic_metrics(historical_data, ai_cost_reduction, ai_investment_data, 
     
     # Cost reduction calculation
     if ai_cost_reduction is not None and len(ai_cost_reduction) >= 2:
-        earliest_cost = ai_cost_reduction['cost_per_million_tokens'].iloc[0]
-        latest_cost = ai_cost_reduction['cost_per_million_tokens'].iloc[-1]
-        cost_multiplier = earliest_cost / latest_cost
-        metrics['cost_reduction'] = f"{cost_multiplier:.0f}x cheaper"
-        metrics['cost_period'] = "Since Nov 2022"
+        # DEBUG: Add debug output for cost reduction operations
+        st.write("🔍 DEBUG: Cost Reduction Operations")
+        st.write(f"• ai_cost_reduction shape: {ai_cost_reduction.shape}")
+        st.write(f"• ai_cost_reduction columns: {list(ai_cost_reduction.columns)}")
+        
+        try:
+            earliest_cost = ai_cost_reduction['cost_per_million_tokens'].iloc[0]
+            st.write(f"• earliest_cost: {earliest_cost}")
+            st.write(f"• earliest_cost type: {type(earliest_cost)}")
+            
+            latest_cost = ai_cost_reduction['cost_per_million_tokens'].iloc[-1]
+            st.write(f"• latest_cost: {latest_cost}")
+            st.write(f"• latest_cost type: {type(latest_cost)}")
+            
+            cost_multiplier = earliest_cost / latest_cost
+            st.write(f"• cost_multiplier: {cost_multiplier}")
+            
+            metrics['cost_reduction'] = f"{cost_multiplier:.0f}x cheaper"
+            metrics['cost_period'] = "Since Nov 2022"
+            
+        except Exception as e:
+            st.error(f"❌ Error in cost reduction calculation: {e}")
+            st.write(f"• Error type: {type(e)}")
+            st.write(f"• Error details: {str(e)}")
+            # Use fallback values
+            metrics['cost_reduction'] = "280x cheaper"
+            metrics['cost_period'] = "Since Nov 2022"
     else:
         metrics['cost_reduction'] = "280x cheaper"
         metrics['cost_period'] = "Since Nov 2022"
     
     # Investment growth calculation
     if ai_investment_data is not None and len(ai_investment_data) >= 2:
-        latest_investment = ai_investment_data['total_investment'].iloc[-1]
-        previous_investment = ai_investment_data['total_investment'].iloc[-2]
-        investment_growth = ((latest_investment - previous_investment) / previous_investment) * 100
-        metrics['investment_value'] = f"${latest_investment}B"
-        metrics['investment_delta'] = f"+{investment_growth:.1f}% YoY"
+        # DEBUG: Add debug output for investment operations
+        st.write("🔍 DEBUG: Investment Operations")
+        st.write(f"• ai_investment_data shape: {ai_investment_data.shape}")
+        st.write(f"• ai_investment_data columns: {list(ai_investment_data.columns)}")
+        
+        try:
+            latest_investment = ai_investment_data['total_investment'].iloc[-1]
+            st.write(f"• latest_investment: {latest_investment}")
+            st.write(f"• latest_investment type: {type(latest_investment)}")
+            
+            previous_investment = ai_investment_data['total_investment'].iloc[-2]
+            st.write(f"• previous_investment: {previous_investment}")
+            st.write(f"• previous_investment type: {type(previous_investment)}")
+            
+            investment_growth = ((latest_investment - previous_investment) / previous_investment) * 100
+            st.write(f"• investment_growth: {investment_growth}")
+            
+            metrics['investment_value'] = f"${latest_investment}B"
+            metrics['investment_delta'] = f"+{investment_growth:.1f}% YoY"
+            
+        except Exception as e:
+            st.error(f"❌ Error in investment calculation: {e}")
+            st.write(f"• Error type: {type(e)}")
+            st.write(f"• Error details: {str(e)}")
+            # Use fallback values
+            metrics['investment_value'] = "$252.3B"
+            metrics['investment_delta'] = "+44.5% YoY"
     else:
         metrics['investment_value'] = "$252.3B"
         metrics['investment_delta'] = "+44.5% YoY"
     
     # Average ROI calculation
     if sector_2025 is not None and 'avg_roi' in sector_2025.columns:
-        avg_roi = sector_2025['avg_roi'].mean()
-        metrics['avg_roi'] = f"{avg_roi:.1f}x"
-        metrics['roi_desc'] = "Across sectors"
+        # DEBUG: Add debug output for ROI operations
+        st.write("🔍 DEBUG: ROI Operations")
+        st.write(f"• sector_2025 shape: {sector_2025.shape}")
+        st.write(f"• sector_2025 columns: {list(sector_2025.columns)}")
+        
+        try:
+            avg_roi = sector_2025['avg_roi'].mean()
+            st.write(f"• avg_roi: {avg_roi}")
+            st.write(f"• avg_roi type: {type(avg_roi)}")
+            
+            metrics['avg_roi'] = f"{avg_roi:.1f}x"
+            metrics['roi_desc'] = "Across sectors"
+            
+        except Exception as e:
+            st.error(f"❌ Error in ROI calculation: {e}")
+            st.write(f"• Error type: {type(e)}")
+            st.write(f"• Error details: {str(e)}")
+            # Use fallback values
+            metrics['avg_roi'] = "3.2x"
+            metrics['roi_desc'] = "Across sectors"
     else:
         metrics['avg_roi'] = "3.2x"
         metrics['roi_desc'] = "Across sectors"
