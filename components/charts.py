@@ -291,7 +291,7 @@ class TrendChart:
                 gridwidth=1,
                 gridcolor=self.style.grid_color,
                 tickfont=dict(size=11),
-                titlefont=dict(size=13, color='#555')
+                title_font=dict(size=13, color='#555')
             ),
             yaxis=dict(
                 title="Value",
@@ -299,7 +299,7 @@ class TrendChart:
                 gridwidth=1,
                 gridcolor=self.style.grid_color,
                 tickfont=dict(size=11),
-                titlefont=dict(size=13, color='#555')
+                title_font=dict(size=13, color='#555')
             ),
             plot_bgcolor=self.style.background_color,
             paper_bgcolor='rgba(0,0,0,0)',

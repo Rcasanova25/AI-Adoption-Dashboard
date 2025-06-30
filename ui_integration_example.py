@@ -334,7 +334,15 @@ def render_enhanced_executive_dashboard(datasets, dynamic_metrics):
         sector_data = datasets['sector_2025'].copy()
         if 'risk_score' not in sector_data.columns:
             # Generate realistic risk scores inversely correlated with adoption
-            sector_data['risk_score'] = 100 - sector_data['adoption_rate'] + pd.Series([5, -5, 10, 15, 0]).values[:len(sector_data)]
+            # Create a risk adjustment array that matches the exact length of sector_data
+            num_sectors = len(sector_data)
+            risk_adjustments = [5, -5, 10, 15, 0, -10, 8, -3]  # Base adjustments
+            # Extend or truncate to match the exact number of sectors
+            while len(risk_adjustments) < num_sectors:
+                risk_adjustments.extend([0, 5, -5, 10])  # Repeat pattern
+            risk_adjustments = risk_adjustments[:num_sectors]  # Truncate if too long
+            
+            sector_data['risk_score'] = 100 - sector_data['adoption_rate'] + pd.Series(risk_adjustments)
         
         roi_chart.render_roi_analysis(
             data=sector_data,
