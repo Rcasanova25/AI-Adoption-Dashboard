@@ -1435,36 +1435,11 @@ if view_type == "Historical Trends":
         milestone_years = [m['year'] for m in visible_milestones]
         milestone_heights = []
         
-        # DEBUG: Add debug output for milestone operations
-        st.write("🔍 DEBUG: Milestone Operations in app_backup.py")
-        st.write(f"• filtered_data shape: {filtered_data.shape}")
-        st.write(f"• filtered_data columns: {list(filtered_data.columns)}")
-        st.write(f"• filtered_data['year'] type: {type(filtered_data['year'])}")
-        st.write(f"• filtered_data['year'].values type: {type(filtered_data['year'].values)}")
-        st.write(f"• filtered_data['year'].values shape: {filtered_data['year'].values.shape}")
-        st.write(f"• filtered_data['year'].values: {filtered_data['year'].values}")
-        
         for milestone in visible_milestones:
-            # Get corresponding AI adoption rate for the year
-            try:
-                # DEBUG: Add debug output for each milestone check
-                st.write(f"• Checking milestone year: {milestone['year']}")
-                st.write(f"• milestone['year'] type: {type(milestone['year'])}")
-                
-                if milestone['year'] in filtered_data['year'].values:
-                    st.write(f"• Found milestone year {milestone['year']} in data")
-                    height = filtered_data[filtered_data['year'] == milestone['year']]['ai_use'].iloc[0]
-                    st.write(f"• Calculated height: {height}")
-                else:
-                    st.write(f"• Milestone year {milestone['year']} not found in data, using default")
-                    height = 50  # Default height if no data
-                milestone_heights.append(height)
-                
-            except Exception as e:
-                st.error(f"❌ Error processing milestone {milestone['year']}: {e}")
-                st.write(f"• Error type: {type(e)}")
-                st.write(f"• Error details: {str(e)}")
-                milestone_heights.append(50)  # Fallback height
+            # Find the closest data point to the milestone year
+            year_diff = abs(filtered_data['year'].values - milestone['year'])
+            closest_idx = np.argmin(year_diff)
+            milestone_heights.append(filtered_data['ai_use'].iloc[closest_idx])
         
         # Add milestone points with different colors by category
         category_colors = {

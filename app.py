@@ -10,6 +10,15 @@ from config.settings import DashboardConfig, FEATURE_FLAGS
 from data.models import safe_validate_data, ValidationResult
 from data.loaders import validate_all_loaded_data
 from business.metrics import BusinessMetrics, CompetitivePosition, InvestmentRecommendation
+from performance import (
+    AdvancedCache, 
+    DataPipeline, 
+    AsyncDataLoader, 
+    PerformanceMonitor, 
+    smart_cache,
+    _global_cache,
+    performance_monitor
+)
 
 # Page config must be the first Streamlit command.
 st.set_page_config(
@@ -51,12 +60,14 @@ persona_views = {
     "Researcher": ["Historical Trends", "Productivity Research", "AI Technology Maturity", "Bibliography & Sources"]
 }
 
-# Data loading function - now uses modular loading
-@st.cache_data
-@monitor_performance
+# Data loading function - now uses advanced caching
+@smart_cache(ttl=7200, persist=True)
 def load_data():
-    """Load all dashboard data - now uses modular loading"""
-    return load_all_datasets()
+    """Load all dashboard data with advanced caching"""
+    performance_monitor.start_timer("data_loading")
+    result = load_all_datasets()
+    performance_monitor.end_timer("data_loading")
+    return result
 
 # Helper function to validate chart data before plotting
 def validate_chart_data(data, required_columns):
@@ -999,6 +1010,9 @@ st.sidebar.markdown("### 💬 Feedback")
 feedback = st.sidebar.text_area("Share your thoughts or request features:", height=100)
 if st.sidebar.button("Submit Feedback"):
     st.sidebar.success("Thank you for your feedback!")
+
+# Performance monitoring section
+performance_monitor.render_performance_sidebar()
 
 # Help section
 with st.sidebar.expander("❓ Need Help?"):

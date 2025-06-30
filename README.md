@@ -8,6 +8,7 @@ Strategic AI adoption analysis dashboard providing comprehensive insights into A
 - **Investment Case Builder**: ROI analysis and business case generation
 - **Market Intelligence**: Real-time market trends and competitive dynamics
 - **Comprehensive Analytics**: Historical trends, industry analysis, and regional growth
+- **Advanced Performance System**: Multi-layer caching, async loading, and real-time monitoring
 - **Modular Architecture**: Clean, maintainable codebase with proper separation of concerns
 
 ## 📊 Data Sources
@@ -45,6 +46,15 @@ Strategic AI adoption analysis dashboard providing comprehensive insights into A
 3. **Run the application**
    ```bash
    streamlit run app.py
+   ```
+
+4. **Test the performance system** (optional)
+   ```bash
+   # Run performance demo
+   streamlit run performance/caching.py
+   
+   # Run performance tests
+   python test_performance.py
    ```
 
 ## 🧪 Testing Infrastructure
@@ -195,6 +205,13 @@ AI-Adoption-Dashboard/
 ```
 
 ## 🎯 Key Components
+
+### Performance System (`performance/`)
+- **Advanced Caching**: Multi-layer caching with memory and disk storage
+- **Data Pipeline**: High-performance data processing with intelligent caching
+- **Async Loading**: Parallel data loading with progress tracking
+- **Performance Monitoring**: Real-time metrics and optimization recommendations
+- **Smart Cache Decorator**: Easy-to-use caching for expensive operations
 
 ### Business Logic (`business/`)
 - Competitive position assessment
