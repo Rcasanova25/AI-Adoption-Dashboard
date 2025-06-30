@@ -10,7 +10,7 @@ from typing import Dict, Optional, Tuple
 from datetime import datetime
 
 from config.settings import DashboardConfig
-from utils.helpers import safe_execute, DashboardError
+from Utils.helpers import safe_execute, DashboardError
 
 logger = logging.getLogger(__name__)
 
