@@ -2,3 +2,4 @@ streamlit
 plotly
 pandas
 numpy
+pydantic==2.3.0
