@@ -2884,59 +2884,200 @@ elif current_view == "Industry Analysis":
         else:
             st.error("Adoption rates data not available for selected year.")
 
-    elif current_view == "Regional Growth":
-        st.write("🌍 **Regional AI Growth Analysis**")
+    elif current_view == "Investment Trends":
+        st.write("💰 **AI Investment Trends (2014-2024)**")
         
-        if regional_growth is not None:
-            # Regional growth metrics
-            col1, col2, col3 = st.columns(3)
+        if ai_investment_data is not None:
+            # Investment overview metrics
+            col1, col2, col3, col4 = st.columns(4)
             
-            top_growth = regional_growth.loc[regional_growth['growth_2024'].idxmax()]
-            top_adoption = regional_growth.loc[regional_growth['adoption_rate'].idxmax()]
+            latest_investment = ai_investment_data['total_investment'].iloc[-1]
+            previous_investment = ai_investment_data['total_investment'].iloc[-2]
+            growth_rate = ((latest_investment - previous_investment) / previous_investment * 100)
             
             with col1:
-                st.metric("Fastest Growing", top_growth['region'], f"+{top_growth['growth_2024']}%")
+                st.metric("2024 Total Investment", f"${latest_investment}B", f"+{growth_rate:.1f}% YoY")
             with col2:
-                st.metric("Highest Adoption", top_adoption['region'], f"{top_adoption['adoption_rate']}%")
+                st.metric("GenAI Investment", f"${ai_investment_data['genai_investment'].iloc[-1]}B", 
+                         "13.4% of total")
             with col3:
-                st.metric("Global Average", f"{regional_growth['adoption_rate'].mean():.0f}%", 
-                         "Across regions")
+                st.metric("US Market Share", f"${ai_investment_data['us_investment'].iloc[-1]}B", 
+                         "43% of global")
+            with col4:
+                st.metric("10-Year CAGR", "34.2%", "Exponential growth")
             
-            # Regional comparison chart
+            # Investment trends chart
             fig = go.Figure()
             
-            fig.add_trace(go.Bar(
-                name='2024 Growth',
-                x=regional_growth['region'],
-                y=regional_growth['growth_2024'],
-                marker_color='#E74C3C',
-                yaxis='y',
-                text=[f'+{x}%' for x in regional_growth['growth_2024']],
-                textposition='outside'
+            fig.add_trace(go.Scatter(
+                x=ai_investment_data['year'],
+                y=ai_investment_data['total_investment'],
+                mode='lines+markers',
+                name='Total AI Investment',
+                line=dict(width=4, color='#1f77b4'),
+                marker=dict(size=8),
+                hovertemplate='Year: %{x}<br>Investment: $%{y}B<extra></extra>'
             ))
             
             fig.add_trace(go.Scatter(
-                name='Adoption Rate',
-                x=regional_growth['region'],
-                y=regional_growth['adoption_rate'],
+                x=ai_investment_data['year'],
+                y=ai_investment_data['genai_investment'],
                 mode='lines+markers',
-                line=dict(color='#3498DB', width=3),
-                marker=dict(size=10),
-                yaxis='y2'
+                name='GenAI Investment',
+                line=dict(width=4, color='#ff7f0e'),
+                marker=dict(size=8),
+                hovertemplate='Year: %{x}<br>GenAI Investment: $%{y}B<extra></extra>'
             ))
             
             fig.update_layout(
-                title="Regional AI Growth vs Current Adoption",
-                xaxis_title="Region",
-                yaxis=dict(title="Growth Rate (%)", side="left"),
-                yaxis2=dict(title="Adoption Rate (%)", side="right", overlaying="y"),
-                height=500
+                title="Global AI Investment Growth: The $250B+ Market",
+                xaxis_title="Year",
+                yaxis_title="Investment (Billions USD)",
+                height=500,
+                hovermode='x unified'
+            )
+            
+            st.plotly_chart(fig, use_container_width=True)
+            
+            # Regional breakdown
+            st.subheader("🌍 Regional Investment Distribution (2024)")
+            
+            regional_data = pd.DataFrame({
+                'Region': ['United States', 'China', 'United Kingdom', 'Rest of World'],
+                'Investment': [ai_investment_data['us_investment'].iloc[-1], 
+                              ai_investment_data['china_investment'].iloc[-1],
+                              ai_investment_data['uk_investment'].iloc[-1],
+                              latest_investment - ai_investment_data['us_investment'].iloc[-1] - 
+                              ai_investment_data['china_investment'].iloc[-1] - ai_investment_data['uk_investment'].iloc[-1]]
+            })
+            
+            fig_pie = px.pie(regional_data, values='Investment', names='Region',
+                            title="AI Investment by Region (2024)")
+            st.plotly_chart(fig_pie, use_container_width=True)
+            
+        else:
+            st.error("Investment data not available.")
+
+    elif current_view == "Financial Impact":
+        st.write("💼 **AI Financial Impact Analysis**")
+        
+        if financial_impact is not None:
+            st.markdown("### 📊 Cost Savings vs Revenue Gains by Function")
+            
+            # Create dual-axis chart
+            fig = make_subplots(specs=[[{"secondary_y": True}]])
+            
+            fig.add_trace(
+                go.Bar(name='Companies Reporting Cost Savings',
+                       x=financial_impact['function'],
+                       y=financial_impact['companies_reporting_cost_savings'],
+                       marker_color='#3498DB',
+                       text=[f'{x}%' for x in financial_impact['companies_reporting_cost_savings']],
+                       textposition='outside'),
+                secondary_y=False,
+            )
+            
+            fig.add_trace(
+                go.Bar(name='Companies Reporting Revenue Gains',
+                       x=financial_impact['function'],
+                       y=financial_impact['companies_reporting_revenue_gains'],
+                       marker_color='#2ECC71',
+                       text=[f'{x}%' for x in financial_impact['companies_reporting_revenue_gains']],
+                       textposition='outside'),
+                secondary_y=False,
+            )
+            
+            fig.update_xaxes(title_text="Business Function")
+            fig.update_yaxes(title_text="% of Companies Reporting Benefits", secondary_y=False)
+            
+            fig.update_layout(
+                title="AI Financial Impact by Business Function",
+                barmode='group',
+                height=500,
+                xaxis_tickangle=45
             )
             
             st.plotly_chart(fig, use_container_width=True)
             
         else:
-            st.error("Regional growth data not available.")
+            st.error("Financial impact data not available.")
+
+    elif current_view == "Firm Size Analysis":
+        st.write("🏢 **AI Adoption by Company Size**")
+        
+        if firm_size is not None:
+            # Size distribution chart
+            fig = go.Figure()
+            
+            fig.add_trace(go.Bar(
+                x=firm_size['size'],
+                y=firm_size['adoption'],
+                marker=dict(
+                    color=firm_size['adoption'],
+                    colorscale='Viridis',
+                    colorbar=dict(title="Adoption Rate (%)")
+                ),
+                text=[f'{x}%' for x in firm_size['adoption']],
+                textposition='outside',
+                hovertemplate='<b>%{x} employees</b><br>Adoption Rate: %{y}%<extra></extra>'
+            ))
+            
+            fig.update_layout(
+                title="AI Adoption Scales Dramatically with Company Size",
+                xaxis_title="Company Size (Number of Employees)",
+                yaxis_title="AI Adoption Rate (%)",
+                height=500,
+                showlegend=False
+            )
+            
+            st.plotly_chart(fig, use_container_width=True)
+            
+            # Size insights
+            col1, col2, col3 = st.columns(3)
+            
+            with col1:
+                st.metric("Small Firms (1-49)", "4.4%", "Limited adoption")
+            with col2:
+                st.metric("Medium Firms (50-999)", "18.6%", "Growing adoption")
+            with col3:
+                st.metric("Large Firms (5000+)", "58.5%", "Market leaders")
+                
+        else:
+            st.error("Firm size data not available.")
+
+    else:
+        # Generic view renderer for any unmapped views
+        st.write(f"📊 **{current_view}**")
+        
+        if current_view in data_map and data_map[current_view] is not None:
+            df = data_map[current_view]
+            
+            if safe_data_check(df, current_view):
+                st.markdown(f"### Data Overview for {current_view}")
+                st.dataframe(df, use_container_width=True)
+                
+                # Try to create a simple visualization if possible
+                try:
+                    if len(df.columns) >= 2:
+                        x_col = df.columns[0]
+                        y_col = df.columns[1]
+                        
+                        # Check if we can make a simple bar chart
+                        if pd.api.types.is_numeric_dtype(df[y_col]):
+                            fig = px.bar(df, x=x_col, y=y_col, 
+                                        title=f"{current_view}: {y_col} by {x_col}")
+                            st.plotly_chart(fig, use_container_width=True)
+                        else:
+                            st.info("Data available but not suitable for automatic visualization.")
+                    else:
+                        st.info("Data has insufficient columns for automatic visualization.")
+                        
+                except Exception as e:
+                    st.warning(f"Could not create automatic visualization: {e}")
+                    
+        else:
+            st.error(f"No data available for '{current_view}'. This view may not be implemented yet.")
+            st.info("Try selecting 'Historical Trends' or 'Industry Analysis' which are implemented.")
 
     elif current_view == "AI Cost Trends":
         st.write("💰 **AI Cost Evolution & Trends**")
