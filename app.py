@@ -179,7 +179,7 @@ def create_executive_navigation(dynamic_metrics):
     st.sidebar.markdown("---")
     with st.sidebar.expander("📋 Detailed Analysis", expanded=False):
         detailed_view = st.selectbox("Analysis Type", 
-                                   ["Historical Trends", "Industry Deep Dive", "Geographic Distribution", 
+                                   ["Adoption Rates", "Historical Trends", "Industry Deep Dive", "Geographic Distribution", 
                                     "Technology Maturity", "Financial Impact", "Labor Impact"])
         use_detailed = st.checkbox("Switch to detailed view")
         
