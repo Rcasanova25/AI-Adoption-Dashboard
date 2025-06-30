@@ -6,376 +6,6 @@ import numpy as np
 from datetime import datetime
 from plotly.subplots import make_subplots
 
-# Add feature flags for safe deployment
-if 'feature_flags' not in st.session_state:
-    st.session_state.feature_flags = {
-        'executive_mode': True,
-        'visual_redesign': True,
-        'strategic_callouts': True,
-        'competitive_homepage': False  # Start disabled, enable after testing
-    }
-
-# Executive navigation function
-def create_executive_navigation():
-    """Simplified, executive-focused navigation"""
-    st.sidebar.markdown("## 🎯 Executive Command Center")
-    
-    # Primary executive decision views
-    exec_view = st.sidebar.radio(
-        "Strategic Intelligence",
-        ["🚀 Strategic Brief", "⚖️ Competitive Position", "💰 Investment Case", 
-         "📊 Market Intelligence", "🎯 Action Planning"],
-        help="Core executive decision support tools"
-    )
-    
-    # Quick stats in sidebar
-    st.sidebar.markdown("---")
-    st.sidebar.markdown("### 📈 Key Market Metrics")
-    st.sidebar.metric("Market Adoption", "78%", "+23pp")
-    st.sidebar.metric("Cost Reduction", "280x", "Since 2022")
-    st.sidebar.metric("Avg ROI", "3.2x", "Across sectors")
-    
-    # Secondary analysis (collapsed by default)
-    st.sidebar.markdown("---")
-    with st.sidebar.expander("📋 Detailed Analysis", expanded=False):
-        detailed_view = st.selectbox("Analysis Type", 
-                                   ["Historical Trends", "Industry Deep Dive", "Geographic Analysis", 
-                                    "Technology Maturity", "Financial Impact", "Labor Impact"])
-        use_detailed = st.checkbox("Switch to detailed view")
-        
-        if use_detailed:
-            return detailed_view, True
-    
-    return exec_view, False
-
-
-
-# Toggle between executive and detailed modes
-def determine_navigation_mode():
-    """Determine which navigation system to use"""
-    
-    # Let users choose their experience
-    mode = st.sidebar.selectbox(
-        "Dashboard Mode",
-        ["🎯 Executive (Streamlined)", "📊 Analyst (Detailed)"],
-        help="Choose your experience level"
-    )
-    
-    if "Executive" in mode and st.session_state.feature_flags['executive_mode']:
-        return create_executive_navigation()
-    else:
-        # Use your existing navigation
-        view_type = st.sidebar.selectbox(
-            "Analysis View", 
-            ["Adoption Rates", "Historical Trends", "Industry Analysis", "Investment Trends", 
-             "Regional Growth", "AI Cost Trends", "Token Economics", "Financial Impact", 
-             "Labor Impact", "Firm Size Analysis", "Technology Stack", "AI Technology Maturity", 
-             "Productivity Research", "Environmental Impact", "Geographic Distribution", 
-             "OECD 2025 Findings", "Barriers & Support", "ROI Analysis", "Skill Gap Analysis", 
-             "AI Governance"]
-        )
-        return view_type, False
-
-def apply_executive_styling():
-    """Enhanced visual design for executive experience"""
-    if not st.session_state.feature_flags['visual_redesign']:
-        return
-        
-    st.markdown("""
-    <style>
-    /* Executive metric cards */
-    .exec-metric {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        padding: 1.5rem;
-        border-radius: 12px;
-        color: white;
-        text-align: center;
-        margin: 0.5rem 0;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    }
-    
-    .exec-metric h3 {
-        margin: 0 0 0.5rem 0;
-        font-size: 0.9rem;
-        opacity: 0.9;
-    }
-    
-    .exec-metric h2 {
-        margin: 0 0 0.25rem 0;
-        font-size: 1.8rem;
-        font-weight: bold;
-    }
-    
-    /* Strategic insight boxes */
-    .strategic-insight {
-        border-left: 4px solid #2E86AB;
-        background: rgba(46, 134, 171, 0.1);
-        padding: 1.5rem;
-        margin: 1.5rem 0;
-        border-radius: 0 8px 8px 0;
-    }
-    
-    .strategic-insight h4 {
-        color: #2E86AB;
-        margin-top: 0;
-    }
-    
-    /* Action required boxes */
-    .action-required {
-        background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
-        color: white;
-        padding: 1.5rem;
-        border-radius: 8px;
-        margin: 1.5rem 0;
-    }
-    
-    .action-required h4 {
-        margin-top: 0;
-        color: white;
-    }
-    
-    /* Opportunity boxes */
-    .opportunity-box {
-        background: linear-gradient(135deg, #2ecc71 0%, #27ae60 100%);
-        color: white;
-        padding: 1.5rem;
-        border-radius: 8px;
-        margin: 1.5rem 0;
-    }
-    
-    /* Chart consistency */
-    .plotly-graph-div {
-        border: 1px solid #e1e5e9;
-        border-radius: 8px;
-        padding: 10px;
-        margin: 1rem 0;
-    }
-    
-    /* Executive brief styling */
-    .exec-brief-section {
-        background: rgba(255, 255, 255, 0.8);
-        padding: 2rem;
-        border-radius: 12px;
-        margin: 1rem 0;
-        border: 1px solid #e1e5e9;
-    }
-    </style>
-    """, unsafe_allow_html=True)
-
-# Enhanced metric display function
-def executive_metric(label, value, delta, insight, help_text=""):
-    """Create visually appealing executive metrics"""
-    st.markdown(f"""
-    <div class="exec-metric">
-        <h3>{label}</h3>
-        <h2>{value}</h2>
-        <p style="margin: 0; font-size: 0.9rem; opacity: 0.9;">{delta}</p>
-        <small style="opacity: 0.8;">{insight}</small>
-    </div>
-    """, unsafe_allow_html=True)
-
-def executive_strategic_brief():
-    """5-minute strategic intelligence for executives"""
-    
-    st.markdown('<div class="exec-brief-section">', unsafe_allow_html=True)
-    
-    st.title("🎯 Executive Strategic Brief")
-    st.markdown("*5-minute strategic intelligence for leadership decisions*")
-    st.markdown("**Updated:** June 2025 | **Sources:** Stanford AI Index, McKinsey, OECD")
-    
-    st.markdown('</div>', unsafe_allow_html=True)
-    
-    # Critical metrics row
-    st.subheader("📊 Market Reality Check")
-    col1, col2, col3, col4 = st.columns(4)
-    
-    with col1:
-        executive_metric("Market Adoption", "78%", "+23pp vs 2023", "Competitive table stakes")
-    
-    with col2:
-        executive_metric("Cost Revolution", "280x cheaper", "Since Nov 2022", "Barriers eliminated")
-    
-    with col3:
-        executive_metric("ROI Range", "2.5-4.2x", "Proven returns", "Strong business case")
-    
-    with col4:
-        executive_metric("Time to Impact", "12-18 months", "Typical payback", "Fast value creation")
-    
-    # Strategic intelligence grid
-    st.subheader("🧠 Strategic Intelligence")
-    
-    col1, col2 = st.columns(2)
-    
-    with col1:
-        st.markdown("""
-        <div class="action-required">
-        <h4>⚠️ COMPETITIVE THREAT</h4>
-        <p><strong>Market Reality:</strong></p>
-        <ul>
-        <li>78% of businesses now use AI (vs 55% in 2023)</li>
-        <li>Non-adopters becoming minority position</li>
-        <li>First-mover advantages accelerating</li>
-        <li>GenAI adoption doubled to 71% in one year</li>
-        </ul>
-        <p><strong>→ Action Required:</strong> Assess competitive gap within 30 days</p>
-        </div>
-        """, unsafe_allow_html=True)
-        
-        st.markdown("""
-        <div class="opportunity-box">
-        <h4>💰 ECONOMIC OPPORTUNITY</h4>
-        <p><strong>Investment Case:</strong></p>
-        <ul>
-        <li>280x cost reduction enables mass deployment</li>
-        <li>Consistent 2.5-4.2x ROI across all sectors</li>
-        <li>Productivity gains: 5-14% measured improvement</li>
-        <li>$252B global investment validates market</li>
-        </ul>
-        <p><strong>→ Strategic Move:</strong> Build investment business case now</p>
-        </div>
-        """, unsafe_allow_html=True)
-    
-    with col2:
-        st.markdown("""
-        <div class="strategic-insight">
-        <h4>🎯 IMPLEMENTATION REALITY</h4>
-        <p><strong>Success Factors:</strong></p>
-        <ul>
-        <li>68% cite "lack of skilled personnel" as top barrier</li>
-        <li>Full-stack approach (AI+Cloud+Digital) shows 3.5x ROI</li>
-        <li>Technology leaders (92% adoption) set the pace</li>
-        <li>Skills development is the critical bottleneck</li>
-        </ul>
-        <p><strong>→ Foundation Move:</strong> Start talent development immediately</p>
-        </div>
-        """, unsafe_allow_html=True)
-        
-        st.markdown("""
-        <div class="strategic-insight">
-        <h4>⏰ TIMING FACTORS</h4>
-        <p><strong>Market Dynamics:</strong></p>
-        <ul>
-        <li>Technology maturity reaching enterprise readiness</li>
-        <li>Regulatory frameworks stabilizing globally</li>
-        <li>Talent market still accessible (but tightening)</li>
-        <li>Investment costs at historic lows</li>
-        </ul>
-        <p><strong>→ Window of Opportunity:</strong> Move from pilot to production</p>
-        </div>
-        """, unsafe_allow_html=True)
-    
-    # Quick competitive assessment
-    st.subheader("⚖️ Quick Competitive Assessment")
-    
-    col1, col2 = st.columns([2, 1])
-    
-    with col1:
-        industry = st.selectbox("Your Industry", 
-            ["Technology (92% adoption)", "Financial Services (85%)", "Healthcare (78%)", 
-             "Manufacturing (75%)", "Retail & E-commerce (72%)", "Education (65%)",
-             "Energy & Utilities (58%)", "Government (52%)"])
-        
-        company_size = st.selectbox("Company Size",
-            ["1-50 employees (3% adoption)", "51-250 (12% adoption)", 
-             "251-1000 (25% adoption)", "1000-5000 (42% adoption)", "5000+ (58% adoption)"])
-    
-    with col2:
-        if st.button("🎯 Assess My Position", type="primary", use_container_width=True):
-            assess_competitive_position(industry, company_size)
-    
-    # Executive summary
-    st.subheader("🎯 Executive Summary")
-    st.markdown("""
-    <div class="exec-brief-section">
-    <h4>Bottom Line Up Front (BLUF):</h4>
-    <p><strong>AI adoption has reached irreversible market tipping point.</strong> The combination of 78% business adoption, 
-    280x cost reduction, and proven ROI means competitive advantage now flows to implementation speed and quality, 
-    not adoption decisions.</p>
-    
-    <h4>Strategic Imperative:</h4>
-    <p>Move immediately from "Should we invest in AI?" to "How fast can we scale AI capabilities?" 
-    Focus on talent development, full-stack integration, and production deployment over pilots.</p>
-    
-    <h4>Next 90 Days:</h4>
-    <ol>
-    <li><strong>Week 1-2:</strong> Competitive gap analysis and investment case development</li>
-    <li><strong>Week 3-8:</strong> Talent assessment and capability building strategy</li>
-    <li><strong>Week 9-12:</strong> Production deployment of highest-ROI use cases</li>
-    </ol>
-    </div>
-    """, unsafe_allow_html=True)
-
-def assess_competitive_position(industry, company_size):
-    """Quick competitive assessment logic"""
-    
-    # Extract adoption rates from selections
-    industry_adoption = int(industry.split('(')[1].split('%')[0])
-    size_adoption = int(company_size.split('(')[1].split('%')[0])
-    
-    # Simple scoring logic
-    competitive_score = (industry_adoption + size_adoption) / 2
-    
-    if competitive_score >= 70:
-        status = "LEADER"
-        color = "success"
-        message = "You're in a leading position. Focus on maintaining advantage and innovation."
-    elif competitive_score >= 50:
-        status = "COMPETITIVE"
-        color = "warning" 
-        message = "You're competitive but need to accelerate to avoid falling behind."
-    else:
-        status = "AT RISK"
-        color = "error"
-        message = "Urgent action required. You're falling behind market adoption."
-    
-    if color == "success":
-        st.success(f"**Status: {status}**\n\n{message}")
-    elif color == "warning":
-        st.warning(f"**Status: {status}**\n\n{message}")
-    else:
-        st.error(f"**Status: {status}**\n\n{message}")
-
-# Apply styling
-apply_executive_styling()
-
-# Determine navigation mode
-current_view, is_detailed = determine_navigation_mode()
-
-# Route to appropriate view
-if not is_detailed:
-    # Executive views
-    if current_view == "🚀 Strategic Brief":
-        executive_strategic_brief()
-    elif current_view == "⚖️ Competitive Position":
-        # Enhance your existing competitive analysis
-        st.title("⚖️ Competitive Position Analysis")
-        # Add your existing competitive analysis here with enhancements
-        pass
-    elif current_view == "💰 Investment Case":
-        # Create focused investment view
-        st.title("💰 AI Investment Case Builder")
-        # We'll build this in Week 2
-        pass
-    elif current_view == "📊 Market Intelligence":
-        # Key market data
-        st.title("📊 Market Intelligence")
-        # Curated market insights
-        pass
-    elif current_view == "🎯 Action Planning":
-        # Strategic action planning
-        st.title("🎯 Strategic Action Planning")
-        # We'll build this in Week 2
-        pass
-else:
-    # Your existing detailed views - keep all existing functionality
-    if current_view == "Historical Trends":
-        # Your existing Historical Trends code
-        pass
-    elif current_view == "Industry Deep Dive":
-        # Your existing Industry Analysis code
-        pass
-    # ... etc for all existing views
-
 # Page config
 st.set_page_config(
     page_title="AI Adoption Dashboard | 2018-2025 Analysis",
@@ -823,9 +453,90 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
-# Title and description
-st.title("🤖 AI Adoption Dashboard: 2018-2025")
-st.markdown("**Comprehensive analysis from early AI adoption (2018) to current GenAI trends (2025)**")
+# REPLACE your existing title section with this strategic version:
+
+# Title and strategic positioning
+st.title("🤖 AI Adoption Dashboard: Strategic Decision Intelligence")
+st.markdown("**From data analysis to competitive advantage - make better AI investment decisions**")
+
+# Strategic value proposition
+col1, col2, col3, col4 = st.columns(4)
+
+with col1:
+    st.markdown("""
+    <div style='text-align: center; padding: 10px; background-color: rgba(31, 119, 180, 0.1); border-radius: 10px; margin: 5px;'>
+        <h3>🎯</h3>
+        <strong>Assess Position</strong><br>
+        <small>Know where you stand vs competitors</small>
+    </div>
+    """, unsafe_allow_html=True)
+
+with col2:
+    st.markdown("""
+    <div style='text-align: center; padding: 10px; background-color: rgba(255, 127, 14, 0.1); border-radius: 10px; margin: 5px;'>
+        <h3>💰</h3>
+        <strong>Optimize Investment</strong><br>
+        <small>Make smarter AI spending decisions</small>
+    </div>
+    """, unsafe_allow_html=True)
+
+with col3:
+    st.markdown("""
+    <div style='text-align: center; padding: 10px; background-color: rgba(44, 160, 44, 0.1); border-radius: 10px; margin: 5px;'>
+        <h3>⚖️</h3>
+        <strong>Manage Risk</strong><br>
+        <small>Stay ahead of regulatory changes</small>
+    </div>
+    """, unsafe_allow_html=True)
+
+with col4:
+    st.markdown("""
+    <div style='text-align: center; padding: 10px; background-color: rgba(214, 39, 40, 0.1); border-radius: 10px; margin: 5px;'>
+        <h3>📊</h3>
+        <strong>Track Progress</strong><br>
+        <small>Monitor competitive dynamics</small>
+    </div>
+    """, unsafe_allow_html=True)
+
+# Quick start for executives
+# BETTER SOLUTION: Auto-show assessment when button clicked
+
+# Quick start for executives
+if st.session_state.selected_persona in ["Business Leader", "General"]:
+    # Initialize session state for quick start
+    if 'show_quick_assessment' not in st.session_state:
+        st.session_state.show_quick_assessment = False
+    
+    with st.container():
+        st.info("""
+        **👔 Executive Quick Start:** Take the 2-minute Competitive Position Assessment to understand your AI strategy position and get specific recommendations.
+        """)
+        
+        col1, col2, col3 = st.columns([1, 2, 1])
+        
+        with col2:
+            if st.button("🚀 Start Strategic Assessment", type="primary", use_container_width=True):
+                st.session_state.show_quick_assessment = True
+                st.rerun()
+    
+    # Show the assessment inline if button was clicked
+    if st.session_state.show_quick_assessment:
+        st.markdown("---")
+        st.subheader("🎯 Quick Strategic Assessment")
+        
+        # Add a collapse button
+        col1, col2 = st.columns([3, 1])
+        with col1:
+            st.write("**Complete your assessment below:**")
+        with col2:
+            if st.button("❌ Close", key="close_quick"):
+                st.session_state.show_quick_assessment = False
+                st.rerun()
+        
+        # Embed a simplified version of the assessment here
+        # (Copy the key parts from your Competitive Position Assessor)
+        
+        st.info("💡 **Tip:** For the full experience with detailed analysis, select '🎯 Competitive Position Assessor' from the sidebar menu.")
 
 # What's New section
 with st.expander("🆕 What's New in Version 2.2.0", expanded=st.session_state.show_changelog):
@@ -850,87 +561,227 @@ OECD AI Policy Observatory, and US Census Bureau AI Use Supplement.
 """)
 
 # Sidebar controls
-# Apply executive styling first
-apply_executive_styling()
-
-# Sidebar controls
 st.sidebar.header("📊 Dashboard Controls")
 
-# NEW: Determine navigation mode
-current_view, is_detailed = determine_navigation_mode()
+# Show persona selection
+persona = st.sidebar.selectbox(
+    "Select Your Role",
+    ["General", "Business Leader", "Policymaker", "Researcher"],
+    index=["General", "Business Leader", "Policymaker", "Researcher"].index(st.session_state.selected_persona)
+)
+st.session_state.selected_persona = persona
 
-# Keep existing persona selection but make it conditional
-if is_detailed:
-    # Your existing persona selection code
-    persona = st.sidebar.selectbox(
-        "Select Your Role",
-        ["General", "Business Leader", "Policymaker", "Researcher"],
-        index=["General", "Business Leader", "Policymaker", "Researcher"].index(st.session_state.selected_persona)
+# Update persona recommendations to focus on strategic views
+persona_views = {
+    "Business Leader": ["🎯 Competitive Position Assessor", "💰 Investment Decision Engine", "Financial Impact", "ROI Analysis"],
+    "Policymaker": ["⚖️ Regulatory Risk Radar", "Geographic Distribution", "OECD 2025 Findings", "AI Governance"],
+    "Researcher": ["Historical Trends", "Productivity Research", "Environmental Impact", "Bibliography & Sources"],
+    "General": ["🎯 Competitive Position Assessor", "Historical Trends", "Investment Trends", "Industry Analysis"]
+}
+
+
+# Strategic views (top priority)
+strategic_views = [
+    "🎯 Competitive Position Assessor",  # NEW MVP
+    "💰 Investment Decision Engine",     # Coming soon
+    "⚖️ Regulatory Risk Radar"          # Coming soon
+]
+
+# Core analysis views (refined list)
+core_views = [
+    "Historical Trends", 
+    "Industry Analysis", 
+    "Investment Trends",
+    "Financial Impact",
+    "Geographic Distribution"
+]
+
+# Detailed analysis views (for deep dives)
+detailed_views = [
+    "Token Economics",
+    "Labor Impact", 
+    "Environmental Impact",
+    "Skill Gap Analysis",
+    "AI Governance",
+    "OECD 2025 Findings",
+    "Productivity Research",
+    "ROI Analysis"
+]
+
+# Legacy views (keep for completeness)
+legacy_views = [
+    "Adoption Rates",
+    "Regional Growth", 
+    "AI Cost Trends",
+    "Firm Size Analysis",
+    "Technology Stack",
+    "AI Technology Maturity",
+    "Barriers & Support",
+    "Bibliography & Sources"
+]
+
+# Create organized menu structure
+all_views = strategic_views + ["---"] + core_views + ["---"] + detailed_views + ["---"] + legacy_views
+
+if persona != "General":
+    st.sidebar.info(f"💡 **Recommended views for {persona}:**\n" + "\n".join([f"• {v}" for v in persona_views[persona]]))
+
+data_year = st.sidebar.selectbox(
+    "Select Data Year", 
+    ["2018 (Early AI)", "2025 (GenAI Era)"],
+    index=1
+)
+
+view_type = st.sidebar.selectbox(
+    "Analysis View", 
+    all_views,
+    index=all_views.index(persona_views[persona][0]) if persona != "General" else 0
+)
+
+# Advanced filters
+st.sidebar.markdown("---")
+st.sidebar.markdown("### 🔧 Advanced Options")
+
+# Year filter for historical data
+if view_type == "Historical Trends":
+    year_range = st.sidebar.slider(
+        "Select Year Range",
+        min_value=2017,
+        max_value=2025,
+        value=(2017, 2025),
+        step=1
     )
-    st.session_state.selected_persona = persona
     
-    # Keep all your existing sidebar controls
-    data_year = st.sidebar.selectbox(
-        "Select Data Year", 
-        ["2018 (Early AI)", "2025 (GenAI Era)"],
-        index=1
-    )
+    compare_mode = st.sidebar.checkbox("Compare specific years", value=False)
+    if compare_mode:
+        col1, col2 = st.sidebar.columns(2)
+        with col1:
+            year1 = st.selectbox("Year 1", range(2017, 2026), index=1)
+        with col2:
+            year2 = st.selectbox("Year 2", range(2017, 2026), index=7)
+
+# Export functionality
+st.sidebar.markdown("---")
+st.sidebar.markdown("### 📥 Export Options")
+
+# Mapping of view types to their respective dataframes
+data_map = {
+    "Historical Trends": historical_data,
+    "Industry Analysis": sector_2025,
+    "Financial Impact": financial_impact,
+    "Skill Gap Analysis": skill_gap_data,
+    "AI Governance": ai_governance,
+    "Productivity Research": productivity_data,
+    "Investment Trends": ai_investment_data,
+    "Regional Growth": regional_growth,
+    "AI Cost Trends": ai_cost_reduction,
+    "Token Economics": token_economics,
+    "Labor Impact": ai_perception,
+    "Environmental Impact": training_emissions,
+    "Adoption Rates": genai_2025 if "2025" in data_year else sector_2018,
+    "Firm Size Analysis": firm_size,
+    "Technology Stack": tech_stack,
+    "AI Technology Maturity": ai_maturity,
+    "Geographic Distribution": geographic,
+    "OECD 2025 Findings": oecd_g7_adoption,
+    "Barriers & Support": barriers_data,
+    "ROI Analysis": sector_2025
+}
+
+export_format = st.sidebar.selectbox(
+    "Export Format",
+    ["CSV Data", "PNG Image", "PDF Report (Beta)"]
+)
+
+if export_format == "CSV Data":
+    if view_type in data_map:
+        df_to_download = data_map[view_type]
+        csv = df_to_download.to_csv(index=False).encode('utf-8')
+        
+        st.sidebar.download_button(
+           label="📥 Download CSV for Current View",
+           data=csv,
+           file_name=f"ai_adoption_{view_type.lower().replace(' ', '_')}.csv",
+           mime="text/csv",
+           use_container_width=True
+        )
+    else:
+        st.sidebar.warning(f"CSV export is not available for the '{view_type}' view.")
+
+elif export_format in ["PNG Image", "PDF Report (Beta)"]:
+    st.sidebar.warning(f"{export_format} export is not yet implemented.")
+    st.sidebar.button("📥 Export Current View", disabled=True, use_container_width=True)
+
+# Feedback widget
+st.sidebar.markdown("---")
+st.sidebar.markdown("### 💬 Feedback")
+feedback = st.sidebar.text_area("Share your thoughts or request features:", height=100)
+if st.sidebar.button("Submit Feedback"):
+    st.sidebar.success("Thank you for your feedback!")
+
+# Help section
+with st.sidebar.expander("❓ Need Help?"):
+    st.markdown("""
+    **Navigation Tips:**
+    - Use the Analysis View dropdown to explore different perspectives
+    - Click 📊 icons for data source information
+    - Hover over chart elements for details
     
-    view_type = st.sidebar.selectbox(
-        "Analysis View", 
-        all_views,
-        index=all_views.index(persona_views[persona][0]) if persona != "General" else 0
-    )
-    
-    # Keep all your existing advanced filters, export options, etc.
-else:
-    # For executive mode, we'll handle the view in current_view
-    view_type = current_view
-    data_year = "2025 (GenAI Era)"  # Default for executives
-    persona = "Business Leader"  # Default for executives
+    **Keyboard Shortcuts:**
+    - `Ctrl + K`: Quick search
+    - `F`: Toggle fullscreen
+    - `?`: Show help
+    """)
 
 # Key metrics row - UPDATED with AI Index 2025 data
-st.subheader("📈 Key Metrics")
+# REPLACE your existing key metrics section with this strategic version:
+
+st.subheader("📈 Strategic Market Intelligence")
 col1, col2, col3, col4 = st.columns(4)
 
 if "2025" in data_year:
     with col1:
         st.metric(
-            label="Overall AI Adoption*", 
+            label="Market Acceleration", 
             value="78%", 
             delta="+23pp from 2023",
-            help="*Includes any AI use. Jumped from 55% in 2023 (AI Index 2025)"
+            help="Business AI adoption jumped 23 percentage points in one year - fastest technology adoption in history"
         )
     with col2:
         st.metric(
-            label="GenAI Adoption*", 
+            label="GenAI Revolution", 
             value="71%", 
             delta="+38pp from 2023",
-            help="*More than doubled from 33% in 2023 (AI Index 2025)"
+            help="Generative AI adoption more than doubled, creating new competitive dynamics"
         )
     with col3:
         st.metric(
-            label="2024 AI Investment", 
+            label="Investment Surge", 
             value="$252.3B", 
             delta="+44.5% YoY",
-            help="Total corporate AI investment reached record levels"
+            help="Record AI investment levels signal major economic shift underway"
         )
     with col4:
         st.metric(
-            label="Cost Reduction", 
+            label="Cost Collapse", 
             value="280x cheaper", 
             delta="Since Nov 2022",
-            help="AI inference cost dropped from $20 to $0.07 per million tokens"
+            help="Dramatic cost reduction enables new business models and wider adoption"
         )
 else:
     with col1:
-        st.metric("Overall AI Adoption", "5.8%", "📊 Firm-weighted")
+        st.metric("Early Adoption", "5.8%", "📊 Limited to pioneers")
     with col2:
-        st.metric("Large Firms (5000+)", "58.5%", "🏢 High adoption")
+        st.metric("Size Advantage", "58.5%", "🏢 Large firms leading")
     with col3:
-        st.metric("AI + Cloud", "45%", "☁️ Technology stack")
+        st.metric("Tech Integration", "45%", "☁️ Multi-technology approach")
     with col4:
-        st.metric("Top City", "SF Bay (9.5%)", "🌍 Geographic leader")
+        st.metric("Geographic Hub", "SF Bay (9.5%)", "🌍 Innovation concentration")
+
+# Strategic interpretation
+st.info("""
+**🧠 Strategic Implications:** The 2022-2024 period represents a fundamental market transition. Organizations that don't adapt their AI strategy now risk falling permanently behind competitors who are gaining 15-40% productivity advantages.
+""")
 
 # Main visualization section
 st.subheader(f"📊 {view_type}")
@@ -938,6 +789,1088 @@ st.subheader(f"📊 {view_type}")
 # View implementations - ALL COMPLETE VISUALIZATIONS
 # Enhanced Historical Trends View - Add this to your existing Historical Trends section
 # Replace the existing Historical Trends view implementation with this enhanced version
+
+# ADD THIS as the FIRST view implementation (before "Historical Trends")
+
+if view_type == "🎯 Competitive Position Assessor":
+    st.write("# 🎯 AI Competitive Position Assessment")
+    st.write("**Get your strategic position and risk analysis in under 2 minutes**")
+    
+    # Add value proposition
+    col1, col2, col3 = st.columns(3)
+    with col1:
+        st.info("📊 **Data-Driven**\nBased on Stanford AI Index 2025 & McKinsey research")
+    with col2:
+        st.info("⚡ **Fast Results**\nComplete assessment in under 2 minutes")
+    with col3:
+        st.info("🎯 **Actionable**\nSpecific recommendations with timelines")
+    
+    st.markdown("---")
+    
+    # USER INPUT SECTION
+    st.subheader("📋 Tell Us About Your Organization")
+    
+    col1, col2 = st.columns(2)
+    
+    with col1:
+        industry = st.selectbox(
+            "Industry Sector",
+            ["Technology", "Financial Services", "Healthcare", "Manufacturing", 
+             "Retail & E-commerce", "Education", "Energy & Utilities", "Government", "Other"],
+            help="Select your primary industry sector"
+        )
+        
+        company_size = st.selectbox(
+            "Organization Size",
+            ["1-50 employees", "51-250 employees", "251-1000 employees", 
+             "1001-5000 employees", "5000+ employees"],
+            help="Total number of employees in your organization"
+        )
+        
+        current_ai_adoption = st.slider(
+            "Current AI Usage (%)",
+            0, 100, 25,
+            help="What percentage of your organization actively uses AI tools or has AI-powered processes?"
+        )
+    
+    with col2:
+        ai_investment = st.selectbox(
+            "Annual AI Investment",
+            ["<$100K", "$100K-$500K", "$500K-$2M", "$2M-$10M", "$10M+"],
+            help="Your organization's current annual AI technology budget"
+        )
+        
+        geographic_focus = st.selectbox(
+            "Primary Market",
+            ["United States", "North America", "Europe", "Asia-Pacific", "Global"],
+            help="Your primary business geographic focus"
+        )
+        
+        urgency = st.radio(
+            "Strategic Priority Level",
+            ["Low Priority", "Medium Priority", "High Priority", "Critical Priority"],
+            index=1,
+            help="How important is AI to your current business strategy?"
+        )
+    
+    # Assessment button
+    if st.button("🔍 Assess My Competitive Position", type="primary", use_container_width=True):
+        
+        # COMPETITIVE ANALYSIS ENGINE
+        # Industry benchmarks from your existing data
+        industry_benchmark = {
+            "Technology": 92, 
+            "Financial Services": 85, 
+            "Healthcare": 78,
+            "Manufacturing": 75, 
+            "Retail & E-commerce": 72, 
+            "Education": 65,
+            "Energy & Utilities": 58, 
+            "Government": 52, 
+            "Other": 65
+        }
+        
+        # Size benchmarks from your firm size data
+        size_benchmark = {
+            "1-50 employees": 8, 
+            "51-250 employees": 15, 
+            "251-1000 employees": 35,
+            "1001-5000 employees": 55, 
+            "5000+ employees": 78
+        }
+        
+        # Investment adequacy assessment
+        investment_ranges = {
+            "<$100K": {"score": 20, "label": "Below Market"},
+            "$100K-$500K": {"score": 40, "label": "Entry Level"}, 
+            "$500K-$2M": {"score": 60, "label": "Competitive"}, 
+            "$2M-$10M": {"score": 80, "label": "Advanced"}, 
+            "$10M+": {"score": 100, "label": "Leading"}
+        }
+        
+        # Geographic competitiveness factors
+        geo_factors = {
+            "United States": 1.0,
+            "North America": 0.95,
+            "Europe": 0.90,
+            "Asia-Pacific": 0.85,
+            "Global": 1.05
+        }
+        
+        # CALCULATE COMPETITIVE POSITION
+        industry_avg = industry_benchmark[industry]
+        size_avg = size_benchmark[company_size]
+        investment_score = investment_ranges[ai_investment]["score"]
+        geo_multiplier = geo_factors[geographic_focus]
+        
+        # Weighted competitive score (0-100)
+        adoption_score = current_ai_adoption * 0.4
+        industry_position_score = (min(current_ai_adoption / industry_avg, 1.2) * 100) * 0.25
+        size_position_score = (min(current_ai_adoption / size_avg, 1.2) * 100) * 0.15
+        investment_position_score = investment_score * 0.15
+        urgency_bonus = {"Low Priority": 0, "Medium Priority": 2, "High Priority": 5, "Critical Priority": 8}[urgency]
+        
+        competitive_score = (adoption_score + industry_position_score + size_position_score + investment_position_score + urgency_bonus) * geo_multiplier
+        competitive_score = min(competitive_score, 100)  # Cap at 100
+        
+        # DETERMINE STRATEGIC POSITION
+        if competitive_score >= 80:
+            position = "LEADER"
+            position_color = "🟢"
+            risk_level = "LOW"
+            risk_color = "success"
+        elif competitive_score >= 60:
+            position = "COMPETITIVE"
+            position_color = "🟡" 
+            risk_level = "MEDIUM"
+            risk_color = "warning"
+        elif competitive_score >= 40:
+            position = "LAGGARD"
+            position_color = "🟠"
+            risk_level = "HIGH"
+            risk_color = "warning"
+        else:
+            position = "AT RISK"
+            position_color = "🔴"
+            risk_level = "CRITICAL"
+            risk_color = "error"
+        
+        # Calculate key metrics
+        industry_gap = industry_avg - current_ai_adoption
+        size_gap = size_avg - current_ai_adoption
+        months_to_risk = max(3, 36 - (competitive_score / 3))
+        
+        # RESULTS DISPLAY
+        st.markdown("---")
+        st.subheader("📊 Your AI Competitive Assessment Results")
+        
+        # Key metrics display
+        col1, col2, col3, col4 = st.columns(4)
+        
+        with col1:
+            st.metric(
+                "Competitive Position",
+                f"{position_color} {position}",
+                f"Score: {competitive_score:.0f}/100"
+            )
+        
+        with col2:
+            st.metric(
+                "Industry Gap",
+                f"{industry_gap:+.0f}pp" if industry_gap != 0 else "At Benchmark",
+                f"vs {industry} avg ({industry_avg}%)"
+            )
+        
+        with col3:
+            st.metric(
+                "Risk Level",
+                risk_level,
+                f"Investment: {investment_ranges[ai_investment]['label']}"
+            )
+        
+        with col4:
+            st.metric(
+                "Action Timeline",
+                f"{months_to_risk:.0f} months",
+                "Before competitive disadvantage"
+            )
+        
+        # STRATEGIC INSIGHTS SECTION
+        st.subheader("🎯 Strategic Analysis & Recommendations")
+        
+        if position == "LEADER":
+            st.success(f"""
+            **{position_color} Excellent! You're ahead of the competitive curve.**
+            
+            **Your Strategic Advantages:**
+            - **{current_ai_adoption}%** adoption vs **{industry_avg}%** industry average ({industry_gap:+.0f}pp advantage)
+            - Strong positioning for the next wave of AI innovation
+            - Likely experiencing measurable competitive advantages
+            - **{investment_ranges[ai_investment]['label']}** investment level supports continued growth
+            
+            **Strategic Recommendations:**
+            1. **Maintain momentum** - Continue current investment trajectory
+            2. **Advanced use cases** - Focus on proprietary AI capabilities and competitive moats  
+            3. **Industry leadership** - Consider becoming a thought leader and standard-setter
+            4. **Ecosystem development** - Build partnerships with AI vendors and startups
+            """)
+            
+        elif position == "COMPETITIVE":
+            st.info(f"""
+            **{position_color} Good position, but acceleration needed to maintain competitiveness.**
+            
+            **Current Strategic Status:**
+            - **{current_ai_adoption}%** adoption vs **{industry_avg}%** industry average ({abs(industry_gap):.0f}pp {"behind" if industry_gap > 0 else "ahead"})
+            - Avoiding major competitive disadvantage currently
+            - Window for gaining advantage still open
+            - **{investment_ranges[ai_investment]['label']}** investment may need increase
+            
+            **Strategic Recommendations:**
+            1. **Accelerate investment** - Increase AI budget by 50-100% over next 12 months
+            2. **Focus on ROI** - Prioritize high-return use cases in {industry.lower()}
+            3. **Build capabilities** - Develop AI governance, training, and change management
+            4. **Competitive monitoring** - Track leaders' moves to avoid falling behind
+            """)
+            
+        elif position == "LAGGARD":
+            st.warning(f"""
+            **{position_color} Falling behind - immediate strategic action required.**
+            
+            **Competitive Risk Factors:**
+            - **{abs(industry_gap):.0f} percentage points** behind industry average
+            - Competitors likely gaining cost, efficiency, and service advantages
+            - Window for easy catch-up closing rapidly
+            - Current investment level insufficient for competitive needs
+            
+            **Immediate Action Plan:**
+            1. **Emergency acceleration** - Double AI investment within 6 months
+            2. **Proven solutions first** - Start with established use cases in {industry.lower()}
+            3. **External expertise** - Consider consulting partners for rapid implementation
+            4. **Leadership commitment** - Ensure C-suite sponsorship and urgency
+            """)
+            
+        else:  # AT RISK
+            st.error(f"""
+            **{position_color} Critical competitive crisis - urgent transformation required.**
+            
+            **Severe Strategic Disadvantages:**
+            - **{abs(industry_gap):.0f}pp** behind industry average - major competitive gap
+            - Likely experiencing margin pressure and customer defection
+            - Risk of becoming competitively obsolete within 12-18 months
+            - Current approach insufficient for business survival
+            
+            **Crisis Response Plan:**
+            1. **Board-level intervention** - Treat as existential business threat
+            2. **Emergency budget allocation** - 10x current AI investment immediately
+            3. **Acquisition consideration** - Buy AI capabilities or merge with AI-forward competitor
+            4. **Partnership strategy** - Major alliances with AI providers for rapid transformation
+            """)
+        
+        # DETAILED BENCHMARKING
+        st.subheader("📈 Competitive Benchmarking Analysis")
+        
+        # Create comprehensive comparison
+        comparison_data = pd.DataFrame({
+            'Organization Type': [
+                'Your Organization',
+                f'{industry} Leaders', 
+                f'{industry} Average',
+                f'{company_size} Peers',
+                'Market Leaders (All)'
+            ],
+            'AI Adoption (%)': [
+                current_ai_adoption,
+                min(industry_avg * 1.3, 95),  # Leaders are ~30% above average
+                industry_avg,
+                size_avg,
+                90
+            ],
+            'Investment Level': [
+                investment_ranges[ai_investment]['label'],
+                'Advanced/Leading',
+                'Competitive',
+                'Entry/Competitive',
+                'Leading'
+            ]
+        })
+        
+        # Create visualization
+        fig = go.Figure()
+        
+        colors = ['#FF6B6B' if current_ai_adoption < industry_avg else '#4ECDC4', 
+                  '#2ECC71', '#95A5A6', '#F39C12', '#9B59B6']
+        
+        fig.add_trace(go.Bar(
+            x=comparison_data['Organization Type'],
+            y=comparison_data['AI Adoption (%)'],
+            marker_color=colors,
+            text=[f'{x:.0f}%' for x in comparison_data['AI Adoption (%)']],
+            textposition='outside',
+            hovertemplate='<b>%{x}</b><br>AI Adoption: %{y}%<br>Investment: %{customdata}<extra></extra>',
+            customdata=comparison_data['Investment Level']
+        ))
+        
+        # Add reference lines
+        fig.add_hline(
+            y=current_ai_adoption, 
+            line_dash="dash", 
+            line_color="red",
+            annotation_text="Your Current Position",
+            annotation_position="right"
+        )
+        
+        fig.add_hline(
+            y=industry_avg,
+            line_dash="dot",
+            line_color="blue", 
+            annotation_text=f"{industry} Average",
+            annotation_position="left"
+        )
+        
+        fig.update_layout(
+            title="How You Compare to Industry Benchmarks",
+            xaxis_title="Comparison Group",
+            yaxis_title="AI Adoption Rate (%)",
+            height=400,
+            showlegend=False
+        )
+        
+        st.plotly_chart(fig, use_container_width=True)
+        
+        # RECOMMENDED ACTION PLAN
+        st.subheader("📋 Customized Action Plan")
+        
+        # Generate specific recommendations based on profile
+        recommendations = []
+        
+        # Size-based recommendations
+        if company_size in ["1-50 employees", "51-250 employees"]:
+            recommendations.extend([
+                "**Quick wins**: Start with AI productivity tools (ChatGPT Business, Microsoft Copilot, Notion AI)",
+                "**Partnership strategy**: Work with AI vendors rather than building in-house capabilities",
+                "**Customer focus**: Prioritize customer-facing AI applications for immediate ROI"
+            ])
+        elif company_size in ["251-1000 employees", "1001-5000 employees"]:
+            recommendations.extend([
+                "**Governance first**: Establish AI center of excellence and usage policies",
+                "**Pilot program**: Launch 3-5 AI pilots across different business functions", 
+                "**Talent strategy**: Hire AI specialists and train existing workforce"
+            ])
+        else:  # 5000+ employees
+            recommendations.extend([
+                "**Enterprise strategy**: Develop comprehensive AI transformation roadmap",
+                "**Build vs buy**: Consider developing proprietary AI capabilities for competitive advantage",
+                "**Ecosystem development**: Partner with AI startups and research institutions"
+            ])
+        
+        # Urgency-based recommendations
+        if urgency in ["High Priority", "Critical Priority"]:
+            recommendations.insert(0, "**Leadership mobilization**: Form executive AI task force with weekly cadence")
+            recommendations.insert(1, "**Emergency budget**: Allocate additional resources for immediate AI initiatives")
+        
+        # Industry-specific recommendations
+        industry_recs = {
+            "Technology": "Focus on AI-powered product features and development acceleration",
+            "Financial Services": "Prioritize fraud detection, customer service, and risk management AI",
+            "Healthcare": "Implement AI for diagnostics, patient care optimization, and administrative efficiency", 
+            "Manufacturing": "Deploy AI for predictive maintenance, quality control, and supply chain optimization",
+            "Retail & E-commerce": "Use AI for personalization, inventory optimization, and customer analytics",
+            "Education": "Integrate AI for personalized learning, administrative tasks, and student support",
+            "Energy & Utilities": "Apply AI for grid optimization, predictive maintenance, and sustainability",
+            "Government": "Focus on citizen services, process automation, and data-driven policy making"
+        }
+        
+        if industry in industry_recs:
+            recommendations.append(f"**Industry focus**: {industry_recs[industry]}")
+        
+        # Gap-based recommendations
+        if current_ai_adoption < 25:
+            recommendations.append("**Foundation building**: Start with basic AI literacy training and simple automation")
+        elif current_ai_adoption < 50:
+            recommendations.append("**Scale successful pilots**: Expand working AI implementations across organization")
+        else:
+            recommendations.append("**Advanced capabilities**: Explore cutting-edge AI applications and competitive differentiation")
+        
+        # Display recommendations
+        for i, rec in enumerate(recommendations, 1):
+            st.write(f"**{i}.** {rec}")
+        
+        # TIMELINE AND NEXT STEPS
+        st.subheader("🚀 Implementation Timeline")
+        
+        col1, col2, col3 = st.columns(3)
+        
+        with col1:
+            st.markdown("""
+            **📅 Next 30 Days:**
+            - Share this assessment with leadership team
+            - Conduct AI readiness audit
+            - Identify quick-win opportunities
+            - Research industry-specific AI solutions
+            """)
+        
+        with col2:
+            st.markdown("""
+            **📅 Next 90 Days:**
+            - Develop formal AI strategy and roadmap
+            - Allocate budget for priority initiatives
+            - Launch first pilot projects
+            - Establish AI governance framework
+            """)
+        
+        with col3:
+            st.markdown("""
+            **📅 Next 12 Months:**
+            - Scale successful pilots organization-wide
+            - Build internal AI capabilities
+            - Measure and optimize ROI
+            - Plan next-generation AI investments
+            """)
+        
+        # DOWNLOAD STRATEGIC REPORT
+# DOWNLOAD STRATEGIC REPORT (FIXED VERSION)
+        st.subheader("📥 Executive Summary Report")
+
+# Generate the report data immediately (don't wait for button click)
+        report_data = f"""
+        AI COMPETITIVE POSITION ASSESSMENT
+        Executive Summary Report
+        Generated: {datetime.now().strftime('%B %d, %Y')}
+
+        ═══════════════════════════════════════════════════════════════
+
+        ORGANIZATION PROFILE
+        ═══════════════════════════════════════════════════════════════
+        Industry Sector: {industry}
+        Organization Size: {company_size}
+        Geographic Focus: {geographic_focus}
+        Current AI Adoption: {current_ai_adoption}%
+        Annual AI Investment: {ai_investment}
+        Strategic Priority: {urgency}
+
+        COMPETITIVE ASSESSMENT RESULTS  
+        ═══════════════════════════════════════════════════════════════
+        Overall Position: {position} ({competitive_score:.0f}/100)
+        Industry Comparison: {industry_gap:+.0f}pp vs {industry} average ({industry_avg}%)
+        Size Peer Comparison: {size_gap:+.0f}pp vs {company_size} average ({size_avg}%)
+        Competitive Risk Level: {risk_level}
+        Recommended Action Timeline: {months_to_risk:.0f} months
+
+        STRATEGIC RECOMMENDATIONS
+        ═══════════════════════════════════════════════════════════════
+        {chr(10).join([f"{i+1}. {rec.replace('**', '').replace('*', '')}" for i, rec in enumerate(recommendations)])}
+
+        BENCHMARKING DATA
+        ═══════════════════════════════════════════════════════════════
+        Your Organization: {current_ai_adoption}%
+        {industry} Average: {industry_avg}%
+        {company_size} Peers: {size_avg}%
+        Industry Leaders: {min(industry_avg * 1.3, 95):.0f}%
+        Market Leaders: 90%+
+
+        IMMEDIATE NEXT STEPS
+        ═══════════════════════════════════════════════════════════════
+        1. Present findings to executive leadership
+        2. Conduct detailed AI readiness assessment  
+        3. Allocate appropriate investment budget
+        4. Identify and launch pilot initiatives
+        5. Establish AI governance and strategy framework
+
+        ═══════════════════════════════════════════════════════════════
+        Report Source: AI Adoption Dashboard v2.2.0
+        Data Sources: Stanford AI Index 2025, McKinsey Global Survey, OECD AI Observatory
+        Methodology: Multi-factor competitive analysis based on industry benchmarks
+        Contact: [Your organization contact information]
+        ═══════════════════════════════════════════════════════════════
+        """
+
+# Show a preview of the report
+        with st.expander("📋 Preview Executive Report", expanded=False):
+            st.text(report_data[:500] + "...")
+            st.write("*Full report available for download below*")
+
+        # Direct download button (this should work)
+        st.download_button(
+            label="📥 Download Complete Executive Report",
+            data=report_data,
+            file_name=f"AI_Competitive_Assessment_{datetime.now().strftime('%Y%m%d')}.txt",
+            mime="text/plain",
+            use_container_width=True,
+            help="Click to download your complete strategic assessment report"
+        )
+
+        st.success("✅ Report ready for download! Use this for leadership presentations and strategic planning.")
+    
+    # Help section (this should be at the same level as the main sections above)
+    with st.expander("ℹ️ How This Assessment Works"):
+        st.markdown("""
+        ### Assessment Methodology
+        
+        This competitive position assessment uses a multi-factor analysis based on:
+        
+        **Data Sources:**
+        - Stanford AI Index Report 2025 (industry benchmarks)
+        - McKinsey Global Survey on AI (adoption patterns)
+        - OECD AI Policy Observatory (enterprise data)
+        - US Census Bureau AI Use Supplement (firm size correlations)
+        
+        **Scoring Factors:**
+        - **Current adoption rate** (40% weight) - Your actual AI usage
+        - **Industry position** (25% weight) - How you compare to industry peers
+        - **Size-adjusted performance** (15% weight) - Accounting for organization size
+        - **Investment adequacy** (15% weight) - Whether funding matches ambition
+        - **Strategic priority** (5% weight) - Leadership commitment level
+        
+        **Position Categories:**
+        - **🟢 LEADER (80-100)**: Ahead of industry curve, competitive advantage
+        - **🟡 COMPETITIVE (60-79)**: Keeping pace, some advantages
+        - **🟠 LAGGARD (40-59)**: Falling behind, action needed
+        - **🔴 AT RISK (0-39)**: Critical competitive disadvantage
+        
+        **Limitations:**
+        - Based on self-reported adoption levels
+        - Does not account for implementation quality
+        - Industry averages may vary by specific subsector
+        - Recommendations are general guidance, not specific consulting advice
+        """)
+
+elif view_type == "💰 Investment Decision Engine":
+    st.write("# 💰 AI Investment Decision Engine")
+    st.write("**Optimize your AI investment portfolio for maximum strategic impact**")
+    
+    # Value proposition
+    col1, col2, col3 = st.columns(3)
+    with col1:
+        st.info("🎯 **Portfolio Optimization**\nAllocate budget across high-ROI use cases")
+    with col2:
+        st.info("⏰ **Timing Strategy**\nWhen to invest based on market dynamics")
+    with col3:
+        st.info("🤝 **Implementation Path**\nBuild vs buy vs partner decisions")
+    
+    st.markdown("---")
+    
+    # INVESTMENT PARAMETERS SECTION
+    st.subheader("📊 Investment Parameters")
+    
+    col1, col2 = st.columns(2)
+    
+    with col1:
+        # Basic parameters
+        annual_budget = st.selectbox(
+            "Annual AI Budget",
+            ["<$500K", "$500K-$2M", "$2M-$10M", "$10M-$50M", "$50M+"],
+            help="Your total annual AI technology and implementation budget"
+        )
+        
+        investment_horizon = st.selectbox(
+            "Investment Timeline",
+            ["6 months", "1 year", "2 years", "3+ years"],
+            index=1,
+            help="Your strategic planning horizon for AI investments"
+        )
+        
+        risk_tolerance = st.radio(
+            "Risk Tolerance",
+            ["Conservative", "Balanced", "Aggressive"],
+            index=1,
+            help="Conservative: Proven ROI. Balanced: Mix of proven and emerging. Aggressive: Cutting-edge for competitive advantage"
+        )
+    
+    with col2:
+        # Strategic context
+        primary_goals = st.multiselect(
+            "Primary AI Investment Goals",
+            ["Cost Reduction", "Revenue Growth", "Competitive Advantage", "Operational Efficiency", 
+             "Customer Experience", "Innovation", "Risk Management", "Compliance"],
+            default=["Cost Reduction", "Operational Efficiency"],
+            help="Select your top 2-3 strategic objectives for AI investment"
+        )
+        
+        competitive_urgency = st.slider(
+            "Competitive Pressure (1-10)",
+            1, 10, 5,
+            help="How urgent is AI adoption for competitive survival? 1=Low pressure, 10=Critical"
+        )
+        
+        current_maturity = st.selectbox(
+            "Current AI Maturity",
+            ["No AI (Starting from zero)", "Pilot Stage (1-2 projects)", "Early Adoption (3-10 projects)", 
+             "Scaling (10+ projects)", "Advanced (AI-first organization)"],
+            index=1,
+            help="Your organization's current AI implementation maturity level"
+        )
+    
+    # CALCULATE INVESTMENT STRATEGY
+    if st.button("🔍 Generate Investment Strategy", type="primary", use_container_width=True):
+        
+        # INVESTMENT CALCULATION ENGINE
+        
+        # Budget mapping
+        budget_ranges = {
+            "<$500K": {"min": 100000, "max": 500000, "category": "Starter"},
+            "$500K-$2M": {"min": 500000, "max": 2000000, "category": "Growth"},
+            "$2M-$10M": {"min": 2000000, "max": 10000000, "category": "Scale"},
+            "$10M-$50M": {"min": 10000000, "max": 50000000, "category": "Enterprise"},
+            "$50M+": {"min": 50000000, "max": 200000000, "category": "Leader"}
+        }
+        
+        budget_info = budget_ranges[annual_budget]
+        budget_midpoint = (budget_info["min"] + budget_info["max"]) / 2
+        
+        # Risk and timeline adjustments
+        risk_multipliers = {"Conservative": 0.7, "Balanced": 1.0, "Aggressive": 1.4}
+        timeline_factors = {"6 months": 0.5, "1 year": 1.0, "2 years": 1.3, "3+ years": 1.6}
+        
+        adjusted_budget = budget_midpoint * risk_multipliers[risk_tolerance] * timeline_factors[investment_horizon]
+        
+        # USE CASE PORTFOLIO OPTIMIZATION
+        use_cases = {
+            "Process Automation": {
+                "roi_range": (2.5, 4.0), "implementation_time": 3, "risk": "Low",
+                "best_for": ["Cost Reduction", "Operational Efficiency"],
+                "investment_pct": 0.25
+            },
+            "Customer Service AI": {
+                "roi_range": (1.8, 3.2), "implementation_time": 4, "risk": "Low",
+                "best_for": ["Cost Reduction", "Customer Experience"],
+                "investment_pct": 0.20
+            },
+            "Predictive Analytics": {
+                "roi_range": (2.0, 3.5), "implementation_time": 6, "risk": "Medium",
+                "best_for": ["Operational Efficiency", "Risk Management"],
+                "investment_pct": 0.15
+            },
+            "Content Generation": {
+                "roi_range": (1.5, 2.8), "implementation_time": 2, "risk": "Low",
+                "best_for": ["Operational Efficiency", "Innovation"],
+                "investment_pct": 0.15
+            },
+            "Sales & Marketing AI": {
+                "roi_range": (2.2, 4.5), "implementation_time": 5, "risk": "Medium",
+                "best_for": ["Revenue Growth", "Customer Experience"],
+                "investment_pct": 0.15
+            },
+            "Product Innovation": {
+                "roi_range": (1.2, 5.0), "implementation_time": 12, "risk": "High",
+                "best_for": ["Innovation", "Competitive Advantage"],
+                "investment_pct": 0.10
+            }
+        }
+        
+        # Adjust portfolio based on goals and risk tolerance
+        portfolio = {}
+        for use_case, data in use_cases.items():
+            # Calculate relevance score based on goals
+            relevance = sum(1 for goal in primary_goals if goal in data["best_for"])
+            
+            # Adjust for risk tolerance
+            if risk_tolerance == "Conservative":
+                if data["risk"] == "High":
+                    relevance *= 0.3
+                elif data["risk"] == "Medium":
+                    relevance *= 0.7
+            elif risk_tolerance == "Aggressive":
+                if data["risk"] == "High":
+                    relevance *= 1.5
+                elif data["risk"] == "Medium":
+                    relevance *= 1.2
+            
+            # Calculate investment allocation
+            base_allocation = data["investment_pct"]
+            adjusted_allocation = base_allocation * (1 + relevance * 0.3)
+            investment_amount = adjusted_budget * adjusted_allocation
+            
+            portfolio[use_case] = {
+                "allocation": adjusted_allocation,
+                "investment": investment_amount,
+                "expected_roi": sum(data["roi_range"]) / 2,
+                "timeline": data["implementation_time"],
+                "risk": data["risk"],
+                "relevance": relevance
+            }
+        
+        # Normalize allocations to 100%
+        total_allocation = sum(p["allocation"] for p in portfolio.values())
+        for use_case in portfolio:
+            portfolio[use_case]["allocation"] = portfolio[use_case]["allocation"] / total_allocation
+            portfolio[use_case]["investment"] = adjusted_budget * portfolio[use_case]["allocation"]
+        
+        # IMPLEMENTATION STRATEGY
+        maturity_strategies = {
+            "No AI (Starting from zero)": {
+                "approach": "Foundation First",
+                "focus": "Basic automation and productivity tools",
+                "timeline": "Start with 2-3 pilot projects",
+                "build_vs_buy": "Buy: 80%, Build: 10%, Partner: 10%"
+            },
+            "Pilot Stage (1-2 projects)": {
+                "approach": "Expand & Learn",
+                "focus": "Scale successful pilots, add new use cases",
+                "timeline": "3-5 concurrent projects",
+                "build_vs_buy": "Buy: 60%, Build: 20%, Partner: 20%"
+            },
+            "Early Adoption (3-10 projects)": {
+                "approach": "Strategic Scale",
+                "focus": "Platform approach, governance, integration",
+                "timeline": "Portfolio of 5-8 initiatives",
+                "build_vs_buy": "Buy: 40%, Build: 35%, Partner: 25%"
+            },
+            "Scaling (10+ projects)": {
+                "approach": "Optimization & Innovation",
+                "focus": "Advanced use cases, competitive differentiation",
+                "timeline": "Enterprise transformation",
+                "build_vs_buy": "Buy: 30%, Build: 50%, Partner: 20%"
+            },
+            "Advanced (AI-first organization)": {
+                "approach": "Innovation Leadership",
+                "focus": "Cutting-edge AI, industry disruption",
+                "timeline": "Continuous innovation pipeline",
+                "build_vs_buy": "Buy: 20%, Build: 60%, Partner: 20%"
+            }
+        }
+        
+        strategy = maturity_strategies[current_maturity]
+        
+        # TIMING RECOMMENDATIONS
+        urgency_timeline = {
+            (1, 3): "18-24 months - Gradual adoption acceptable",
+            (4, 6): "12-18 months - Moderate urgency",
+            (7, 8): "6-12 months - High urgency",
+            (9, 10): "3-6 months - Critical urgency"
+        }
+        
+        timeline_rec = next(v for k, v in urgency_timeline.items() if k[0] <= competitive_urgency <= k[1])
+        
+        # RESULTS DISPLAY
+        st.markdown("---")
+        st.subheader("🎯 Your Optimized AI Investment Strategy")
+        
+        # Strategic overview metrics
+        col1, col2, col3, col4 = st.columns(4)
+        
+        with col1:
+            st.metric(
+                "Recommended Budget",
+                f"${adjusted_budget/1000000:.1f}M",
+                f"{budget_info['category']} tier"
+            )
+        
+        with col2:
+            expected_total_roi = sum(p["expected_roi"] * p["allocation"] for p in portfolio.values())
+            st.metric(
+                "Portfolio ROI",
+                f"{expected_total_roi:.1f}x",
+                f"{risk_tolerance} risk profile"
+            )
+        
+        with col3:
+            avg_timeline = sum(p["timeline"] * p["allocation"] for p in portfolio.values())
+            st.metric(
+                "Avg. Implementation",
+                f"{avg_timeline:.0f} months",
+                "Weighted average"
+            )
+        
+        with col4:
+            st.metric(
+                "Competitive Timeline",
+                timeline_rec.split(" - ")[0],
+                "Based on urgency"
+            )
+        
+        # PORTFOLIO ALLOCATION
+        st.subheader("📊 Recommended Investment Portfolio")
+        
+        # Create portfolio visualization
+        portfolio_df = pd.DataFrame({
+            'Use Case': list(portfolio.keys()),
+            'Investment ($)': [p["investment"] for p in portfolio.values()],
+            'Allocation (%)': [p["allocation"] * 100 for p in portfolio.values()],
+            'Expected ROI': [f"{p['expected_roi']:.1f}x" for p in portfolio.values()],
+            'Timeline (months)': [p["timeline"] for p in portfolio.values()],
+            'Risk Level': [p["risk"] for p in portfolio.values()]
+        })
+        
+        # Sort by investment amount
+        portfolio_df = portfolio_df.sort_values('Investment ($)', ascending=False)
+        
+        # Create portfolio chart
+        fig = go.Figure()
+        
+        colors = ['#2E86AB', '#A23B72', '#F18F01', '#C73E1D', '#4ECDC4', '#45B7D1']
+        
+        fig.add_trace(go.Bar(
+            x=portfolio_df['Use Case'],
+            y=portfolio_df['Investment ($)'],
+            marker_color=colors[:len(portfolio_df)],
+            text=[f'${x/1000:.0f}K<br>{y:.1f}%' for x, y in zip(portfolio_df['Investment ($)'], portfolio_df['Allocation (%)'])],
+            textposition='outside',
+            hovertemplate='<b>%{x}</b><br>Investment: $%{y:,.0f}<br>ROI: %{customdata}<extra></extra>',
+            customdata=portfolio_df['Expected ROI']
+        ))
+        
+        fig.update_layout(
+            title="AI Investment Portfolio Allocation",
+            xaxis_title="Use Case",
+            yaxis_title="Investment Amount ($)",
+            height=400,
+            showlegend=False,
+            xaxis_tickangle=45
+        )
+        
+        st.plotly_chart(fig, use_container_width=True)
+        
+        # Detailed portfolio table
+        st.dataframe(
+            portfolio_df.style.format({
+                'Investment ($)': '${:,.0f}',
+                'Allocation (%)': '{:.1f}%'
+            }),
+            hide_index=True,
+            use_container_width=True
+        )
+        
+        # IMPLEMENTATION ROADMAP
+        st.subheader("🗓️ Implementation Roadmap")
+        
+        col1, col2 = st.columns(2)
+        
+        with col1:
+            st.markdown(f"""
+            **📋 Strategic Approach: {strategy['approach']}**
+            
+            **Focus Areas:**
+            {strategy['focus']}
+            
+            **Implementation Scale:**
+            {strategy['timeline']}
+            
+            **Build vs Buy vs Partner:**
+            {strategy['build_vs_buy']}
+            """)
+        
+        with col2:
+            st.markdown(f"""
+            **⏰ Timing Strategy:**
+            {timeline_rec}
+            
+            **Priority Sequence:**
+            1. **Quick Wins** (0-6 months): Process Automation, Content Generation
+            2. **Core Value** (6-12 months): Customer Service, Predictive Analytics  
+            3. **Strategic Advantage** (12+ months): Sales/Marketing AI, Product Innovation
+            
+            **Risk Management:**
+            Start with low-risk, high-ROI initiatives to build confidence and capability
+            """)
+        
+        # DETAILED RECOMMENDATIONS
+        st.subheader("🎯 Specific Investment Recommendations")
+        
+        # Top 3 recommended investments
+        top_investments = portfolio_df.head(3)
+        
+        for idx, (_, investment) in enumerate(top_investments.iterrows(), 1):
+            with st.expander(f"#{idx} Priority: {investment['Use Case']} (${investment['Investment ($)']/1000:.0f}K investment)", expanded=idx==1):
+                use_case_name = investment['Use Case']
+                use_case_data = use_cases[use_case_name]
+                
+                col1, col2, col3 = st.columns(3)
+                
+                with col1:
+                    st.write("**💰 Financial Impact:**")
+                    st.write(f"• Investment: ${investment['Investment ($)']/1000:.0f}K")
+                    st.write(f"• Expected ROI: {investment['Expected ROI']}")
+                    st.write(f"• Timeline: {investment['Timeline (months)']} months")
+                    st.write(f"• Risk Level: {investment['Risk Level']}")
+                
+                with col2:
+                    st.write("**🎯 Strategic Fit:**")
+                    st.write(f"• Supports: {', '.join(use_case_data['best_for'])}")
+                    st.write(f"• Portfolio allocation: {investment['Allocation (%)']:.1f}%")
+                    relevant_goals = [g for g in primary_goals if g in use_case_data['best_for']]
+                    st.write(f"• Matches your goals: {', '.join(relevant_goals) if relevant_goals else 'Indirect fit'}")
+                
+                with col3:
+                    st.write("**⚡ Implementation:**")
+                    if use_case_name == "Process Automation":
+                        st.write("• **Tools**: UiPath, Microsoft Power Automate")
+                        st.write("• **Approach**: Start with repetitive back-office tasks")
+                        st.write("• **Success metrics**: Hours saved, error reduction")
+                    elif use_case_name == "Customer Service AI":
+                        st.write("• **Tools**: Zendesk AI, Intercom, ChatGPT API")
+                        st.write("• **Approach**: Deploy chatbots for common queries")
+                        st.write("• **Success metrics**: Response time, satisfaction")
+                    elif use_case_name == "Content Generation":
+                        st.write("• **Tools**: GPT-4, Jasper, Copy.ai")
+                        st.write("• **Approach**: Marketing content, documentation")
+                        st.write("• **Success metrics**: Content volume, quality scores")
+                    else:
+                        st.write("• **Approach**: Phased implementation recommended")
+                        st.write("• **Partners**: Consider specialist vendors")
+                        st.write("• **Success metrics**: Domain-specific KPIs")
+        
+        # RISK ANALYSIS
+        st.subheader("⚠️ Investment Risk Analysis")
+        
+        # Calculate portfolio risk
+        # REPLACE the risk calculation section with this:
+
+# Calculate portfolio risk BY BUDGET ALLOCATION (not just count)
+# Calculate portfolio risk BY BUDGET ALLOCATION (not just count)
+        risk_allocation = portfolio_df.groupby('Risk Level')['Allocation (%)'].sum().reset_index()
+        risk_allocation.columns = ['Risk Level', 'Budget Percentage']
+
+        # Calculate individual risk totals
+        total_low_risk = portfolio_df[portfolio_df['Risk Level'] == 'Low']['Allocation (%)'].sum()
+        total_medium_risk = portfolio_df[portfolio_df['Risk Level'] == 'Medium']['Allocation (%)'].sum()
+        total_high_risk = portfolio_df[portfolio_df['Risk Level'] == 'High']['Allocation (%)'].sum()
+
+        col1, col2 = st.columns(2)
+
+        with col1:
+            # Dynamic risk distribution pie chart
+            fig_risk = go.Figure(data=[go.Pie(
+                labels=risk_allocation['Risk Level'],
+                values=risk_allocation['Budget Percentage'],  # ← NOW uses actual budget allocation
+                hole=.3,
+                marker_colors=['#2ECC71', '#F39C12', '#E74C3C'],
+                textinfo='label+percent',
+                textfont_size=12,
+                hovertemplate='<b>%{label}</b><br>Budget Allocation: %{value:.1f}%<br>Investment: $%{customdata}<extra></extra>',
+                customdata=[f"{(pct/100 * adjusted_budget):,.0f}" for pct in risk_allocation['Budget Percentage']]
+            )])
+            
+            fig_risk.update_layout(
+                title="Portfolio Risk Distribution by Budget",
+                height=500,  # ← Increased size as requested
+                showlegend=True
+            )
+            
+            st.plotly_chart(fig_risk, use_container_width=True)
+
+        with col2:
+            st.markdown(f"""
+            **🎯 Dynamic Risk Assessment:**
+            
+            **Low Risk Projects:** {total_low_risk:.1f}% of budget (${total_low_risk/100 * adjusted_budget:,.0f})
+            - Proven ROI, established vendors
+            - Recommended for immediate implementation
+            
+            **Medium Risk Projects:** {total_medium_risk:.1f}% of budget (${total_medium_risk/100 * adjusted_budget:,.0f})
+            - Good potential with some uncertainty
+            - Implement after initial success
+            
+            **High Risk Projects:** {total_high_risk:.1f}% of budget (${total_high_risk/100 * adjusted_budget:,.0f})
+            - Higher potential returns but uncertain outcomes
+            - Implement after establishing AI capabilities
+            
+            **Risk Recommendation:**
+            {
+                "Conservative approach - good balance" if total_high_risk < 20 else
+                "Aggressive approach - monitor closely" if total_high_risk > 40 else
+                "Balanced approach - appropriate risk level"
+            }
+            """)
+        
+        # DOWNLOAD INVESTMENT PLAN
+        st.subheader("📥 Investment Strategy Report")
+        
+        # Generate investment report
+        investment_report = f"""
+AI INVESTMENT STRATEGY REPORT
+Generated: {datetime.now().strftime('%B %d, %Y')}
+
+═══════════════════════════════════════════════════════════════
+
+INVESTMENT PARAMETERS
+═══════════════════════════════════════════════════════════════
+Annual Budget: {annual_budget}
+Investment Timeline: {investment_horizon}
+Risk Tolerance: {risk_tolerance}
+Current Maturity: {current_maturity}
+Primary Goals: {', '.join(primary_goals)}
+Competitive Urgency: {competitive_urgency}/10
+
+STRATEGIC RECOMMENDATIONS
+═══════════════════════════════════════════════════════════════
+Recommended Budget: ${adjusted_budget/1000000:.1f}M
+Expected Portfolio ROI: {expected_total_roi:.1f}x
+Average Implementation: {avg_timeline:.0f} months
+Competitive Timeline: {timeline_rec}
+
+INVESTMENT PORTFOLIO ALLOCATION
+═══════════════════════════════════════════════════════════════
+{chr(10).join([f"{row['Use Case']}: ${row['Investment ($)']/1000:.0f}K ({row['Allocation (%)']:.1f}%) - ROI: {row['Expected ROI']}" for _, row in portfolio_df.iterrows()])}
+
+IMPLEMENTATION STRATEGY
+═══════════════════════════════════════════════════════════════
+Strategic Approach: {strategy['approach']}
+Focus: {strategy['focus']}
+Timeline: {strategy['timeline']}
+Build vs Buy vs Partner: {strategy['build_vs_buy']}
+
+TOP 3 PRIORITY INVESTMENTS
+═══════════════════════════════════════════════════════════════
+{chr(10).join([f"{idx}. {row['Use Case']}: ${row['Investment ($)']/1000:.0f}K investment, {row['Expected ROI']} ROI, {row['Timeline (months)']} months" for idx, (_, row) in enumerate(top_investments.iterrows(), 1)])}
+
+RISK ANALYSIS
+═══════════════════════════════════════════════════════════════
+Low Risk Allocation: {total_low_risk:.0f}% of budget
+High Risk Allocation: {total_high_risk:.0f}% of budget
+Risk Management: Phased implementation with proven solutions first
+
+NEXT STEPS
+═══════════════════════════════════════════════════════════════
+1. Secure budget approval for recommended investment level
+2. Establish AI governance and project management framework
+3. Begin with highest-priority, lowest-risk initiatives
+4. Build internal AI capabilities through implementation
+5. Monitor ROI and adjust portfolio quarterly
+
+═══════════════════════════════════════════════════════════════
+Report Source: AI Adoption Dashboard v2.2.0 - Investment Decision Engine
+Methodology: Portfolio optimization based on risk-adjusted ROI, strategic fit, and implementation complexity
+Contact: [Your organization contact information]
+═══════════════════════════════════════════════════════════════
+"""
+        
+        st.download_button(
+            label="📥 Download Complete Investment Strategy",
+            data=investment_report,
+            file_name=f"AI_Investment_Strategy_{datetime.now().strftime('%Y%m%d')}.txt",
+            mime="text/plain",
+            use_container_width=True,
+            help="Download your complete AI investment strategy and implementation plan"
+        )
+        
+        st.success("✅ Investment strategy generated! Use this plan for budget planning and implementation roadmap.")
+    
+    # Help section
+    with st.expander("ℹ️ How the Investment Engine Works"):
+        st.markdown("""
+        ### Investment Optimization Methodology
+        
+        This investment decision engine uses a multi-factor optimization approach:
+        
+        **Portfolio Construction:**
+        - **ROI Analysis**: Expected returns based on industry benchmarks and implementation data
+        - **Strategic Fit**: Alignment with your stated business objectives and competitive context
+        - **Risk Assessment**: Implementation complexity, vendor maturity, and success probability
+        - **Timeline Optimization**: Sequencing based on dependencies and capability building
+        
+        **Allocation Algorithm:**
+        - **Base Portfolio**: Industry-standard allocation across proven AI use cases
+        - **Goal Weighting**: Increases allocation to use cases that match your primary objectives
+        - **Risk Adjustment**: Shifts allocation based on your risk tolerance profile
+        - **Maturity Scaling**: Adjusts complexity based on your current AI implementation experience
+        
+        **Implementation Strategy:**
+        - **Build vs Buy vs Partner**: Recommendations based on your organizational maturity and budget
+        - **Timing Sequence**: Phased approach balancing quick wins with strategic investments
+        - **Risk Management**: Portfolio diversification and contingency planning
+        
+        **Data Sources:**
+        - ROI ranges based on McKinsey Global Survey, Stanford AI Index, and industry case studies
+        - Implementation timelines from vendor data and consulting firm benchmarks
+        - Risk assessments from enterprise AI project success/failure analysis
+        
+        **Limitations:**
+        - Generic recommendations may not account for industry-specific factors
+        - ROI estimates are based on industry averages, actual results vary by implementation quality
+        - Does not include detailed vendor selection or technical architecture decisions
+        - Assumes standard enterprise implementation capabilities and change management
+        """)
+
+elif view_type == "⚖️ Regulatory Risk Radar":
+    st.write("# ⚖️ Regulatory Risk Radar")
+    st.info("🚧 **Coming Soon** - Regulatory change monitoring and compliance planning")
+    st.write("This module will help you:")
+    st.write("• Track upcoming AI regulations and their business impact")
+    st.write("• Assess compliance costs and requirements")
+    st.write("• Plan for regulatory scenario changes")
+    st.write("• Identify policy engagement opportunities")
+
+# [Continue with your existing view implementations...]
 
 if view_type == "Historical Trends":
     # Apply year filter if set
@@ -4957,451 +5890,108 @@ elif view_type == "ROI Analysis":
                 mime="text/plain"
             )
 
-# Comprehensive Analysis Integration - UPDATED VERSION
-st.subheader("📋 Comprehensive AI Impact Analysis")
-
-# Add comprehensive analysis from the document with new insights
-with st.expander("📊 Comprehensive AI Impact Analysis - Full Report", expanded=False):
+elif view_type == "Bibliography & Sources":
+    st.write("📚 **Complete Bibliography & Source Citations**")
+    
     st.markdown("""
-    ### Executive Summary
-    
-    This comprehensive analysis synthesizes insights from multiple authoritative sources including the AI Index Report 2025, 
-    Federal Reserve research, MIT studies, OECD reports, and industry analyses to provide a complete picture of AI's 
-    current state and projected impacts across all sectors of society and economy.
-    
-    **New Analysis Highlights:**
-    - Growing AI incidents involving misuse, bias, and safety failures requiring stronger RAI frameworks
-    - Geographic talent concentration in select global hubs creating innovation disparities
-    - Multimodal AI breakthroughs (GPT-4V, robotics) expanding beyond text processing
-    - AI integration in participatory governance and civic engagement tools
+    This dashboard synthesizes data from multiple authoritative sources to provide comprehensive 
+    AI adoption insights. All sources are cited using Chicago Manual of Style format.
     """)
     
-    # Create comprehensive analysis tabs with enhanced content
-    comp_tabs = st.tabs(["📈 Performance & Capabilities", "💰 Economics & Investment", "👥 Labor & Productivity", 
-                         "🏛️ Policy & Governance", "🔬 Technical Evolution", "🌍 Global Dynamics", "⚠️ Risks & Safety"])
+    # Create tabs for different source categories
+    bib_tabs = st.tabs(["🏛️ Government & Institutional", "🏢 Corporate & Industry", "🎓 Academic Research", 
+                        "📰 News & Analysis", "📊 Databases & Collections"])
     
-    with comp_tabs[0]:
+    with bib_tabs[0]:
         st.markdown("""
-        #### AI Performance and Capabilities
+        ### Government and Institutional Sources
         
-        **Breakthrough Performance Improvements (2024):**
-        - **MMMU benchmark:** +18.8 percentage points vs 2023
-        - **GPQA scores:** +48.9 percentage points improvement  
-        - **SWE-bench:** +67.3 percentage points increase
-        - **Programming tasks:** Language model agents now outperform humans with limited time budgets
-        - **Medical devices:** FDA approvals grew from 6 (2015) to 223 (2023)
-        
-        **Cost Revolution - 280x Improvement:**
-        - **Token costs:** $20/M (Nov 2022) → $0.07/M (Oct 2024) for GPT-3.5 equivalent
-        - **Hardware performance:** +43% annually
-        - **Energy efficiency:** +40% annual improvement  
-        - **Price-performance:** -30% per year for same capability
-        - **Processing speed:** Up to 200 tokens/second for latest models
-        
-        **Multimodal AI Breakthroughs:**
-        - **GPT-4V:** Vision capabilities enabling image understanding
-        - **Robotics integration:** AI systems controlling physical robots
-        - **Voice and audio:** Real-time speech processing and generation
-        - **Video analysis:** Frame-by-frame understanding and generation
-        
-        **Adoption Acceleration:**
-        - **Business AI use:** 55% (2023) → 78% (2024) - fastest tech adoption in history
-        - **GenAI adoption:** More than doubled from 33% to 71%
-        - **Worker usage:** 28% of U.S. workers use GenAI at work (Aug 2024)
-        - **Daily usage:** 9% of workers use GenAI every workday, 14% weekly
-        - **Education correlation:** Strong association with education and income levels
+        1. **Stanford Human-Centered AI Institute.** "AI Index Report 2025." Stanford University. Accessed June 28, 2025. https://aiindex.stanford.edu/ai-index-report-2025/.
+
+        2. **Stanford Human-Centered AI Institute.** "AI Index Report 2023." Stanford University. Accessed June 28, 2025. https://aiindex.stanford.edu/ai-index-report-2023/.
+
+        3. **U.S. Census Bureau.** "AI Use Supplement." Washington, DC: U.S. Department of Commerce. Accessed June 28, 2025. https://www.census.gov.
+
+        4. **National Science Foundation.** "National AI Research Institutes." Washington, DC: NSF. Accessed June 28, 2025. https://www.nsf.gov/focus-areas/artificial-intelligence.
+
+        5. **National Science Foundation.** "NSF Partnerships Expand National AI Research." Press Release, 2020. https://www.nsf.gov/news/nsf-partnerships-expand-national-ai-research.
+
+        6. **National Institute of Standards and Technology.** "AI Risk Management Framework (AI RMF 1.0)." NIST AI 100-1. Gaithersburg, MD: NIST, January 2023. https://nvlpubs.nist.gov/nistpubs/ai/nist.ai.100-1.pdf.
+
+        7. **National Institute of Standards and Technology.** "AI Risk Management Framework." Accessed June 28, 2025. https://www.nist.gov/itl/ai-risk-management-framework.
+
+        8. **Organisation for Economic Co-operation and Development.** "OECD AI Policy Observatory." Accessed June 28, 2025. https://oecd.ai.
+
+        9. **U.S. Food and Drug Administration.** "AI-Enabled Medical Device Approvals Database." Washington, DC: FDA. Accessed June 28, 2025.
         """)
         
-    with comp_tabs[1]:
+    with bib_tabs[1]:
         st.markdown("""
-        #### Economics and Investment Impact
+        ### Corporate and Industry Sources
         
-        **Record Investment Levels (2024):**
-        - **U.S. dominance:** $109.1 billion (vs China: $9.3B, UK: $4.5B) - 12x larger than China
-        - **Global GenAI:** $33.9 billion (+18.7% from 2023), now 20% of all AI investment
-        - **Sector leaders:** AI infrastructure ($37.3B), Data management ($16.6B), Healthcare ($11B)
-        - **Investment growth:** 13x increase since 2014 baseline of $19.4B
-        
-        **GDP Impact Projections - Wide Range:**
-        
-        **Optimistic Scenarios:**
-        - **Goldman Sachs:** +7% global GDP (~$7 trillion) over 10 years
-        - **McKinsey:** $17.1-25.6 trillion global economic addition
-        - **Productivity boost:** +1.5-3.4 percentage points annually in advanced economies
-        
-        **Conservative Estimates:**
-        - **MIT (Acemoglu):** +0.66% total factor productivity over 10 years
-        - **Fed analysis:** "Nontrivial but modest" macroeconomic effects
-        - **Task-level focus:** Effects may be lower (0.53%) due to "hard-to-learn" tasks
-        
-        **AI Automation vs Augmentation:**
-        - **Automation AI:** Substitutes human labor, may increase inequality
-        - **Augmentation AI:** Complements humans, potentially reduces inequality
-        - **Policy implications:** Need progressive taxation and new task creation
-        
-        **Tokens as Economic Currency:**
-        - **AI factories:** Process tokens as fundamental units converting data into intelligence
-        - **Value creation:** More tokens at lower computational cost = higher margins
-        - **Enterprise optimization:** 25x revenue increases documented in case studies
-        - **NVIDIA case study:** 20x cost reduction led to 25x revenue growth in 4 weeks
+        10. **McKinsey & Company.** "The State of AI: McKinsey Global Survey on AI." McKinsey Global Institute. Accessed June 28, 2025. https://www.mckinsey.com/capabilities/quantumblack/our-insights/the-state-of-ai.
+
+        11. **OpenAI.** "Introducing DALL-E." OpenAI Blog, January 5, 2021. https://openai.com/blog/dall-e/.
+
+        12. **OpenAI.** "OpenAI Research." Accessed June 28, 2025. https://openai.com/research/.
+
+        13. **GitHub.** "Introducing GitHub Copilot: AI Pair Programmer." GitHub Blog, June 29, 2021. https://github.blog/2021-06-29-introducing-github-copilot-ai-pair-programmer/.
+
+        14. **GitHub.** "GitHub Copilot is Generally Available to All Developers." GitHub Blog, June 21, 2022. https://github.blog/2022-06-21-github-copilot-is-generally-available-to-all-developers/.
+
+        15. **GitHub.** "GitHub Blog." Accessed June 28, 2025. https://github.blog/.
+
+        16. **DeepMind.** "DeepMind Publications." Accessed June 28, 2025. https://deepmind.google/research/.
+
+        17. **Goldman Sachs Research.** "The Potentially Large Effects of Artificial Intelligence on Economic Growth." Economic Research, 2023.
+
+        18. **NVIDIA Corporation.** "AI Infrastructure and Token Economics Case Studies." 2024-2025.
         """)
         
-    with comp_tabs[2]:
+    with bib_tabs[2]:
         st.markdown("""
-        #### Labor Market and Productivity Impact
+        ### Academic Publications
         
-        **Measured Productivity Gains:**
-        - **Worker estimates:** 15% longer completion time without AI (Nov 2024 survey)
-        - **Aggregate potential:** 0.4% productivity gain assuming full beneficial adoption
-        - **Voluntary vs mandated:** Self-initiated AI use shows stronger productivity correlation
-        - **Knowledge work caveat:** Official statistics may undercount true productivity boost
-        
-        **Workforce Exposure Analysis:**
-        - **80% of workforce:** At least 10% of tasks affected by LLMs
-        - **19% of workers:** At least 50% of tasks impacted  
-        - **15% task acceleration:** Direct LLM access enables significantly faster completion
-        - **47-56% task enhancement:** Including AI-powered software and tools
-        - **Income correlation:** Higher-income jobs face greater exposure to AI capabilities
-        
-        **Skill-Based Impact (Inequality Reduction Potential):**
-        - **Low-skilled workers:** 14% productivity gain (highest benefit)
-        - **Medium-skilled workers:** 9% productivity improvement
-        - **High-skilled workers:** 5% productivity enhancement
-        - **Skill gap narrowing:** AI helps reduce workplace inequality
-        - **Task substitution:** 15% of tasks can be done significantly faster
-        
-        **Industry and Wage Exposure:**
-        - **Information processing:** Highest exposure to AI capabilities
-        - **Manufacturing/agriculture/mining:** Lower exposure levels
-        - **All wage levels affected:** Not limited to recent high-productivity sectors
-        - **Geographic concentration:** AI talent clustering in SF, London creates disparities
-        
-        **Career Transitions:**
-        - **Into AI engineering:** Software engineers (26.9%), Data scientists (13.3%)
-        - **Net talent flow:** U.S. maintains positive flow (1.07 per 10,000 members)
-        - **Workforce development:** Organizations hiring AI roles and retraining existing staff
+        19. **Bick, Alexander, Adam Blandin, and David Deming.** "The Rapid Adoption of Generative AI." Federal Reserve Bank working paper, 2024.
+
+        20. **Bick, Alexander, Adam Blandin, and David Deming.** "Productivity and Workforce Impact Studies." Federal Reserve Bank working paper, 2025a.
+
+        21. **Eloundou, Tyna, Sam Manning, Pamela Mishkin, and Daniel Rock.** "GPTs are GPTs: An Early Look at the Labor Market Impact Potential of Large Language Models." Working paper, 2023.
+
+        22. **Briggs, Joseph, and Devesh Kodnani.** "The Potentially Large Effects of Artificial Intelligence on Economic Growth." Goldman Sachs Economic Research, 2023.
+
+        23. **Korinek, Anton.** "Language Models and Cognitive Automation for Economic Research." Working paper, 2023.
+
+        24. **Sevilla, Jaime, Lennart Heim, Anson Ho, Tamay Besiroglu, Marius Hobbhahn, and Pablo Villalobos.** "Compute Trends Across Three Eras of Machine Learning." arXiv preprint, 2022.
+
+        25. **Acemoglu, Daron.** "The Simple Macroeconomics of AI." MIT Economics working paper, 2024.
+
+        26. **Brynjolfsson, Erik, Danielle Li, and Lindsey R. Raymond.** "Generative AI at Work." National Bureau of Economic Research Working Paper, 2023.
+
+        27. **Jumper, John, Richard Evans, Alexander Pritzel, Tim Green, Michael Figurnov, Olaf Ronneberger, Kathryn Tunyasuvunakool, et al.** "Highly Accurate Protein Structure Prediction with AlphaFold." *Nature* 596, no. 7873 (2021): 583-589. https://www.nature.com/articles/s41586-021-03819-2.
+
+        28. **Richmond Federal Reserve Bank.** "AI Productivity Estimates." Economic research papers, 2024.
+
+        29. **BCG and INSEAD.** "OECD/BCG/INSEAD Report 2025: Enterprise AI Adoption." Organisation for Economic Co-operation and Development, 2025.
         """)
         
-    with comp_tabs[3]:
+    with bib_tabs[3]:
         st.markdown("""
-        #### Policy and Governance Developments
+        ### News and Analysis Sources
         
-        **Regulatory Acceleration (2024):**
-        - **U.S. federal agencies:** 59 AI-related regulations (2x increase from 2023)
-        - **Global legislative activity:** +21.3% AI mentions across 75 countries
-        - **International frameworks:** OECD, EU, UN, African Union emphasizing transparency
-        - **Responsible AI focus:** Growing recognition of need for effective RAI frameworks
-        
-        **Education Policy Transformation:**
-        - **K-12 computer science:** 2/3 of countries now offer/plan (2x from 2019)
-        - **Teacher readiness gap:** 81% believe AI should be in education, <50% feel equipped
-        - **Curriculum development:** Need for policy initiatives supporting teacher training
-        
-        **Key Regulatory Areas:**
-        - **Competition:** UK CMA reports on AI foundation models, antitrust concerns
-        - **Privacy & Data:** GDPR framework applicable to AI systems
-        - **Intellectual Property:** UK developing AI copyright code of practice
-        - **Military & Security:** UK MOD ethical AI guidelines for defense applications
-        - **Ethics & Bias:** Multiple national guidance frameworks for algorithmic fairness
-        
-        **OECD AI Capability Assessment:**
-        - **Assessment framework:** 9 domains including Language and Manipulation
-        - **International comparability:** Trusted information for policy decisions
-        - **Beyond benchmarking:** Evaluation tools for education, healthcare, and law
-        - **Conceptual challenges:** Human-AI comparison doesn't imply direct substitution
-        
-        **Emerging Policy Areas:**
-        - **Participatory governance:** AI tools for civic engagement
-        - **Negative social value:** Addressing algorithms designed for manipulation
-        - **Public-private partnerships:** Facilitating firm adoption through collaboration
-        - **International coordination:** Need for greater survey comparability
+        30. **MIT Technology Review.** "Artificial Intelligence." Accessed June 28, 2025. https://www.technologyreview.com/topic/artificial-intelligence/.
+
+        31. **MIT Technology Review.** "How DALL-E 2 Actually Works." April 6, 2022. https://www.technologyreview.com/2022/04/06/1049061/dalle-openai-gpt3-ai-agi-multimodal-image-generation/.
+
+        32. **Nature Machine Intelligence.** "Nature Machine Intelligence Journal." Accessed June 28, 2025. https://www.nature.com/natmachintell/.
+
+        33. **IEEE Computer Society.** "IEEE Computer Society Publications." Accessed June 28, 2025. https://www.computer.org/publications/.
+
+        34. **Gartner, Inc.** "AI Technology Maturity Analysis." Technology research reports, 2025.
         """)
         
-    with comp_tabs[4]:
+    with bib_tabs[4]:
         st.markdown("""
-        #### Technical Evolution and Compute Trends
-        
-        **Historical Compute Growth Phases:**
-        - **Pre-2010 (Pre-Deep Learning):** Doubling every 20 months (Moore's Law pace)
-        - **2010+ (Deep Learning Era):** Acceleration to 6-month doubling
-        - **2015+ (Large-Scale Era):** 10-100x larger training requirements
-        - **Recent variation:** 2-3.4 month doubling (2012-2018) to >2 years (2018-2020)
-        - **Current constraints:** Hardware and chip limitations may limit exponential growth
-        
-        **Model Development Leadership:**
-        - **U.S. institutions:** 40 notable AI models in 2024
-        - **China:** 15 notable models  
-        - **Europe:** 3 notable models
-        - **Parameter scaling:** 18-24 month doubling (2000-2021)
-        - **Language models:** 4-8 month doubling (2016-2018)
-        
-        **Research Output Explosion:**
-        - **Publication growth:** AI papers tripled (2013-2023): 102k → 242k
-        - **CS share increase:** 21.6% → 41.8% of computer science publications
-        - **Geographic leadership:** China leads publications (23.2%) and citations (22.6%)
-        - **U.S. specialization:** Excels in highly influential research (top 100 cited)
-        - **Patent surge:** 3,833 (2010) → 122,511 (2023), China holds 69.7%
-        
-        **Compute Centralization Concerns:**
-        - **Private firm concentration:** Centralized access undermining academic transparency
-        - **Reproducibility challenges:** Limited access to compute resources
-        - **Energy intensity:** Future AI systems may rival global cloud infrastructure
-        - **Environmental constraints:** Growing carbon footprint requiring sustainable solutions
-        
-        **Technical Breakthroughs:**
-        - **Multimodal systems:** Beyond text to vision, audio, and robotics
-        - **Efficiency improvements:** Hardware performance gains outpacing energy use
-        - **Context windows:** Expansion to 1M+ tokens enabling new applications
-        - **Real-time processing:** Reduced latency enabling interactive applications
-        """)
-        
-    with comp_tabs[5]:
-        st.markdown("""
-        #### Global Dynamics and Competition
-        
-        **Regional Optimism Disparities:**
-        - **High optimism:** China (83%), Indonesia (80%), Thailand (77%)
-        - **Moderate optimism:** Most European countries (50-65%)
-        - **Lower optimism:** Canada (40%), U.S. (39%), Netherlands (36%)
-        - **Cultural factors:** Policy environment and economic expectations drive differences
-        
-        **Investment and Development Competition:**
-        - **U.S. leadership:** Dominates private investment (43% of global)
-        - **China's focus:** Leading in patents and publications, strong government support
-        - **Europe's approach:** Regulatory leadership with GDPR and AI Act frameworks
-        - **Emerging markets:** Growing adoption in Asia-Pacific and Latin America
-        
-        **Talent Flow Dynamics:**
-        - **U.S. advantage:** Positive net AI talent flow despite visa restrictions
-        - **Geographic concentration:** SF Bay Area, London creating innovation clusters
-        - **Brain drain risks:** Developing countries losing AI talent to advanced economies
-        - **Skills shortage:** Global shortage of AI/ML engineers and data scientists
-        
-        **Adoption Barriers by Region:**
-        - **Advanced economies:** Focus on workforce training and regulatory clarity
-        - **Developing nations:** Digital infrastructure and organizational readiness challenges
-        - **Regional disparities:** Widening gap between AI leaders and followers
-        - **Policy coordination:** Need for international frameworks and standards
-        
-        **Emerging Applications by Region:**
-        - **Healthcare AI:** FDA approvals in U.S., regulatory pathways in EU
-        - **Financial services:** Widespread adoption in developed markets
-        - **Manufacturing:** Germany and Japan leading industrial AI
-        - **Smart cities:** China and Singapore pioneering urban AI deployment
-        """)
-        
-    with comp_tabs[6]:
-        st.markdown("""
-        #### Risks, Safety, and Responsible AI
-        
-        **Growing Safety Incidents:**
-        - **Incident tracking:** AI Index reports increasing misuse, bias, and safety failures
-        - **Types of incidents:** Algorithmic bias, privacy violations, safety-critical failures
-        - **Response lag:** Organizations acknowledge risks but slow to implement mitigation
-        - **Governance gaps:** Need for effective responsible AI (RAI) frameworks
-        
-        **Key Risk Categories:**
-        
-        **Technical Risks:**
-        - **Model reliability:** Hallucinations and factual inaccuracies
-        - **Security vulnerabilities:** Adversarial attacks and data poisoning
-        - **System failures:** Critical infrastructure and safety-critical applications
-        - **Scalability challenges:** Performance degradation with wider deployment
-        
-        **Societal Risks:**
-        - **Labor displacement:** Potential job losses without adequate retraining
-        - **Inequality amplification:** AI benefits concentrated among educated/wealthy
-        - **Democratic risks:** Misinformation and manipulation tools
-        - **Privacy erosion:** Surveillance capabilities and data collection
-        
-        **Economic Risks:**
-        - **Market concentration:** AI capabilities concentrated in few large firms
-        - **Systemic risks:** Over-reliance on AI systems in critical sectors
-        - **Economic disruption:** Rapid changes outpacing adaptation mechanisms
-        - **Investment bubbles:** Overvaluation of AI capabilities and companies
-        
-        **Mitigation Strategies:**
-        - **Regulatory frameworks:** Proactive governance rather than reactive regulation
-        - **Industry standards:** Technical standards for safety and reliability
-        - **Education and training:** Workforce development for AI transition
-        - **International cooperation:** Global coordination on AI governance
-        - **Research investment:** Public funding for AI safety and alignment research
-        
-        **Responsible AI Implementation:**
-        - **Organizational governance:** Senior leadership roles for AI oversight
-        - **Risk assessment:** Systematic evaluation of AI system impacts
-        - **Transparency requirements:** Explainable AI and algorithmic auditing
-        - **Stakeholder engagement:** Including affected communities in AI development
-        """)
-    
-    # Enhanced sources section with more detail
-    st.markdown("---")
-    st.markdown("""
-    #### 📚 Comprehensive Analysis Sources & Methodology
-    
-    **Primary Authoritative Sources:**
-    
-    **🎓 Academic Research:**
-    - **AI Index Report 2025** - Stanford Human-Centered AI Institute (Global AI metrics and trends)
-    - **Federal Reserve Research** - Bick, Blandin, Deming (Productivity and workforce impact studies)
-    - **MIT Economics** - Daron Acemoglu "The Simple Macroeconomics of AI" (Economic theory and modeling)
-    - **OECD AI Observatory** - Firm adoption analysis and capability indicators
-    - **Compute Trends Research** - Sevilla et al. (Historical analysis of ML training requirements)
-    
-    **🏢 Industry Analysis:**
-    - **McKinsey Global Survey** - Enterprise AI adoption patterns (1,491 participants, 101 nations)
-    - **Goldman Sachs Research** - Economic growth projections and GDP impact analysis
-    - **NVIDIA Research** - Token economics and AI infrastructure analysis
-    - **Various industry reports** - Sector-specific adoption and impact studies
-    
-    **🏛️ Government Sources:**
-    - **U.S. Census Bureau** - AI Use Supplement (850,000 firms surveyed)
-    - **Federal Reserve Banks** - Multiple economic impact analyses
-    - **FDA** - AI-enabled medical device approvals and regulations
-    - **International organizations** - UN, EU, African Union AI frameworks
-    
-    **Key Research Papers Referenced:**
-    - Bick, Blandin, and Deming (2024, 2025a) - "The Rapid Adoption of Generative AI" and productivity impact
-    - Eloundou et al. (2023) - "GPTs are GPTs: An Early Look at the Labor Market Impact Potential"
-    - Briggs & Kodnani (2023) - "The Potentially Large Effects of Artificial Intelligence on Economic Growth"
-    - Korinek (2023) - "Language Models and Cognitive Automation for Economic Research"
-    - Sevilla et al. (2022) - "Compute Trends Across Three Eras of Machine Learning"
-    - Multiple Federal Reserve working papers on AI's macroeconomic effects
-    
-    **Methodology Notes:**
-    - **Cross-source validation** - Key findings confirmed across multiple independent sources
-    - **Temporal analysis** - Tracking changes from 2018 early adoption through 2025 GenAI era
-    - **Geographic scope** - Global coverage with detailed focus on G7 countries and major economies
-    - **Sector analysis** - Industry-specific impacts across technology, finance, healthcare, manufacturing
-    - **Multi-dimensional assessment** - Technical capabilities, economic impact, policy implications, social effects
-    """)
-
-# [Rest of the file continues with all the remaining sections...]
-
-# Footer - Enhanced with trust indicators
-st.markdown("---")
-
-# Trust and quality indicators
-trust_cols = st.columns(5)
-
-with trust_cols[0]:
-    st.markdown("""
-    <div style='text-align: center;'>
-        <h4>📊 Data Quality</h4>
-        <div style='background-color: #28a745; color: white; padding: 8px; border-radius: 20px; display: inline-block;'>
-            ✓ Verified Sources
-        </div>
-    </div>
-    """, unsafe_allow_html=True)
-
-with trust_cols[1]:
-    st.markdown("""
-    <div style='text-align: center;'>
-        <h4>🔄 Update Status</h4>
-        <div style='color: #28a745;'>
-            ✅ June 2025
-        </div>
-    </div>
-    """, unsafe_allow_html=True)
-
-with trust_cols[2]:
-    st.markdown("""
-    <div style='text-align: center;'>
-        <h4>📈 Coverage</h4>
-        <div>
-            Global Scope<br>
-            <small>101+ countries</small>
-        </div>
-    </div>
-    """, unsafe_allow_html=True)
-
-with trust_cols[3]:
-    st.markdown("""
-    <div style='text-align: center;'>
-        <h4>🔍 Transparency</h4>
-        <div>
-            Open Source<br>
-            <small>MIT License</small>
-        </div>
-    </div>
-    """, unsafe_allow_html=True)
-
-with trust_cols[4]:
-    st.markdown("""
-    <div style='text-align: center;'>
-        <h4>🔒 Privacy</h4>
-        <div style='color: #28a745;'>
-            GDPR Compliant<br>
-            <small>No tracking</small>
-        </div>
-    </div>
-    """, unsafe_allow_html=True)
-
-st.markdown("---")
-
-# Enhanced footer with resources
-footer_cols = st.columns(4)
-
-with footer_cols[0]:
-    st.markdown("""
-    ### 📚 Resources
-    - [📖 GitHub Repository](https://github.com/Rcasanova25/AI-Adoption-Dashboard)
-    - [🚀 Live Dashboard](https://ai-adoption-dashboard.streamlit.app/)
-    - [📊 View Source Code](https://github.com/Rcasanova25/AI-Adoption-Dashboard/blob/main/app.py)
-    - [🐛 Report Issues](https://github.com/Rcasanova25/AI-Adoption-Dashboard/issues)
-    - [📄 Documentation](https://github.com/Rcasanova25/AI-Adoption-Dashboard/wiki)
-    """)
-
-with footer_cols[1]:
-    st.markdown("""
-    ### 🔬 Research Partners
-    - [Stanford HAI](https://hai.stanford.edu)
-    - [AI Index Report](https://aiindex.stanford.edu)
-    - [McKinsey AI](https://www.mckinsey.com/capabilities/quantumblack)
-    - [OECD.AI](https://oecd.ai)
-    - [MIT CSAIL](https://www.csail.mit.edu)
-    """)
-
-with footer_cols[2]:
-    st.markdown("""
-    ### 🤝 Connect
-    - [LinkedIn - Robert Casanova](https://linkedin.com/in/robert-casanova)
-    - [GitHub - @Rcasanova25](https://github.com/Rcasanova25)
-    - [Email](mailto:Robert.casanova82@gmail.com)
-    - [Twitter/X](https://twitter.com)
-    - [Star on GitHub ⭐](https://github.com/Rcasanova25/AI-Adoption-Dashboard)
-    """)
-
-with footer_cols[3]:
-    st.markdown("""
-    ### 🛟 Support
-    - [User Guide](https://github.com/Rcasanova25/AI-Adoption-Dashboard/wiki/User-Guide)
-    - [FAQ](https://github.com/Rcasanova25/AI-Adoption-Dashboard/wiki/FAQ)
-    - [Report Bug](https://github.com/Rcasanova25/AI-Adoption-Dashboard/issues/new?labels=bug)
-    - [Request Feature](https://github.com/Rcasanova25/AI-Adoption-Dashboard/issues/new?labels=enhancement)
-    - [Discussions](https://github.com/Rcasanova25/AI-Adoption-Dashboard/discussions)
-    """)
-
-# Final attribution
-st.markdown("""
-<div style='text-align: center; color: #666; padding: 30px 20px 20px 20px; margin-top: 40px; border-top: 1px solid #ddd;'>
-    <p style='font-size: 20px; margin-bottom: 10px;'>
-        🤖 <strong>AI Adoption Dashboard</strong> v2.2.0
-    </p>
-    <p style='margin-bottom: 5px; font-size: 16px;'>
-        Comprehensive AI adoption insights from 2018 to 2025
-    </p>
-    <p style='font-size: 14px; color: #888; margin-top: 15px;'>
-        Enhanced with AI Index Report 2025 findings | Last updated: June 17, 2025
-    </p>
-    <p style='font-size: 14px; margin-top: 20px;'>
-        Created by <a href='https://linkedin.com/in/robert-casanova' style='color: #1f77b4;'>Robert Casanova</a> | 
-        Powered by <a href='https://streamlit.io' style='color: #1f77b4;'>Streamlit</a> & 
-        <a href='https://plotly.com' style='color: #1f77b4;'>Plotly</a> | 
-        <a href='https://github.com/Rcasanova25/AI-Adoption-Dashboard/blob/main/LICENSE' style='color: #1f77b4;'>MIT License</a>
-    </p>
-    <p style='font-size: 12px; margin-top: 15px; color: #999;'>
-        <i>Data sources: AI Index Report 2025 (Stanford HAI), McKinsey Global Survey on AI, OECD AI Policy Observatory</i>
-    </p>
-</div>
-""", unsafe_allow_html=True)
+        ### Multi-Source Collections and Databas
+app.py
+Displaying app.py.
