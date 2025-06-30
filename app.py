@@ -52,6 +52,7 @@ persona_views = {
 
 # Data loading function - updated with AI Index 2025 data and comprehensive caching
 @st.cache_data
+@monitor_performance
 def load_data():
     """Load all dashboard data with comprehensive error handling"""
     try:
@@ -1478,7 +1479,7 @@ AI Investment Business Case
         with col1:
             # Historical trends chart
             if historical_data is not None:
-                try:
+                def create_historical_chart():
                     fig = go.Figure()
                     fig.add_trace(go.Scatter(
                         x=historical_data['year'], 
@@ -1517,9 +1518,16 @@ AI Investment Business Case
                         height=400,
                         hovermode='x unified'
                     )
-                    st.plotly_chart(fig, use_container_width=True)
-                except Exception as e:
-                    st.info(f"Could not plot historical data: {e}")
+                    return fig
+
+                chart = safe_execute(
+                    create_historical_chart,
+                    default_value=None,
+                    error_message="Could not create historical chart"
+                )
+
+                if chart:
+                    st.plotly_chart(chart, use_container_width=True)
             else:
                 st.info("Historical data not available.")
         
@@ -2166,7 +2174,7 @@ elif is_detailed:
                 st.dataframe(df, use_container_width=True)
                 
                 # Try to create a simple visualization if possible
-                try:
+                def create_auto_visualization():
                     if df is not None and len(df.columns) >= 2:
                         x_col = df.columns[0]
                         y_col = df.columns[1]
@@ -2175,15 +2183,24 @@ elif is_detailed:
                         if pd.api.types.is_numeric_dtype(df[y_col]):
                             fig = px.bar(df, x=x_col, y=y_col, 
                                         title=f"{current_view}: {y_col} by {x_col}")
-                            st.plotly_chart(fig, use_container_width=True)
+                            return fig
                         else:
                             st.info("Data available but not suitable for automatic visualization.")
+                            return None
                     else:
                         st.info("Data has insufficient columns for automatic visualization.")
-                        
-                except Exception as e:
-                    st.warning(f"Could not create automatic visualization: {e}")
-                    
+                        return None
+
+                chart = safe_execute(
+                    create_auto_visualization,
+                    default_value=None,
+                    error_message="Could not create automatic visualization"
+                )
+
+                if chart:
+                    st.plotly_chart(chart, use_container_width=True)
+            else:
+                st.info("Data has insufficient columns for automatic visualization.")
         else:
             st.error(f"No data available for '{current_view}'. This view may not be implemented yet.")
             st.info("Try selecting 'Historical Trends' or 'Industry Analysis' which are implemented.")
