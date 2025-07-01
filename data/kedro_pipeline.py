@@ -5,7 +5,7 @@ Replaces custom data integration with McKinsey Kedro framework for production-gr
 
 import pandas as pd
 import numpy as np
-from typing import Dict, List, Optional, Any, Union
+from typing import Dict, List, Optional, Any, Union, Tuple
 from dataclasses import dataclass
 from enum import Enum
 from datetime import datetime
@@ -13,7 +13,7 @@ import logging
 import yaml
 from pathlib import Path
 
-# Kedro imports
+# Kedro imports with fallback classes
 try:
     from kedro.pipeline import Pipeline, node
     from kedro.io import DataCatalog, MemoryDataSet
@@ -23,6 +23,49 @@ try:
 except ImportError:
     KEDRO_AVAILABLE = False
     logging.warning("Kedro not available. Install with: pip install kedro")
+    
+    # Fallback classes when Kedro is not available
+    class Pipeline:
+        """Fallback Pipeline class when Kedro is not available"""
+        def __init__(self, nodes=None):
+            self.nodes = nodes or []
+        
+        def only_nodes_with_tags(self, *tags):
+            return Pipeline([])
+    
+    class DataCatalog:
+        """Fallback DataCatalog class when Kedro is not available"""
+        def __init__(self, datasets=None):
+            self.datasets = datasets or {}
+        
+        @classmethod
+        def from_config(cls, config):
+            return cls()
+    
+    class ThreadRunner:
+        """Fallback ThreadRunner class when Kedro is not available"""
+        def run(self, pipeline, catalog):
+            pass
+    
+    class ParallelRunner:
+        """Fallback ParallelRunner class when Kedro is not available"""
+        def run(self, pipeline, catalog):
+            pass
+    
+    class ConfigLoader:
+        """Fallback ConfigLoader class when Kedro is not available"""
+        def __init__(self, conf_paths):
+            pass
+    
+    def node(func=None, inputs=None, outputs=None, name=None, tags=None, namespace=None):
+        """Fallback node function when Kedro is not available"""
+        class FallbackNode:
+            def __init__(self):
+                self.name = name
+                self.inputs = inputs or []
+                self.outputs = outputs or []
+                self.tags = tags or []
+        return FallbackNode()
 
 logger = logging.getLogger(__name__)
 
@@ -102,7 +145,7 @@ class AIAdoptionKedroManager:
         self,
         pipeline_name: str = "ai_adoption_pipeline",
         enable_causal_analysis: bool = True
-    ) -> Pipeline:
+    ) -> Optional[Pipeline]:
         """
         Create comprehensive AI adoption data pipeline using Kedro
         """
@@ -728,7 +771,7 @@ class AIAdoptionKedroManager:
         
         try:
             # Import causal analysis engine
-            from .causal_analysis import causal_engine
+            from business.causal_analysis import causal_engine
             
             # Split data for causal analysis
             adoption_cols = [col for col in data.columns if 'adoption' in col.lower() or 'ai' in col.lower()]

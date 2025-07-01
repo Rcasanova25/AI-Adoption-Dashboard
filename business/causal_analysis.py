@@ -17,11 +17,51 @@ try:
     from causalnex.structure.notears import from_pandas
     from causalnex.network import BayesianNetwork
     from causalnex.inference import InferenceEngine
-    from causalnx.discretiser import Discretiser
+    from causalnex.discretiser import Discretiser
     CAUSALNEX_AVAILABLE = True
 except ImportError:
     CAUSALNEX_AVAILABLE = False
-    logging.warning("CausalNex not available. Install with: pip install causalnex")
+    logging.warning("CausalNx not available. Install with: pip install causalnex")
+    
+    # Fallback classes when CausalNx is not available
+    class StructureModel:
+        """Fallback StructureModel class when CausalNx is not available"""
+        def __init__(self):
+            pass
+    
+    class BayesianNetwork:
+        """Fallback BayesianNetwork class when CausalNx is not available"""
+        def __init__(self, structure=None):
+            pass
+        
+        def fit_node_states(self, data):
+            return self
+            
+        def fit_cpds(self, data):
+            return self
+    
+    class InferenceEngine:
+        """Fallback InferenceEngine class when CausalNx is not available"""
+        def __init__(self, network):
+            pass
+        
+        def query(self, variables, evidence=None):
+            return {}
+    
+    class Discretiser:
+        """Fallback Discretiser class when CausalNx is not available"""
+        def __init__(self, method="uniform", num_buckets=3):
+            pass
+        
+        def fit(self, data):
+            return self
+            
+        def transform(self, data):
+            return data
+    
+    def from_pandas(data, **kwargs):
+        """Fallback from_pandas function when CausalNx is not available"""
+        return StructureModel()
 
 logger = logging.getLogger(__name__)
 
