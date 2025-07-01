@@ -6,11 +6,13 @@ from .geographic import get_geographic_data, get_country_details, generate_geogr
 from .advanced_analytics import advanced_analytics, PredictionResult, TrendAnalysis, ClusteringResult
 from .quality_assurance import quality_engine, QualityReport, QualityDimension
 from .integration import integration_engine, DataPipeline, PipelineExecution
+from .kedro_pipeline import kedro_manager, AIAdoptionKedroManager, KedroDataSource
 
 __all__ = [
     'load_all_datasets', 'validate_all_loaded_data', 'safe_validate_data', 'ValidationResult',
     'get_geographic_data', 'get_country_details', 'generate_geographic_insights',
     'advanced_analytics', 'PredictionResult', 'TrendAnalysis', 'ClusteringResult',
     'quality_engine', 'QualityReport', 'QualityDimension',
-    'integration_engine', 'DataPipeline', 'PipelineExecution'
+    'integration_engine', 'DataPipeline', 'PipelineExecution',
+    'kedro_manager', 'AIAdoptionKedroManager', 'KedroDataSource'
 ]
