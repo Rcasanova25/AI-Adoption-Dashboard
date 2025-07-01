@@ -20,6 +20,13 @@ classifiers = [
     "Programming Language :: Python :: 3.10",
 ]
 
+[project.urls]
+Homepage = "https://github.com/Rcasanova25/AI-Adoption-Dashboard"
+Documentation = "https://github.com/Rcasanova25/AI-Adoption-Dashboard/wiki"
+Repository = "https://github.com/Rcasanova25/AI-Adoption-Dashboard.git"
+"Bug Tracker" = "https://github.com/Rcasanova25/AI-Adoption-Dashboard/issues"
+"Source Code" = "https://github.com/Rcasanova25/AI-Adoption-Dashboard"
+
 dependencies = [
     "streamlit>=1.28.0",
     "pandas>=1.5.0",

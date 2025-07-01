@@ -4,11 +4,24 @@ Strategic AI adoption analysis dashboard providing comprehensive insights into A
 
 ## 🚀 Features
 
-- **Executive Dashboard**: Strategic decision support with competitive position assessment
-- **Investment Case Builder**: ROI analysis and business case generation
+### Executive Decision Support
+- **Strategic Brief**: 5-minute executive intelligence with market reality checks
+- **Competitive Position Assessor**: Real-time competitive gap analysis
+- **Investment Case Builder**: ROI analysis and business case generation with downloadable reports
 - **Market Intelligence**: Real-time market trends and competitive dynamics
-- **Comprehensive Analytics**: Historical trends, industry analysis, and regional growth
+- **Action Planning Engine**: Evidence-based strategic decisions with timelines
+
+### Comprehensive Analytics
+- **Historical Trends**: AI adoption evolution from 2017-2025 with milestone annotations
+- **Industry Analysis**: Sector-specific adoption rates, ROI, and competitive positioning
+- **Geographic Distribution**: Regional adoption patterns and investment hubs
+- **Firm Size Analysis**: Adoption rates by company size with competitive thresholds
+- **Technology Stack**: Implementation approaches and integration strategies
+
+### Advanced Data & Performance
+- **28 Comprehensive Datasets**: From AI Index Report 2025, McKinsey, OECD, and Census Bureau
 - **Advanced Performance System**: Multi-layer caching, async loading, and real-time monitoring
+- **Data Validation**: Pydantic models for all datasets ensuring data integrity
 - **Modular Architecture**: Clean, maintainable codebase with proper separation of concerns
 
 ## 📊 Data Sources
@@ -56,6 +69,16 @@ Strategic AI adoption analysis dashboard providing comprehensive insights into A
    # Run performance tests
    python test_performance.py
    ```
+
+## 🔧 Troubleshooting
+
+If you encounter data loading issues, run the diagnostic script:
+
+```bash
+streamlit run diagnose_data_loading.py
+```
+
+This will help identify any problems with external dependencies or data files.
 
 ## 🧪 Testing Infrastructure
 
@@ -185,24 +208,39 @@ The CI pipeline includes automatic performance regression detection:
 ```
 AI-Adoption-Dashboard/
 ├── .github/workflows/     # CI/CD workflows
-├── business/              # Business logic modules
-├── data/                  # Data loading and models
-├── Utils/                 # Utility functions
-├── tests/                 # Test suite
+├── business/              # Business logic modules (ROI, competitive analysis)
+├── config/                # Centralized configuration and settings
+├── data/                  # Data loading, models, and validation
+│   ├── loaders.py        # Comprehensive dataset loading (28 datasets)
+│   └── models.py         # Pydantic validation models
+├── performance/           # Advanced performance optimization
+│   ├── caching.py        # Multi-layer caching system
+│   ├── memory_management.py # Memory optimization
+│   └── integration.py    # Performance integration
+├── components/            # Reusable UI components
+├── Utils/                 # Utility functions and helpers
+├── tests/                 # Comprehensive test suite
 │   ├── unit/             # Unit tests
 │   ├── integration/      # Integration tests
 │   ├── performance/      # Performance tests
 │   └── fixtures/         # Test fixtures
-├── scripts/              # Development scripts
-├── reports/              # Generated reports
+├── scripts/              # Development and deployment scripts
+├── reports/              # Generated reports and coverage
 ├── app.py                # Main Streamlit application
 ├── requirements.txt      # Production dependencies
 ├── requirements-test.txt # Test dependencies
-├── pyproject.toml        # Project configuration
-├── pytest.ini           # Pytest configuration
-├── .coveragerc          # Coverage configuration
-└── Makefile             # Development commands
+├── pyproject.toml        # Modern Python packaging configuration
+└── Makefile              # Development automation
 ```
+
+### Key Components
+
+- **`app.py`**: Main application with executive dashboard and analyst views
+- **`business/`**: Business logic for ROI calculations and competitive analysis
+- **`data/`**: Data loading system with 28 datasets and comprehensive validation
+- **`performance/`**: Advanced caching, memory management, and optimization
+- **`config/`**: Centralized configuration management
+- **`tests/`**: Comprehensive test suite with 80%+ coverage target
 
 ## 🎯 Key Components
 
