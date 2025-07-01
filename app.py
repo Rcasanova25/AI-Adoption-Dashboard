@@ -36,7 +36,12 @@ st.set_page_config(
     menu_items={
         'Get Help': 'https://github.com/Rcasanova25/AI-Adoption-Dashboard/wiki',
         'Report a bug': "https://github.com/Rcasanova25/AI-Adoption-Dashboard/issues",
-        'About': f"# AI Adoption Dashboard\nVersion {DashboardConfig.VERSION}\n\nTrack AI adoption trends across industries and geographies.\n\nCreated by Robert Casanova"
+        'About': (
+            f"# AI Adoption Dashboard\n"
+            f"Version {DashboardConfig.VERSION}\n\n"
+            f"Track AI adoption trends across industries and geographies.\n\n"
+            f"Created by Robert Casanova"
+        )
     }
 )
 
@@ -55,7 +60,12 @@ all_views = ALL_VIEWS
 
 persona_views = {
     "General": ["🎯 Competitive Position Assessor", "Historical Trends"],
-    "Business Leader": ["🎯 Competitive Position Assessor", "💰 Investment Decision Engine", "Financial Impact", "ROI Analysis"],
+    "Business Leader": [
+        "🎯 Competitive Position Assessor", 
+        "💰 Investment Decision Engine", 
+        "Financial Impact", 
+        "ROI Analysis"
+    ],
     "Policymaker": ["⚖️ Regulatory Risk Radar", "Labor Impact", "Geographic Distribution", "Barriers & Support"],
     "Researcher": ["Historical Trends", "Productivity Research", "AI Technology Maturity", "Bibliography & Sources"]
 }
@@ -84,33 +94,9 @@ def validate_chart_data(data, required_columns):
     
     return True, "Data is valid"
 
-def safe_data_check(data, data_name, show_ui_message=True):
-    """Safe data validation with improved logic"""
-    if data is None:
-        if show_ui_message:
-            st.warning(f"⚠️ {data_name} is not available. Using fallback data.")
-        return False
-    
-    if hasattr(data, 'empty') and data.empty:
-        if show_ui_message:
-            st.info(f"ℹ️ {data_name} is empty. Check data sources.")
-        return False
-    
-    if hasattr(data, '__len__') and len(data) == 0:
-        if show_ui_message:
-            st.info(f"ℹ️ {data_name} has no records.")
-        return False
-    
-    return True
+# safe_data_check function is imported from Utils.helpers - duplicate removed
 
-# Helper function to safely clean filenames
-def clean_filename(text):
-    """Clean text for safe filename generation"""
-    # Remove all emojis and special characters, replace spaces with underscores
-    cleaned = re.sub(r'[^\w\s-]', '', text)  # Remove all non-word characters except spaces and hyphens
-    cleaned = re.sub(r'\s+', '_', cleaned)   # Replace spaces with underscores
-    cleaned = cleaned.lower().strip('_')      # Convert to lowercase and strip underscores
-    return cleaned
+# clean_filename function is imported from Utils.helpers - duplicate removed
 
 # Chart creation functions
 def create_auto_visualization(df, view_name):
@@ -242,7 +228,11 @@ def create_executive_navigation(dynamic_metrics):
     st.sidebar.markdown("---")
     with st.sidebar.expander("📋 Detailed Analysis", expanded=False):
         detailed_view = st.selectbox("Analysis Type", 
-                                   ["Adoption Rates", "Historical Trends", "Industry Deep Dive", "Geographic Distribution", 
+                                   [
+                                       "Adoption Rates", 
+                                       "Historical Trends", 
+                                       "Industry Deep Dive", 
+                                       "Geographic Distribution", 
                                     "Technology Maturity", "Financial Impact", "Labor Impact"])
         use_detailed = st.checkbox("Switch to detailed view")
         
@@ -483,8 +473,10 @@ def executive_strategic_brief(dynamic_metrics, historical_data):
     st.markdown(f"""
     **Bottom Line Up Front (BLUF):**
 
-    AI adoption has reached irreversible market tipping point. The combination of {current_adoption}% business adoption, 
-    {dynamic_metrics['cost_reduction']} cost reduction, and proven ROI means competitive advantage now flows to implementation speed and quality, 
+    AI adoption has reached irreversible market tipping point. 
+    The combination of {current_adoption}% business adoption, 
+    {dynamic_metrics['cost_reduction']} cost reduction, and proven ROI 
+    means competitive advantage now flows to implementation speed and quality, 
     not adoption decisions.
 
     **Strategic Imperative:**
@@ -702,10 +694,10 @@ def create_comprehensive_datasets():
     
     # Financial impact
     financial_impact = pd.DataFrame({
-        'function': ['Customer Service', 'Marketing & Sales', 'Product Development', 
-                    'IT & Engineering', 'Human Resources', 'Finance & Accounting'],
-        'companies_reporting_cost_savings': [65, 58, 52, 49, 45, 42],
-        'companies_reporting_revenue_gains': [72, 68, 65, 57, 48, 44]
+        'industry': ['Technology', 'Financial Services', 'Healthcare', 'Manufacturing', 
+                    'Retail & E-commerce', 'Education'],
+        'revenue_impact': [25.5, 22.8, 19.2, 16.5, 14.8, 12.3],
+        'cost_savings': [18.2, 15.6, 13.4, 11.8, 10.2, 8.7]
     })
     
     # Barriers to adoption
@@ -969,7 +961,34 @@ if loaded_datasets is not None:
 else:
     st.error("❌ Failed to create datasets")
     # Initialize empty variables to prevent errors
-    historical_data = sector_2018 = sector_2025 = firm_size = ai_maturity = geographic = state_data = tech_stack = productivity_data = productivity_by_skill = ai_productivity_estimates = oecd_g7_adoption = oecd_applications = barriers_data = support_effectiveness = ai_investment_data = regional_growth = ai_cost_reduction = financial_impact = ai_perception = training_emissions = skill_gap_data = ai_governance = token_economics = token_usage_patterns = token_optimization = token_pricing_evolution = genai_2025 = None
+    historical_data = None
+    sector_2018 = None
+    sector_2025 = None
+    firm_size = None
+    ai_maturity = None
+    geographic = None
+    state_data = None
+    tech_stack = None
+    productivity_data = None
+    productivity_by_skill = None
+    ai_productivity_estimates = None
+    oecd_g7_adoption = None
+    oecd_applications = None
+    barriers_data = None
+    support_effectiveness = None
+    ai_investment_data = None
+    regional_growth = None
+    ai_cost_reduction = None
+    financial_impact = None
+    ai_perception = None
+    training_emissions = None
+    skill_gap_data = None
+    ai_governance = None
+    token_economics = None
+    token_usage_patterns = None
+    token_optimization = None
+    token_pricing_evolution = None
+    genai_2025 = None
 
 # Simplified dynamic metrics function
 def get_dynamic_metrics_simple(datasets):
@@ -3705,7 +3724,7 @@ else:
     elif current_view == "🌍 Regional Growth":
         st.write("🌍 **Enhanced Regional AI Growth Analysis**")
         
-        if safe_data_check(geographic, "Geographic data"):
+        if geographic is not None and safe_data_check(geographic, "Geographic data"):
             # Enhanced regional analysis
             st.markdown("### 📊 Regional AI Adoption Patterns")
             
@@ -3980,7 +3999,7 @@ else:
     elif current_view == "Financial Impact":
         st.write("💰 **Enhanced Financial Impact Analysis**")
         
-        if safe_data_check(financial_impact, "Financial impact data"):
+        if financial_impact is not None and safe_data_check(financial_impact, "Financial impact data"):
             # Enhanced financial analysis with clear data presentation
             st.markdown("### 📊 AI Financial Impact by Industry")
             

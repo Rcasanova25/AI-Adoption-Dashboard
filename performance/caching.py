@@ -4,6 +4,7 @@ import pandas as pd
 import numpy as np
 import hashlib
 import pickle
+import warnings
 import time
 import asyncio
 from typing import Dict, List, Optional, Any, Callable, Union
@@ -76,42 +77,82 @@ class AdvancedCache:
             return str(st.session_state.data_last_modified)
         return str(int(time.time() / 300))  # 5-minute buckets
     
+    def _is_json_serializable(self, data: Any) -> bool:
+        """Check if data can be safely serialized to JSON"""
+        try:
+            json.dumps(data, default=str)
+            return True
+        except (TypeError, ValueError):
+            return False
+    
+    def _get_data_size(self, data: Any) -> int:
+        """Get data size safely without using pickle"""
+        try:
+            if self._is_json_serializable(data):
+                return len(json.dumps(data, default=str).encode())
+            else:
+                # Fall back to pickle for size estimation
+                return len(pickle.dumps(data))
+        except Exception:
+            return 1024  # Default estimate
+    
     def _store_to_disk(self, cache_key: str, data: Any) -> None:
-        """Store data to disk cache"""
+        """Store data to disk cache with safer serialization"""
         if not self.config.persist_to_disk:
             return
         
         try:
-            file_path = os.path.join(self.config.disk_cache_dir, f"{cache_key}.pkl")
-            
-            if self.config.compression:
-                import gzip
-                with gzip.open(file_path, 'wb') as f:
-                    pickle.dump(data, f)
+            # Try JSON first for safer serialization
+            if self._is_json_serializable(data):
+                file_path = os.path.join(self.config.disk_cache_dir, f"{cache_key}.json")
+                with open(file_path, 'w') as f:
+                    json.dump(data, f, default=str)
             else:
-                with open(file_path, 'wb') as f:
-                    pickle.dump(data, f)
+                # Fall back to pickle with warning
+                warnings.warn("Using pickle for disk cache - security risk", UserWarning)
+                file_path = os.path.join(self.config.disk_cache_dir, f"{cache_key}.pkl")
+                
+                if self.config.compression:
+                    import gzip
+                    with gzip.open(file_path, 'wb') as f:
+                        pickle.dump(data, f)
+                else:
+                    with open(file_path, 'wb') as f:
+                        pickle.dump(data, f)
         except Exception as e:
             print(f"Warning: Failed to store to disk cache: {e}")
     
     def _load_from_disk(self, cache_key: str) -> Optional[Any]:
-        """Load data from disk cache"""
+        """Load data from disk cache with safer deserialization"""
         if not self.config.persist_to_disk:
             return None
         
         try:
-            file_path = os.path.join(self.config.disk_cache_dir, f"{cache_key}.pkl")
+            # Try JSON first
+            json_path = os.path.join(self.config.disk_cache_dir, f"{cache_key}.json")
+            if os.path.exists(json_path):
+                with open(json_path, 'r') as f:
+                    return json.load(f)
             
-            if not os.path.exists(file_path):
-                return None
+            # Fall back to pickle with validation
+            pkl_path = os.path.join(self.config.disk_cache_dir, f"{cache_key}.pkl")
+            if os.path.exists(pkl_path):
+                # Basic file size check as security measure
+                file_size = os.path.getsize(pkl_path)
+                if file_size > 100 * 1024 * 1024:  # 100MB limit
+                    warnings.warn(f"Pickle file too large ({file_size} bytes) - skipping", UserWarning)
+                    return None
+                
+                warnings.warn("Loading pickle file - potential security risk", UserWarning)
+                if self.config.compression:
+                    import gzip
+                    with gzip.open(pkl_path, 'rb') as f:
+                        return pickle.load(f)
+                else:
+                    with open(pkl_path, 'rb') as f:
+                        return pickle.load(f)
             
-            if self.config.compression:
-                import gzip
-                with gzip.open(file_path, 'rb') as f:
-                    return pickle.load(f)
-            else:
-                with open(file_path, 'rb') as f:
-                    return pickle.load(f)
+            return None
         except Exception as e:
             print(f"Warning: Failed to load from disk cache: {e}")
             return None
@@ -147,7 +188,7 @@ class AdvancedCache:
                 'created_at': datetime.now(),
                 'expires_at': datetime.now() + timedelta(seconds=self.config.ttl_seconds),
                 'data_hash': self._get_current_data_hash(),
-                'size_bytes': len(pickle.dumps(data))
+                'size_bytes': self._get_data_size(data)
             }
             
             # Store to disk
