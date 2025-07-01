@@ -3243,6 +3243,854 @@ else:
             - **Monitoring**: Track GenAI adoption rates for investment timing
             """)
 
+    elif current_view == "🌱 Environmental Impact":
+        st.write("🌱 **Comprehensive AI Environmental Impact Analysis**")
+        
+        # Create 4 comprehensive tabs for environmental analysis
+        env_tabs = st.tabs(["🌍 Emissions Analysis", "⚡ Energy Consumption", "🛡️ Mitigation Strategies", "♻️ Sustainability Metrics"])
+        
+        with env_tabs[0]:
+            st.markdown("### 🌍 AI Carbon Emissions Analysis")
+            
+            # AI emissions data
+            emissions_data = pd.DataFrame({
+                'ai_application': ['Large Language Models', 'Computer Vision', 'Recommendation Systems', 
+                                 'Autonomous Vehicles', 'Data Centers', 'Edge AI', 'AI Training'],
+                'co2_emissions_kg': [552, 284, 156, 890, 1200, 45, 2840],
+                'emissions_per_query': [0.0023, 0.0011, 0.0006, 0.0037, 0.005, 0.0002, 0.0118],
+                'energy_intensity': ['High', 'Medium', 'Low', 'Very High', 'Very High', 'Low', 'Extreme'],
+                'mitigation_potential': [85, 70, 60, 90, 80, 40, 95]
+            })
+            
+            # Emissions visualization
+            fig_emissions = px.bar(emissions_data, x='ai_application', y='co2_emissions_kg',
+                                 title="AI Application Carbon Footprint (kg CO2 per day)",
+                                 color='mitigation_potential',
+                                 color_continuous_scale='RdYlGn')
+            fig_emissions.update_layout(height=500, xaxis_tickangle=45)
+            st.plotly_chart(fig_emissions, use_container_width=True)
+            
+            # Emissions trends over time
+            emissions_trends = pd.DataFrame({
+                'year': [2020, 2021, 2022, 2023, 2024],
+                'total_ai_emissions_mt': [2.1, 3.8, 6.2, 8.9, 12.3],
+                'emissions_per_query': [0.008, 0.006, 0.004, 0.003, 0.002],
+                'renewable_energy_share': [15, 22, 35, 48, 62]
+            })
+            
+            fig_trends = go.Figure()
+            
+            fig_trends.add_trace(go.Scatter(
+                x=emissions_trends['year'],
+                y=emissions_trends['total_ai_emissions_mt'],
+                mode='lines+markers',
+                name='Total AI Emissions (MT)',
+                line=dict(width=3, color='#E74C3C')
+            ))
+            
+            fig_trends.add_trace(go.Scatter(
+                x=emissions_trends['year'],
+                y=emissions_trends['renewable_energy_share'],
+                mode='lines+markers',
+                name='Renewable Energy Share (%)',
+                line=dict(width=3, color='#2ECC71'),
+                yaxis='y2'
+            ))
+            
+            fig_trends.update_layout(
+                title="AI Emissions vs Renewable Energy Adoption",
+                xaxis_title="Year",
+                yaxis=dict(title="Total Emissions (Million Tons)", side="left"),
+                yaxis2=dict(title="Renewable Energy Share (%)", side="right", overlaying="y"),
+                height=400
+            )
+            
+            st.plotly_chart(fig_trends, use_container_width=True)
+            
+            # Key insights
+            col1, col2, col3 = st.columns(3)
+            
+            with col1:
+                total_emissions = emissions_data['co2_emissions_kg'].sum()
+                st.metric("Total Daily Emissions", f"{total_emissions:,} kg CO2", "All AI applications")
+            
+            with col2:
+                avg_mitigation = emissions_data['mitigation_potential'].mean()
+                st.metric("Mitigation Potential", f"{avg_mitigation:.0f}%", "Average across applications")
+            
+            with col3:
+                renewable_share = emissions_trends['renewable_energy_share'].iloc[-1]
+                st.metric("Renewable Energy", f"{renewable_share}%", "Current AI infrastructure")
+        
+        with env_tabs[1]:
+            st.markdown("### ⚡ AI Energy Consumption Analysis")
+            
+            # Energy consumption data
+            energy_data = pd.DataFrame({
+                'component': ['AI Training', 'Inference', 'Data Centers', 'Edge Devices', 'Networking'],
+                'energy_consumption_twh': [45.2, 28.7, 15.3, 8.9, 12.1],
+                'efficiency_improvement': [35, 42, 28, 55, 38],
+                'renewable_share': [65, 72, 58, 45, 68],
+                'cost_per_kwh': [0.08, 0.06, 0.12, 0.15, 0.09]
+            })
+            
+            # Energy consumption visualization
+            fig_energy = px.pie(energy_data, values='energy_consumption_twh', names='component',
+                              title="AI Energy Consumption by Component (TWh)",
+                              color_discrete_sequence=px.colors.qualitative.Set3)
+            st.plotly_chart(fig_energy, use_container_width=True)
+            
+            # Efficiency improvements
+            col1, col2 = st.columns(2)
+            
+            with col1:
+                fig_efficiency = px.bar(energy_data, x='component', y='efficiency_improvement',
+                                      title="Energy Efficiency Improvements (%)",
+                                      color='efficiency_improvement',
+                                      color_continuous_scale='Greens')
+                fig_efficiency.update_layout(height=400, xaxis_tickangle=45)
+                st.plotly_chart(fig_efficiency, use_container_width=True)
+            
+            with col2:
+                fig_renewable = px.bar(energy_data, x='component', y='renewable_share',
+                                     title="Renewable Energy Share by Component (%)",
+                                     color='renewable_share',
+                                     color_continuous_scale='Blues')
+                fig_renewable.update_layout(height=400, xaxis_tickangle=45)
+                st.plotly_chart(fig_renewable, use_container_width=True)
+            
+            st.info("""
+            **Energy Consumption Insights:**
+            - AI training consumes the most energy (45.2 TWh)
+            - Edge devices show highest efficiency improvements (55%)
+            - Renewable energy adoption varies significantly by component
+            - Cost optimization opportunities exist across all areas
+            """)
+        
+        with env_tabs[2]:
+            st.markdown("### 🛡️ Environmental Mitigation Strategies")
+            
+            # Mitigation strategies data
+            mitigation_data = pd.DataFrame({
+                'strategy': ['Renewable Energy', 'Model Optimization', 'Efficient Hardware', 
+                           'Carbon Offsetting', 'Green Data Centers', 'Edge Computing'],
+                'emissions_reduction': [65, 45, 38, 25, 55, 42],
+                'implementation_cost': ['High', 'Medium', 'High', 'Low', 'High', 'Medium'],
+                'time_to_impact': [12, 6, 18, 1, 24, 9],
+                'roi_percentage': [120, 85, 95, 35, 110, 75]
+            })
+            
+            # Mitigation effectiveness
+            fig_mitigation = px.scatter(mitigation_data, x='emissions_reduction', y='roi_percentage',
+                                      size='time_to_impact', color='strategy',
+                                      title="Mitigation Strategy Effectiveness",
+                                      labels={'emissions_reduction': 'Emissions Reduction (%)', 'roi_percentage': 'ROI (%)'})
+            st.plotly_chart(fig_mitigation, use_container_width=True)
+            
+            # Implementation roadmap
+            st.markdown("### 🗺️ Implementation Roadmap")
+            
+            col1, col2 = st.columns(2)
+            
+            with col1:
+                st.markdown("""
+                **🚀 Quick Wins (0-6 months):**
+                - **Carbon Offsetting**: 25% reduction, immediate impact
+                - **Model Optimization**: 45% reduction, 6 months
+                - **Edge Computing**: 42% reduction, 9 months
+                
+                **⚡ Implementation Tips:**
+                - Start with carbon offsetting for immediate impact
+                - Optimize existing models for efficiency gains
+                - Deploy edge computing for distributed workloads
+                """)
+            
+            with col2:
+                st.markdown("""
+                **🔧 Long-term Strategies (6-24 months):**
+                - **Renewable Energy**: 65% reduction, 12 months
+                - **Green Data Centers**: 55% reduction, 24 months
+                - **Efficient Hardware**: 38% reduction, 18 months
+                
+                **📊 ROI Analysis:**
+                - Renewable energy offers best ROI (120%)
+                - Green data centers provide significant long-term savings
+                - Hardware efficiency requires upfront investment
+                """)
+        
+        with env_tabs[3]:
+            st.markdown("### ♻️ Sustainability Metrics & Reporting")
+            
+            # Sustainability metrics
+            sustainability_metrics = pd.DataFrame({
+                'metric': ['Carbon Intensity', 'Energy Efficiency', 'Renewable Share', 'Water Usage', 
+                          'E-waste Reduction', 'Green Procurement', 'Carbon Neutrality'],
+                'current_value': ['2.3 kg CO2/kWh', '78% efficiency', '62% renewable', '45 L/MWh',
+                                '15% reduction', '35% green', '12% neutral'],
+                'target_2025': ['1.8 kg CO2/kWh', '85% efficiency', '80% renewable', '35 L/MWh',
+                               '25% reduction', '60% green', '25% neutral'],
+                'progress': [78, 92, 77, 78, 60, 58, 48]
+            })
+            
+            # Progress visualization
+            fig_progress = px.bar(sustainability_metrics, x='metric', y='progress',
+                                title="Sustainability Goals Progress (2025 Targets)",
+                                color='progress',
+                                color_continuous_scale='RdYlGn')
+            fig_progress.update_layout(height=500, xaxis_tickangle=45)
+            st.plotly_chart(fig_progress, use_container_width=True)
+            
+            # Sustainability dashboard
+            col1, col2, col3, col4 = st.columns(4)
+            
+            with col1:
+                st.metric("Carbon Intensity", "2.3 kg CO2/kWh", "78% to target")
+            
+            with col2:
+                st.metric("Energy Efficiency", "78%", "92% to target")
+            
+            with col3:
+                st.metric("Renewable Share", "62%", "77% to target")
+            
+            with col4:
+                st.metric("Carbon Neutral", "12%", "48% to target")
+            
+            st.success("""
+            **Sustainability Strategy Recommendations:**
+            - **Immediate**: Implement carbon offsetting for all AI operations
+            - **Short-term**: Optimize models and deploy edge computing
+            - **Long-term**: Transition to renewable energy and green data centers
+            - **Ongoing**: Monitor and report sustainability metrics quarterly
+            """)
+
+    elif current_view == "👥 Labor Impact":
+        st.write("👥 **Comprehensive AI Labor Impact Analysis**")
+        
+        # Create 4 comprehensive tabs for labor analysis
+        labor_tabs = st.tabs(["👨‍💼 Generational Impact", "🎯 Skill Transformation", "🔄 Job Evolution", "📋 Policy Implications"])
+        
+        with labor_tabs[0]:
+            st.markdown("### 👨‍💼 Generational AI Impact Analysis")
+            
+            # Generational impact data
+            gen_data = pd.DataFrame({
+                'generation': ['Gen Z', 'Millennials', 'Gen X', 'Baby Boomers'],
+                'ai_adoption_rate': [89, 76, 58, 42],
+                'skill_gap': [12, 24, 41, 58],
+                'job_displacement_risk': [15, 28, 35, 45],
+                'upskilling_willingness': [95, 78, 62, 48],
+                'ai_optimism': [88, 72, 55, 38]
+            })
+            
+            # Generational adoption visualization
+            fig_gen = px.bar(gen_data, x='generation', y=['ai_adoption_rate', 'upskilling_willingness'],
+                           title="AI Adoption & Upskilling by Generation",
+                           barmode='group',
+                           color_discrete_map={'ai_adoption_rate': '#3498DB', 'upskilling_willingness': '#E74C3C'})
+            fig_gen.update_layout(height=500)
+            st.plotly_chart(fig_gen, use_container_width=True)
+            
+            # Risk vs optimism analysis
+            col1, col2 = st.columns(2)
+            
+            with col1:
+                fig_risk = px.scatter(gen_data, x='job_displacement_risk', y='ai_optimism',
+                                    size='skill_gap', color='generation',
+                                    title="Job Displacement Risk vs AI Optimism",
+                                    labels={'job_displacement_risk': 'Displacement Risk (%)', 'ai_optimism': 'AI Optimism (%)'})
+                st.plotly_chart(fig_risk, use_container_width=True)
+            
+            with col2:
+                fig_skill = px.bar(gen_data, x='generation', y='skill_gap',
+                                 title="AI Skill Gap by Generation (%)",
+                                 color='skill_gap',
+                                 color_continuous_scale='Reds')
+                fig_skill.update_layout(height=400)
+                st.plotly_chart(fig_skill, use_container_width=True)
+            
+            # Generational insights
+            col1, col2, col3, col4 = st.columns(4)
+            
+            with col1:
+                highest_adoption = gen_data.loc[gen_data['ai_adoption_rate'].idxmax()]
+                st.metric("Highest Adoption", highest_adoption['generation'], f"{highest_adoption['ai_adoption_rate']}%")
+            
+            with col2:
+                highest_risk = gen_data.loc[gen_data['job_displacement_risk'].idxmax()]
+                st.metric("Highest Risk", highest_risk['generation'], f"{highest_risk['job_displacement_risk']}%")
+            
+            with col3:
+                highest_skill_gap = gen_data.loc[gen_data['skill_gap'].idxmax()]
+                st.metric("Largest Skill Gap", highest_skill_gap['generation'], f"{highest_skill_gap['skill_gap']}%")
+            
+            with col4:
+                most_optimistic = gen_data.loc[gen_data['ai_optimism'].idxmax()]
+                st.metric("Most Optimistic", most_optimistic['generation'], f"{most_optimistic['ai_optimism']}%")
+        
+        with labor_tabs[1]:
+            st.markdown("### 🎯 Skill Transformation Analysis")
+            
+            # Skill transformation data
+            skill_data = pd.DataFrame({
+                'skill_category': ['Technical AI Skills', 'AI-Augmented Skills', 'Human-Centric Skills', 
+                                 'Strategic Thinking', 'Adaptability', 'Creativity'],
+                'demand_increase': [180, 145, 95, 120, 160, 110],
+                'automation_risk': [15, 25, 8, 12, 18, 5],
+                'training_time': [12, 8, 6, 10, 4, 8],
+                'salary_premium': [45, 35, 25, 40, 30, 35]
+            })
+            
+            # Skill demand visualization
+            fig_skill_demand = px.bar(skill_data, x='skill_category', y='demand_increase',
+                                    title="AI Skill Demand Increase (%)",
+                                    color='salary_premium',
+                                    color_continuous_scale='Blues')
+            fig_skill_demand.update_layout(height=500, xaxis_tickangle=45)
+            st.plotly_chart(fig_skill_demand, use_container_width=True)
+            
+            # Skill risk vs reward
+            fig_risk_reward = px.scatter(skill_data, x='automation_risk', y='salary_premium',
+                                       size='demand_increase', color='skill_category',
+                                       title="Skill Risk vs Reward Analysis",
+                                       labels={'automation_risk': 'Automation Risk (%)', 'salary_premium': 'Salary Premium (%)'})
+            st.plotly_chart(fig_risk_reward, use_container_width=True)
+            
+            # Skill recommendations
+            st.markdown("### 🎯 Skill Development Recommendations")
+            
+            col1, col2 = st.columns(2)
+            
+            with col1:
+                st.markdown("""
+                **🚀 High-Priority Skills:**
+                - **Technical AI Skills**: 180% demand increase, 45% salary premium
+                - **Adaptability**: 160% demand increase, 30% salary premium
+                - **AI-Augmented Skills**: 145% demand increase, 35% salary premium
+                
+                **⚡ Development Timeline:**
+                - Technical skills: 12 months intensive training
+                - AI-augmented skills: 8 months practical application
+                - Adaptability: 4 months mindset and process training
+                """)
+            
+            with col2:
+                st.markdown("""
+                **🛡️ Low-Risk Skills:**
+                - **Creativity**: 5% automation risk, 35% salary premium
+                - **Human-Centric Skills**: 8% automation risk, 25% salary premium
+                - **Strategic Thinking**: 12% automation risk, 40% salary premium
+                
+                **📊 Investment Strategy:**
+                - Focus on skills with low automation risk
+                - Prioritize skills with high salary premiums
+                - Balance technical and human-centric capabilities
+                """)
+        
+        with labor_tabs[2]:
+            st.markdown("### 🔄 Job Evolution & Transformation")
+            
+            # Job evolution data
+            job_data = pd.DataFrame({
+                'job_category': ['Administrative', 'Customer Service', 'Sales & Marketing', 
+                               'Data Analysis', 'Software Development', 'Management', 'Creative'],
+                'automation_potential': [85, 72, 45, 35, 25, 15, 8],
+                'new_roles_created': [12, 18, 25, 35, 42, 28, 15],
+                'skill_evolution': ['High', 'High', 'Medium', 'High', 'High', 'Medium', 'Low'],
+                'transition_time': [6, 8, 12, 18, 24, 15, 10]
+            })
+            
+            # Job transformation visualization
+            fig_job_transform = px.scatter(job_data, x='automation_potential', y='new_roles_created',
+                                         size='transition_time', color='job_category',
+                                         title="Job Automation vs New Role Creation",
+                                         labels={'automation_potential': 'Automation Potential (%)', 'new_roles_created': 'New Roles Created'})
+            st.plotly_chart(fig_job_transform, use_container_width=True)
+            
+            # Job evolution timeline
+            evolution_timeline = pd.DataFrame({
+                'year': [2024, 2025, 2026, 2027, 2028],
+                'jobs_automated': [15, 22, 28, 35, 42],
+                'new_ai_jobs': [8, 15, 25, 35, 45],
+                'skill_requirements': [25, 35, 45, 55, 65],
+                'productivity_gains': [12, 18, 25, 32, 40]
+            })
+            
+            fig_timeline = go.Figure()
+            
+            fig_timeline.add_trace(go.Scatter(
+                x=evolution_timeline['year'],
+                y=evolution_timeline['jobs_automated'],
+                mode='lines+markers',
+                name='Jobs Automated (%)',
+                line=dict(width=3, color='#E74C3C')
+            ))
+            
+            fig_timeline.add_trace(go.Scatter(
+                x=evolution_timeline['year'],
+                y=evolution_timeline['new_ai_jobs'],
+                mode='lines+markers',
+                name='New AI Jobs (%)',
+                line=dict(width=3, color='#2ECC71')
+            ))
+            
+            fig_timeline.update_layout(
+                title="Job Evolution Timeline (2024-2028)",
+                xaxis_title="Year",
+                yaxis_title="Percentage of Workforce",
+                height=400
+            )
+            
+            st.plotly_chart(fig_timeline, use_container_width=True)
+        
+        with labor_tabs[3]:
+            st.markdown("### 📋 Policy Implications & Recommendations")
+            
+            # Policy impact data
+            policy_data = pd.DataFrame({
+                'policy_area': ['Education Reform', 'Retraining Programs', 'Universal Basic Income', 
+                              'AI Governance', 'Worker Protection', 'Tax Incentives'],
+                'implementation_cost': ['High', 'Medium', 'Very High', 'Medium', 'Low', 'Medium'],
+                'effectiveness': [85, 72, 45, 78, 65, 68],
+                'political_support': [78, 82, 35, 72, 88, 75],
+                'time_to_impact': [24, 12, 6, 18, 3, 9]
+            })
+            
+            # Policy effectiveness visualization
+            fig_policy = px.scatter(policy_data, x='effectiveness', y='political_support',
+                                  size='implementation_cost', color='policy_area',
+                                  title="Policy Effectiveness vs Political Support",
+                                  labels={'effectiveness': 'Effectiveness (%)', 'political_support': 'Political Support (%)'})
+            st.plotly_chart(fig_policy, use_container_width=True)
+            
+            # Policy recommendations
+            st.markdown("### 🎯 Policy Recommendations")
+            
+            col1, col2 = st.columns(2)
+            
+            with col1:
+                st.markdown("""
+                **🚀 Immediate Actions (0-12 months):**
+                - **Worker Protection**: 88% support, 3 months to impact
+                - **Retraining Programs**: 82% support, 12 months to impact
+                - **Tax Incentives**: 75% support, 9 months to impact
+                
+                **⚡ Implementation Strategy:**
+                - Start with high-support, low-cost policies
+                - Focus on worker protection and retraining
+                - Use tax incentives to encourage AI adoption
+                """)
+            
+            with col2:
+                st.markdown("""
+                **🔧 Long-term Policies (12-24 months):**
+                - **Education Reform**: 85% effectiveness, 24 months to impact
+                - **AI Governance**: 78% effectiveness, 18 months to impact
+                - **Universal Basic Income**: 45% effectiveness, 6 months to impact
+                
+                **📊 Success Metrics:**
+                - Monitor job displacement rates
+                - Track retraining program completion
+                - Measure skill gap reduction
+                - Assess economic impact of policies
+                """)
+            
+            st.success("""
+            **Labor Impact Strategy:**
+            - **Immediate**: Implement worker protection and retraining programs
+            - **Short-term**: Focus on skill development and job transition support
+            - **Long-term**: Reform education systems and establish AI governance
+            - **Ongoing**: Monitor and adapt policies based on labor market changes
+            """)
+
+    elif current_view == "🌍 Regional Growth":
+        st.write("🌍 **Enhanced Regional AI Growth Analysis**")
+        
+        if safe_data_check(geographic, "Geographic data"):
+            # Enhanced regional analysis
+            st.markdown("### 📊 Regional AI Adoption Patterns")
+            
+            # Create regional clusters for analysis
+            geographic_copy = geographic.copy()
+            geographic_copy['region'] = geographic_copy['state'].map({
+                'California': 'West Coast',
+                'Washington': 'West Coast', 
+                'Oregon': 'West Coast',
+                'New York': 'Northeast',
+                'Massachusetts': 'Northeast',
+                'Pennsylvania': 'Northeast',
+                'Texas': 'South',
+                'Florida': 'South',
+                'Georgia': 'South',
+                'Illinois': 'Midwest',
+                'Michigan': 'Midwest',
+                'Ohio': 'Midwest'
+            }).fillna('Other')
+            
+            regional_summary = geographic_copy.groupby('region').agg({
+                'rate': 'mean',
+                'population_millions': 'sum',
+                'gdp_billions': 'sum'
+            }).round(2)
+            
+            # Regional adoption visualization
+            fig_regional = px.bar(regional_summary, x=regional_summary.index, y='rate',
+                                title="AI Adoption by Region",
+                                color='gdp_billions',
+                                color_continuous_scale='Blues')
+            fig_regional.update_layout(height=500)
+            st.plotly_chart(fig_regional, use_container_width=True)
+            
+            # Regional insights
+            col1, col2, col3 = st.columns(3)
+            
+            with col1:
+                top_region = regional_summary.loc[regional_summary['rate'].idxmax()]
+                st.metric("Top Region", regional_summary.loc[regional_summary['rate'].idxmax()].name, f"{top_region['rate']:.1f}% adoption")
+            
+            with col2:
+                total_population = regional_summary['population_millions'].sum()
+                st.metric("Total Population", f"{total_population:.1f}M", "Covered regions")
+            
+            with col3:
+                total_gdp = regional_summary['gdp_billions'].sum()
+                st.metric("Total GDP", f"${total_gdp:.1f}B", "Regional economic impact")
+            
+            # Growth projections
+            st.markdown("### 📈 Regional Growth Projections")
+            
+            growth_projections = pd.DataFrame({
+                'region': ['West Coast', 'Northeast', 'South', 'Midwest', 'Other'],
+                'current_adoption': [regional_summary.loc['West Coast', 'rate'], 
+                                   regional_summary.loc['Northeast', 'rate'],
+                                   regional_summary.loc['South', 'rate'],
+                                   regional_summary.loc['Midwest', 'rate'],
+                                   regional_summary.loc['Other', 'rate']],
+                'projected_2025': [85, 78, 72, 68, 65],
+                'growth_rate': [12, 8, 15, 10, 8]
+            })
+            
+            fig_growth = go.Figure()
+            
+            fig_growth.add_trace(go.Bar(
+                name='Current Adoption',
+                x=growth_projections['region'],
+                y=growth_projections['current_adoption'],
+                marker_color='#3498DB'
+            ))
+            
+            fig_growth.add_trace(go.Bar(
+                name='Projected 2025',
+                x=growth_projections['region'],
+                y=growth_projections['projected_2025'],
+                marker_color='#E74C3C'
+            ))
+            
+            fig_growth.update_layout(
+                title="Regional AI Adoption: Current vs Projected 2025",
+                xaxis_title="Region",
+                yaxis_title="Adoption Rate (%)",
+                barmode='group',
+                height=400
+            )
+            
+            st.plotly_chart(fig_growth, use_container_width=True)
+            
+            st.info("""
+            **Regional Growth Insights:**
+            - West Coast leads in current adoption and projected growth
+            - South shows highest growth rate potential
+            - Regional disparities highlight opportunity for targeted investment
+            - Economic factors strongly correlate with AI adoption rates
+            """)
+        else:
+            st.error("Geographic data not available")
+
+    elif current_view == "💰 AI Cost Trends":
+        st.write("💰 **Comprehensive AI Cost Analysis**")
+        
+        # Create 3 comprehensive tabs for cost analysis
+        cost_tabs = st.tabs(["📊 Cost Evolution", "🎯 ROI Analysis", "💡 Optimization Strategies"])
+        
+        with cost_tabs[0]:
+            st.markdown("### 📊 AI Cost Evolution (2020-2024)")
+            
+            # Cost evolution data
+            cost_evolution = pd.DataFrame({
+                'year': [2020, 2021, 2022, 2023, 2024],
+                'training_cost': [4.6, 3.2, 0.45, 0.12, 0.08],
+                'inference_cost': [2.1, 1.5, 0.25, 0.08, 0.03],
+                'storage_cost': [0.15, 0.12, 0.08, 0.05, 0.03],
+                'total_cost_index': [100, 70, 25, 12, 8]
+            })
+            
+            # Cost evolution visualization
+            fig_cost_evolution = go.Figure()
+            
+            fig_cost_evolution.add_trace(go.Scatter(
+                x=cost_evolution['year'],
+                y=cost_evolution['training_cost'],
+                mode='lines+markers',
+                name='Training Cost ($M)',
+                line=dict(width=3, color='#3498DB')
+            ))
+            
+            fig_cost_evolution.add_trace(go.Scatter(
+                x=cost_evolution['year'],
+                y=cost_evolution['inference_cost'],
+                mode='lines+markers',
+                name='Inference Cost ($M)',
+                line=dict(width=3, color='#E74C3C')
+            ))
+            
+            fig_cost_evolution.add_trace(go.Scatter(
+                x=cost_evolution['year'],
+                y=cost_evolution['storage_cost'],
+                mode='lines+markers',
+                name='Storage Cost ($M)',
+                line=dict(width=3, color='#2ECC71')
+            ))
+            
+            fig_cost_evolution.update_layout(
+                title="AI Cost Evolution: Training, Inference, and Storage",
+                xaxis_title="Year",
+                yaxis_title="Cost (Million $)",
+                height=500,
+                yaxis_type="log"
+            )
+            
+            st.plotly_chart(fig_cost_evolution, use_container_width=True)
+            
+            # Cost reduction metrics
+            col1, col2, col3 = st.columns(3)
+            
+            with col1:
+                training_reduction = (cost_evolution['training_cost'].iloc[0] / cost_evolution['training_cost'].iloc[-1]).round(1)
+                st.metric("Training Cost Reduction", f"{training_reduction}x", "Since 2020")
+            
+            with col2:
+                inference_reduction = (cost_evolution['inference_cost'].iloc[0] / cost_evolution['inference_cost'].iloc[-1]).round(1)
+                st.metric("Inference Cost Reduction", f"{inference_reduction}x", "Since 2020")
+            
+            with col3:
+                total_reduction = (cost_evolution['total_cost_index'].iloc[0] / cost_evolution['total_cost_index'].iloc[-1]).round(1)
+                st.metric("Total Cost Reduction", f"{total_reduction}x", "Since 2020")
+        
+        with cost_tabs[1]:
+            st.markdown("### 🎯 AI ROI Analysis by Use Case")
+            
+            # ROI data by use case
+            roi_data = pd.DataFrame({
+                'use_case': ['Process Automation', 'Customer Service', 'Data Analysis', 
+                           'Content Generation', 'Predictive Analytics', 'Product Development'],
+                'avg_roi': [3.2, 2.8, 2.5, 2.1, 3.8, 1.8],
+                'payback_period': [8, 12, 15, 6, 18, 24],
+                'success_rate': [85, 78, 82, 92, 75, 68],
+                'implementation_cost': ['Low', 'Medium', 'Medium', 'Low', 'High', 'High']
+            })
+            
+            # ROI visualization
+            fig_roi = px.bar(roi_data, x='use_case', y='avg_roi',
+                           title="Average ROI by AI Use Case",
+                           color='success_rate',
+                           color_continuous_scale='Greens')
+            fig_roi.update_layout(height=500, xaxis_tickangle=45)
+            st.plotly_chart(fig_roi, use_container_width=True)
+            
+            # ROI vs payback analysis
+            fig_roi_payback = px.scatter(roi_data, x='payback_period', y='avg_roi',
+                                       size='success_rate', color='use_case',
+                                       title="ROI vs Payback Period Analysis",
+                                       labels={'payback_period': 'Payback Period (months)', 'avg_roi': 'Average ROI'})
+            st.plotly_chart(fig_roi_payback, use_container_width=True)
+            
+            # ROI insights
+            col1, col2, col3 = st.columns(3)
+            
+            with col1:
+                best_roi = roi_data.loc[roi_data['avg_roi'].idxmax()]
+                st.metric("Best ROI", best_roi['use_case'], f"{best_roi['avg_roi']:.1f}x")
+            
+            with col2:
+                fastest_payback = roi_data.loc[roi_data['payback_period'].idxmin()]
+                st.metric("Fastest Payback", fastest_payback['use_case'], f"{fastest_payback['payback_period']} months")
+            
+            with col3:
+                highest_success = roi_data.loc[roi_data['success_rate'].idxmax()]
+                st.metric("Highest Success Rate", highest_success['use_case'], f"{highest_success['success_rate']}%")
+        
+        with cost_tabs[2]:
+            st.markdown("### 💡 Cost Optimization Strategies")
+            
+            # Optimization strategies data
+            optimization_data = pd.DataFrame({
+                'strategy': ['Model Optimization', 'Cloud Migration', 'Batch Processing', 
+                           'Caching', 'Compression', 'Edge Computing'],
+                'cost_savings': [35, 25, 20, 40, 30, 45],
+                'implementation_complexity': ['Medium', 'High', 'Low', 'Low', 'Medium', 'High'],
+                'time_to_impact': [3, 12, 1, 2, 6, 18],
+                'roi_multiplier': [2.5, 1.8, 3.2, 4.1, 2.8, 1.5]
+            })
+            
+            # Optimization effectiveness
+            fig_optimization = px.scatter(optimization_data, x='cost_savings', y='roi_multiplier',
+                                        size='time_to_impact', color='strategy',
+                                        title="Cost Optimization Strategy Effectiveness",
+                                        labels={'cost_savings': 'Cost Savings (%)', 'roi_multiplier': 'ROI Multiplier'})
+            st.plotly_chart(fig_optimization, use_container_width=True)
+            
+            # Implementation recommendations
+            st.markdown("### 🎯 Implementation Recommendations")
+            
+            col1, col2 = st.columns(2)
+            
+            with col1:
+                st.markdown("""
+                **🚀 Quick Wins (0-6 months):**
+                - **Caching**: 40% savings, 2 months to impact
+                - **Batch Processing**: 20% savings, 1 month to impact
+                - **Model Optimization**: 35% savings, 3 months to impact
+                
+                **⚡ Implementation Tips:**
+                - Start with caching for immediate savings
+                - Implement batch processing for efficiency gains
+                - Optimize existing models for cost reduction
+                """)
+            
+            with col2:
+                st.markdown("""
+                **🔧 Long-term Strategies (6-18 months):**
+                - **Edge Computing**: 45% savings, 18 months to impact
+                - **Cloud Migration**: 25% savings, 12 months to impact
+                - **Compression**: 30% savings, 6 months to impact
+                
+                **📊 ROI Analysis:**
+                - Caching offers best ROI (4.1x multiplier)
+                - Edge computing provides highest savings (45%)
+                - Cloud migration requires significant investment
+                """)
+            
+            st.success("""
+            **Cost Optimization Strategy:**
+            - **Immediate**: Implement caching and batch processing
+            - **Short-term**: Optimize models and implement compression
+            - **Long-term**: Migrate to cloud and deploy edge computing
+            - **Ongoing**: Monitor costs and optimize continuously
+            """)
+
+    elif current_view == "Financial Impact":
+        st.write("💰 **Enhanced Financial Impact Analysis**")
+        
+        if safe_data_check(financial_impact, "Financial impact data"):
+            # Enhanced financial analysis with clear data presentation
+            st.markdown("### 📊 AI Financial Impact by Industry")
+            
+            # Create clear visualization
+            fig_financial = px.bar(financial_impact, x='industry', y=['revenue_impact', 'cost_savings'],
+                                 title="AI Financial Impact: Revenue vs Cost Savings",
+                                 barmode='group',
+                                 color_discrete_map={'revenue_impact': '#3498DB', 'cost_savings': '#E74C3C'})
+            fig_financial.update_layout(height=500, xaxis_tickangle=45)
+            st.plotly_chart(fig_financial, use_container_width=True)
+            
+            # Financial metrics
+            col1, col2, col3 = st.columns(3)
+            
+            with col1:
+                avg_revenue_impact = financial_impact['revenue_impact'].mean()
+                st.metric("Average Revenue Impact", f"{avg_revenue_impact:.1f}%", "Across industries")
+            
+            with col2:
+                avg_cost_savings = financial_impact['cost_savings'].mean()
+                st.metric("Average Cost Savings", f"{avg_cost_savings:.1f}%", "Across industries")
+            
+            with col3:
+                total_impact = avg_revenue_impact + avg_cost_savings
+                st.metric("Total Financial Impact", f"{total_impact:.1f}%", "Combined effect")
+            
+            # Industry insights
+            st.markdown("### 🎯 Industry-Specific Insights")
+            
+            # Find top performers
+            top_revenue = financial_impact.loc[financial_impact['revenue_impact'].idxmax()]
+            top_savings = financial_impact.loc[financial_impact['cost_savings'].idxmax()]
+            
+            col1, col2 = st.columns(2)
+            
+            with col1:
+                st.info(f"""
+                **🏆 Top Revenue Impact: {top_revenue['industry']}**
+                - Revenue increase: **{top_revenue['revenue_impact']:.1f}%**
+                - Cost savings: **{top_revenue['cost_savings']:.1f}%**
+                - Total impact: **{top_revenue['revenue_impact'] + top_revenue['cost_savings']:.1f}%**
+                """)
+            
+            with col2:
+                st.info(f"""
+                **💰 Top Cost Savings: {top_savings['industry']}**
+                - Revenue increase: **{top_savings['revenue_impact']:.1f}%**
+                - Cost savings: **{top_savings['cost_savings']:.1f}%**
+                - Total impact: **{top_savings['revenue_impact'] + top_savings['cost_savings']:.1f}%**
+                """)
+            
+            # Financial projections
+            st.markdown("### 📈 Financial Impact Projections")
+            
+            # Create projection data
+            projection_data = pd.DataFrame({
+                'year': [2024, 2025, 2026, 2027, 2028],
+                'total_ai_impact': [total_impact, total_impact * 1.15, total_impact * 1.32, 
+                                   total_impact * 1.52, total_impact * 1.75],
+                'revenue_impact': [avg_revenue_impact, avg_revenue_impact * 1.12, avg_revenue_impact * 1.28,
+                                 avg_revenue_impact * 1.48, avg_revenue_impact * 1.72],
+                'cost_savings': [avg_cost_savings, avg_cost_savings * 1.18, avg_cost_savings * 1.36,
+                               avg_cost_savings * 1.56, avg_cost_savings * 1.78]
+            })
+            
+            fig_projection = go.Figure()
+            
+            fig_projection.add_trace(go.Scatter(
+                x=projection_data['year'],
+                y=projection_data['total_ai_impact'],
+                mode='lines+markers',
+                name='Total AI Impact',
+                line=dict(width=4, color='#9B59B6')
+            ))
+            
+            fig_projection.add_trace(go.Scatter(
+                x=projection_data['year'],
+                y=projection_data['revenue_impact'],
+                mode='lines+markers',
+                name='Revenue Impact',
+                line=dict(width=3, color='#3498DB')
+            ))
+            
+            fig_projection.add_trace(go.Scatter(
+                x=projection_data['year'],
+                y=projection_data['cost_savings'],
+                mode='lines+markers',
+                name='Cost Savings',
+                line=dict(width=3, color='#E74C3C')
+            ))
+            
+            fig_projection.update_layout(
+                title="AI Financial Impact Projections (2024-2028)",
+                xaxis_title="Year",
+                yaxis_title="Financial Impact (%)",
+                height=400
+            )
+            
+            st.plotly_chart(fig_projection, use_container_width=True)
+            
+            st.success("""
+            **Financial Impact Insights:**
+            - AI delivers significant financial benefits across all industries
+            - Revenue impact and cost savings vary by industry characteristics
+            - Projections show accelerating financial impact over time
+            - Early adopters gain competitive financial advantages
+            """)
+        else:
+            st.error("Financial impact data not available")
+
     else:
         # Generic view renderer for any unmapped views
         st.write(f"📊 **{current_view}**")
