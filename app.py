@@ -2321,6 +2321,20 @@ else:
             if 'major_universities' not in enhanced_geographic.columns:
                 enhanced_geographic['major_universities'] = [12, 7, 4, 4, 8, 6, 5, 3]
             
+            # Create state-level research infrastructure data for heat map
+            state_research_data = pd.DataFrame({
+                'state': ['California', 'Massachusetts', 'New York', 'Texas', 'Washington', 
+                         'Illinois', 'Pennsylvania', 'Georgia', 'Colorado', 'Florida',
+                         'Michigan', 'Ohio', 'North Carolina', 'Virginia', 'Maryland'],
+                'state_code': ['CA', 'MA', 'NY', 'TX', 'WA', 'IL', 'PA', 'GA', 'CO', 'FL',
+                              'MI', 'OH', 'NC', 'VA', 'MD'],
+                'ai_adoption_rate': [8.2, 6.7, 8.0, 7.5, 6.8, 7.0, 6.6, 7.1, 6.3, 6.9,
+                                    5.5, 5.8, 6.0, 6.2, 6.4],
+                'nsf_ai_institutes_total': [5, 4, 3, 3, 2, 2, 2, 1, 2, 1, 1, 1, 2, 2, 2],
+                'total_federal_funding_billions': [3.2, 1.1, 1.0, 0.7, 0.5, 0.4, 0.3, 0.2, 0.2, 0.2,
+                                                  0.15, 0.12, 0.25, 0.35, 0.45]
+            })
+            
             # Create comprehensive tabs for different geographic analyses
             geo_tabs = st.tabs(["🗺️ Interactive Map", "📊 Regional Analysis", "🏛️ Research Infrastructure"])
             
@@ -2329,15 +2343,17 @@ else:
                 st.markdown("### AI Ecosystem Map: Adoption, Research & Investment")
                 
                 # Map controls
-                col1, col2, col3 = st.columns(3)
+                col1, col2, col3, col4 = st.columns(4)
                 with col1:
                     map_metric = st.selectbox(
                         "Primary Metric",
                         ["AI Adoption Rate", "Federal AI Funding", "AI Research Centers", "AI Startups", "Venture Capital"]
                     )
                 with col2:
-                    show_nsf_institutes = st.checkbox("Show NSF AI Institutes", value=True)
+                    show_heat_map = st.checkbox("Show State Heat Map", value=True)
                 with col3:
+                    show_nsf_institutes = st.checkbox("Show NSF AI Institutes", value=True)
+                with col4:
                     show_universities = st.checkbox("Show Major Universities", value=False)
                 
                 # Metric mapping with proper units
@@ -2363,6 +2379,32 @@ else:
                 
                 # Create the enhanced map
                 fig = go.Figure()
+                
+                # Add state heat map layer (choropleth)
+                if show_heat_map:
+                    fig.add_trace(go.Choropleth(
+                        locations=state_research_data['state_code'],
+                        z=state_research_data['ai_adoption_rate'],
+                        locationmode='USA-states',
+                        colorscale='Blues',
+                        colorbar=dict(
+                            title="State AI<br>Adoption (%)",
+                            x=-0.15,  # Move further left to avoid overlap
+                            len=0.4,
+                            y=0.75,
+                            thickness=12,
+                            titlefont=dict(size=12),
+                            tickfont=dict(size=10)
+                        ),
+                        marker_line_color='darkgray',
+                        marker_line_width=1,
+                        hovertemplate='<b>%{text}</b><br>State AI Adoption: %{z:.1f}%<br>NSF Institutes: %{customdata[0]}<br>Federal Funding: $%{customdata[1]:.1f}B<extra></extra>',
+                        text=state_research_data['state'],
+                        customdata=state_research_data[['nsf_ai_institutes_total', 'total_federal_funding_billions']],
+                        name="State Heat Map",
+                        showlegend=False,  # Keep this hidden as it's shown via colorbar
+                        opacity=0.7
+                    ))
                 
                 # Main city markers that change based on selected metric
                 fig.add_trace(go.Scattergeo(
@@ -2458,36 +2500,69 @@ else:
                     height=700,
                     showlegend=True,
                     legend=dict(
-                        x=0.85,
-                        y=0.95,
-                        bgcolor='rgba(255,255,255,0.8)',
-                        bordercolor='rgba(0,0,0,0.2)',
-                        borderwidth=1
+                        x=0.02,  # Move to left side to avoid colorbar overlap
+                        y=0.98,
+                        bgcolor='rgba(255,255,255,0.9)',
+                        bordercolor='rgba(0,0,0,0.3)',
+                        borderwidth=2,
+                        font=dict(
+                            size=12,
+                            color='black'
+                        )
                     ),
-                    margin=dict(l=50, r=80, t=50, b=50)
+                    margin=dict(l=80, r=120, t=60, b=50),  # Increase margins for colorbars
+                    font=dict(size=12)
                 )
                 
                 st.plotly_chart(fig, use_container_width=True)
                 
                 # Dynamic insights based on selected metric
-                if map_metric == "AI Adoption Rate":
-                    top_city = enhanced_geographic.loc[enhanced_geographic['rate'].idxmax(), 'city']
-                    top_rate = enhanced_geographic['rate'].max()
-                    st.info(f"""
-                    **🗺️ AI Adoption Geographic Insights:**
-                    - **Highest adoption:** {top_city} ({top_rate:.1f}%)
-                    - **Regional variation:** {enhanced_geographic['rate'].max() - enhanced_geographic['rate'].min():.1f} percentage point spread
-                    - **Coastal concentration:** West Coast and Northeast lead in AI implementation
-                    """)
-                elif map_metric == "Federal AI Funding":
-                    top_funding_city = enhanced_geographic.loc[enhanced_geographic['federal_ai_funding_millions'].idxmax(), 'city']
-                    top_funding_amount = enhanced_geographic['federal_ai_funding_millions'].max()
-                    st.info(f"""
-                    **💰 Federal AI Investment Insights:**
-                    - **Top funded region:** {top_funding_city} (${top_funding_amount:.0f}M)
-                    - **Strategic focus:** Government prioritizing research infrastructure
-                    - **National security:** Concentration in key technology centers
-                    """)
+                col1, col2 = st.columns([2, 1])
+                
+                with col1:
+                    if map_metric == "AI Adoption Rate":
+                        top_city = enhanced_geographic.loc[enhanced_geographic['rate'].idxmax(), 'city']
+                        top_rate = enhanced_geographic['rate'].max()
+                        st.info(f"""
+                        **🗺️ AI Adoption Geographic Insights:**
+                        - **Highest adoption:** {top_city} ({top_rate:.1f}%)
+                        - **Regional variation:** {enhanced_geographic['rate'].max() - enhanced_geographic['rate'].min():.1f} percentage point spread
+                        - **Coastal concentration:** West Coast and Northeast lead in AI implementation
+                        """)
+                    elif map_metric == "Federal AI Funding":
+                        top_funding_city = enhanced_geographic.loc[enhanced_geographic['federal_ai_funding_millions'].idxmax(), 'city']
+                        top_funding_amount = enhanced_geographic['federal_ai_funding_millions'].max()
+                        st.info(f"""
+                        **💰 Federal AI Investment Insights:**
+                        - **Top funded region:** {top_funding_city} (${top_funding_amount:.0f}M)
+                        - **Strategic focus:** Government prioritizing research infrastructure
+                        - **National security:** Concentration in key technology centers
+                        """)
+                    else:
+                        st.info(f"""
+                        **📊 {map_metric} Analysis:**
+                        - Interactive map shows distribution across US cities
+                        - State heat map provides regional context
+                        - Hover over cities and states for detailed information
+                        """)
+                
+                with col2:
+                    if show_heat_map:
+                        st.markdown("### 🗺️ Heat Map Legend")
+                        top_state = state_research_data.loc[state_research_data['ai_adoption_rate'].idxmax(), 'state']
+                        top_state_rate = state_research_data['ai_adoption_rate'].max()
+                        st.success(f"**Leading State:** {top_state} ({top_state_rate:.1f}%)")
+                        
+                        avg_state_rate = state_research_data['ai_adoption_rate'].mean()
+                        st.info(f"**Average State Adoption:** {avg_state_rate:.1f}%")
+                        
+                        st.markdown("""
+                        **Heat Map Features:**
+                        - 🔵 Blue shading shows state-level AI adoption
+                        - 🔴 Red circles show city-level metrics
+                        - ⭐ Gold stars mark NSF AI Institutes
+                        - 💎 Purple diamonds show university hubs
+                        """)
             
             with geo_tabs[1]:
                 st.markdown("### Regional AI Adoption Comparison")
