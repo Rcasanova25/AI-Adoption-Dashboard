@@ -6,6 +6,22 @@ import numpy as np
 from datetime import datetime
 from plotly.subplots import make_subplots
 
+# Import business logic modules
+from business.metrics import business_metrics, CompetitivePosition, InvestmentRecommendation
+from business.roi_calculator import roi_calculator
+
+# Import data infrastructure
+from data.loaders import load_all_datasets, validate_all_loaded_data
+from data.models import safe_validate_data
+from data.geographic import get_geographic_data, get_country_details, generate_geographic_insights
+
+# Import performance systems
+from performance.caching import smart_cache, performance_monitor, DataPipeline
+
+# Import utilities
+from Utils.helpers import clean_filename, safe_execute, safe_data_check
+from Utils.navigation import setup_navigation
+
 # Page config
 st.set_page_config(
     page_title="AI Adoption Dashboard | 2018-2025 Analysis",
@@ -5379,3 +5395,44 @@ st.markdown("""
     </p>
 </div>
 """, unsafe_allow_html=True)
+
+def main():
+    """
+    Main application entry point
+    Orchestrates the dashboard initialization and execution
+    """
+    try:
+        # Initialize performance monitoring
+        performance_monitor.start_timer('app_initialization')
+        
+        # Load and validate data
+        datasets = load_data()
+        
+        # Validate loaded data
+        if validate_all_loaded_data:
+            validation_result = validate_all_loaded_data(datasets)
+            if not validation_result.is_valid:
+                st.error("Data validation failed. Using fallback data.")
+                datasets = _create_fallback_data()
+        
+        # Setup navigation and run main dashboard logic
+        setup_navigation()
+        
+        # Main dashboard execution happens in the global scope above
+        # This function serves as the entry point for the application
+        
+        performance_monitor.end_timer('app_initialization')
+        
+        # Display performance metrics in sidebar if enabled
+        if st.sidebar.checkbox("Show Performance Metrics", value=False):
+            performance_monitor.render_performance_sidebar()
+            
+    except Exception as e:
+        st.error(f"Application initialization failed: {e}")
+        st.info("Using fallback mode with default data")
+        
+        # Fallback to basic functionality
+        datasets = _create_fallback_data()
+
+if __name__ == "__main__":
+    main()
