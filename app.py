@@ -1849,16 +1849,35 @@ else:
         
         if financial_impact is not None and not financial_impact.empty:
             fig = go.Figure()
+            
+            # Handle both old and new data structures gracefully
+            if 'function' in financial_impact.columns:
+                # New structure with business functions
+                x_axis = financial_impact['function']
+                cost_savings = financial_impact['companies_reporting_cost_savings']
+                revenue_gains = financial_impact['companies_reporting_revenue_gains']
+            elif 'industry' in financial_impact.columns:
+                # Fallback to old structure
+                x_axis = financial_impact['industry']
+                cost_savings = financial_impact.get('cost_savings', [0] * len(financial_impact))
+                revenue_gains = financial_impact.get('revenue_impact', [0] * len(financial_impact))
+            else:
+                # Emergency fallback
+                st.error("Financial impact data structure not recognized")
+                x_axis = ['Unknown']
+                cost_savings = [0]
+                revenue_gains = [0]
+            
             fig.add_trace(go.Bar(
                 name='Cost Savings',
-                x=financial_impact['function'],
-                y=financial_impact['companies_reporting_cost_savings'],
+                x=x_axis,
+                y=cost_savings,
                 marker_color='#2ECC71'
             ))
             fig.add_trace(go.Bar(
                 name='Revenue Gains',
-                x=financial_impact['function'],
-                y=financial_impact['companies_reporting_revenue_gains'],
+                x=x_axis,
+                y=revenue_gains,
                 marker_color='#3498DB'
             ))
             fig.update_layout(
@@ -2036,10 +2055,19 @@ else:
             with col2:
                 st.markdown("### 📈 Key Insights")
                 
-                # Calculate adoption gaps
-                enterprise_adoption = firm_size[firm_size['size'] == '5000+']['adoption'].values[0]
-                smb_adoption = firm_size[firm_size['size'] == '1-4']['adoption'].values[0]
-                adoption_gap = enterprise_adoption - smb_adoption
+                # Calculate adoption gaps with safe array access
+                enterprise_matches = firm_size[firm_size['size'] == '5000+']['adoption'].values
+                smb_matches = firm_size[firm_size['size'] == '1-4']['adoption'].values
+                
+                if len(enterprise_matches) > 0 and len(smb_matches) > 0:
+                    enterprise_adoption = enterprise_matches[0]
+                    smb_adoption = smb_matches[0]
+                    adoption_gap = enterprise_adoption - smb_adoption
+                else:
+                    # Fallback values if exact matches not found
+                    enterprise_adoption = firm_size['adoption'].max() if len(firm_size) > 0 else 0
+                    smb_adoption = firm_size['adoption'].min() if len(firm_size) > 0 else 0
+                    adoption_gap = enterprise_adoption - smb_adoption
                 
                 st.metric("Enterprise Adoption", f"{enterprise_adoption}%")
                 st.metric("Small Business Adoption", f"{smb_adoption}%")
