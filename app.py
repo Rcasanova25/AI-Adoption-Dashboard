@@ -2388,12 +2388,14 @@ else:
                         locationmode='USA-states',
                         colorscale='Blues',
                         colorbar=dict(
-                            title="State AI<br>Adoption (%)",
+                            title=dict(
+                                text="State AI<br>Adoption (%)",
+                                font=dict(size=12)
+                            ),
                             x=-0.15,  # Move further left to avoid overlap
                             len=0.4,
                             y=0.75,
                             thickness=12,
-                            titlefont=dict(size=12),
                             tickfont=dict(size=10)
                         ),
                         marker_line_color='darkgray',
