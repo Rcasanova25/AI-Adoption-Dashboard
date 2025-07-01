@@ -498,6 +498,10 @@ class PerformanceMonitor:
             'slowest_operation': max(self.metrics.items(), key=lambda x: x[1]) if self.metrics else None
         }
     
+    def get_metrics(self) -> Dict[str, Any]:
+        """Get current performance metrics - alias for get_performance_report"""
+        return self.get_performance_report()
+    
     def render_performance_sidebar(self) -> None:
         """Render performance metrics in sidebar"""
         with st.sidebar:
