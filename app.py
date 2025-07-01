@@ -3202,20 +3202,19 @@ elif view_type == "Adoption Rates":
             marker=dict(size=8),
             yaxis='y2'
         ))
-        
-        fig.update_layout(
-            title='GenAI Adoption and Business Impact by Function',
-            xaxis_tickangle=45,
-            yaxis=dict(title="GenAI Adoption Rate (%)", side="left"),
-            yaxis2=dict(title="% Reporting Revenue Gains", side="right", overlaying="y"),
-            height=500,
-            hovermode='x unified',
-            legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1)
-        )
-        
-        st.plotly_chart(fig, use_container_width=True)
-
-        if function_data is not None and not function_data.empty:
+            
+            fig.update_layout(
+                title='GenAI Adoption and Business Impact by Function',
+                xaxis_tickangle=45,
+                yaxis=dict(title="GenAI Adoption Rate (%)", side="left"),
+                yaxis2=dict(title="% Reporting Revenue Gains", side="right", overlaying="y"),
+                height=500,
+                hovermode='x unified',
+                legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1)
+            )
+            
+            st.plotly_chart(fig, use_container_width=True)
+            
             # Function insights
             col1, col2 = st.columns(2)
             
@@ -3230,26 +3229,26 @@ elif view_type == "Adoption Rates":
                     with st.expander("Data Source", expanded=True):
                         st.info(show_source_info('mckinsey'))
             
-            # Note about adoption definition
-            st.info("**Note:** Adoption rates include any GenAI use (pilots, experiments, production) among firms using AI")
+                # Note about adoption definition
+                st.info("**Note:** Adoption rates include any GenAI use (pilots, experiments, production) among firms using AI")
+        
         else:
             st.warning("Financial impact data not available for GenAI adoption analysis")
         
     else:
         # 2018 view
-        
         if not sector_2018.empty:
             weighting = st.sidebar.radio("Weighting Method", ["Firm-Weighted", "Employment-Weighted"])
             y_col = 'firm_weighted' if weighting == "Firm-Weighted" else 'employment_weighted'
             
             fig = px.bar(
                 sector_2018, 
-            x='sector', 
-            y=y_col, 
-            title=f'AI Adoption by Sector (2018) - {weighting}',
-            color=y_col, 
-            color_continuous_scale='blues',
-            text=y_col
+                x='sector', 
+                y=y_col, 
+                title=f'AI Adoption by Sector (2018) - {weighting}',
+                color=y_col, 
+                color_continuous_scale='blues',
+                text=y_col
             )
             fig.update_traces(texttemplate='%{text}%', textposition='outside')
             fig.update_layout(xaxis_tickangle=45, height=500)
