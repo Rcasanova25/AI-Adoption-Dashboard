@@ -38,6 +38,25 @@ from .themes import (
     apply_custom_theme
 )
 
+# Cross-persona comparison components
+try:
+    from .persona_comparison import (
+        PersonaType,
+        PersonaComparisonFramework,
+        PersonaComparisonChart,
+        PersonaInsightGenerator
+    )
+    from .persona_navigation import (
+        PersonaNavigationInterface,
+        PersonaComparisonNavigation
+    )
+    from .integrated_comparison_view import (
+        IntegratedComparisonView
+    )
+    PERSONA_COMPARISON_AVAILABLE = True
+except ImportError:
+    PERSONA_COMPARISON_AVAILABLE = False
+
 __all__ = [
     # Charts
     'MetricCard',
@@ -63,6 +82,18 @@ __all__ = [
     'AnalystTheme',
     'apply_custom_theme'
 ]
+
+# Add persona comparison components to __all__ if available
+if PERSONA_COMPARISON_AVAILABLE:
+    __all__.extend([
+        'PersonaType',
+        'PersonaComparisonFramework', 
+        'PersonaComparisonChart',
+        'PersonaInsightGenerator',
+        'PersonaNavigationInterface',
+        'PersonaComparisonNavigation',
+        'IntegratedComparisonView'
+    ])
 
 # Version and metadata
 __version__ = "1.0.0"
