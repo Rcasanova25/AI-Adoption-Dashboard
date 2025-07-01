@@ -5,97 +5,106 @@ Replaces Streamlit with McKinsey Vizro for production-grade multi-persona dashbo
 
 import pandas as pd
 import numpy as np
-from typing import Dict, List, Optional, Any, Union, TYPE_CHECKING
-
-if TYPE_CHECKING:
-    from vizro.models import Dashboard as VizroDashboard, Page as VizroPage
-else:
-    VizroDashboard = Any
-    VizroPage = Any
+from typing import Dict, List, Optional, Any, Union
 from dataclasses import dataclass
 from enum import Enum
 from datetime import datetime
 import logging
 
-# Vizro imports with fallback classes
+# Always import plotly first (required dependency)
+import plotly.express as px
+import plotly.graph_objects as go
+
+# Define fallback classes first (always available)
+class Dashboard:
+    """Dashboard class - real Vizro version used if available, fallback otherwise"""
+    def __init__(self, title=None, pages=None, theme=None):
+        self.title = title
+        self.pages = pages or []
+        self.theme = theme
+
+class Page:
+    """Page class - real Vizro version used if available, fallback otherwise"""
+    def __init__(self, title=None, components=None, id=None):
+        self.title = title
+        self.components = components or []
+        self.id = id
+
+class Graph:
+    """Graph class - real Vizro version used if available, fallback otherwise"""
+    def __init__(self, figure=None, id=None):
+        self.figure = figure
+        self.id = id
+
+class Card:
+    """Card class - real Vizro version used if available, fallback otherwise"""
+    def __init__(self, text=None, id=None):
+        self.text = text
+        self.id = id
+
+class Container:
+    """Container class - real Vizro version used if available, fallback otherwise"""
+    def __init__(self, components=None, id=None):
+        self.components = components or []
+        self.id = id
+
+class Button:
+    """Button class - real Vizro version used if available, fallback otherwise"""
+    def __init__(self, text=None, id=None):
+        self.text = text
+        self.id = id
+
+class Vizro:
+    """Vizro class - real version used if available, fallback otherwise"""
+    def __init__(self):
+        pass
+    
+    def build(self, dashboard):
+        pass
+    
+    def run(self, host="127.0.0.1", port=8050, debug=False):
+        pass
+
+class VizroBaseModel:
+    """VizroBaseModel class - real version used if available, fallback otherwise"""
+    pass
+
+def capture(name):
+    """Capture decorator - real Vizro version used if available, fallback otherwise"""
+    def decorator(func):
+        return func
+    return decorator
+
+def filter_interaction(*args, **kwargs):
+    """Filter interaction function - real Vizro version used if available, fallback otherwise"""
+    pass
+
+# Now try to import and override with real Vizro classes if available
 try:
     import vizro
-    from vizro import Vizro, VizroBaseModel
-    from vizro.models import Dashboard, Page, Graph, Card, Container, Button
-    from vizro.models.types import capture
-    from vizro.actions import filter_interaction
-    import plotly.express as px
-    import plotly.graph_objects as go
+    from vizro import Vizro as VizroReal, VizroBaseModel as VizroBaseModelReal
+    from vizro.models import Dashboard as DashboardReal, Page as PageReal, Graph as GraphReal, Card as CardReal, Container as ContainerReal, Button as ButtonReal
+    from vizro.models.types import capture as capture_real
+    from vizro.actions import filter_interaction as filter_interaction_real
+    
+    # Override fallback classes with real ones
+    Dashboard = DashboardReal
+    Page = PageReal
+    Graph = GraphReal
+    Card = CardReal
+    Container = ContainerReal
+    Button = ButtonReal
+    Vizro = VizroReal
+    VizroBaseModel = VizroBaseModelReal
+    capture = capture_real
+    filter_interaction = filter_interaction_real
+    
     VIZRO_AVAILABLE = True
+    logging.info("Vizro available - using full Vizro functionality")
+    
 except ImportError:
     VIZRO_AVAILABLE = False
-    logging.warning("Vizro not available. Install with: pip install vizro")
-    import plotly.express as px
-    import plotly.graph_objects as go
-    
-    # Fallback classes when Vizro is not available
-    class Dashboard:
-        """Fallback Dashboard class when Vizro is not available"""
-        def __init__(self, title=None, pages=None, theme=None):
-            self.title = title
-            self.pages = pages or []
-            self.theme = theme
-    
-    class Page:
-        """Fallback Page class when Vizro is not available"""
-        def __init__(self, title=None, components=None, id=None):
-            self.title = title
-            self.components = components or []
-            self.id = id
-    
-    class Graph:
-        """Fallback Graph class when Vizro is not available"""
-        def __init__(self, figure=None, id=None):
-            self.figure = figure
-            self.id = id
-    
-    class Card:
-        """Fallback Card class when Vizro is not available"""
-        def __init__(self, text=None, id=None):
-            self.text = text
-            self.id = id
-    
-    class Container:
-        """Fallback Container class when Vizro is not available"""
-        def __init__(self, components=None, id=None):
-            self.components = components or []
-            self.id = id
-    
-    class Button:
-        """Fallback Button class when Vizro is not available"""
-        def __init__(self, text=None, id=None):
-            self.text = text
-            self.id = id
-    
-    class Vizro:
-        """Fallback Vizro class when Vizro is not available"""
-        def __init__(self):
-            pass
-        
-        def build(self, dashboard):
-            pass
-        
-        def run(self, host="127.0.0.1", port=8050, debug=False):
-            pass
-    
-    class VizroBaseModel:
-        """Fallback VizroBaseModel class when Vizro is not available"""
-        pass
-    
-    def capture(name):
-        """Fallback capture decorator when Vizro is not available"""
-        def decorator(func):
-            return func
-        return decorator
-    
-    def filter_interaction(*args, **kwargs):
-        """Fallback filter_interaction function when Vizro is not available"""
-        pass
+    logging.warning("Vizro not available - using fallback implementations")
 
 logger = logging.getLogger(__name__)
 
@@ -212,7 +221,7 @@ class AIAdoptionVizroDashboard:
         persona: PersonaType,
         config: PersonaConfig,
         data_sources: Dict[str, pd.DataFrame]
-    ) -> Union[Dashboard, Any]:
+    ) -> Dashboard:
         """Create dashboard for specific persona"""
         
         pages = []
@@ -251,7 +260,7 @@ class AIAdoptionVizroDashboard:
         self,
         data_sources: Dict[str, pd.DataFrame],
         config: PersonaConfig
-    ) -> Union[Page, Any]:
+    ) -> Page:
         """Create executive summary page"""
         
         # Get summary data
@@ -309,7 +318,7 @@ class AIAdoptionVizroDashboard:
         self,
         data_sources: Dict[str, pd.DataFrame],
         config: PersonaConfig
-    ) -> Union[Page, Any]:
+    ) -> Page:
         """Create strategic insights page"""
         
         components = [
@@ -337,7 +346,7 @@ class AIAdoptionVizroDashboard:
         self,
         data_sources: Dict[str, pd.DataFrame],
         config: PersonaConfig
-    ) -> Union[Page, Any]:
+    ) -> Page:
         """Create ROI analysis page"""
         
         components = [
@@ -365,7 +374,7 @@ class AIAdoptionVizroDashboard:
         self,
         data_sources: Dict[str, pd.DataFrame],
         config: PersonaConfig
-    ) -> Union[Page, Any]:
+    ) -> Page:
         """Create geographic overview page"""
         
         components = [
@@ -393,7 +402,7 @@ class AIAdoptionVizroDashboard:
         self,
         data_sources: Dict[str, pd.DataFrame],
         config: PersonaConfig
-    ) -> Union[Page, Any]:
+    ) -> Page:
         """Create policy impact analysis page"""
         
         components = [
@@ -428,7 +437,7 @@ class AIAdoptionVizroDashboard:
         self,
         data_sources: Dict[str, pd.DataFrame],
         config: PersonaConfig
-    ) -> Union[Page, Any]:
+    ) -> Page:
         """Create causal analysis page for researchers"""
         
         components = [
@@ -467,7 +476,7 @@ class AIAdoptionVizroDashboard:
         self,
         data_sources: Dict[str, pd.DataFrame],
         config: PersonaConfig
-    ) -> Union[Page, Any]:
+    ) -> Page:
         """Create data explorer page for researchers"""
         
         components = [
@@ -495,7 +504,7 @@ class AIAdoptionVizroDashboard:
         self,
         data_sources: Dict[str, pd.DataFrame],
         config: PersonaConfig
-    ) -> Union[Page, Any]:
+    ) -> Page:
         """Create overview page for general users"""
         
         components = [
@@ -531,7 +540,7 @@ class AIAdoptionVizroDashboard:
         self,
         data_sources: Dict[str, pd.DataFrame],
         config: PersonaConfig
-    ) -> Union[Page, Any]:
+    ) -> Page:
         """Create industry insights page"""
         
         components = [
