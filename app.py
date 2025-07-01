@@ -3203,20 +3203,20 @@ elif view_type == "Adoption Rates":
         
         st.plotly_chart(fig, use_container_width=True)
         
-        # Function insights
-        col1, col2 = st.columns(2)
-        
-        with col1:
-            st.write("🎯 **Top Functions:**")
-            st.write("• **Marketing & Sales:** 42% adoption, 71% see revenue gains")
-            st.write("• **Product Development:** 28% adoption, 52% see revenue gains")
-            st.write("• **Service Operations:** 23% adoption, 49% see cost savings")
-        
-        with col2:
-            if st.button("📊 View Data Source", key="adoption_source"):
-                with st.expander("Data Source", expanded=True):
-                    st.info(show_source_info('mckinsey'))
-        
+            # Function insights
+            col1, col2 = st.columns(2)
+            
+            with col1:
+                st.write("🎯 **Top Functions:**")
+                st.write("• **Marketing & Sales:** 42% adoption, 71% see revenue gains")
+                st.write("• **Product Development:** 28% adoption, 52% see revenue gains")
+                st.write("• **Service Operations:** 23% adoption, 49% see cost savings")
+            
+            with col2:
+                if st.button("📊 View Data Source", key="adoption_source"):
+                    with st.expander("Data Source", expanded=True):
+                        st.info(show_source_info('mckinsey'))
+            
             # Note about adoption definition
             st.info("**Note:** Adoption rates include any GenAI use (pilots, experiments, production) among firms using AI")
         else:
@@ -3224,7 +3224,6 @@ elif view_type == "Adoption Rates":
         
     else:
         # 2018 view
-        sector_2018 = dashboard_data.get('sector_2018', pd.DataFrame())
         
         if not sector_2018.empty:
             weighting = st.sidebar.radio("Weighting Method", ["Firm-Weighted", "Employment-Weighted"])
