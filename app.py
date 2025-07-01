@@ -711,12 +711,14 @@ def create_comprehensive_datasets():
         'year': [2022, 2024, 2024, 2024, 2024]
     })
     
-    # Financial impact
+    # Financial impact - Updated to match the proper structure from loaders.py
     financial_impact = pd.DataFrame({
-        'industry': ['Technology', 'Financial Services', 'Healthcare', 'Manufacturing', 
-                    'Retail & E-commerce', 'Education'],
-        'revenue_impact': [25.5, 22.8, 19.2, 16.5, 14.8, 12.3],
-        'cost_savings': [18.2, 15.6, 13.4, 11.8, 10.2, 8.7]
+        'function': ['Marketing & Sales', 'Service Operations', 'Supply Chain', 'Software Engineering', 
+                    'Product Development', 'IT', 'HR', 'Finance'],
+        'companies_reporting_cost_savings': [38, 49, 43, 41, 35, 37, 28, 32],  # % of companies
+        'companies_reporting_revenue_gains': [71, 57, 63, 45, 52, 40, 35, 38],  # % of companies
+        'avg_cost_reduction': [7, 8, 9, 10, 6, 7, 5, 6],  # Actual % reduction for those who see benefits
+        'avg_revenue_increase': [4, 3, 4, 3, 4, 3, 2, 3]  # Actual % increase for those who see benefits
     })
     
     # Barriers to adoption
