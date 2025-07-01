@@ -348,13 +348,41 @@ def load_fallback_data():
             'models_available': [5, 8, 12, 18, 25, 35, 45, 58, 72, 85, 95]
         })
         
-        return (historical_data, sector_2018, sector_2025, firm_size, ai_maturity, 
-                geographic, tech_stack, productivity_data, productivity_by_skill,
-                ai_productivity_estimates, oecd_g7_adoption, oecd_applications, 
-                barriers_data, support_effectiveness, state_data, ai_investment_data, 
-                regional_growth, ai_cost_reduction, financial_impact, ai_perception, 
-                training_emissions, skill_gap_data, ai_governance, genai_2025,
-                token_economics, token_usage_patterns, token_optimization, token_pricing_evolution)
+        # Return as dictionary to match Kedro pipeline output structure
+        return {
+            'summary': historical_data,
+            'detailed': sector_2025,
+            'geographic': geographic,
+            'source': 'fallback_data',
+            # Include all data components for compatibility
+            'historical_data': historical_data,
+            'sector_2018': sector_2018,
+            'sector_2025': sector_2025,
+            'firm_size': firm_size,
+            'ai_maturity': ai_maturity,
+            'tech_stack': tech_stack,
+            'productivity_data': productivity_data,
+            'productivity_by_skill': productivity_by_skill,
+            'ai_productivity_estimates': ai_productivity_estimates,
+            'oecd_g7_adoption': oecd_g7_adoption,
+            'oecd_applications': oecd_applications,
+            'barriers_data': barriers_data,
+            'support_effectiveness': support_effectiveness,
+            'state_data': state_data,
+            'ai_investment_data': ai_investment_data,
+            'regional_growth': regional_growth,
+            'ai_cost_reduction': ai_cost_reduction,
+            'financial_impact': financial_impact,
+            'ai_perception': ai_perception,
+            'training_emissions': training_emissions,
+            'skill_gap_data': skill_gap_data,
+            'ai_governance': ai_governance,
+            'genai_2025': genai_2025,
+            'token_economics': token_economics,
+            'token_usage_patterns': token_usage_patterns,
+            'token_optimization': token_optimization,
+            'token_pricing_evolution': token_pricing_evolution
+        }
     
     except Exception as e:
         st.error(f"Error in load_data function: {str(e)}")
@@ -465,37 +493,27 @@ try:
         # Use Kedro pipeline data
         st.info("🚀 Using McKinsey Kedro pipeline data processing")
         dashboard_data = mckinsey_data
+    elif mckinsey_data.get('source') == 'fallback_data':
+        # Use enhanced fallback data from McKinsey tools integration
+        st.info("📊 Using enhanced fallback data with McKinsey tools structure")
+        dashboard_data = mckinsey_data
     else:
-        # Fall back to original data loading
-        # For fallback mode, create simplified data structure for McKinsey tools
-        historical_data = pd.DataFrame({
-            'year': [2020, 2021, 2022, 2023, 2024, 2025],
-            'ai_use': [56, 55, 50, 55, 78, 78],
-            'productivity_growth': [0.5, 0.3, 0.4, 0.6, 0.8, 1.0]
-        })
-        
-        sector_2025 = pd.DataFrame({
-            'sector': ['Technology', 'Financial Services', 'Healthcare', 'Manufacturing'],
-            'adoption_rate': [92, 85, 78, 75],
-            'productivity_index': [95, 88, 82, 79],
-            'avg_roi': [4.2, 3.8, 3.2, 3.5]
-        })
-        
-        geographic = pd.DataFrame({
-            'country': ['United States', 'Germany', 'United Kingdom', 'Japan'],
-            'adoption_rate': [78, 72, 80, 75],
-            'productivity_index': [85, 82, 88, 83]
-        })
-        
-        productivity_data = historical_data.copy()
-        if 'productivity_index' not in productivity_data.columns:
-            productivity_data['productivity_index'] = productivity_data['productivity_growth'] * 100
-        
+        # Ultimate fallback if something unexpected happens
+        st.warning("⚠️ Using minimal fallback data")
         dashboard_data = {
-            'historical': historical_data,
-            'sector_2025': sector_2025,
-            'geographic': geographic,
-            'productivity': productivity_data
+            'historical_data': pd.DataFrame({
+                'year': [2024, 2025],
+                'ai_use': [78, 78]
+            }),
+            'sector_2025': pd.DataFrame({
+                'sector': ['Technology'],
+                'adoption_rate': [78]
+            }),
+            'geographic': pd.DataFrame({
+                'country': ['Global'],
+                'adoption_rate': [78]
+            }),
+            'source': 'minimal_fallback'
         }
      
 except Exception as e:
@@ -511,8 +529,11 @@ def perform_causal_analysis():
     """Perform causal analysis using McKinsey CausalNx"""
     try:
         # Prepare data for causal analysis
-        if 'sector_2025' in locals() and 'productivity_data' in locals():
-            adoption_data = sector_2025[['sector', 'adoption_rate']].copy()
+        sector_2025_data = dashboard_data.get('sector_2025', pd.DataFrame())
+        productivity_data = dashboard_data.get('productivity_data', pd.DataFrame())
+        
+        if not sector_2025_data.empty and not productivity_data.empty:
+            adoption_data = sector_2025_data[['sector', 'adoption_rate']].copy()
             adoption_data['year'] = 2025
             
             productivity_data_extended = productivity_data.copy()
@@ -713,26 +734,26 @@ st.sidebar.markdown("### 📥 Export Options")
 
 # Mapping of view types to their respective dataframes
 data_map = {
-    "Historical Trends": historical_data,
-    "Industry Analysis": sector_2025,
-    "Financial Impact": financial_impact,
-    "Skill Gap Analysis": skill_gap_data,
-    "AI Governance": ai_governance,
-    "Productivity Research": productivity_data,
-    "Investment Trends": ai_investment_data,
-    "Regional Growth": regional_growth,
-    "AI Cost Trends": ai_cost_reduction,
-    "Token Economics": token_economics,
-    "Labor Impact": ai_perception,
-    "Environmental Impact": training_emissions,
-    "Adoption Rates": genai_2025 if "2025" in data_year else sector_2018,
-    "Firm Size Analysis": firm_size,
-    "Technology Stack": tech_stack,
-    "AI Technology Maturity": ai_maturity,
-    "Geographic Distribution": geographic,
-    "OECD 2025 Findings": oecd_g7_adoption,
-    "Barriers & Support": barriers_data,
-    "ROI Analysis": sector_2025
+    "Historical Trends": dashboard_data.get('historical_data', pd.DataFrame()),
+    "Industry Analysis": dashboard_data.get('sector_2025', pd.DataFrame()),
+    "Financial Impact": dashboard_data.get('financial_impact', pd.DataFrame()),
+    "Skill Gap Analysis": dashboard_data.get('skill_gap_data', pd.DataFrame()),
+    "AI Governance": dashboard_data.get('ai_governance', pd.DataFrame()),
+    "Productivity Research": dashboard_data.get('productivity_data', pd.DataFrame()),
+    "Investment Trends": dashboard_data.get('ai_investment_data', pd.DataFrame()),
+    "Regional Growth": dashboard_data.get('regional_growth', pd.DataFrame()),
+    "AI Cost Trends": dashboard_data.get('ai_cost_reduction', pd.DataFrame()),
+    "Token Economics": dashboard_data.get('token_economics', pd.DataFrame()),
+    "Labor Impact": dashboard_data.get('ai_perception', pd.DataFrame()),
+    "Environmental Impact": dashboard_data.get('training_emissions', pd.DataFrame()),
+    "Adoption Rates": dashboard_data.get('genai_2025', pd.DataFrame()) if "2025" in data_year else dashboard_data.get('sector_2018', pd.DataFrame()),
+    "Firm Size Analysis": dashboard_data.get('firm_size', pd.DataFrame()),
+    "Technology Stack": dashboard_data.get('tech_stack', pd.DataFrame()),
+    "AI Technology Maturity": dashboard_data.get('ai_maturity', pd.DataFrame()),
+    "Geographic Distribution": dashboard_data.get('geographic', pd.DataFrame()),
+    "OECD 2025 Findings": dashboard_data.get('oecd_g7_adoption', pd.DataFrame()),
+    "Barriers & Support": dashboard_data.get('barriers_data', pd.DataFrame()),
+    "ROI Analysis": dashboard_data.get('sector_2025', pd.DataFrame())
 }
 
 export_format = st.sidebar.selectbox(
@@ -1475,90 +1496,101 @@ if view_type == "Historical Trends":
 elif view_type == "Industry Analysis":
     st.write("🏭 **AI Adoption by Industry (2025)**")
     
-    # Industry comparison
-    fig = go.Figure()
+    # Get sector data
+    sector_2025 = dashboard_data.get('sector_2025', pd.DataFrame())
     
-    # Create grouped bar chart
-    fig.add_trace(go.Bar(
-        name='Overall AI Adoption',
-        x=sector_2025['sector'],
-        y=sector_2025['adoption_rate'],
-        marker_color='#3498DB',
-        text=[f'{x}%' for x in sector_2025['adoption_rate']],
-        textposition='outside'
-    ))
-    
-    fig.add_trace(go.Bar(
-        name='GenAI Adoption',
-        x=sector_2025['sector'],
-        y=sector_2025['genai_adoption'],
-        marker_color='#E74C3C',
-        text=[f'{x}%' for x in sector_2025['genai_adoption']],
-        textposition='outside'
-    ))
-    
-    # Add ROI as line chart
-    fig.add_trace(go.Scatter(
-        name='Average ROI',
-        x=sector_2025['sector'],
-        y=sector_2025['avg_roi'],
-        mode='lines+markers',
-        line=dict(width=3, color='#2ECC71'),
-        marker=dict(size=10),
-        yaxis='y2',
-        text=[f'{x}x' for x in sector_2025['avg_roi']],
-        textposition='top center'
-    ))
-    
-    fig.update_layout(
-        title="AI Adoption and ROI by Industry Sector",
-        xaxis_title="Industry",
-        yaxis=dict(title="Adoption Rate (%)", side="left"),
-        yaxis2=dict(title="Average ROI (x)", side="right", overlaying="y"),
-        barmode='group',
-        height=500,
-        hovermode='x unified',
-        xaxis_tickangle=45
-    )
-    
-    st.plotly_chart(fig, use_container_width=True)
-    
-    # Industry insights
-    col1, col2, col3 = st.columns(3)
-    
-    with col1:
-        st.metric("Top Adopter", "Technology (92%)", delta="+7% vs Finance")
-    with col2:
-        st.metric("Highest ROI", "Technology (4.2x)", delta="Best returns")
-    with col3:
-        st.metric("Fastest Growing", "Healthcare", delta="+15pp YoY")
+    if not sector_2025.empty:
+        # Industry comparison
+        fig = go.Figure()
+        
+        # Create grouped bar chart
+        fig.add_trace(go.Bar(
+            name='Overall AI Adoption',
+            x=sector_2025['sector'],
+            y=sector_2025['adoption_rate'],
+            marker_color='#3498DB',
+            text=[f'{x}%' for x in sector_2025['adoption_rate']],
+            textposition='outside'
+        ))
+        
+        fig.add_trace(go.Bar(
+            name='GenAI Adoption',
+            x=sector_2025['sector'],
+            y=sector_2025['genai_adoption'],
+            marker_color='#E74C3C',
+            text=[f'{x}%' for x in sector_2025['genai_adoption']],
+            textposition='outside'
+        ))
+        
+        # Add ROI as line chart
+        fig.add_trace(go.Scatter(
+            name='Average ROI',
+            x=sector_2025['sector'],
+            y=sector_2025['avg_roi'],
+            mode='lines+markers',
+            line=dict(width=3, color='#2ECC71'),
+            marker=dict(size=10),
+            yaxis='y2',
+            text=[f'{x}x' for x in sector_2025['avg_roi']],
+            textposition='top center'
+        ))
+        
+        fig.update_layout(
+            title="AI Adoption and ROI by Industry Sector",
+            xaxis_title="Industry",
+            yaxis=dict(title="Adoption Rate (%)", side="left"),
+            yaxis2=dict(title="Average ROI (x)", side="right", overlaying="y"),
+            barmode='group',
+            height=500,
+            hovermode='x unified',
+            xaxis_tickangle=45
+        )
+        
+        st.plotly_chart(fig, use_container_width=True)
+        
+        # Industry insights
+        col1, col2, col3 = st.columns(3)
+        
+        with col1:
+            st.metric("Top Adopter", "Technology (92%)", delta="+7% vs Finance")
+        with col2:
+            st.metric("Highest ROI", "Technology (4.2x)", delta="Best returns")
+        with col3:
+            st.metric("Fastest Growing", "Healthcare", delta="+15pp YoY")
+    else:
+        st.warning("Industry analysis data not available")
     
     # Export option
-    csv = sector_2025.to_csv(index=False)
-    st.download_button(
-        label="📥 Download Industry Data (CSV)",
-        data=csv,
-        file_name="ai_adoption_by_industry_2025.csv",
-        mime="text/csv"
-    )
+    if not sector_2025.empty:
+        csv = sector_2025.to_csv(index=False)
+        st.download_button(
+            label="📥 Download Industry Data (CSV)",
+            data=csv,
+            file_name="ai_adoption_by_industry_2025.csv",
+            mime="text/csv"
+        )
 
 elif view_type == "Financial Impact":
     st.write("💵 **Financial Impact of AI by Business Function (AI Index Report 2025)**")
     
-    # CORRECTED interpretation box
-    st.warning("""
-    **📊 Understanding the Data:** - The percentages below show the **proportion of companies reporting financial benefits** from AI
-    - Among companies that see benefits, the **actual magnitude** is typically:
-      - Cost savings: **Less than 10%** (average 5-10%)
-      - Revenue gains: **Less than 5%** (average 2-4%)
-    - Example: 71% of companies using AI in Marketing report revenue gains, but these gains average only 4%
-    """)
+    # Get financial impact data
+    financial_impact = dashboard_data.get('financial_impact', pd.DataFrame())
     
-    # Create visualization with clearer labels
-    fig = go.Figure()
-    
-    # Sort by revenue gains
-    financial_sorted = financial_impact.sort_values('companies_reporting_revenue_gains', ascending=True)
+    if not financial_impact.empty:
+        # CORRECTED interpretation box
+        st.warning("""
+        **📊 Understanding the Data:** - The percentages below show the **proportion of companies reporting financial benefits** from AI
+        - Among companies that see benefits, the **actual magnitude** is typically:
+          - Cost savings: **Less than 10%** (average 5-10%)
+          - Revenue gains: **Less than 5%** (average 2-4%)
+        - Example: 71% of companies using AI in Marketing report revenue gains, but these gains average only 4%
+        """)
+        
+        # Create visualization with clearer labels
+        fig = go.Figure()
+        
+        # Sort by revenue gains
+        financial_sorted = financial_impact.sort_values('companies_reporting_revenue_gains', ascending=True)
     
     # Add bars showing % of companies reporting benefits
     fig.add_trace(go.Bar(
