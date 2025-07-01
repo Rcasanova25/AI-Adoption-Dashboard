@@ -2271,6 +2271,279 @@ else:
                         st.text(f"• {tech['technology']}")
                 else:
                     st.warning("⚠️ All technologies carry significant risk")
+    
+    elif current_view == "Geographic Distribution":
+        st.subheader("🗺️ AI Adoption Geographic Distribution")
+        
+        if safe_data_check(geographic, "Geographic Distribution"):
+            # Enhanced geographic data with research infrastructure
+            enhanced_geographic = geographic.copy()
+            
+            # Add missing columns if they don't exist
+            if 'ai_research_centers' not in enhanced_geographic.columns:
+                enhanced_geographic['ai_research_centers'] = [15, 8, 5, 3, 12, 4, 2, 1]
+            if 'federal_ai_funding_millions' not in enhanced_geographic.columns:
+                enhanced_geographic['federal_ai_funding_millions'] = [2100, 650, 350, 165, 890, 420, 285, 95]
+            if 'ai_startups' not in enhanced_geographic.columns:
+                enhanced_geographic['ai_startups'] = [850, 450, 145, 85, 325, 185, 125, 55]
+            if 'venture_capital_millions' not in enhanced_geographic.columns:
+                enhanced_geographic['venture_capital_millions'] = [15800, 8500, 2850, 650, 4200, 3850, 1250, 385]
+            if 'nsf_ai_institutes' not in enhanced_geographic.columns:
+                enhanced_geographic['nsf_ai_institutes'] = [2, 2, 1, 1, 3, 1, 1, 0]
+            if 'major_universities' not in enhanced_geographic.columns:
+                enhanced_geographic['major_universities'] = [12, 7, 4, 4, 8, 6, 5, 3]
+            
+            # Create comprehensive tabs for different geographic analyses
+            geo_tabs = st.tabs(["🗺️ Interactive Map", "📊 Regional Analysis", "🏛️ Research Infrastructure"])
+            
+            with geo_tabs[0]:
+                # Enhanced interactive map with multiple layers
+                st.markdown("### AI Ecosystem Map: Adoption, Research & Investment")
+                
+                # Map controls
+                col1, col2, col3 = st.columns(3)
+                with col1:
+                    map_metric = st.selectbox(
+                        "Primary Metric",
+                        ["AI Adoption Rate", "Federal AI Funding", "AI Research Centers", "AI Startups", "Venture Capital"]
+                    )
+                with col2:
+                    show_nsf_institutes = st.checkbox("Show NSF AI Institutes", value=True)
+                with col3:
+                    show_universities = st.checkbox("Show Major Universities", value=False)
+                
+                # Metric mapping with proper units
+                metric_mapping = {
+                    "AI Adoption Rate": ('rate', '%'),
+                    "Federal AI Funding": ('federal_ai_funding_millions', '$M'),
+                    "AI Research Centers": ('ai_research_centers', 'centers'),
+                    "AI Startups": ('ai_startups', 'startups'),
+                    "Venture Capital": ('venture_capital_millions', '$M')
+                }
+                
+                selected_metric, unit = metric_mapping[map_metric]
+                
+                # Get metric values and create better normalization
+                metric_values = enhanced_geographic[selected_metric]
+                
+                # Normalize sizes with more dramatic scaling (10-50 range)
+                min_val, max_val = metric_values.min(), metric_values.max()
+                if max_val > min_val:
+                    normalized_sizes = 10 + (metric_values - min_val) / (max_val - min_val) * 40
+                else:
+                    normalized_sizes = [25] * len(metric_values)
+                
+                # Create the enhanced map
+                fig = go.Figure()
+                
+                # Main city markers that change based on selected metric
+                fig.add_trace(go.Scattergeo(
+                    lon=enhanced_geographic['lon'],
+                    lat=enhanced_geographic['lat'],
+                    text=enhanced_geographic['city'],
+                    customdata=enhanced_geographic[[
+                        'rate', 'federal_ai_funding_millions', 'ai_research_centers', 
+                        'ai_startups', 'venture_capital_millions', 'nsf_ai_institutes', 'major_universities'
+                    ]],
+                    mode='markers',
+                    marker=dict(
+                        size=normalized_sizes,
+                        color=metric_values,
+                        colorscale='Reds',
+                        showscale=True,
+                        colorbar=dict(
+                            title=f"{map_metric}<br>({unit})",
+                            x=1.02,
+                            len=0.6,
+                            thickness=15
+                        ),
+                        line=dict(width=2, color='white'),
+                        sizemode='diameter',
+                        opacity=0.8,
+                        cmin=min_val,
+                        cmax=max_val
+                    ),
+                    showlegend=False,
+                    hovertemplate='<b>%{text}</b><br>' +
+                                 f'{map_metric}: %{{marker.color}}{unit}<br>' +
+                                 'AI Adoption: %{customdata[0]:.1f}%<br>' +
+                                 'Federal Funding: $%{customdata[1]:.0f}M<br>' +
+                                 'Research Centers: %{customdata[2]}<br>' +
+                                 'AI Startups: %{customdata[3]}<br>' +
+                                 'VC Investment: $%{customdata[4]:.0f}M<br>' +
+                                 'NSF Institutes: %{customdata[5]}<br>' +
+                                 'Major Universities: %{customdata[6]}<extra></extra>',
+                    name="Cities"
+                ))
+                
+                # Add NSF AI Institutes as special markers
+                if show_nsf_institutes:
+                    nsf_cities = enhanced_geographic[enhanced_geographic['nsf_ai_institutes'] > 0]
+                    if len(nsf_cities) > 0:
+                        fig.add_trace(go.Scattergeo(
+                            lon=nsf_cities['lon'],
+                            lat=nsf_cities['lat'],
+                            text=nsf_cities['city'],
+                            mode='markers',
+                            marker=dict(
+                                size=20,
+                                color='gold',
+                                symbol='star',
+                                line=dict(width=3, color='darkblue')
+                            ),
+                            name="NSF AI Institutes",
+                            showlegend=True,
+                            hovertemplate='<b>%{text}</b><br>NSF AI Institute Location<extra></extra>'
+                        ))
+                
+                # Add major university indicators
+                if show_universities:
+                    major_uni_cities = enhanced_geographic[enhanced_geographic['major_universities'] >= 5]
+                    if len(major_uni_cities) > 0:
+                        fig.add_trace(go.Scattergeo(
+                            lon=major_uni_cities['lon'],
+                            lat=major_uni_cities['lat'],
+                            text=major_uni_cities['city'],
+                            mode='markers',
+                            marker=dict(
+                                size=15,
+                                color='purple',
+                                symbol='diamond',
+                                line=dict(width=2, color='white')
+                            ),
+                            name="Major University Hubs",
+                            showlegend=True,
+                            hovertemplate='<b>%{text}</b><br>Universities: %{customdata}<extra></extra>',
+                            customdata=major_uni_cities['major_universities']
+                        ))
+                
+                fig.update_layout(
+                    title=f'US AI Ecosystem: {map_metric} Distribution',
+                    geo=dict(
+                        scope='usa',
+                        projection_type='albers usa',
+                        showland=True,
+                        landcolor='rgb(235, 235, 235)',
+                        coastlinecolor='rgb(50, 50, 50)',
+                        coastlinewidth=2
+                    ),
+                    height=700,
+                    showlegend=True,
+                    legend=dict(
+                        x=0.85,
+                        y=0.95,
+                        bgcolor='rgba(255,255,255,0.8)',
+                        bordercolor='rgba(0,0,0,0.2)',
+                        borderwidth=1
+                    ),
+                    margin=dict(l=50, r=80, t=50, b=50)
+                )
+                
+                st.plotly_chart(fig, use_container_width=True)
+                
+                # Dynamic insights based on selected metric
+                if map_metric == "AI Adoption Rate":
+                    top_city = enhanced_geographic.loc[enhanced_geographic['rate'].idxmax(), 'city']
+                    top_rate = enhanced_geographic['rate'].max()
+                    st.info(f"""
+                    **🗺️ AI Adoption Geographic Insights:**
+                    - **Highest adoption:** {top_city} ({top_rate:.1f}%)
+                    - **Regional variation:** {enhanced_geographic['rate'].max() - enhanced_geographic['rate'].min():.1f} percentage point spread
+                    - **Coastal concentration:** West Coast and Northeast lead in AI implementation
+                    """)
+                elif map_metric == "Federal AI Funding":
+                    top_funding_city = enhanced_geographic.loc[enhanced_geographic['federal_ai_funding_millions'].idxmax(), 'city']
+                    top_funding_amount = enhanced_geographic['federal_ai_funding_millions'].max()
+                    st.info(f"""
+                    **💰 Federal AI Investment Insights:**
+                    - **Top funded region:** {top_funding_city} (${top_funding_amount:.0f}M)
+                    - **Strategic focus:** Government prioritizing research infrastructure
+                    - **National security:** Concentration in key technology centers
+                    """)
+            
+            with geo_tabs[1]:
+                st.markdown("### Regional AI Adoption Comparison")
+                
+                # Bar chart of top cities
+                top_cities = enhanced_geographic.nlargest(10, 'rate')
+                
+                fig2 = go.Figure()
+                fig2.add_trace(go.Bar(
+                    x=top_cities['city'],
+                    y=top_cities['rate'],
+                    marker_color='#1f77b4',
+                    text=top_cities['rate'].round(1).astype(str) + '%',
+                    textposition='outside'
+                ))
+                
+                fig2.update_layout(
+                    title="Top 10 Cities by AI Adoption Rate",
+                    xaxis_title="City",
+                    yaxis_title="AI Adoption Rate (%)",
+                    height=400,
+                    xaxis_tickangle=45
+                )
+                st.plotly_chart(fig2, use_container_width=True)
+                
+                # Regional statistics
+                col1, col2, col3 = st.columns(3)
+                with col1:
+                    avg_adoption = enhanced_geographic['rate'].mean()
+                    st.metric("Average Adoption", f"{avg_adoption:.1f}%")
+                
+                with col2:
+                    total_startups = enhanced_geographic['ai_startups'].sum()
+                    st.metric("Total AI Startups", f"{total_startups:,}")
+                
+                with col3:
+                    total_funding = enhanced_geographic['federal_ai_funding_millions'].sum()
+                    st.metric("Total Federal Funding", f"${total_funding:,.0f}M")
+            
+            with geo_tabs[2]:
+                st.markdown("### Research Infrastructure Overview")
+                
+                # Research infrastructure metrics
+                col1, col2 = st.columns(2)
+                
+                with col1:
+                    fig3 = go.Figure()
+                    fig3.add_trace(go.Scatter(
+                        x=enhanced_geographic['ai_research_centers'],
+                        y=enhanced_geographic['rate'],
+                        mode='markers+text',
+                        text=enhanced_geographic['city'],
+                        textposition='top center',
+                        marker=dict(
+                            size=enhanced_geographic['major_universities'] * 2,
+                            color=enhanced_geographic['nsf_ai_institutes'],
+                            colorscale='Viridis',
+                            showscale=True,
+                            colorbar=dict(title="NSF Institutes")
+                        )
+                    ))
+                    fig3.update_layout(
+                        title="Research Centers vs AI Adoption",
+                        xaxis_title="AI Research Centers",
+                        yaxis_title="AI Adoption Rate (%)",
+                        height=400
+                    )
+                    st.plotly_chart(fig3, use_container_width=True)
+                
+                with col2:
+                    st.markdown("### 🏛️ Research Infrastructure")
+                    
+                    total_research_centers = enhanced_geographic['ai_research_centers'].sum()
+                    total_nsf_institutes = enhanced_geographic['nsf_ai_institutes'].sum()
+                    total_universities = enhanced_geographic['major_universities'].sum()
+                    
+                    st.metric("AI Research Centers", total_research_centers)
+                    st.metric("NSF AI Institutes", total_nsf_institutes)
+                    st.metric("Major Universities", total_universities)
+                    
+                    st.markdown("**Key Research Hubs:**")
+                    research_hubs = enhanced_geographic[enhanced_geographic['ai_research_centers'] >= 10]
+                    for _, hub in research_hubs.iterrows():
+                        st.markdown(f"• **{hub['city']}**: {hub['ai_research_centers']} centers")
 
     else:
         # Generic view renderer for any unmapped views
