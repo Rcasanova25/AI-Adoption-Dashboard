@@ -5,13 +5,19 @@ Replaces Streamlit with McKinsey Vizro for production-grade multi-persona dashbo
 
 import pandas as pd
 import numpy as np
-from typing import Dict, List, Optional, Any, Union
+from typing import Dict, List, Optional, Any, Union, TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from vizro.models import Dashboard as VizroDashboard, Page as VizroPage
+else:
+    VizroDashboard = Any
+    VizroPage = Any
 from dataclasses import dataclass
 from enum import Enum
 from datetime import datetime
 import logging
 
-# Vizro imports
+# Vizro imports with fallback classes
 try:
     import vizro
     from vizro import Vizro, VizroBaseModel
@@ -24,6 +30,72 @@ try:
 except ImportError:
     VIZRO_AVAILABLE = False
     logging.warning("Vizro not available. Install with: pip install vizro")
+    import plotly.express as px
+    import plotly.graph_objects as go
+    
+    # Fallback classes when Vizro is not available
+    class Dashboard:
+        """Fallback Dashboard class when Vizro is not available"""
+        def __init__(self, title=None, pages=None, theme=None):
+            self.title = title
+            self.pages = pages or []
+            self.theme = theme
+    
+    class Page:
+        """Fallback Page class when Vizro is not available"""
+        def __init__(self, title=None, components=None, id=None):
+            self.title = title
+            self.components = components or []
+            self.id = id
+    
+    class Graph:
+        """Fallback Graph class when Vizro is not available"""
+        def __init__(self, figure=None, id=None):
+            self.figure = figure
+            self.id = id
+    
+    class Card:
+        """Fallback Card class when Vizro is not available"""
+        def __init__(self, text=None, id=None):
+            self.text = text
+            self.id = id
+    
+    class Container:
+        """Fallback Container class when Vizro is not available"""
+        def __init__(self, components=None, id=None):
+            self.components = components or []
+            self.id = id
+    
+    class Button:
+        """Fallback Button class when Vizro is not available"""
+        def __init__(self, text=None, id=None):
+            self.text = text
+            self.id = id
+    
+    class Vizro:
+        """Fallback Vizro class when Vizro is not available"""
+        def __init__(self):
+            pass
+        
+        def build(self, dashboard):
+            pass
+        
+        def run(self, host="127.0.0.1", port=8050, debug=False):
+            pass
+    
+    class VizroBaseModel:
+        """Fallback VizroBaseModel class when Vizro is not available"""
+        pass
+    
+    def capture(name):
+        """Fallback capture decorator when Vizro is not available"""
+        def decorator(func):
+            return func
+        return decorator
+    
+    def filter_interaction(*args, **kwargs):
+        """Fallback filter_interaction function when Vizro is not available"""
+        pass
 
 logger = logging.getLogger(__name__)
 
@@ -140,7 +212,7 @@ class AIAdoptionVizroDashboard:
         persona: PersonaType,
         config: PersonaConfig,
         data_sources: Dict[str, pd.DataFrame]
-    ) -> Dashboard:
+    ) -> Union[Dashboard, Any]:
         """Create dashboard for specific persona"""
         
         pages = []
@@ -179,7 +251,7 @@ class AIAdoptionVizroDashboard:
         self,
         data_sources: Dict[str, pd.DataFrame],
         config: PersonaConfig
-    ) -> Page:
+    ) -> Union[Page, Any]:
         """Create executive summary page"""
         
         # Get summary data
@@ -237,7 +309,7 @@ class AIAdoptionVizroDashboard:
         self,
         data_sources: Dict[str, pd.DataFrame],
         config: PersonaConfig
-    ) -> Page:
+    ) -> Union[Page, Any]:
         """Create strategic insights page"""
         
         components = [
@@ -265,7 +337,7 @@ class AIAdoptionVizroDashboard:
         self,
         data_sources: Dict[str, pd.DataFrame],
         config: PersonaConfig
-    ) -> Page:
+    ) -> Union[Page, Any]:
         """Create ROI analysis page"""
         
         components = [
@@ -293,7 +365,7 @@ class AIAdoptionVizroDashboard:
         self,
         data_sources: Dict[str, pd.DataFrame],
         config: PersonaConfig
-    ) -> Page:
+    ) -> Union[Page, Any]:
         """Create geographic overview page"""
         
         components = [
@@ -321,7 +393,7 @@ class AIAdoptionVizroDashboard:
         self,
         data_sources: Dict[str, pd.DataFrame],
         config: PersonaConfig
-    ) -> Page:
+    ) -> Union[Page, Any]:
         """Create policy impact analysis page"""
         
         components = [
@@ -356,7 +428,7 @@ class AIAdoptionVizroDashboard:
         self,
         data_sources: Dict[str, pd.DataFrame],
         config: PersonaConfig
-    ) -> Page:
+    ) -> Union[Page, Any]:
         """Create causal analysis page for researchers"""
         
         components = [
@@ -395,7 +467,7 @@ class AIAdoptionVizroDashboard:
         self,
         data_sources: Dict[str, pd.DataFrame],
         config: PersonaConfig
-    ) -> Page:
+    ) -> Union[Page, Any]:
         """Create data explorer page for researchers"""
         
         components = [
@@ -423,7 +495,7 @@ class AIAdoptionVizroDashboard:
         self,
         data_sources: Dict[str, pd.DataFrame],
         config: PersonaConfig
-    ) -> Page:
+    ) -> Union[Page, Any]:
         """Create overview page for general users"""
         
         components = [
@@ -459,7 +531,7 @@ class AIAdoptionVizroDashboard:
         self,
         data_sources: Dict[str, pd.DataFrame],
         config: PersonaConfig
-    ) -> Page:
+    ) -> Union[Page, Any]:
         """Create industry insights page"""
         
         components = [
