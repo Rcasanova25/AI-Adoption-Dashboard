@@ -10,6 +10,11 @@ from plotly.subplots import make_subplots
 from business.metrics import business_metrics, CompetitivePosition, InvestmentRecommendation
 from business.roi_calculator import roi_calculator
 
+# Import McKinsey tools integration
+from business.causal_analysis import causal_engine, CausalAnalysisResult, ProductivityMetric
+from data.kedro_pipeline import kedro_manager, AIAdoptionKedroManager
+from visualization.vizro_dashboard import vizro_dashboard, PersonaType
+
 # Import data infrastructure
 from data.loaders import load_all_datasets, validate_all_loaded_data
 from data.models import safe_validate_data
@@ -35,10 +40,49 @@ st.set_page_config(
     }
 )
 
-# Data loading function - updated with AI Index 2025 data and Token Economics
+# McKinsey-powered data loading function with Kedro pipeline integration
 @st.cache_data
-def load_data():
+def load_data_with_mckinsey_tools():
+    """
+    Load data using McKinsey Kedro pipeline and perform causal analysis
+    Falls back to sample data if McKinsey tools are unavailable
+    """
     try:
+        # Try to load data using Kedro pipeline
+        pipeline_result = kedro_manager.run_pipeline(
+            pipeline_name="ai_adoption_pipeline",
+            runner_type="parallel",
+            tags=["data_ingestion", "data_processing"]
+        )
+        
+        if pipeline_result.get('status') == 'completed':
+            # Load processed datasets from Kedro pipeline
+            try:
+                dashboard_summary = kedro_manager.catalog.load("dashboard_summary")
+                dashboard_detailed = kedro_manager.catalog.load("dashboard_detailed") 
+                dashboard_geographic = kedro_manager.catalog.load("dashboard_geographic")
+                
+                st.success("✅ Data loaded using McKinsey Kedro pipeline")
+                return {
+                    'summary': dashboard_summary,
+                    'detailed': dashboard_detailed,
+                    'geographic': dashboard_geographic,
+                    'source': 'kedro_pipeline'
+                }
+            except Exception as e:
+                st.warning(f"Kedro data loading failed: {e}. Using fallback data.")
+                
+    except Exception as e:
+        st.warning(f"McKinsey Kedro pipeline unavailable: {e}")
+    
+    # Fallback to enhanced sample data
+    return load_fallback_data()
+
+def load_fallback_data():
+    """Enhanced fallback data that mimics Kedro pipeline output structure"""
+    try:
+        # This is a simplified version for McKinsey tools integration
+        # Returns the essential 28 data components expected by the app
         # Historical trends data - UPDATED with AI Index 2025 findings
         historical_data = pd.DataFrame({
             'year': [2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024, 2025],
@@ -413,23 +457,46 @@ if st.session_state.first_visit:
             st.rerun()
     st.stop()
 
-# Load all data
+# Load data using McKinsey-powered pipeline
 try:
-    loaded_data = load_data()
+    mckinsey_data = load_data_with_mckinsey_tools()
     
-    # Check if we got the expected number of items
-    if len(loaded_data) != 28:
-        st.error(f"Error: Expected 28 data items, but got {len(loaded_data)}")
-        st.stop()
-    
-    # Unpack the data
-    (historical_data, sector_2018, sector_2025, firm_size, ai_maturity, 
-     geographic, tech_stack, productivity_data, productivity_by_skill,
-     ai_productivity_estimates, oecd_g7_adoption, oecd_applications, 
-     barriers_data, support_effectiveness, state_data, ai_investment_data, 
-     regional_growth, ai_cost_reduction, financial_impact, ai_perception, 
-     training_emissions, skill_gap_data, ai_governance, genai_2025,
-     token_economics, token_usage_patterns, token_optimization, token_pricing_evolution) = loaded_data
+    if mckinsey_data.get('source') == 'kedro_pipeline':
+        # Use Kedro pipeline data
+        st.info("🚀 Using McKinsey Kedro pipeline data processing")
+        dashboard_data = mckinsey_data
+    else:
+        # Fall back to original data loading
+        # For fallback mode, create simplified data structure for McKinsey tools
+        historical_data = pd.DataFrame({
+            'year': [2020, 2021, 2022, 2023, 2024, 2025],
+            'ai_use': [56, 55, 50, 55, 78, 78],
+            'productivity_growth': [0.5, 0.3, 0.4, 0.6, 0.8, 1.0]
+        })
+        
+        sector_2025 = pd.DataFrame({
+            'sector': ['Technology', 'Financial Services', 'Healthcare', 'Manufacturing'],
+            'adoption_rate': [92, 85, 78, 75],
+            'productivity_index': [95, 88, 82, 79],
+            'avg_roi': [4.2, 3.8, 3.2, 3.5]
+        })
+        
+        geographic = pd.DataFrame({
+            'country': ['United States', 'Germany', 'United Kingdom', 'Japan'],
+            'adoption_rate': [78, 72, 80, 75],
+            'productivity_index': [85, 82, 88, 83]
+        })
+        
+        productivity_data = historical_data.copy()
+        if 'productivity_index' not in productivity_data.columns:
+            productivity_data['productivity_index'] = productivity_data['productivity_growth'] * 100
+        
+        dashboard_data = {
+            'historical': historical_data,
+            'sector_2025': sector_2025,
+            'geographic': geographic,
+            'productivity': productivity_data
+        }
      
 except Exception as e:
     st.error(f"Error loading data: {str(e)}")
@@ -437,6 +504,38 @@ except Exception as e:
     import traceback
     st.error(f"Full error: {traceback.format_exc()}")
     st.stop()
+
+# McKinsey Causal Analysis Integration
+@st.cache_data
+def perform_causal_analysis():
+    """Perform causal analysis using McKinsey CausalNx"""
+    try:
+        # Prepare data for causal analysis
+        if 'sector_2025' in locals() and 'productivity_data' in locals():
+            adoption_data = sector_2025[['sector', 'adoption_rate']].copy()
+            adoption_data['year'] = 2025
+            
+            productivity_data_extended = productivity_data.copy()
+            if 'productivity_index' not in productivity_data_extended.columns:
+                productivity_data_extended['productivity_index'] = productivity_data_extended['productivity_growth'] * 100
+            
+            # Perform causal analysis
+            causal_result = causal_engine.establish_ai_productivity_causality(
+                adoption_data=adoption_data,
+                productivity_data=productivity_data_extended,
+                sector="all_sectors"
+            )
+            
+            return causal_result
+        else:
+            return None
+            
+    except Exception as e:
+        st.warning(f"Causal analysis unavailable: {e}")
+        return None
+
+# Perform causal analysis
+causal_analysis_result = perform_causal_analysis()
 
 # Custom CSS
 st.markdown("""
@@ -498,6 +597,55 @@ OECD AI Policy Observatory, and US Census Bureau AI Use Supplement.
 # Sidebar controls
 st.sidebar.header("📊 Dashboard Controls")
 
+# McKinsey Tools Integration Section
+st.sidebar.markdown("---")
+st.sidebar.header("🏢 McKinsey Tools")
+
+# Causal Analysis Results
+if causal_analysis_result:
+    st.sidebar.success("✅ CausalNx Analysis Complete")
+    st.sidebar.metric(
+        "Causal Confidence", 
+        f"{causal_analysis_result.confidence_score:.1%}",
+        help="Confidence level from McKinsey CausalNx analysis"
+    )
+    st.sidebar.metric(
+        "Relationships Found", 
+        len(causal_analysis_result.causal_relationships),
+        help="Number of causal relationships identified"
+    )
+else:
+    st.sidebar.warning("⚠️ CausalNx analysis unavailable")
+
+# Kedro Pipeline Status
+pipeline_status = "✅ Connected" if mckinsey_data.get('source') == 'kedro_pipeline' else "⚠️ Fallback Mode"
+st.sidebar.metric("Kedro Pipeline", pipeline_status)
+
+# Vizro Dashboard Launcher
+st.sidebar.markdown("### 🎯 Advanced Dashboards")
+if st.sidebar.button("🚀 Launch Vizro Executive Dashboard"):
+    st.sidebar.info("Launching McKinsey Vizro dashboard...")
+    try:
+        # Create dashboard data for Vizro
+        vizro_data = {
+            'dashboard_summary': dashboard_data.get('sector_2025', pd.DataFrame()),
+            'dashboard_detailed': dashboard_data.get('historical', pd.DataFrame()),
+            'dashboard_geographic': dashboard_data.get('geographic', pd.DataFrame())
+        }
+        
+        # Create multi-persona dashboards
+        dashboards = vizro_dashboard.create_multi_persona_dashboard(vizro_data)
+        
+        if PersonaType.EXECUTIVE in dashboards:
+            st.sidebar.success("✅ Executive dashboard created")
+            st.sidebar.info("Dashboard would launch at http://localhost:8050")
+        else:
+            st.sidebar.error("❌ Vizro dashboard creation failed")
+    except Exception as e:
+        st.sidebar.error(f"Vizro error: {e}")
+
+st.sidebar.markdown("---")
+
 # Show persona selection
 persona = st.sidebar.selectbox(
     "Select Your Role",
@@ -508,9 +656,9 @@ st.session_state.selected_persona = persona
 
 # Persona-based view recommendations and filtering
 persona_views = {
-    "Business Leader": ["Industry Analysis", "Financial Impact", "Investment Trends", "ROI Analysis"],
+    "Business Leader": ["Industry Analysis", "Financial Impact", "Investment Trends", "ROI Analysis", "Causal Analysis"],
     "Policymaker": ["Geographic Distribution", "OECD 2025 Findings", "Regional Growth", "AI Governance"],
-    "Researcher": ["Historical Trends", "Productivity Research", "Environmental Impact", "Skill Gap Analysis"],
+    "Researcher": ["Historical Trends", "Productivity Research", "Environmental Impact", "Skill Gap Analysis", "Causal Analysis"],
     "General": ["Adoption Rates", "Historical Trends", "Investment Trends", "Labor Impact"]
 }
 
@@ -520,7 +668,7 @@ all_views = ["Adoption Rates", "Historical Trends", "Industry Analysis", "Invest
              "Firm Size Analysis", "Technology Stack", "AI Technology Maturity", 
              "Productivity Research", "Environmental Impact", "Geographic Distribution", 
              "OECD 2025 Findings", "Barriers & Support", "ROI Analysis", "Skill Gap Analysis", 
-             "AI Governance", "Bibliography & Sources"]
+             "AI Governance", "Causal Analysis", "Bibliography & Sources"]
 
 if persona != "General":
     st.sidebar.info(f"💡 **Recommended views for {persona}:**\n" + "\n".join([f"• {v}" for v in persona_views[persona]]))
@@ -4699,6 +4847,217 @@ elif view_type == "ROI Analysis":
                 file_name=f"ai_roi_analysis_{datetime.now().strftime('%Y%m%d')}.txt",
                 mime="text/plain"
             )
+
+elif view_type == "Causal Analysis":
+    st.write("🔗 **McKinsey CausalNx: AI Adoption → Productivity Causality**")
+    
+    if causal_analysis_result:
+        # Display causal analysis results
+        col1, col2, col3 = st.columns(3)
+        
+        with col1:
+            st.metric(
+                "Causal Confidence",
+                f"{causal_analysis_result.confidence_score:.1%}",
+                help="Statistical confidence in causal relationships"
+            )
+        
+        with col2:
+            st.metric(
+                "Relationships Found",
+                len(causal_analysis_result.causal_relationships),
+                help="Number of statistically significant causal links"
+            )
+        
+        with col3:
+            st.metric(
+                "Productivity Impacts",
+                len(causal_analysis_result.productivity_impacts),
+                help="Quantified productivity improvements"
+            )
+        
+        # Create tabs for detailed analysis
+        causal_tabs = st.tabs(["🎯 Executive Summary", "🔗 Causal Network", "📈 Productivity Impact", "🎯 Interventions"])
+        
+        with causal_tabs[0]:
+            st.markdown("### Executive Summary")
+            
+            executive_insights = causal_engine.generate_causal_insights_for_executives(
+                causal_analysis_result,
+                focus_areas=["roi_optimization", "competitive_advantage"]
+            )
+            
+            if executive_insights:
+                st.success(executive_insights.get('executive_summary', 'Analysis completed successfully'))
+                
+                # Key drivers
+                if 'key_causal_drivers' in executive_insights:
+                    st.markdown("#### 🎯 Key Causal Drivers")
+                    drivers_df = pd.DataFrame(executive_insights['key_causal_drivers'])
+                    if not drivers_df.empty:
+                        st.dataframe(drivers_df, use_container_width=True)
+                
+                # Recommended actions
+                if 'recommended_actions' in executive_insights:
+                    st.markdown("#### 🚀 Recommended Actions")
+                    for action in executive_insights['recommended_actions'][:5]:
+                        st.write(f"• {action}")
+        
+        with causal_tabs[1]:
+            st.markdown("### Causal Network Visualization")
+            
+            if causal_analysis_result.causal_relationships:
+                # Create network visualization
+                causal_df = pd.DataFrame([
+                    {
+                        'cause': rel.cause,
+                        'effect': rel.effect,
+                        'strength': rel.strength,
+                        'confidence': rel.confidence,
+                        'direction': rel.impact_direction
+                    }
+                    for rel in causal_analysis_result.causal_relationships
+                ])
+                
+                # Create causal network chart
+                fig = px.scatter(
+                    causal_df,
+                    x='strength',
+                    y='confidence',
+                    size='strength',
+                    color='direction',
+                    hover_data=['cause', 'effect'],
+                    title='Causal Relationships: Strength vs Confidence',
+                    labels={
+                        'strength': 'Causal Strength',
+                        'confidence': 'Statistical Confidence'
+                    }
+                )
+                
+                fig.update_layout(height=400)
+                st.plotly_chart(fig, use_container_width=True)
+                
+                # Detailed relationships table
+                st.markdown("#### Detailed Causal Relationships")
+                st.dataframe(causal_df, use_container_width=True)
+            else:
+                st.warning("No causal relationships detected in current dataset")
+        
+        with causal_tabs[2]:
+            st.markdown("### Productivity Impact Analysis")
+            
+            if causal_analysis_result.productivity_impacts:
+                # Create productivity impacts visualization
+                impacts_df = pd.DataFrame([
+                    {
+                        'metric': impact.metric.value,
+                        'baseline': impact.baseline_value,
+                        'post_ai': impact.post_ai_value,
+                        'improvement_pct': impact.improvement_percentage,
+                        'confidence': impact.causal_confidence,
+                        'sector': impact.sector
+                    }
+                    for impact in causal_analysis_result.productivity_impacts
+                ])
+                
+                # Productivity improvement chart
+                fig = px.bar(
+                    impacts_df,
+                    x='metric',
+                    y='improvement_pct',
+                    color='confidence',
+                    title='Productivity Improvements by Metric',
+                    labels={
+                        'improvement_pct': 'Improvement (%)',
+                        'metric': 'Productivity Metric'
+                    }
+                )
+                
+                fig.update_layout(height=400)
+                st.plotly_chart(fig, use_container_width=True)
+                
+                # Detailed impact metrics
+                st.markdown("#### Quantified Productivity Impacts")
+                st.dataframe(impacts_df, use_container_width=True)
+            else:
+                st.info("No productivity impacts quantified in current analysis")
+        
+        with causal_tabs[3]:
+            st.markdown("### Intervention Recommendations")
+            
+            # What-if scenario analysis
+            st.markdown("#### What-If Scenario Analysis")
+            
+            col1, col2 = st.columns(2)
+            with col1:
+                training_investment = st.slider(
+                    "Training Investment ($)",
+                    min_value=10000,
+                    max_value=500000,
+                    value=100000,
+                    step=10000
+                )
+            
+            with col2:
+                adoption_target = st.slider(
+                    "Adoption Rate Target (%)",
+                    min_value=50,
+                    max_value=100,
+                    value=75,
+                    step=5
+                )
+            
+            if st.button("🔮 Run Intervention Analysis"):
+                # Predict intervention impact
+                intervention = {
+                    "training_investment": training_investment,
+                    "adoption_rate": adoption_target
+                }
+                
+                target_metrics = [ProductivityMetric.REVENUE_PER_EMPLOYEE, ProductivityMetric.OPERATIONAL_EFFICIENCY]
+                
+                prediction = causal_engine.predict_intervention_impact(
+                    intervention=intervention,
+                    target_metrics=target_metrics,
+                    sector="technology"
+                )
+                
+                if prediction and 'predicted_impacts' in prediction:
+                    st.success("✅ Intervention analysis complete")
+                    
+                    # Display predictions
+                    st.markdown("#### Predicted Impact")
+                    for metric, impact in prediction['predicted_impacts'].items():
+                        if isinstance(impact, dict):
+                            st.write(f"**{metric}**: {impact.get('expected_improvement', 'See analysis')}")
+                        else:
+                            st.write(f"**{metric}**: {impact}")
+                    
+                    st.info(f"**Confidence Level**: {prediction.get('confidence_level', 0):.1%}")
+                else:
+                    st.warning("Unable to complete intervention analysis")
+            
+            # Display general recommendations
+            if causal_analysis_result.intervention_recommendations:
+                st.markdown("#### General Recommendations")
+                for rec in causal_analysis_result.intervention_recommendations[:5]:
+                    st.write(f"• {rec}")
+    
+    else:
+        st.warning("⚠️ CausalNx analysis unavailable")
+        st.info("""
+        **To enable causal analysis:**
+        
+        1. Install McKinsey CausalNx: `pip install causalnx`
+        2. Ensure sufficient data for causal inference
+        3. Check data quality and completeness
+        
+        **McKinsey CausalNx provides:**
+        - Rigorous causal discovery using Bayesian networks
+        - Intervention impact prediction
+        - What-if scenario analysis
+        - Executive-level insights and recommendations
+        """)
 
 elif view_type == "Bibliography & Sources":
     st.write("📚 **Complete Bibliography & Source Citations**")
