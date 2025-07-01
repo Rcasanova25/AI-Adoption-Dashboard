@@ -58,7 +58,7 @@ if 'feature_flags' not in st.session_state:
 # Now using centralized configuration
 all_views = ALL_VIEWS
 
-persona_views = {
+# Enhanced persona-specific view mappings\npersona_views = {\n    \"Executive\": {\n        \"strategic\": [\"🎯 Competitive Position Assessor\", \"💰 Investment Decision Engine\", \"📊 Market Intelligence\", \"📋 Action Planning\", \"🎯 Strategic Brief\"],\n        \"detailed\": [\"Industry Analysis\", \"🏭 Firm Size Analysis\", \"ROI Analysis\", \"AI Cost Trends\", \"Investment Trends\"]\n    },\n    \"Policymaker\": {\n        \"strategic\": [\"Geographic Distribution\", \"Labor Impact\", \"Environmental Impact\", \"⚖️ AI Governance\", \"Regional Growth\"],\n        \"detailed\": [\"🌍 OECD 2025 Findings\", \"🚧 Barriers & Support\", \"⚖️ Regulatory Risk Radar\"]\n    },\n    \"Researcher\": {\n        \"strategic\": [\"🚧 Barriers & Support\", \"🎓 Skill Gap Analysis\", \"⚖️ AI Governance\", \"Regional Growth\"],\n        \"detailed\": [\"Geographic Distribution\", \"Historical Trends\", \"Industry Analysis\", \"🤖 AI Technology Maturity\", \"Technology Stack\", \"Bibliography & Sources\"]\n    },\n    \"General\": {\n        \"strategic\": [],\n        \"detailed\": all_views  # Full access to all views\n    }\n}\n\n# Legacy support for existing persona references\nlegacy_persona_views = {
     "General": ["🎯 Competitive Position Assessor", "Historical Trends"],
     "Business Leader": [
         "🎯 Competitive Position Assessor", 
@@ -642,7 +642,7 @@ Success Factors:
 apply_executive_styling()
 
 # Toggle between executive and detailed modes - FIXED: Pass dynamic_metrics
-def determine_navigation_mode(dynamic_metrics):
+def create_persona_navigation(persona, dynamic_metrics):\n    \"\"\"Create persona-specific navigation with strategic and detailed views\"\"\"\n    \n    if persona not in persona_views:\n        # Fallback to general view\n        view_type = st.sidebar.selectbox(\n            \"Analysis View\", \n            all_views\n        )\n        return view_type, True\n    \n    persona_config = persona_views[persona]\n    strategic_views = persona_config.get(\"strategic\", [])\n    detailed_views = persona_config.get(\"detailed\", [])\n    \n    # Create persona header in sidebar\n    st.sidebar.markdown(f\"## {get_persona_icon(persona)} {persona} Dashboard\")\n    \n    # Dashboard mode selection\n    if strategic_views:\n        dashboard_mode = st.sidebar.radio(\n            \"Dashboard Mode\",\n            [\"🎯 Strategic Command Center\", \"📊 Detailed Analytics\"],\n            help=\"Choose between high-level strategic insights or detailed analysis\"\n        )\n        \n        if dashboard_mode == \"🎯 Strategic Command Center\":\n            # Show strategic views - this will create a command center\n            return \"STRATEGIC_DASHBOARD\", False\n        else:\n            # Show filtered detailed views\n            if detailed_views:\n                view_type = st.sidebar.selectbox(\n                    \"Analysis View\", \n                    detailed_views\n                )\n                return view_type, True\n            else:\n                st.sidebar.warning(\"No detailed views configured for this persona\")\n                return \"STRATEGIC_DASHBOARD\", False\n    else:\n        # Only detailed views available\n        view_type = st.sidebar.selectbox(\n            \"Analysis View\", \n            detailed_views\n        )\n        return view_type, True\n\ndef get_persona_icon(persona):\n    \"\"\"Get icon for persona\"\"\"\n    icons = {\n        \"Executive\": \"💼\",\n        \"Policymaker\": \"🏛️\",\n        \"Researcher\": \"🔬\",\n        \"General\": \"👤\"\n    }\n    return icons.get(persona, \"👤\")\n\ndef determine_navigation_mode(dynamic_metrics):
     """Determine which navigation system to use - FIXED"""
     
     # Let users choose their experience
@@ -737,7 +737,7 @@ def create_comprehensive_datasets():
         'percentage': [45, 25, 15, 10, 5]
     })
     
-    # Geographic distribution (major US cities)
+    # Geographic distribution (major US cities) - FIXED: Added missing opening brace
     geographic = pd.DataFrame({
         'city': ['San Francisco Bay Area', 'New York Metro', 'Seattle', 'Austin', 
                 'Boston', 'Los Angeles', 'Chicago', 'Washington DC'],
@@ -1093,47 +1093,146 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
-# Onboarding modal for first-time users
+# Enhanced Persona Landing Page
 if st.session_state.first_visit:
-    with st.container():
-        st.info("""
-        ### 👋 Welcome to the AI Adoption Dashboard!
-        
-        This dashboard provides comprehensive insights into AI adoption trends from 2018-2025, 
-        including the latest findings from the AI Index Report 2025.
-        
-        **Quick Start:**
-        - Use the sidebar to select different analysis views
-        - Click on charts to see detailed information
-        - Export any visualization using the download buttons
-        
-        **For best experience, select your role:**
-        """)
-        col1, col2, col3, col4 = st.columns(4)
-        with col1:
-            if st.button("📊 Business Leader"):
-                st.session_state.selected_persona = "Business Leader"
-                st.session_state.first_visit = False
-                st.rerun()
-        with col2:
-            if st.button("🏛️ Policymaker"):
-                st.session_state.selected_persona = "Policymaker"
-                st.session_state.first_visit = False
-                st.rerun()
-        with col3:
-            if st.button("🔬 Researcher"):
-                st.session_state.selected_persona = "Researcher"
-                st.session_state.first_visit = False
-                st.rerun()
-        with col4:
-            if st.button("👤 General User"):
-                st.session_state.selected_persona = "General"
-                st.session_state.first_visit = False
-                st.rerun()
-        
-        if st.button("Got it! Let's explore", type="primary"):
+    st.markdown("""
+    <div style="text-align: center; padding: 2rem 0;">
+        <h1 style="color: #1f77b4; font-size: 3rem; margin-bottom: 0.5rem;">🤖 AI Strategic Intelligence Center</h1>
+        <p style="font-size: 1.3rem; color: #666; margin-bottom: 2rem;">Transform AI data into competitive advantage</p>
+    </div>
+    """, unsafe_allow_html=True)
+    
+    st.markdown("""
+    <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); 
+                padding: 2rem; border-radius: 15px; margin: 2rem 0; color: white; text-align: center;">
+        <h2 style="margin-bottom: 1rem; color: white;">Choose Your Strategic Dashboard</h2>
+        <p style="opacity: 0.9; font-size: 1.1rem;">Get personalized insights tailored to your role and decision-making needs</p>
+    </div>
+    """, unsafe_allow_html=True)
+    
+    # Enhanced persona cards
+    col1, col2 = st.columns(2)
+    
+    with col1:
+        # Executive Card
+        if st.button("", key="exec_card"):
+            st.session_state.selected_persona = "Executive"
             st.session_state.first_visit = False
             st.rerun()
+        
+        st.markdown("""
+        <div style="border: 2px solid #1f77b4; border-radius: 15px; padding: 1.5rem; margin: 1rem 0; 
+                    background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%); cursor: pointer;
+                    transition: transform 0.3s ease;" 
+             onmouseover="this.style.transform='scale(1.02)'" 
+             onmouseout="this.style.transform='scale(1)'">
+            <div style="text-align: center;">
+                <div style="font-size: 3rem; margin-bottom: 1rem;">📊</div>
+                <h3 style="color: #1f77b4; margin-bottom: 1rem;">Executive Dashboard</h3>
+                <p style="color: #555; margin-bottom: 1rem;">Strategic insights for C-level decision makers</p>
+                <div style="text-align: left; background: rgba(255,255,255,0.7); padding: 1rem; border-radius: 8px;">
+                    <strong>Your Strategic Views:</strong><br>
+                    • Competitive Position Analysis<br>
+                    • Investment Decision Engine<br>
+                    • Market Intelligence Center<br>
+                    • Strategic Action Planning<br>
+                    • ROI & Financial Impact
+                </div>
+            </div>
+        </div>
+        """, unsafe_allow_html=True)
+        
+        # Policymaker Card
+        if st.button("", key="policy_card"):
+            st.session_state.selected_persona = "Policymaker"
+            st.session_state.first_visit = False
+            st.rerun()
+            
+        st.markdown("""
+        <div style="border: 2px solid #ff7f0e; border-radius: 15px; padding: 1.5rem; margin: 1rem 0; 
+                    background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%); cursor: pointer;
+                    transition: transform 0.3s ease;" 
+             onmouseover="this.style.transform='scale(1.02)'" 
+             onmouseout="this.style.transform='scale(1)'">
+            <div style="text-align: center;">
+                <div style="font-size: 3rem; margin-bottom: 1rem;">🏛️</div>
+                <h3 style="color: #d4641a; margin-bottom: 1rem;">Policymaker Command Center</h3>
+                <p style="color: #555; margin-bottom: 1rem;">Policy insights for government and regulatory leaders</p>
+                <div style="text-align: left; background: rgba(255,255,255,0.7); padding: 1rem; border-radius: 8px;">
+                    <strong>Your Policy Views:</strong><br>
+                    • Geographic Distribution Analysis<br>
+                    • Labor Impact Assessment<br>
+                    • Environmental Impact Studies<br>
+                    • AI Governance Framework<br>
+                    • OECD Global Comparisons
+                </div>
+            </div>
+        </div>
+        """, unsafe_allow_html=True)
+    
+    with col2:
+        # Researcher Card
+        if st.button("", key="research_card"):
+            st.session_state.selected_persona = "Researcher"
+            st.session_state.first_visit = False
+            st.rerun()
+            
+        st.markdown("""
+        <div style="border: 2px solid #2ca02c; border-radius: 15px; padding: 1.5rem; margin: 1rem 0; 
+                    background: linear-gradient(135deg, #d4edda 0%, #a3d5a0 100%); cursor: pointer;
+                    transition: transform 0.3s ease;" 
+             onmouseover="this.style.transform='scale(1.02)'" 
+             onmouseout="this.style.transform='scale(1)'">
+            <div style="text-align: center;">
+                <div style="font-size: 3rem; margin-bottom: 1rem;">🔬</div>
+                <h3 style="color: #256629; margin-bottom: 1rem;">Research Analytics Hub</h3>
+                <p style="color: #555; margin-bottom: 1rem;">Deep analytical insights for researchers and analysts</p>
+                <div style="text-align: left; background: rgba(255,255,255,0.7); padding: 1rem; border-radius: 8px;">
+                    <strong>Your Research Views:</strong><br>
+                    • Barriers & Support Analysis<br>
+                    • Skill Gap Assessment<br>
+                    • Technology Maturity Mapping<br>
+                    • Historical Trend Analysis<br>
+                    • Methodology & Sources
+                </div>
+            </div>
+        </div>
+        """, unsafe_allow_html=True)
+        
+        # General User Card
+        if st.button("", key="general_card"):
+            st.session_state.selected_persona = "General"
+            st.session_state.first_visit = False
+            st.rerun()
+            
+        st.markdown("""
+        <div style="border: 2px solid #9467bd; border-radius: 15px; padding: 1.5rem; margin: 1rem 0; 
+                    background: linear-gradient(135deg, #e6e6fa 0%, #d8bfd8 100%); cursor: pointer;
+                    transition: transform 0.3s ease;" 
+             onmouseover="this.style.transform='scale(1.02)'" 
+             onmouseout="this.style.transform='scale(1)'">
+            <div style="text-align: center;">
+                <div style="font-size: 3rem; margin-bottom: 1rem;">👤</div>
+                <h3 style="color: #6b46a3; margin-bottom: 1rem;">General Explorer</h3>
+                <p style="color: #555; margin-bottom: 1rem;">Comprehensive access to all analytics and insights</p>
+                <div style="text-align: left; background: rgba(255,255,255,0.7); padding: 1rem; border-radius: 8px;">
+                    <strong>Full Access Includes:</strong><br>
+                    • All strategic dashboards<br>
+                    • Complete analysis library<br>
+                    • Advanced filtering options<br>
+                    • Export capabilities<br>
+                    • Custom view creation
+                </div>
+            </div>
+        </div>
+        """, unsafe_allow_html=True)
+    
+    st.markdown("""
+    <div style="text-align: center; margin: 2rem 0; padding: 1rem; 
+                background: rgba(31, 119, 180, 0.1); border-radius: 10px;">
+        <p style="color: #1f77b4; font-weight: bold;">💡 Click any card above to access your personalized dashboard</p>
+    </div>
+    """, unsafe_allow_html=True)
     
     # Only stop if user hasn't made a selection
     if not st.session_state.get('selected_persona'):
@@ -1223,7 +1322,7 @@ OECD AI Policy Observatory, and US Census Bureau AI Use Supplement.
 # Sidebar controls
 st.sidebar.header("📊 Dashboard Controls")
 
-# Show persona selection
+# Persona switcher for power users (optional)\ncurrent_persona = st.session_state.get('selected_persona', 'General')\nif st.sidebar.checkbox(\"🔄 Switch Persona\", value=False, help=\"Advanced: Switch to different persona view\"):\n    available_personas = [\"Executive\", \"Policymaker\", \"Researcher\", \"General\"]\n    if current_persona not in available_personas:\n        # Handle legacy personas\n        if current_persona == \"Business Leader\":\n            current_persona = \"Executive\"\n        else:\n            current_persona = \"General\"\n    \n    persona = st.sidebar.selectbox(\n        \"Select Your Role\",\n        available_personas,\n        index=available_personas.index(current_persona)\n    )\n    st.session_state.selected_persona = persona\n    if persona != current_persona:\n        st.rerun()\nelse:\n    # Show current persona\n    st.sidebar.markdown(f\"**Current Role:** {get_persona_icon(current_persona)} {current_persona}\")\n\n# Legacy persona selection (commented out)
 persona = st.sidebar.selectbox(
     "Select Your Role",
     ["General", "Business Leader", "Policymaker", "Researcher"],
@@ -1895,7 +1994,7 @@ else:
     elif current_view == "🎓 Skill Gap Analysis":
         st.subheader("🎓 AI Skills Gap Analysis")
         
-        if safe_data_check(skill_gap_data, "Skill Gap Analysis"):
+        if skill_gap_data is not None and safe_data_check(skill_gap_data, "Skill Gap Analysis"):
             col1, col2 = st.columns([2, 1])
             
             with col1:
@@ -1959,11 +2058,13 @@ else:
                     st.warning("🟡 Training gap widening")
                 else:
                     st.error("🔴 Critical training shortfall")
+        else:
+            st.error("❌ Skill gap data not available")
 
     elif current_view == "⚖️ AI Governance":
         st.subheader("⚖️ AI Governance & Ethics Implementation")
         
-        if safe_data_check(ai_governance, "AI Governance"):
+        if ai_governance is not None and safe_data_check(ai_governance, "AI Governance"):
             col1, col2, col3 = st.columns([2, 1, 1])
             
             with col1:
@@ -2020,11 +2121,13 @@ else:
                     st.warning("🟡 Moderate governance readiness")
                 else:
                     st.error("🔴 Governance capabilities need development")
+        else:
+            st.error("❌ AI governance data not available")
     
     elif current_view == "🏭 Firm Size Analysis":
         st.subheader("🏭 AI Adoption by Company Size")
         
-        if safe_data_check(firm_size, "Firm Size Analysis"):
+        if firm_size is not None and safe_data_check(firm_size, "Firm Size Analysis"):
             col1, col2 = st.columns([2, 1])
             
             with col1:
@@ -2084,11 +2187,13 @@ else:
                 st.markdown("- SMB-focused AI solutions needed")
                 st.markdown("- Simplified deployment models")
                 st.markdown("- Cost-effective entry points")
+        else:
+            st.error("❌ Firm size data not available")
     
     elif current_view == "🌍 OECD 2025 Findings":
         st.subheader("🌍 Global AI Adoption - OECD Analysis")
         
-        if safe_data_check(oecd_g7_adoption, "OECD Analysis"):
+        if oecd_g7_adoption is not None and safe_data_check(oecd_g7_adoption, "OECD Analysis"):
             col1, col2 = st.columns([2, 1])
             
             with col1:
@@ -2150,11 +2255,15 @@ else:
                 
                 st.metric("G7 Average", f"{avg_adoption:.1f}%")
                 st.metric("US vs G7 Average", f"+{us_position - avg_adoption:.1f}pp")
+        else:
+            st.error("❌ OECD data not available")
     
     elif current_view == "🚧 Barriers & Support":
         st.subheader("🚧 AI Implementation: Challenges & Solutions")
         
-        if safe_data_check(barriers_data, "Barriers Analysis") and safe_data_check(support_effectiveness, "Support Analysis"):
+        if (barriers_data is not None and support_effectiveness is not None and 
+            safe_data_check(barriers_data, "Barriers Analysis") and 
+            safe_data_check(support_effectiveness, "Support Analysis")):
             col1, col2 = st.columns(2)
             
             with col1:
@@ -2223,11 +2332,13 @@ else:
                     st.error(f"🔴 Skills Crisis: {skill_barrier_pct}%")
                 else:
                     st.warning(f"🟡 Skills Gap: {skill_barrier_pct}%")
+        else:
+            st.error("❌ Barriers and support data not available")
     
     elif current_view == "🤖 AI Technology Maturity":
         st.subheader("🤖 AI Technology Lifecycle & Risk Assessment")
         
-        if safe_data_check(ai_maturity, "AI Technology Maturity"):
+        if ai_maturity is not None and safe_data_check(ai_maturity, "AI Technology Maturity"):
             col1, col2 = st.columns([2, 1])
             
             with col1:
@@ -2299,11 +2410,13 @@ else:
                         st.text(f"• {tech['technology']}")
                 else:
                     st.warning("⚠️ All technologies carry significant risk")
+        else:
+            st.error("❌ AI technology maturity data not available")
     
     elif current_view == "Geographic Distribution":
         st.subheader("🗺️ AI Adoption Geographic Distribution")
         
-        if safe_data_check(geographic, "Geographic Distribution"):
+        if geographic is not None and safe_data_check(geographic, "Geographic Distribution"):
             # Enhanced geographic data with research infrastructure
             enhanced_geographic = geographic.copy()
             
