@@ -2404,8 +2404,7 @@ else:
                         text=state_research_data['state'],
                         customdata=state_research_data[['nsf_ai_institutes_total', 'total_federal_funding_billions']],
                         name="State Heat Map",
-                        showlegend=False,  # Keep this hidden as it's shown via colorbar
-                        opacity=0.7
+                        showlegend=False  # Keep this hidden as it's shown via colorbar
                     ))
                 
                 # Main city markers that change based on selected metric
