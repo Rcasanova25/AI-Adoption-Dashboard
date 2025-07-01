@@ -79,6 +79,43 @@ def load_comprehensive_data():
         'adoption_rate': [45, 62, 38, 28, 58, 72]
     })
     
+    # NEW: Token Economics Module - Advanced cost optimization data
+    token_economics = pd.DataFrame({
+        'model': ['GPT-3.5 (Nov 2022)', 'GPT-3.5 (Oct 2024)', 'Gemini-1.5-Flash-8B', 
+                  'Claude 3 Haiku', 'Llama 3 70B', 'GPT-4', 'Claude 3.5 Sonnet'],
+        'cost_per_million_input': [20.00, 0.14, 0.07, 0.25, 0.35, 15.00, 3.00],
+        'cost_per_million_output': [20.00, 0.14, 0.07, 1.25, 0.40, 30.00, 15.00],
+        'context_window': [4096, 16385, 1000000, 200000, 8192, 128000, 200000],
+        'tokens_per_second': [50, 150, 200, 180, 120, 80, 100]
+    })
+    
+    # Token usage patterns
+    token_usage_patterns = pd.DataFrame({
+        'use_case': ['Simple Chat', 'Document Analysis', 'Code Generation', 
+                     'Creative Writing', 'Data Analysis', 'Reasoning Tasks'],
+        'avg_input_tokens': [50, 5000, 500, 200, 2000, 1000],
+        'avg_output_tokens': [200, 500, 1500, 2000, 1000, 5000],
+        'input_output_ratio': [0.25, 10.0, 0.33, 0.10, 2.0, 0.20]
+    })
+    
+    # Token optimization strategies
+    token_optimization = pd.DataFrame({
+        'strategy': ['Prompt Engineering', 'Context Caching', 'Batch Processing', 
+                    'Model Selection', 'Response Streaming', 'Token Pruning'],
+        'cost_reduction': [30, 45, 60, 70, 15, 25],
+        'implementation_complexity': [2, 4, 3, 1, 2, 5],  # 1-5 scale
+        'time_to_implement': [1.0, 7.0, 3.0, 0.5, 2.0, 14.0]  # days
+    })
+    
+    # AI Investment data from AI Index 2025
+    ai_investment_data = pd.DataFrame({
+        'year': [2014, 2020, 2021, 2022, 2023, 2024],
+        'total_investment': [19.4, 72.5, 112.3, 148.5, 174.6, 252.3],
+        'genai_investment': [0, 0, 0, 3.95, 28.5, 33.9],
+        'us_investment': [8.5, 31.2, 48.7, 64.3, 75.6, 109.1],
+        'china_investment': [1.2, 5.8, 7.1, 7.9, 8.4, 9.3]
+    })
+
     return {
         'historical': historical_data,
         'industry': industry_data,
@@ -86,7 +123,11 @@ def load_comprehensive_data():
         'labor': labor_data,
         'research': research_data,
         'barriers': barriers_data,
-        'support': support_data
+        'support': support_data,
+        'token_economics': token_economics,
+        'token_usage': token_usage_patterns,
+        'token_optimization': token_optimization,
+        'ai_investment': ai_investment_data
     }
 
 data = load_comprehensive_data()
@@ -237,7 +278,7 @@ st.sidebar.markdown(f"## Current Role: {current_persona}")
 # Enhanced navigation for all personas
 if current_persona == "Executive":
     # Executive Strategic Command Center
-    view_options = ["🎯 Strategic Command Center", "📊 Market Intelligence", "💰 Investment Analysis", "⚖️ Competitive Position"]
+    view_options = ["🎯 Strategic Command Center", "📊 Market Intelligence", "💰 Investment Analysis", "⚖️ Competitive Position", "🏦 Token Economics"]
 elif current_persona == "Policymaker":
     # Policymaker Command Center  
     view_options = ["🏛️ Policy Command Center", "🌍 Geographic Distribution", "👷 Labor Impact", "⚖️ AI Governance", "🌱 Environmental Impact"]
@@ -513,6 +554,143 @@ elif current_view == "📚 Publication Trends":
     with col3:
         highest_potential = research_data.loc[research_data['breakthrough_potential'].idxmax(), 'research_area']
         st.metric("Highest Potential", highest_potential)
+
+# === TOKEN ECONOMICS MODULE ===
+elif current_view == "🏦 Token Economics":
+    st.markdown("""
+    <div style="background: linear-gradient(135deg, #28a745 0%, #20c997 100%); 
+                padding: 2rem; border-radius: 15px; margin: 2rem 0; color: white;">
+        <h1 style="margin: 0; color: white; text-align: center;">🏦 Token Economics & Cost Optimization</h1>
+        <p style="margin: 0.5rem 0 0 0; text-align: center; opacity: 0.9;">Strategic AI cost management and optimization insights</p>
+    </div>
+    """, unsafe_allow_html=True)
+    
+    # Token Economics KPIs
+    col1, col2, col3, col4 = st.columns(4)
+    token_data = data['token_economics']
+    
+    # Calculate key metrics
+    cheapest_model = token_data.loc[token_data['cost_per_million_input'].idxmin(), 'model']
+    fastest_model = token_data.loc[token_data['tokens_per_second'].idxmax(), 'model']
+    largest_context = token_data.loc[token_data['context_window'].idxmax(), 'model']
+    
+    with col1:
+        st.metric("💰 Cost Reduction", "280x", "vs Nov 2022")
+    with col2:
+        st.metric("⚡ Fastest Model", fastest_model.split()[0], f"{token_data['tokens_per_second'].max()} tok/s")
+    with col3:
+        st.metric("📚 Largest Context", largest_context.split()[0], f"{token_data['context_window'].max():,} tokens")
+    with col4:
+        st.metric("🎯 Cheapest Option", cheapest_model.split()[0], "$0.07/M tokens")
+    
+    # Model Cost Comparison
+    st.subheader("💰 Model Cost Comparison")
+    col1, col2 = st.columns(2)
+    
+    with col1:
+        fig = px.bar(token_data, x='model', y='cost_per_million_input',
+                     title="Input Token Costs by Model",
+                     color='cost_per_million_input',
+                     color_continuous_scale='RdYlGn_r')
+        fig.update_layout(height=400, xaxis_tickangle=-45)
+        st.plotly_chart(fig, use_container_width=True)
+    
+    with col2:
+        fig = px.scatter(token_data, x='cost_per_million_input', y='tokens_per_second',
+                        size='context_window', color='model',
+                        title="Cost vs Speed Performance",
+                        hover_data=['context_window'])
+        fig.update_layout(height=400)
+        st.plotly_chart(fig, use_container_width=True)
+    
+    # Usage Patterns Analysis
+    st.subheader("📊 Token Usage Patterns by Use Case")
+    usage_data = data['token_usage']
+    
+    fig = go.Figure()
+    fig.add_trace(go.Bar(
+        name='Input Tokens',
+        x=usage_data['use_case'],
+        y=usage_data['avg_input_tokens'],
+        marker_color='lightblue'
+    ))
+    fig.add_trace(go.Bar(
+        name='Output Tokens',
+        x=usage_data['use_case'],
+        y=usage_data['avg_output_tokens'],
+        marker_color='orange'
+    ))
+    fig.update_layout(
+        title="Average Token Usage by Use Case",
+        xaxis_title="Use Case",
+        yaxis_title="Number of Tokens",
+        barmode='group',
+        height=400
+    )
+    st.plotly_chart(fig, use_container_width=True)
+    
+    # Cost Optimization Strategies
+    st.subheader("🎯 Cost Optimization Strategies")
+    opt_data = data['token_optimization']
+    
+    col1, col2 = st.columns(2)
+    
+    with col1:
+        fig = px.bar(opt_data, x='cost_reduction', y='strategy',
+                     orientation='h',
+                     title="Cost Reduction Potential by Strategy",
+                     color='cost_reduction',
+                     color_continuous_scale='Greens')
+        fig.update_layout(height=300)
+        st.plotly_chart(fig, use_container_width=True)
+    
+    with col2:
+        fig = px.scatter(opt_data, x='implementation_complexity', y='cost_reduction',
+                        size='time_to_implement', color='strategy',
+                        title="Implementation Complexity vs Impact",
+                        hover_data=['time_to_implement'])
+        fig.update_layout(height=300)
+        st.plotly_chart(fig, use_container_width=True)
+    
+    # ROI Calculator
+    st.subheader("🧮 Token Cost Calculator")
+    
+    col1, col2, col3 = st.columns(3)
+    with col1:
+        monthly_requests = st.number_input("Monthly Requests", value=10000, min_value=100, max_value=10000000)
+    with col2:
+        avg_input_tokens = st.number_input("Avg Input Tokens", value=500, min_value=10, max_value=50000)
+    with col3:
+        avg_output_tokens = st.number_input("Avg Output Tokens", value=1000, min_value=10, max_value=50000)
+    
+    # Calculate costs for different models
+    st.markdown("### 💰 Monthly Cost Comparison")
+    cost_comparison = []
+    for _, model in token_data.iterrows():
+        input_cost = (monthly_requests * avg_input_tokens * model['cost_per_million_input']) / 1000000
+        output_cost = (monthly_requests * avg_output_tokens * model['cost_per_million_output']) / 1000000
+        total_cost = input_cost + output_cost
+        cost_comparison.append({
+            'Model': model['model'],
+            'Monthly Cost': f"${total_cost:.2f}",
+            'Annual Cost': f"${total_cost * 12:.2f}"
+        })
+    
+    cost_df = pd.DataFrame(cost_comparison)
+    st.dataframe(cost_df, use_container_width=True)
+    
+    # Key Insights
+    st.markdown("""
+    <div style="background: rgba(40, 167, 69, 0.1); border-left: 4px solid #28a745; padding: 1rem; margin: 1rem 0; border-radius: 0.25rem;">
+        <h4 style="color: #28a745; margin-bottom: 0.5rem;">💡 Key Token Economics Insights</h4>
+        <ul>
+            <li><strong>280x Cost Reduction:</strong> Token costs have dropped dramatically since Nov 2022</li>
+            <li><strong>Model Selection Impact:</strong> Choosing the right model can reduce costs by 70%</li>
+            <li><strong>Context Optimization:</strong> Efficient prompting can save 30% on token usage</li>
+            <li><strong>Batch Processing:</strong> Can reduce costs by up to 60% for high-volume applications</li>
+        </ul>
+    </div>
+    """, unsafe_allow_html=True)
 
 else:
     # Default view
