@@ -698,9 +698,9 @@ def create_comprehensive_datasets():
     
     # Firm size adoption
     firm_size = pd.DataFrame({
-        'size': ['1-4 employees', '5-9 employees', '10-49 employees', '50-249 employees', 
-                '250-999 employees', '1000-2499 employees', '2500-4999 employees', '5000+ employees'],
-        'adoption': [3.2, 3.8, 7.5, 12.8, 25.4, 42.8, 52.3, 58.5]
+        'size': ['1-4', '5-9', '10-19', '20-49', '50-99', '100-249', '250-499', 
+                '500-999', '1000-2499', '2500-4999', '5000+'],
+        'adoption': [3.2, 3.8, 4.5, 5.2, 7.8, 12.5, 18.2, 25.6, 35.4, 42.8, 58.5]
     })
     
     # AI cost reduction
@@ -858,6 +858,18 @@ def create_comprehensive_datasets():
         'avg_price_output': [8.0, 7.2, 6.0, 4.8, 3.2, 2.0, 1.2, 0.8]
     })
     
+    # AI Technology Maturity data
+    ai_maturity = pd.DataFrame({
+        'technology': ['Generative AI', 'AI Agents', 'Foundation Models', 'ModelOps', 
+                      'AI Engineering', 'Cloud AI Services', 'Knowledge Graphs', 'Composite AI'],
+        'adoption_rate': [71, 15, 45, 25, 30, 78, 35, 12],
+        'maturity': ['Peak of Expectations', 'Peak of Expectations', 'Trough of Disillusionment',
+                    'Trough of Disillusionment', 'Peak of Expectations', 'Slope of Enlightenment',
+                    'Slope of Enlightenment', 'Peak of Expectations'],
+        'risk_score': [85, 90, 60, 55, 80, 25, 40, 95],
+        'time_to_value': [3, 3, 3, 3, 3, 1, 3, 7]
+    })
+    
     # GenAI 2025 functional adoption
     genai_2025 = pd.DataFrame({
         'function': ['Marketing', 'Customer Service', 'Software Development', 
@@ -889,9 +901,9 @@ def create_comprehensive_datasets():
         'token_optimization': token_optimization,
         'token_pricing_evolution': token_pricing_evolution,
         'genai_2025': genai_2025,
+        'ai_maturity': ai_maturity,
         'sector_2018': None,  # Can add if needed
         'state_data': None,   # Can derive from geographic
-        'ai_maturity': None,  # Can add if needed
         'productivity_by_skill': None,
         'ai_productivity_estimates': None
     }
@@ -968,10 +980,12 @@ if loaded_datasets is not None:
     token_pricing_evolution = loaded_datasets['token_pricing_evolution']
     genai_2025 = loaded_datasets['genai_2025']
     
+    # Load ai_maturity properly
+    ai_maturity = loaded_datasets['ai_maturity']
+    
     # Set optional datasets
     sector_2018 = loaded_datasets.get('sector_2018')
     state_data = loaded_datasets.get('state_data') 
-    ai_maturity = loaded_datasets.get('ai_maturity')
     productivity_by_skill = loaded_datasets.get('productivity_by_skill')
     ai_productivity_estimates = loaded_datasets.get('ai_productivity_estimates')
     
