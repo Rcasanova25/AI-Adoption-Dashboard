@@ -64,10 +64,12 @@ persona_views = {
         "🎯 Competitive Position Assessor", 
         "💰 Investment Decision Engine", 
         "Financial Impact", 
-        "ROI Analysis"
+        "ROI Analysis",
+        "🏭 Firm Size Analysis",
+        "🎓 Skill Gap Analysis"
     ],
-    "Policymaker": ["⚖️ Regulatory Risk Radar", "Labor Impact", "Geographic Distribution", "Barriers & Support"],
-    "Researcher": ["Historical Trends", "Productivity Research", "AI Technology Maturity", "Bibliography & Sources"]
+    "Policymaker": ["⚖️ Regulatory Risk Radar", "Labor Impact", "Geographic Distribution", "🚧 Barriers & Support", "🌍 OECD 2025 Findings"],
+    "Researcher": ["Historical Trends", "Productivity Research", "🤖 AI Technology Maturity", "🌍 OECD 2025 Findings", "Bibliography & Sources"]
 }
 
 # Data loading function - now uses advanced caching
@@ -212,8 +214,13 @@ def create_executive_navigation(dynamic_metrics):
     # Primary executive decision views
     exec_view = st.sidebar.radio(
         "Strategic Intelligence",
-        ["🚀 Strategic Brief", "⚖️ Competitive Position", "💰 Investment Case", 
-         "📊 Market Intelligence", "🎯 Action Planning"],
+        [
+            "🚀 Strategic Brief",
+            "⚖️ Competitive Position",
+            "💰 Investment Case", 
+         "📊 Market Intelligence",
+            "🎯 Action Planning"
+        ],
         help="Core executive decision support tools"
     )
     
@@ -456,13 +463,25 @@ def executive_strategic_brief(dynamic_metrics, historical_data):
     
     with col1:
         industry = st.selectbox("Your Industry", 
-            ["Technology (92% adoption)", "Financial Services (85%)", "Healthcare (78%)", 
-             "Manufacturing (75%)", "Retail & E-commerce (72%)", "Education (65%)",
-             "Energy & Utilities (58%)", "Government (52%)"])
+            [
+            "Technology (92% adoption)",
+            "Financial Services (85%)",
+            "Healthcare (78%)", 
+             "Manufacturing (75%)",
+            "Retail & E-commerce (72%)",
+            "Education (65%)",
+             "Energy & Utilities (58%)",
+            "Government (52%)"
+        ])
         
         company_size = st.selectbox("Company Size",
-            ["1-50 employees (3% adoption)", "51-250 (12% adoption)", 
-             "251-1000 (25% adoption)", "1000-5000 (42% adoption)", "5000+ (58% adoption)"])
+            [
+            "1-50 employees (3% adoption)",
+            "51-250 (12% adoption)", 
+             "251-1000 (25% adoption)",
+            "1000-5000 (42% adoption)",
+            "5000+ (58% adoption)"
+        ])
     
     with col2:
         if st.button("🎯 Assess My Position", type="primary", use_container_width=True):
@@ -1113,7 +1132,9 @@ col1, col2, col3, col4 = st.columns(4)
 
 with col1:
     st.markdown("""
-    <div style='text-align: center; padding: 10px; background-color: rgba(31, 119, 180, 0.1); border-radius: 10px; margin: 5px;'>
+    <div style='text-align: center; padding: 10px;
+                background-color: rgba(31, 119, 180, 0.1);
+                border-radius: 10px; margin: 5px;'>
         <h3>🎯</h3>
         <strong>Assess Position</strong><br>
         <small>Know where you stand vs competitors</small>
@@ -1122,7 +1143,9 @@ with col1:
 
 with col2:
     st.markdown("""
-    <div style='text-align: center; padding: 10px; background-color: rgba(255, 127, 14, 0.1); border-radius: 10px; margin: 5px;'>
+    <div style='text-align: center; padding: 10px;
+                background-color: rgba(255, 127, 14, 0.1);
+                border-radius: 10px; margin: 5px;'>
         <h3>💰</h3>
         <strong>Optimize Investment</strong><br>
         <small>Make smarter AI spending decisions</small>
@@ -1131,7 +1154,9 @@ with col2:
 
 with col3:
     st.markdown("""
-    <div style='text-align: center; padding: 10px; background-color: rgba(44, 160, 44, 0.1); border-radius: 10px; margin: 5px;'>
+    <div style='text-align: center; padding: 10px;
+                background-color: rgba(44, 160, 44, 0.1);
+                border-radius: 10px; margin: 5px;'>
         <h3>⚖️</h3>
         <strong>Manage Risk</strong><br>
         <small>Stay ahead of regulatory changes</small>
@@ -1140,7 +1165,9 @@ with col3:
 
 with col4:
     st.markdown("""
-    <div style='text-align: center; padding: 10px; background-color: rgba(214, 39, 40, 0.1); border-radius: 10px; margin: 5px;'>
+    <div style='text-align: center; padding: 10px;
+                background-color: rgba(214, 39, 40, 0.1);
+                border-radius: 10px; margin: 5px;'>
         <h3>📊</h3>
         <strong>Track Progress</strong><br>
         <small>Monitor competitive dynamics</small>
@@ -1170,8 +1197,10 @@ with st.expander("🆕 What's New in Version 2.2.1", expanded=st.session_state.s
 
 # Add definition notice with AI Index Report reference
 st.info("""
-**📌 Important Note:** Adoption rates in this dashboard reflect "any AI use" including pilots, experiments, and production deployments. 
-Enterprise-wide production use rates are typically lower. Data sources include AI Index Report 2025, McKinsey Global Survey on AI, 
+**📌 Important Note:** Adoption rates in this dashboard reflect "any AI use" 
+including pilots, experiments, and production deployments. 
+Enterprise-wide production use rates are typically lower. 
+Data sources include AI Index Report 2025, McKinsey Global Survey on AI, 
 OECD AI Policy Observatory, and US Census Bureau AI Use Supplement.
 """)
 
@@ -1235,8 +1264,8 @@ data_map = {
     "Historical Trends": historical_data,
     "Industry Analysis": sector_2025,
     "Financial Impact": financial_impact,
-    "Skill Gap Analysis": skill_gap_data,
-    "AI Governance": ai_governance,
+    "🎓 Skill Gap Analysis": skill_gap_data,
+    "⚖️ AI Governance": ai_governance,
     "Productivity Research": productivity_data,
     "Investment Trends": ai_investment_data,
     "Regional Growth": regional_growth,
@@ -1245,12 +1274,12 @@ data_map = {
     "Labor Impact": ai_perception,
     "Environmental Impact": training_emissions,
     "Adoption Rates": genai_2025 if "2025" in data_year else sector_2018,
-    "Firm Size Analysis": firm_size,
+    "🏭 Firm Size Analysis": firm_size,
     "Technology Stack": tech_stack,
-    "AI Technology Maturity": ai_maturity,
+    "🤖 AI Technology Maturity": ai_maturity,
     "Geographic Distribution": geographic,
-    "OECD 2025 Findings": oecd_g7_adoption,
-    "Barriers & Support": barriers_data,
+    "🌍 OECD 2025 Findings": oecd_g7_adoption,
+    "🚧 Barriers & Support": barriers_data,
     "ROI Analysis": sector_2025
 }
 
@@ -1360,7 +1389,9 @@ else:
 
 # Strategic interpretation
 st.info("""
-**🧠 Strategic Implications:** The 2022-2024 period represents a fundamental market transition. Organizations that don't adapt their AI strategy now risk falling permanently behind competitors who are gaining 15-40% productivity advantages.
+**🧠 Strategic Implications:** The 2022-2024 period represents a fundamental market transition. 
+Organizations that don't adapt their AI strategy now risk falling permanently behind 
+competitors who are gaining 15-40% productivity advantages.
 """)
 
 # Main visualization section
@@ -1600,7 +1631,10 @@ if is_detailed:
     else:
         # Generic fallback for unimplemented detailed views
         st.warning(f"Detailed view for '{current_view}' is being implemented...")
-        st.info("Try 'Historical Trends', 'Industry Analysis', 'Adoption Rates', 'AI Cost Trends', or 'Financial Impact' which are fully implemented.")
+        st.info(
+            "Try 'Historical Trends', 'Industry Analysis', 'Adoption Rates', "
+            "'AI Cost Trends', or 'Financial Impact' which are fully implemented."
+        )
 
 else:
     # EXECUTIVE VIEWS - Only true executive dashboard views
@@ -1718,7 +1752,8 @@ else:
             **🎯 Key Research Findings:**
             
             **Stanford AI Index 2025 Evidence:**
-            - Business adoption jumped from 55% to 78% in just one year (fastest enterprise technology adoption in history)
+            - Business adoption jumped from 55% to 78% in just one year 
+              (fastest enterprise technology adoption in history)
             - GenAI adoption more than doubled from 33% to 71%
             - 280x cost reduction in AI inference since November 2022
             """)
@@ -2049,8 +2084,13 @@ else:
         st.write("🗺️ **Comprehensive Geographic AI Distribution Analysis**")
         
         # Create 5 comprehensive tabs for geographic analysis
-        geo_tabs = st.tabs(["🗺️ Interactive Map", "🏛️ Research Infrastructure", "📊 State Comparisons", 
-                           "🎓 Academic Centers", "💰 Investment Flows"])
+        geo_tabs = st.tabs([
+            "🗺️ Interactive Map",
+            "🏛️ Research Infrastructure",
+            "📊 State Comparisons", 
+                           "🎓 Academic Centers",
+            "💰 Investment Flows"
+        ])
         
         with geo_tabs[0]:
             st.markdown("### 🗺️ Interactive Geographic AI Adoption Map")
@@ -2072,7 +2112,12 @@ else:
                             colorbar=dict(title="Adoption Rate (%)"),
                             line=dict(width=2, color='white')
                         ),
-                        text=geographic['city'] + '<br>Adoption: ' + geographic['rate'].astype(str) + '%<br>Population: ' + geographic['population_millions'].astype(str) + 'M<br>GDP: $' + geographic['gdp_billions'].astype(str) + 'B',
+                        text=(
+                            geographic['city'] + '<br>Adoption: ' + 
+                            geographic['rate'].astype(str) + '%<br>Population: ' + 
+                            geographic['population_millions'].astype(str) + 
+                            'M<br>GDP: $' + geographic['gdp_billions'].astype(str) + 'B'
+                        ),
                         hoverinfo='text',
                         name='AI Adoption Rate'
                     ))
@@ -2429,8 +2474,13 @@ else:
         st.write("🪙 **Comprehensive Token Economics Analysis**")
         
         # Create 5 comprehensive tabs for token economics
-        token_tabs = st.tabs(["🪙 What Are Tokens?", "💰 Token Pricing", "📊 Usage Patterns", 
-                             "⚡ Optimization", "💹 Economic Impact"])
+        token_tabs = st.tabs([
+            "🪙 What Are Tokens?",
+            "💰 Token Pricing",
+            "📊 Usage Patterns", 
+                             "⚡ Optimization",
+            "💹 Economic Impact"
+        ])
         
         with token_tabs[0]:
             st.markdown("### 🪙 Understanding AI Tokens")
@@ -2839,8 +2889,13 @@ else:
         """)
         
         # Create tabs for different source categories
-        bib_tabs = st.tabs(["🏛️ Government & Institutional", "🏢 Corporate & Industry", "🎓 Academic Research", 
-                            "📰 News & Analysis", "📊 Databases & Collections"])
+        bib_tabs = st.tabs([
+            "🏛️ Government & Institutional",
+            "🏢 Corporate & Industry",
+            "🎓 Academic Research", 
+                            "📰 News & Analysis",
+            "📊 Databases & Collections"
+        ])
         
         with bib_tabs[0]:
             st.markdown("""
@@ -3266,7 +3321,12 @@ else:
         st.write("🌱 **Comprehensive AI Environmental Impact Analysis**")
         
         # Create 4 comprehensive tabs for environmental analysis
-        env_tabs = st.tabs(["🌍 Emissions Analysis", "⚡ Energy Consumption", "🛡️ Mitigation Strategies", "♻️ Sustainability Metrics"])
+        env_tabs = st.tabs([
+            "🌍 Emissions Analysis",
+            "⚡ Energy Consumption",
+            "🛡️ Mitigation Strategies",
+            "♻️ Sustainability Metrics"
+        ])
         
         with env_tabs[0]:
             st.markdown("### 🌍 AI Carbon Emissions Analysis")
@@ -4109,6 +4169,425 @@ else:
             """)
         else:
             st.error("Financial impact data not available")
+
+    elif current_view == "🎓 Skill Gap Analysis":
+        st.subheader("🎓 AI Skills Gap Analysis")
+        st.markdown("*Critical workforce planning insights for AI adoption*")
+        
+        if safe_data_check(skill_gap_data, "Skills Gap Data"):
+            # Skills gap visualization
+            fig = go.Figure()
+            
+            # Sort by gap severity
+            skill_sorted = skill_gap_data.sort_values('gap_severity', ascending=True)
+            
+            # Create diverging bar chart
+            fig.add_trace(go.Bar(
+                name='Gap Severity',
+                y=skill_sorted['skill'],
+                x=skill_sorted['gap_severity'],
+                orientation='h',
+                marker_color='#E74C3C',
+                text=[f'{x}%' for x in skill_sorted['gap_severity']],
+                textposition='outside'
+            ))
+            
+            fig.add_trace(go.Bar(
+                name='Training Initiatives',
+                y=skill_sorted['skill'],
+                x=skill_sorted['training_initiatives'],
+                orientation='h',
+                marker_color='#2ECC71',
+                text=[f'{x}%' for x in skill_sorted['training_initiatives']],
+                textposition='outside',
+                xaxis='x2'
+            ))
+            
+            fig.update_layout(
+                title="AI Skills Gap vs Training Initiatives",
+                xaxis=dict(title="Gap Severity (%)", side="bottom"),
+                xaxis2=dict(title="Companies with Training (%)", overlaying="x", side="top"),
+                yaxis_title="Skill Area",
+                height=500,
+                barmode='overlay'
+            )
+            
+            st.plotly_chart(fig, use_container_width=True)
+            
+            # Key insights
+            col1, col2 = st.columns(2)
+            
+            with col1:
+                st.markdown("### 🚨 Critical Gaps")
+                high_gap_skills = skill_gap_data[skill_gap_data['gap_severity'] >= 70]
+                for _, skill in high_gap_skills.iterrows():
+                    st.metric(
+                        skill['skill'], 
+                        f"{skill['gap_severity']}% gap",
+                        f"{skill['training_initiatives']}% have training"
+                    )
+            
+            with col2:
+                st.markdown("### 🎯 Priority Actions")
+                st.info("""
+                **🔍 Key Findings:**
+                - **AI/ML Engineering** shows the highest gap (85%) with only 45% having training
+                - **Change Management** has lower gap (55%) but higher training coverage (48%)
+                - The gap between severity and training indicates significant opportunity
+                """)
+                
+                st.success("""
+                **📋 Recommendations:**
+                1. **Immediate**: Invest in AI/ML Engineering training programs
+                2. **Strategic**: Develop AI Ethics and Security capabilities  
+                3. **Leadership**: Enhance Change Management for AI adoption
+                """)
+
+    elif current_view == "⚖️ AI Governance":
+        st.subheader("⚖️ AI Governance & Ethics Implementation")
+        st.markdown("*Organizational readiness for responsible AI deployment*")
+        
+        if safe_data_check(ai_governance, "AI Governance Data"):
+            # Governance maturity visualization - Radar Chart
+            categories = ai_governance['aspect'].tolist()
+            
+            fig = go.Figure()
+            
+            fig.add_trace(go.Scatterpolar(
+                r=ai_governance['adoption_rate'],
+                theta=categories,
+                fill='toself',
+                name='Adoption Rate (%)',
+                line_color='#3498DB'
+            ))
+            
+            fig.add_trace(go.Scatterpolar(
+                r=[x * 20 for x in ai_governance['maturity_score']],  # Scale to 100
+                theta=categories,
+                fill='toself',
+                name='Maturity Score (scaled)',
+                line_color='#E74C3C'
+            ))
+            
+            fig.update_layout(
+                polar=dict(
+                    radialaxis=dict(
+                        visible=True,
+                        range=[0, 100]
+                    )),
+                showlegend=True,
+                title="AI Governance Implementation and Maturity",
+                height=500
+            )
+            
+            st.plotly_chart(fig, use_container_width=True)
+            
+            # Governance insights
+            col1, col2, col3 = st.columns(3)
+            
+            with col1:
+                st.markdown("### ✅ Well-Established")
+                well_established = ai_governance[ai_governance['adoption_rate'] >= 65]
+                for _, area in well_established.iterrows():
+                    st.metric(
+                        area['aspect'], 
+                        f"{area['adoption_rate']}%",
+                        f"{area['maturity_score']:.1f}/5 maturity"
+                    )
+            
+            with col2:
+                st.markdown("### ⚠️ Needs Attention")
+                needs_work = ai_governance[ai_governance['adoption_rate'] < 55]
+                for _, area in needs_work.iterrows():
+                    st.metric(
+                        area['aspect'], 
+                        f"{area['adoption_rate']}%",
+                        f"{area['maturity_score']:.1f}/5 maturity"
+                    )
+            
+            with col3:
+                st.markdown("### 📊 Overall Status")
+                avg_adoption = ai_governance['adoption_rate'].mean()
+                avg_maturity = ai_governance['maturity_score'].mean()
+                st.metric("Average Adoption", f"{avg_adoption:.0f}%")
+                st.metric("Average Maturity", f"{avg_maturity:.1f}/5")
+                
+                if avg_maturity >= 3.0:
+                    st.success("🟢 Good governance foundation")
+                elif avg_maturity >= 2.5:
+                    st.warning("🟡 Moderate governance readiness")
+                else:
+                    st.error("🔴 Governance capabilities need development")
+    
+    elif current_view == "🏭 Firm Size Analysis":
+        st.subheader("🏭 AI Adoption by Company Size")
+        
+        if safe_data_check(firm_size, "Firm Size Analysis"):
+            col1, col2 = st.columns([2, 1])
+            
+            with col1:
+                # S-curve adoption pattern
+                fig = go.Figure()
+                fig.add_trace(go.Scatter(
+                    x=list(range(len(firm_size))),
+                    y=firm_size['adoption'],
+                    mode='lines+markers',
+                    name='AI Adoption Rate',
+                    line=dict(color='#1f77b4', width=3),
+                    marker=dict(size=8)
+                ))
+                
+                fig.update_xaxes(
+                    tickvals=list(range(len(firm_size))),
+                    ticktext=firm_size['size'],
+                    title="Company Size (Employees)"
+                )
+                fig.update_yaxes(title="AI Adoption Rate (%)")
+                fig.update_layout(
+                    title="AI Adoption Follows Enterprise Scale Pattern",
+                    height=400,
+                    showlegend=False
+                )
+                st.plotly_chart(fig, use_container_width=True)
+            
+            with col2:
+                st.markdown("### 📈 Key Insights")
+                
+                # Calculate adoption gaps
+                enterprise_adoption = firm_size[firm_size['size'] == '5000+']['adoption'].values[0]
+                smb_adoption = firm_size[firm_size['size'] == '1-4']['adoption'].values[0]
+                adoption_gap = enterprise_adoption - smb_adoption
+                
+                st.metric("Enterprise Adoption", f"{enterprise_adoption}%")
+                st.metric("Small Business Adoption", f"{smb_adoption}%")
+                st.metric("Adoption Gap", f"{adoption_gap:.1f}pp", delta=None)
+                
+                if adoption_gap > 50:
+                    st.error("🔴 Significant SMB adoption lag")
+                elif adoption_gap > 30:
+                    st.warning("🟡 Moderate adoption disparity")
+                else:
+                    st.success("🟢 Balanced adoption across sizes")
+                
+                st.markdown("**Recommendations:**")
+                st.markdown("- SMB-focused AI solutions needed")
+                st.markdown("- Simplified deployment models")
+                st.markdown("- Cost-effective entry points")
+    
+    elif current_view == "🌍 OECD 2025 Findings":
+        st.subheader("🌍 Global AI Adoption - OECD Analysis")
+        
+        if safe_data_check(oecd_g7_adoption, "OECD Analysis"):
+            col1, col2 = st.columns([2, 1])
+            
+            with col1:
+                # Bar chart comparing G7 countries
+                fig = go.Figure()
+                
+                colors = ['#1f77b4' if country == 'United States' else '#d62728' 
+                         for country in oecd_g7_adoption['country']]
+                
+                fig.add_trace(go.Bar(
+                    x=oecd_g7_adoption['country'],
+                    y=oecd_g7_adoption['adoption_rate'],
+                    name='General AI Adoption',
+                    marker_color=colors
+                ))
+                
+                fig.update_layout(
+                    title="G7 AI Adoption Rates (2025)",
+                    xaxis_title="Country",
+                    yaxis_title="Adoption Rate (%)",
+                    height=400
+                )
+                st.plotly_chart(fig, use_container_width=True)
+                
+                # Sector comparison heatmap
+                sector_data = oecd_g7_adoption[['country', 'manufacturing', 'ict_sector']].melt(
+                    id_vars='country', var_name='sector', value_name='adoption'
+                )
+                
+                fig2 = px.treemap(
+                    sector_data,
+                    path=['sector', 'country'],
+                    values='adoption',
+                    title="AI Adoption by Sector Across G7"
+                )
+                fig2.update_layout(height=300)
+                st.plotly_chart(fig2, use_container_width=True)
+            
+            with col2:
+                st.markdown("### 🏆 Country Rankings")
+                
+                # Sort by adoption rate
+                ranked = oecd_g7_adoption.sort_values('adoption_rate', ascending=False)
+                
+                for i, row in ranked.iterrows():
+                    rank = list(ranked.index).index(i) + 1
+                    if rank == 1:
+                        st.success(f"🥇 **{row['country']}**: {row['adoption_rate']}%")
+                    elif rank == 2:
+                        st.info(f"🥈 **{row['country']}**: {row['adoption_rate']}%")
+                    elif rank == 3:
+                        st.warning(f"🥉 **{row['country']}**: {row['adoption_rate']}%")
+                    else:
+                        st.text(f"{rank}. {row['country']}: {row['adoption_rate']}%")
+                
+                st.markdown("### 📊 Global Insights")
+                avg_adoption = oecd_g7_adoption['adoption_rate'].mean()
+                us_position = oecd_g7_adoption[oecd_g7_adoption['country'] == 'United States']['adoption_rate'].values[0]
+                
+                st.metric("G7 Average", f"{avg_adoption:.1f}%")
+                st.metric("US vs G7 Average", f"+{us_position - avg_adoption:.1f}pp")
+    
+    elif current_view == "🚧 Barriers & Support":
+        st.subheader("🚧 AI Implementation: Challenges & Solutions")
+        
+        if safe_data_check(barriers_data, "Barriers Analysis") and safe_data_check(support_effectiveness, "Support Analysis"):
+            col1, col2 = st.columns(2)
+            
+            with col1:
+                st.markdown("### 🚫 Primary Barriers")
+                
+                fig = go.Figure()
+                fig.add_trace(go.Bar(
+                    y=barriers_data['barrier'],
+                    x=barriers_data['percentage'],
+                    orientation='h',
+                    marker_color='#d62728',
+                    name='Barriers'
+                ))
+                
+                fig.update_layout(
+                    title="Top Implementation Barriers (%)",
+                    xaxis_title="% of Organizations Reporting",
+                    height=400,
+                    yaxis={'categoryorder': 'total ascending'}
+                )
+                st.plotly_chart(fig, use_container_width=True)
+            
+            with col2:
+                st.markdown("### ✅ Support Effectiveness")
+                
+                fig2 = go.Figure()
+                fig2.add_trace(go.Bar(
+                    y=support_effectiveness['support_type'],
+                    x=support_effectiveness['effectiveness_score'],
+                    orientation='h',
+                    marker_color='#2ca02c',
+                    name='Support Effectiveness'
+                ))
+                
+                fig2.update_layout(
+                    title="Support Mechanism Effectiveness",
+                    xaxis_title="Effectiveness Score (0-100)",
+                    height=400,
+                    yaxis={'categoryorder': 'total ascending'}
+                )
+                st.plotly_chart(fig2, use_container_width=True)
+            
+            # Insights section
+            st.markdown("### 💡 Strategic Insights")
+            col1, col2, col3 = st.columns(3)
+            
+            with col1:
+                top_barrier = barriers_data.loc[barriers_data['percentage'].idxmax()]
+                st.metric(
+                    "Top Barrier", 
+                    top_barrier['barrier'],
+                    f"{top_barrier['percentage']}% affected"
+                )
+            
+            with col2:
+                best_support = support_effectiveness.loc[support_effectiveness['effectiveness_score'].idxmax()]
+                st.metric(
+                    "Most Effective Support",
+                    best_support['support_type'],
+                    f"{best_support['effectiveness_score']}/100"
+                )
+            
+            with col3:
+                skill_barrier_pct = barriers_data[barriers_data['barrier'] == 'Lack of skilled personnel']['percentage'].values[0]
+                if skill_barrier_pct > 60:
+                    st.error(f"🔴 Skills Crisis: {skill_barrier_pct}%")
+                else:
+                    st.warning(f"🟡 Skills Gap: {skill_barrier_pct}%")
+    
+    elif current_view == "🤖 AI Technology Maturity":
+        st.subheader("🤖 AI Technology Lifecycle & Risk Assessment")
+        
+        if safe_data_check(ai_maturity, "AI Technology Maturity"):
+            col1, col2 = st.columns([2, 1])
+            
+            with col1:
+                # Bubble chart: Adoption vs Risk vs Time to Value
+                fig = go.Figure()
+                
+                colors = {
+                    'Peak of Expectations': '#ff7f0e',
+                    'Trough of Disillusionment': '#d62728', 
+                    'Slope of Enlightenment': '#2ca02c',
+                    'Plateau of Productivity': '#1f77b4'
+                }
+                
+                for maturity_stage in ai_maturity['maturity'].unique():
+                    stage_data = ai_maturity[ai_maturity['maturity'] == maturity_stage]
+                    
+                    fig.add_trace(go.Scatter(
+                        x=stage_data['adoption_rate'],
+                        y=stage_data['risk_score'],
+                        mode='markers+text',
+                        name=maturity_stage,
+                        text=stage_data['technology'],
+                        textposition='top center',
+                        marker=dict(
+                            size=stage_data['time_to_value'] * 5,
+                            color=colors.get(maturity_stage, '#7f7f7f'),
+                            opacity=0.7
+                        )
+                    ))
+                
+                fig.update_layout(
+                    title="AI Technology Maturity Map<br><sub>Bubble size = Time to Value</sub>",
+                    xaxis_title="Adoption Rate (%)",
+                    yaxis_title="Risk Score (0-100)",
+                    height=500,
+                    legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1)
+                )
+                st.plotly_chart(fig, use_container_width=True)
+            
+            with col2:
+                st.markdown("### 🎯 Technology Focus")
+                
+                # Highlight key technologies
+                high_adoption = ai_maturity[ai_maturity['adoption_rate'] > 50]
+                low_risk = ai_maturity[ai_maturity['risk_score'] < 50]
+                quick_value = ai_maturity[ai_maturity['time_to_value'] <= 3]
+                
+                st.markdown("**🚀 High Adoption (>50%)**")
+                for _, tech in high_adoption.iterrows():
+                    st.text(f"• {tech['technology']}: {tech['adoption_rate']}%")
+                
+                st.markdown("**⚡ Quick Time to Value (≤3 years)**")
+                for _, tech in quick_value.iterrows():
+                    st.text(f"• {tech['technology']}: {tech['time_to_value']} years")
+                
+                st.markdown("**🛡️ Lower Risk (<50)**")
+                for _, tech in low_risk.iterrows():
+                    st.text(f"• {tech['technology']}: {tech['risk_score']}/100")
+                
+                # Investment recommendation
+                safe_bets = ai_maturity[
+                    (ai_maturity['risk_score'] < 60) & 
+                    (ai_maturity['time_to_value'] <= 3)
+                ]
+                
+                if len(safe_bets) > 0:
+                    st.success("🎯 **Recommended Focus:**")
+                    for _, tech in safe_bets.iterrows():
+                        st.text(f"• {tech['technology']}")
+                else:
+                    st.warning("⚠️ All technologies carry significant risk")
 
     else:
         # Generic view renderer for any unmapped views

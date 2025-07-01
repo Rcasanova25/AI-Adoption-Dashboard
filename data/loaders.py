@@ -441,6 +441,22 @@ def load_complete_datasets():
             'effectiveness_score': [82, 78, 75, 73, 68, 65, 62]
         })
         
+        # NEW: Skill gap data - CRITICAL MISSING ANALYSIS
+        skill_gap_data = pd.DataFrame({
+            'skill': ['AI/ML Engineering', 'Data Science', 'AI Ethics', 'Prompt Engineering',
+                     'AI Product Management', 'MLOps', 'AI Security', 'Change Management'],
+            'gap_severity': [85, 78, 72, 68, 65, 62, 58, 55],
+            'training_initiatives': [45, 52, 28, 38, 32, 35, 22, 48]
+        })
+        
+        # NEW: AI governance data - CRITICAL MISSING ANALYSIS
+        ai_governance = pd.DataFrame({
+            'aspect': ['Ethics Guidelines', 'Data Privacy', 'Bias Detection', 'Transparency',
+                      'Accountability Framework', 'Risk Assessment', 'Regulatory Compliance'],
+            'adoption_rate': [62, 78, 45, 52, 48, 55, 72],
+            'maturity_score': [3.2, 3.8, 2.5, 2.8, 2.6, 3.0, 3.5]  # Out of 5
+        })
+        
         # NEW: AI Investment data from AI Index 2025
         ai_investment_data = pd.DataFrame({
             'year': [2014, 2020, 2021, 2022, 2023, 2024],
