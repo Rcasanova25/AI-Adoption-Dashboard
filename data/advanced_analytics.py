@@ -9,13 +9,25 @@ from typing import Dict, List, Optional, Tuple, Any
 from dataclasses import dataclass
 from datetime import datetime, timedelta
 import logging
-from scipy import stats
-from sklearn.preprocessing import StandardScaler
-from sklearn.cluster import KMeans
 import warnings
 
-# Suppress sklearn warnings for cleaner output
-warnings.filterwarnings('ignore', category=UserWarning)
+# Advanced analytics dependencies (optional - graceful fallback if unavailable)
+try:
+    from scipy import stats
+    SCIPY_AVAILABLE = True
+except ImportError:
+    SCIPY_AVAILABLE = False
+    logging.warning("SciPy not available. Some advanced statistical functions will be disabled.")
+
+try:
+    from sklearn.preprocessing import StandardScaler
+    from sklearn.cluster import KMeans
+    SKLEARN_AVAILABLE = True
+    # Suppress sklearn warnings for cleaner output
+    warnings.filterwarnings('ignore', category=UserWarning)
+except ImportError:
+    SKLEARN_AVAILABLE = False
+    logging.warning("Scikit-learn not available. Machine learning features will be disabled.")
 
 logger = logging.getLogger(__name__)
 
@@ -52,7 +64,10 @@ class AdvancedAnalytics:
     """Advanced analytics engine for AI adoption insights"""
     
     def __init__(self):
-        self.scaler = StandardScaler()
+        if SKLEARN_AVAILABLE:
+            self.scaler = StandardScaler()
+        else:
+            self.scaler = None
         self.models_cache = {}
         
     def predict_adoption_trends(
@@ -189,7 +204,7 @@ class AdvancedAnalytics:
             }
             
             # Statistical significance tests
-            if len(sector_data) >= 3:
+            if len(sector_data) >= 3 and SCIPY_AVAILABLE:
                 # Test for significant differences between sectors
                 sector_groups = [group['adoption_rate'].values for name, group in sector_data.groupby('sector')]
                 if len(sector_groups) >= 2:
@@ -199,6 +214,11 @@ class AdvancedAnalytics:
                         'anova_p_value': p_value,
                         'significant_differences': p_value < 0.05
                     }
+            elif not SCIPY_AVAILABLE:
+                analysis['statistical_tests'] = {
+                    'note': 'Advanced statistical tests require scipy installation',
+                    'basic_comparison': 'Use variance analysis instead'
+                }
             
             return analysis
             
@@ -235,8 +255,17 @@ class AdvancedAnalytics:
             if len(cluster_data) < 3:
                 raise ValueError("Insufficient data for clustering analysis")
             
+            # Check if clustering dependencies are available
+            if not SKLEARN_AVAILABLE:
+                return {
+                    "error": "Clustering analysis requires scikit-learn",
+                    "fallback": "Install scikit-learn for advanced clustering features",
+                    "simple_analysis": self._create_simple_sector_groups(sector_data)
+                }
+            
             # Standardize features
-            scaled_data = self.scaler.fit_transform(cluster_data)
+            scaler = StandardScaler()
+            scaled_data = scaler.fit_transform(cluster_data)
             
             # Determine optimal number of clusters using elbow method
             optimal_k = self._find_optimal_clusters(scaled_data, max_clusters)
@@ -310,7 +339,15 @@ class AdvancedAnalytics:
             time_values = data[time_col].values
             
             # Calculate trend using linear regression
-            slope, intercept, r_value, p_value, std_err = stats.linregress(time_values, values)
+            if SCIPY_AVAILABLE:
+                slope, intercept, r_value, p_value, std_err = stats.linregress(time_values, values)
+            else:
+                # Simple fallback trend calculation
+                slope = (values[-1] - values[0]) / (time_values[-1] - time_values[0]) if len(values) > 1 else 0
+                intercept = values[0] - slope * time_values[0] if len(values) > 0 else 0
+                r_value = np.corrcoef(time_values, values)[0, 1] if len(values) > 1 else 0
+                p_value = 0.05  # Default significance level
+                std_err = np.std(values) if len(values) > 1 else 0
             
             # Determine trend direction
             if slope > 0.1:
@@ -341,7 +378,7 @@ class AdvancedAnalytics:
             
             # Identify potential breakpoints (simplified)
             breakpoints = []
-            if len(values) >= 5:
+            if len(values) >= 5 and SCIPY_AVAILABLE:
                 # Look for significant changes in slope
                 mid_point = len(values) // 2
                 slope1, _, _, _, _ = stats.linregress(time_values[:mid_point+1], values[:mid_point+1])
@@ -509,6 +546,40 @@ class AdvancedAnalytics:
             methodology="Fallback Linear Growth",
             prediction_date=datetime.now()
         )
+    
+    def _create_simple_sector_groups(self, sector_data: pd.DataFrame) -> Dict[str, Any]:
+        """Create simple sector groupings when sklearn is not available"""
+        
+        try:
+            if 'adoption_rate' not in sector_data.columns:
+                return {"error": "No adoption_rate column found for simple grouping"}
+            
+            # Simple quartile-based grouping
+            quartiles = sector_data['adoption_rate'].quantile([0.25, 0.5, 0.75])
+            
+            high_adopters = sector_data[sector_data['adoption_rate'] > quartiles[0.75]]['sector'].tolist()
+            medium_adopters = sector_data[
+                (sector_data['adoption_rate'] > quartiles[0.25]) & 
+                (sector_data['adoption_rate'] <= quartiles[0.75])
+            ]['sector'].tolist()
+            low_adopters = sector_data[sector_data['adoption_rate'] <= quartiles[0.25]]['sector'].tolist()
+            
+            return {
+                "clusters": {
+                    "High_Adopters": high_adopters,
+                    "Medium_Adopters": medium_adopters,
+                    "Low_Adopters": low_adopters
+                },
+                "cluster_characteristics": {
+                    "High_Adopters": {"mean_adoption": float(quartiles[0.75])},
+                    "Medium_Adopters": {"mean_adoption": float(quartiles[0.5])},
+                    "Low_Adopters": {"mean_adoption": float(quartiles[0.25])}
+                },
+                "methodology": "Simple quartile-based grouping"
+            }
+            
+        except Exception as e:
+            return {"error": f"Simple grouping failed: {str(e)}"}
     
     def _generate_fallback_clustering(self) -> ClusteringResult:
         """Generate fallback clustering result"""

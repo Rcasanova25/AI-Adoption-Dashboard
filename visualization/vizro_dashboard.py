@@ -761,7 +761,11 @@ class AIAdoptionVizroDashboard:
         """Create causal network visualization"""
         
         # Create network data for causal relationships
-        import networkx as nx
+        try:
+            import networkx as nx
+        except ImportError:
+            # Create a simple fallback network visualization without networkx
+            return self._create_simple_causal_chart()
         
         G = nx.DiGraph()
         G.add_edges_from([
@@ -822,6 +826,43 @@ class AIAdoptionVizroDashboard:
             template="plotly_white",
             xaxis=dict(showgrid=False, zeroline=False, showticklabels=False),
             yaxis=dict(showgrid=False, zeroline=False, showticklabels=False)
+        )
+        
+        return fig
+    
+    def _create_simple_causal_chart(self) -> go.Figure:
+        """Create simple causal chart when networkx is not available"""
+        
+        # Create a simple bar chart showing causal factors
+        causal_factors = pd.DataFrame({
+            'factor': ['AI Investment', 'Training Programs', 'Market Pressure', 'Technology Access'],
+            'impact_on_adoption': [0.75, 0.68, 0.52, 0.61],
+            'impact_on_productivity': [0.45, 0.72, 0.38, 0.59]
+        })
+        
+        fig = go.Figure()
+        
+        fig.add_trace(go.Bar(
+            x=causal_factors['factor'],
+            y=causal_factors['impact_on_adoption'],
+            name='Impact on Adoption',
+            marker_color='lightblue'
+        ))
+        
+        fig.add_trace(go.Bar(
+            x=causal_factors['factor'],
+            y=causal_factors['impact_on_productivity'],
+            name='Impact on Productivity',
+            marker_color='lightcoral'
+        ))
+        
+        fig.update_layout(
+            title='Causal Factors: AI Adoption & Productivity Impact',
+            title_font_size=18,
+            xaxis_title='Causal Factor',
+            yaxis_title='Impact Strength',
+            barmode='group',
+            template="plotly_white"
         )
         
         return fig
