@@ -34,7 +34,7 @@ def load_historical_data() -> pd.DataFrame:
         })
         
         # Validate the data
-        if safe_validate_data(data, "historical_data", show_warnings=True):
+        if safe_validate_data(data, "historical_data", show_warnings=True).is_valid:
             logger.info("✅ Historical data loaded and validated successfully")
             return data
         else:
@@ -59,7 +59,7 @@ def load_sector_2025() -> pd.DataFrame:
         })
         
         # Validate the data
-        if safe_validate_data(data, "sector_data", show_warnings=True):
+        if safe_validate_data(data, "sector_data", show_warnings=True).is_valid:
             logger.info("✅ 2025 sector data loaded and validated successfully")
         else:
             logger.warning("⚠️ Sector data validation had issues, but proceeding")
@@ -85,7 +85,7 @@ def load_ai_investment_data() -> pd.DataFrame:
         })
         
         # Validate the data
-        if safe_validate_data(data, "investment_data", show_warnings=True):
+        if safe_validate_data(data, "investment_data", show_warnings=True).is_valid:
             logger.info("✅ AI investment data loaded and validated successfully")
         else:
             logger.warning("⚠️ Investment data validation had issues, but proceeding")
@@ -111,7 +111,7 @@ def load_financial_impact_data() -> pd.DataFrame:
         })
         
         # Validate the data
-        if safe_validate_data(data, "financial_impact", show_warnings=True):
+        if safe_validate_data(data, "financial_impact", show_warnings=True).is_valid:
             logger.info("✅ Financial impact data loaded and validated successfully")
         else:
             logger.warning("⚠️ Financial impact data validation had issues, but proceeding")
@@ -137,7 +137,7 @@ def load_token_economics_data() -> pd.DataFrame:
         })
         
         # Validate the data
-        if safe_validate_data(data, "token_economics", show_warnings=True):
+        if safe_validate_data(data, "token_economics", show_warnings=True).is_valid:
             logger.info("✅ Token economics data loaded and validated successfully")
         else:
             logger.warning("⚠️ Token economics data validation had issues, but proceeding")
@@ -160,7 +160,7 @@ def load_firm_size_data() -> pd.DataFrame:
         })
         
         # Validate the data
-        if safe_validate_data(data, "firm_size", show_warnings=True):
+        if safe_validate_data(data, "firm_size", show_warnings=True).is_valid:
             logger.info("✅ Firm size data loaded and validated successfully")
         else:
             logger.warning("⚠️ Firm size data validation had issues, but proceeding")
@@ -192,7 +192,7 @@ def load_geographic_data() -> pd.DataFrame:
         })
         
         # Validate the data
-        if safe_validate_data(data, "geographic_data", show_warnings=True):
+        if safe_validate_data(data, "geographic_data", show_warnings=True).is_valid:
             logger.info("✅ Geographic data loaded and validated successfully")
         else:
             logger.warning("⚠️ Geographic data validation had issues, but proceeding")
@@ -220,7 +220,7 @@ def load_ai_maturity_data() -> pd.DataFrame:
         })
         
         # Validate the data
-        if safe_validate_data(data, "ai_maturity", show_warnings=True):
+        if safe_validate_data(data, "ai_maturity", show_warnings=True).is_valid:
             logger.info("✅ AI maturity data loaded and validated successfully")
         else:
             logger.warning("⚠️ AI maturity data validation had issues, but proceeding")

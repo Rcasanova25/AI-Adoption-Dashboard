@@ -74,14 +74,16 @@ def test_real_data_loading():
         print(f"📊 Loaded historical data: {len(hist_data)} rows")
         
         is_valid = safe_validate_data(hist_data, "historical_data", show_warnings=False)
-        print(f"✅ Historical data validation: {'PASSED' if is_valid else 'FAILED'}")
+        assert is_valid.is_valid
+        print(f"✅ Historical data validation: {'PASSED' if is_valid.is_valid else 'FAILED'}")
         
         # Load and validate sector data
         sector_data = load_sector_2025()
         print(f"📊 Loaded sector data: {len(sector_data)} rows")
         
         is_valid = safe_validate_data(sector_data, "sector_data", show_warnings=False)
-        print(f"✅ Sector data validation: {'PASSED' if is_valid else 'FAILED'}")
+        assert is_valid.is_valid
+        print(f"✅ Sector data validation: {'PASSED' if is_valid.is_valid else 'FAILED'}")
         
     except Exception as e:
         print(f"❌ Error loading real data: {e}")

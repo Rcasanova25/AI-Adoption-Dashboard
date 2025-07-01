@@ -89,6 +89,10 @@ def clean_filename(text: str, max_length: int = 100) -> str:
     # Remove emojis and special characters, replace spaces with underscores
     cleaned = re.sub(r'[^\w\s-]', '', text)
     cleaned = re.sub(r'\s+', '_', cleaned)
+    
+    # Collapse multiple consecutive underscores into a single underscore
+    cleaned = re.sub(r'_+', '_', cleaned)
+    
     cleaned = cleaned.lower().strip('_')
     
     # Limit length
@@ -100,6 +104,37 @@ def clean_filename(text: str, max_length: int = 100) -> str:
         cleaned = "data"
     
     return cleaned
+
+
+def validate_chart_data(data: Optional[pd.DataFrame], required_columns: list) -> tuple[bool, str]:
+    """
+    Validate data for chart rendering
+    
+    Args:
+        data: DataFrame to validate
+        required_columns: List of required column names
+    
+    Returns:
+        Tuple of (is_valid: bool, message: str)
+    """
+    # Check for None data
+    if data is None:
+        return False, "Data is None"
+    
+    # Check for empty DataFrame
+    if data.empty:
+        return False, "Data is empty"
+    
+    # Check for required columns
+    missing_columns = [col for col in required_columns if col not in data.columns]
+    if missing_columns:
+        return False, f"Missing columns: {', '.join(missing_columns)}"
+    
+    # Check for sufficient data (at least 1 row)
+    if len(data) == 0:
+        return False, "Data has no rows"
+    
+    return True, "Data is valid"
 
 
 def monitor_performance(func: Callable) -> Callable:

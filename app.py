@@ -58,9 +58,12 @@ def load_data_with_mckinsey_tools():
         if pipeline_result.get('status') == 'completed':
             # Load processed datasets from Kedro pipeline
             try:
-                dashboard_summary = kedro_manager.catalog.load("dashboard_summary")
-                dashboard_detailed = kedro_manager.catalog.load("dashboard_detailed") 
-                dashboard_geographic = kedro_manager.catalog.load("dashboard_geographic")
+                if kedro_manager and kedro_manager.catalog:
+                    dashboard_summary = kedro_manager.catalog.load("dashboard_summary")  # type: ignore[attr-defined]
+                    dashboard_detailed = kedro_manager.catalog.load("dashboard_detailed")  # type: ignore[attr-defined]
+                    dashboard_geographic = kedro_manager.catalog.load("dashboard_geographic")  # type: ignore[attr-defined]
+                else:
+                    raise Exception("Kedro manager or catalog not available")
                 
                 st.success("✅ Data loaded using McKinsey Kedro pipeline")
                 return {
@@ -914,7 +917,7 @@ if view_type == "Historical Trends":
             )
         
         with col3:
-            years_diff = year2 - year1
+            years_diff = int(year2) - int(year1)
             ai_cagr = ((year2_data['ai_use'] / year1_data['ai_use']) ** (1/years_diff) - 1) * 100 if year1_data['ai_use'] > 0 else 0
             st.metric(
                 "AI CAGR", 
@@ -1659,24 +1662,25 @@ elif view_type == "Financial Impact":
     
     st.plotly_chart(fig, use_container_width=True)
     
-    # Function-specific insights with magnitude clarification
-    col1, col2 = st.columns(2)
-    
-    with col1:
-        st.write("💰 **Top Functions by Adoption Success:**")
-        st.write("• **Service Operations:** 49% report cost savings (avg 8% reduction)")
-        st.write("• **Marketing & Sales:** 71% report revenue gains (avg 4% increase)")
-        st.write("• **Supply Chain:** 43% report cost savings (avg 9% reduction)")
-    
-    with col2:
-        st.write("📈 **Reality Check:**")
-        st.write("• Most benefits are **incremental**, not transformative")
-        st.write("• Success varies significantly by implementation quality")
-        st.write("• ROI typically takes **12-18 months** to materialize")
-    
-    # Add source info
-    with st.expander("📊 Data Source & Methodology"):
-        st.info(show_source_info('ai_index'))
+    if financial_impact is not None and not financial_impact.empty:
+        # Function insights
+        col1, col2 = st.columns(2)
+        
+        with col1:
+            st.write("🎯 **Top Functions:**")
+            st.write("• **Marketing & Sales:** 42% adoption, 71% see revenue gains")
+            st.write("• **Product Development:** 28% adoption, 52% see revenue gains")
+            st.write("• **Service Operations:** 23% adoption, 49% see cost savings")
+        
+        with col2:
+            if st.button("📊 View Data Source", key="adoption_source"):
+                with st.expander("Data Source", expanded=True):
+                    st.info(show_source_info('mckinsey'))
+        
+        # Note about adoption definition
+        st.info("**Note:** Adoption rates include any GenAI use (pilots, experiments, production) among firms using AI")
+    else:
+        st.warning("Financial impact data not available for GenAI adoption analysis")
 
 elif view_type == "Investment Trends":
     st.write("💰 **AI Investment Trends: Record Growth in 2024 (AI Index Report 2025)**")
@@ -1847,8 +1851,16 @@ elif view_type == "Investment Trends":
         with col1:
             st.write("**🌍 Investment Leadership:**")
             st.write("• **US dominance:** $109.1B (43% of global)")
-            st.write(f"• **Per capita leader:** Israel at ${countries_extended[countries_extended['country']=='Israel']['per_capita'].iloc[0]:.0f} per person")
-            st.write(f"• **As % of GDP:** Israel ({countries_extended[countries_extended['country']=='Israel']['pct_of_gdp'].iloc[0]:.2f}%) and US (0.43%) lead")
+            # Ensure we're working with a pandas DataFrame
+            if isinstance(countries_extended, pd.DataFrame):
+                israel_data = countries_extended[countries_extended['country']=='Israel']
+                israel_per_capita = israel_data['per_capita'].iloc[0] if len(israel_data) > 0 else 0
+                israel_pct_gdp = israel_data['pct_of_gdp'].iloc[0] if len(israel_data) > 0 else 0
+            else:
+                israel_per_capita = 0
+                israel_pct_gdp = 0
+            st.write(f"• **Per capita leader:** Israel at ${israel_per_capita:.0f} per person")
+            st.write(f"• **As % of GDP:** Israel ({israel_pct_gdp:.2f}%) and US (0.43%) lead")
         
         with col2:
             st.write("**📈 Regional Dynamics:**")
@@ -3202,7 +3214,8 @@ elif view_type == "Adoption Rates":
         )
         
         st.plotly_chart(fig, use_container_width=True)
-        
+
+        if function_data is not None and not function_data.empty:
             # Function insights
             col1, col2 = st.columns(2)
             
@@ -4000,6 +4013,23 @@ elif view_type == "Geographic Distribution":
         
         st.plotly_chart(fig, use_container_width=True)
         
+        # Function insights
+        col1, col2 = st.columns(2)
+        
+        with col1:
+            st.write("🎯 **Top Functions:**")
+            st.write("• **Marketing & Sales:** 42% adoption, 71% see revenue gains")
+            st.write("• **Product Development:** 28% adoption, 52% see revenue gains")
+            st.write("• **Service Operations:** 23% adoption, 49% see cost savings")
+        
+        with col2:
+            if st.button("📊 View Data Source", key="adoption_source"):
+                with st.expander("Data Source", expanded=True):
+                    st.info(show_source_info('mckinsey'))
+        
+        # Note about adoption definition
+        st.info("**Note:** Adoption rates include any GenAI use (pilots, experiments, production) among firms using AI")
+        
         # Research infrastructure insights
         with st.expander("📊 Research Infrastructure Analysis"):
             st.markdown("""
@@ -4102,7 +4132,9 @@ elif view_type == "Geographic Distribution":
         display_cols = ['state', 'composite_score', 'ai_adoption_rate', 'nsf_ai_institutes_total', 
                        'total_federal_funding_billions', 'ai_workforce_thousands']
         
-        rankings_display = state_scorecard[display_cols].sort_values('composite_score', ascending=False)
+        if not hasattr(state_scorecard, 'sort_values'):
+            state_scorecard = pd.DataFrame(state_scorecard)
+        rankings_display = state_scorecard[display_cols].sort_values(by='composite_score', ascending=False, ignore_index=True)
         rankings_display['rank'] = range(1, len(rankings_display) + 1)
         rankings_display = rankings_display[['rank'] + display_cols]
         
@@ -4278,7 +4310,12 @@ elif view_type == "Geographic Distribution":
         
         with col1:
             st.write("**💰 Investment Concentration:**")
-            ca_vc = investment_flow[investment_flow['state'] == 'California']['venture_capital_millions'].iloc[0]
+            # Ensure we're working with a pandas DataFrame
+            if isinstance(investment_flow, pd.DataFrame):
+                ca_data = investment_flow[investment_flow['state'] == 'California']
+                ca_vc = ca_data['venture_capital_millions'].iloc[0] if len(ca_data) > 0 else 0
+            else:
+                ca_vc = 0
             total_vc = investment_flow['venture_capital_millions'].sum()
             st.write(f"• **California dominance:** ${ca_vc:,.0f}M ({(ca_vc/total_vc)*100:.1f}% of total VC)")
             st.write(f"• **Top 3 states:** {(investment_flow.nlargest(3, 'venture_capital_millions')['venture_capital_millions'].sum()/total_vc)*100:.1f}% of all investment")
@@ -5837,14 +5874,16 @@ def main():
         performance_monitor.start_timer('app_initialization')
         
         # Load and validate data
-        datasets = load_data()
+        datasets = load_data_with_mckinsey_tools()
         
         # Validate loaded data
         if validate_all_loaded_data:
-            validation_result = validate_all_loaded_data(datasets)
-            if not validation_result.is_valid:
+            validation_results = validate_all_loaded_data(datasets)
+            # Check if any dataset failed validation
+            failed_validations = [result for result in validation_results.values() if not result.is_valid]
+            if failed_validations:
                 st.error("Data validation failed. Using fallback data.")
-                datasets = _create_fallback_data()
+                datasets = load_fallback_data()
         
         # Setup navigation and run main dashboard logic
         setup_navigation()
@@ -5863,7 +5902,7 @@ def main():
         st.info("Using fallback mode with default data")
         
         # Fallback to basic functionality
-        datasets = _create_fallback_data()
+        datasets = load_fallback_data()
 
 if __name__ == "__main__":
     main()

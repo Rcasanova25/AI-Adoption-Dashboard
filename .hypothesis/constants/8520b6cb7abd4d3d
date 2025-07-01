@@ -1,0 +1,4 @@
+# file: C:\Users\rcasa\OneDrive\Documents\AI-Adoption-Dashboard\Utils\helpers.py
+# hypothesis_version: 6.135.20
+
+[1.0, 100, 'Data has no rows', 'Data is None', 'Data is empty', 'Data is valid', 'Operation failed', '[^\\w\\s-]', '\\s+', '_', '_+', 'data', 'empty']

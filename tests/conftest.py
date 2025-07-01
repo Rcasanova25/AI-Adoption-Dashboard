@@ -10,7 +10,7 @@ def sample_historical_data():
     return pd.DataFrame({
         'year': [2018, 2019, 2020, 2021, 2022, 2023, 2024, 2025],
         'ai_use': [5.8, 12.1, 18.5, 27.3, 37.2, 55.0, 78.0, 82.1],
-        'genai_use': [0, 0, 0, 2.1, 33.0, 71.0, 75.3, 78.2],
+        'genai_use': [0, 0, 0, 2.1, 33.0, 50.0, 70.0, 75.0],
         'confidence_level': [0.8, 0.85, 0.87, 0.89, 0.91, 0.93, 0.95, 0.92]
     })
 
@@ -22,7 +22,7 @@ def sample_sector_data():
                    'Retail', 'Education', 'Energy', 'Government'],
         'adoption_rate': [92, 85, 78, 75, 72, 65, 58, 52],
         'avg_roi': [4.2, 3.8, 3.1, 2.9, 3.3, 2.7, 2.5, 2.2],
-        'genai_adoption': [89, 76, 68, 65, 69, 58, 52, 45],
+        'genai_adoption': [85, 70, 60, 55, 60, 50, 45, 40],
         'avg_implementation_time': [8, 12, 15, 18, 14, 20, 22, 24]  # months
     })
 

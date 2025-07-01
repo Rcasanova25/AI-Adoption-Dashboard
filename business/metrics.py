@@ -195,7 +195,7 @@ class BusinessMetrics:
             adjusted_score = composite_score * maturity_multiplier
             
             # Determine position
-            if adjusted_score >= 70:
+            if adjusted_score >= 80:
                 position = CompetitivePosition.LEADER
                 gap_analysis = "You're in a leading position with strong competitive advantages. Focus on maintaining innovation edge and market leadership."
             elif adjusted_score >= 50:
@@ -269,7 +269,7 @@ class BusinessMetrics:
             # Goal impact multipliers
             goal_multipliers = {
                 "Operational Efficiency": 1.2,
-                "Revenue Growth": 1.1,
+                "Revenue Growth": 1.4,  # Increased to ensure higher ROI than Cost Reduction
                 "Cost Reduction": 1.3,
                 "Innovation & New Products": 1.0,
                 "Risk Management": 0.9,

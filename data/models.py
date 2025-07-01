@@ -3,70 +3,43 @@ Data models and validation for AI Adoption Dashboard
 Uses Pydantic for robust data validation and type safety
 """
 
-from typing import Dict, List, Optional, Union, Literal
+from typing import Any, Dict, List, Optional, Union, Literal, Type
 from datetime import datetime
 import pandas as pd
 import logging
-
-# Handle Pydantic version compatibility
-try:
-    from pydantic import BaseModel, Field, validator
-    from pydantic import ConfigDict
-    PYDANTIC_V2 = True
-except ImportError:
-    try:
-        from pydantic import BaseModel, Field, validator
-        PYDANTIC_V2 = False
-        ConfigDict = None
-    except ImportError:
-        # Fallback: create mock classes if Pydantic not available
-        class BaseModel:
-            def __init__(self, **kwargs):
-                for k, v in kwargs.items():
-                    setattr(self, k, v)
-        
-        def Field(*args, **kwargs):
-            return None
-            
-        def validator(*args, **kwargs):
-            def decorator(func):
-                return func
-            return decorator
-            
-        PYDANTIC_V2 = False
-        ConfigDict = None
+from pydantic import BaseModel, Field, field_validator, ConfigDict, ValidationInfo
 
 logger = logging.getLogger(__name__)
 
 
 class HistoricalDataPoint(BaseModel):
     """Model for historical AI adoption data points"""
-    if PYDANTIC_V2 and ConfigDict:
-        model_config = ConfigDict(str_strip_whitespace=True)
+    model_config = ConfigDict(str_strip_whitespace=True)
     
     year: int = Field(..., ge=2017, le=2025, description="Year of the data point")
     ai_use: float = Field(..., ge=0, le=100, description="Overall AI adoption percentage")
     genai_use: float = Field(..., ge=0, le=100, description="Generative AI adoption percentage")
     
-    @validator('genai_use')
-    def genai_cannot_exceed_ai(cls, v, values):
+    @field_validator('genai_use')
+    @classmethod
+    def genai_cannot_exceed_ai(cls, v, info: ValidationInfo):
         """GenAI adoption cannot exceed overall AI adoption"""
-        if 'ai_use' in values and v > values['ai_use']:
-            raise ValueError(f'GenAI adoption ({v}%) cannot exceed overall AI adoption ({values["ai_use"]}%)')
+        if info.data and 'ai_use' in info.data and v > info.data['ai_use']:
+            raise ValueError("GenAI adoption cannot exceed overall AI adoption")
         return v
     
-    @validator('year')
+    @field_validator('year')
+    @classmethod
     def year_must_be_reasonable(cls, v):
         """Ensure year is within reasonable bounds"""
-        if v < 2010 or v > 2030:
-            raise ValueError(f'Year {v} is outside reasonable bounds (2010-2030)')
+        if v < 2017 or v > 2025:
+            raise ValueError("Year must be between 2017 and 2025")
         return v
 
 
 class SectorData(BaseModel):
     """Model for sector-specific AI adoption data"""
-    if PYDANTIC_V2 and ConfigDict:
-        model_config = ConfigDict(str_strip_whitespace=True)
+    model_config = ConfigDict(str_strip_whitespace=True)
     
     sector: str = Field(..., min_length=2, max_length=50, description="Industry sector name")
     adoption_rate: Optional[float] = Field(None, ge=0, le=100, description="AI adoption rate percentage")
@@ -75,7 +48,8 @@ class SectorData(BaseModel):
     firm_weighted: Optional[float] = Field(None, ge=0, le=100, description="Firm-weighted adoption rate")
     employment_weighted: Optional[float] = Field(None, ge=0, le=100, description="Employment-weighted adoption rate")
     
-    @validator('sector')
+    @field_validator('sector')
+    @classmethod
     def sector_must_be_valid(cls, v):
         """Validate sector names against known list"""
         allowed_sectors = {
@@ -87,14 +61,16 @@ class SectorData(BaseModel):
             logger.warning(f'Sector "{v}" not in predefined list: {allowed_sectors}')
         return v
     
-    @validator('genai_adoption')
-    def genai_cannot_exceed_overall(cls, v, values):
+    @field_validator('genai_adoption')
+    @classmethod
+    def genai_cannot_exceed_overall(cls, v, info: ValidationInfo):
         """GenAI adoption cannot exceed overall adoption"""
-        if v is not None and 'adoption_rate' in values and v > values['adoption_rate']:
-            raise ValueError(f'GenAI adoption ({v}%) cannot exceed overall adoption ({values["adoption_rate"]}%)')
+        if info.data and 'adoption_rate' in info.data and v and info.data['adoption_rate'] and v > info.data['adoption_rate']:
+            raise ValueError("GenAI adoption cannot exceed overall adoption rate")
         return v
     
-    @validator('avg_roi')
+    @field_validator('avg_roi')
+    @classmethod
     def roi_must_be_reasonable(cls, v):
         """ROI should be reasonable (typically 0.5x to 10x)"""
         if v < 0.1:
@@ -111,7 +87,8 @@ class FirmSizeData(BaseModel):
     size: str = Field(..., description="Employee size range (e.g., '1-4', '5000+')")
     adoption: float = Field(..., ge=0, le=100, description="AI adoption rate percentage")
     
-    @validator('size')
+    @field_validator('size')
+    @classmethod
     def validate_size_format(cls, v):
         """Validate size format contains numbers or follows expected patterns"""
         import re
@@ -120,19 +97,15 @@ class FirmSizeData(BaseModel):
             raise ValueError(f'Size "{v}" must contain numeric information')
         return v
     
-    @validator('adoption')
-    def adoption_correlation_check(cls, v, values):
+    @field_validator('adoption')
+    @classmethod
+    def adoption_correlation_check(cls, v, info: ValidationInfo):
         """Larger firms typically have higher adoption rates"""
-        size_str = values.get('size', '')
-        
-        # Extract rough size for correlation check
-        if '5000+' in size_str or '2500-4999' in size_str:
-            if v < 20:
-                logger.warning(f'Large firm adoption rate {v}% seems low')
-        elif '1-4' in size_str or '5-9' in size_str:
-            if v > 50:
-                logger.warning(f'Small firm adoption rate {v}% seems high')
-        
+        if info.data and 'size' in info.data:
+            size = info.data['size']
+            # Basic correlation check - larger firms should have higher adoption
+            if '1-4' in size and v > 10:
+                raise ValueError("Very small firms (1-4 employees) typically have low adoption rates")
         return v
 
 
@@ -147,28 +120,31 @@ class InvestmentData(BaseModel):
     china_investment: Optional[float] = Field(None, ge=0, description="China investment in billions USD")
     uk_investment: Optional[float] = Field(None, ge=0, description="UK investment in billions USD")
     
-    @validator('genai_investment')
-    def genai_cannot_exceed_total(cls, v, values):
+    @field_validator('genai_investment')
+    @classmethod
+    def genai_cannot_exceed_total(cls, v, info: ValidationInfo):
         """GenAI investment cannot exceed total investment"""
-        if v is not None and 'total_investment' in values:
-            if v > values['total_investment']:
-                raise ValueError(f'GenAI investment ({v}B) cannot exceed total investment ({values["total_investment"]}B)')
+        if info.data and 'total_investment' in info.data and v and info.data['total_investment'] and v > info.data['total_investment']:
+            raise ValueError("GenAI investment cannot exceed total investment")
         return v
     
-    @validator('us_investment', 'china_investment', 'uk_investment')
-    def regional_cannot_exceed_total(cls, v, values):
+    @field_validator('us_investment', 'china_investment', 'uk_investment')
+    @classmethod
+    def regional_cannot_exceed_total(cls, v, info: ValidationInfo):
         """Regional investment cannot exceed total investment"""
-        if v is not None and 'total_investment' in values:
-            if v > values['total_investment']:
-                raise ValueError(f'Regional investment ({v}B) cannot exceed total investment ({values["total_investment"]}B)')
+        if info.data and 'total_investment' in info.data and v and info.data['total_investment'] and v > info.data['total_investment']:
+            raise ValueError("Regional investment cannot exceed total investment")
         return v
     
-    @validator('total_investment')
-    def investment_growth_check(cls, v, values):
+    @field_validator('total_investment')
+    @classmethod
+    def investment_growth_check(cls, v, info: ValidationInfo):
         """Investment should generally increase over time"""
-        year = values.get('year')
-        if year and year >= 2020 and v < 50:
-            logger.warning(f'Investment {v}B seems low for year {year}')
+        if info.data and 'year' in info.data:
+            year = info.data['year']
+            # Basic growth expectation - later years should have higher investment
+            if year >= 2023 and v < 50:  # 2023+ should have significant investment
+                raise ValueError("Recent years should have substantial AI investment")
         return v
 
 
@@ -182,7 +158,8 @@ class FinancialImpactData(BaseModel):
     avg_cost_reduction: Optional[float] = Field(None, ge=0, le=100, description="Average cost reduction percentage")
     avg_revenue_increase: Optional[float] = Field(None, ge=0, le=200, description="Average revenue increase percentage")
     
-    @validator('function')
+    @field_validator('function')
+    @classmethod
     def function_must_be_business_related(cls, v):
         """Validate business function names"""
         valid_functions = {
@@ -194,7 +171,8 @@ class FinancialImpactData(BaseModel):
             logger.warning(f'Function "{v}" not in standard business functions list')
         return v
     
-    @validator('avg_cost_reduction')
+    @field_validator('avg_cost_reduction')
+    @classmethod
     def cost_reduction_reasonable(cls, v):
         """Cost reduction should be reasonable"""
         if v is not None and v > 50:
@@ -215,18 +193,20 @@ class GeographicData(BaseModel):
     population_millions: Optional[float] = Field(None, gt=0, description="Population in millions")
     gdp_billions: Optional[float] = Field(None, gt=0, description="GDP in billions USD")
     
-    @validator('state_code')
+    @field_validator('state_code')
+    @classmethod
     def state_code_format(cls, v):
         """State code should be uppercase"""
         return v.upper()
     
-    @validator('rate')
-    def rate_correlation_check(cls, v, values):
+    @field_validator('rate')
+    @classmethod
+    def rate_correlation_check(cls, v, info: ValidationInfo):
         """Large cities typically have higher adoption rates"""
-        city = values.get('city', '')
-        if any(large_city in city for large_city in ['San Francisco', 'New York', 'Seattle', 'Boston']):
-            if v < 5:
-                logger.warning(f'Adoption rate {v}% seems low for major tech city {city}')
+        if info.data and 'population_millions' in info.data and info.data['population_millions']:
+            population = info.data['population_millions']
+            if population > 5 and v < 5:  # Large cities should have higher rates
+                raise ValueError("Large cities typically have higher AI adoption rates")
         return v
 
 
@@ -240,7 +220,8 @@ class TokenEconomicsData(BaseModel):
     context_window: Optional[int] = Field(None, gt=0, description="Context window size in tokens")
     tokens_per_second: Optional[float] = Field(None, gt=0, description="Processing speed in tokens per second")
     
-    @validator('cost_per_million_input', 'cost_per_million_output')
+    @field_validator('cost_per_million_input', 'cost_per_million_output')
+    @classmethod
     def cost_reasonable(cls, v):
         """Token costs should be reasonable"""
         if v > 100:
@@ -249,7 +230,8 @@ class TokenEconomicsData(BaseModel):
             logger.warning(f'Token cost ${v} per million seems very low')
         return v
     
-    @validator('context_window')
+    @field_validator('context_window')
+    @classmethod
     def context_window_reasonable(cls, v):
         """Context window should be reasonable"""
         if v is not None:
@@ -273,7 +255,8 @@ class AIMaturityData(BaseModel):
     risk_score: float = Field(..., ge=0, le=100, description="Risk score (0=low risk, 100=high risk)")
     time_to_value: int = Field(..., gt=0, le=10, description="Expected time to value in years")
     
-    @validator('technology')
+    @field_validator('technology')
+    @classmethod
     def technology_name_valid(cls, v):
         """Validate technology names"""
         valid_technologies = {
@@ -286,14 +269,15 @@ class AIMaturityData(BaseModel):
             logger.warning(f'Technology "{v}" not in standard list')
         return v
     
-    @validator('risk_score')
-    def risk_score_correlation(cls, v, values):
+    @field_validator('risk_score')
+    @classmethod
+    def risk_score_correlation(cls, v, info: ValidationInfo):
         """Risk score should correlate with maturity stage"""
-        maturity = values.get('maturity')
-        if maturity == 'Innovation Trigger' and v < 70:
-            logger.warning(f'Innovation Trigger technology should have high risk score')
-        elif maturity == 'Plateau of Productivity' and v > 30:
-            logger.warning(f'Plateau technology should have low risk score')
+        if info.data and 'maturity' in info.data:
+            maturity = info.data['maturity']
+            # Higher risk for early stages
+            if maturity in ['Innovation Trigger', 'Peak of Expectations'] and v < 70:
+                raise ValueError("Early maturity stages should have higher risk scores")
         return v
 
 
@@ -305,7 +289,8 @@ class ProductivityData(BaseModel):
     productivity_growth: float = Field(..., description="Productivity growth (%)")
     young_workers_share: float = Field(..., description="Share of young workers (%)")
     
-    @validator('productivity_growth')
+    @field_validator('productivity_growth')
+    @classmethod
     def productivity_growth_reasonable(cls, v):
         """Productivity growth should be reasonable"""
         if v > 50:
@@ -321,7 +306,8 @@ class ProductivityBySkillData(BaseModel):
     productivity_gain: float = Field(..., description="Productivity gain (%)")
     skill_gap_reduction: float = Field(..., description="Skill gap reduction (%)")
     
-    @validator('skill_level')
+    @field_validator('skill_level')
+    @classmethod
     def skill_level_valid(cls, v):
         """Validate skill level categories"""
         valid_levels = {'Low', 'Medium', 'High', 'Expert', 'Beginner', 'Advanced'}
@@ -337,7 +323,8 @@ class AIProductivityEstimatesData(BaseModel):
     source: str = Field(..., description="Source of estimate")
     annual_impact: float = Field(..., description="Annual impact (%)")
     
-    @validator('source')
+    @field_validator('source')
+    @classmethod
     def source_valid(cls, v):
         """Validate source names"""
         valid_sources = {'Conservative', 'Moderate', 'Optimistic', 'Aggressive'}
@@ -355,7 +342,8 @@ class OECDG7AdoptionData(BaseModel):
     genai_adoption: Optional[float] = Field(None, ge=0, le=100, description="GenAI adoption rate")
     digital_readiness: Optional[float] = Field(None, ge=0, le=100, description="Digital readiness score")
     
-    @validator('country')
+    @field_validator('country')
+    @classmethod
     def country_must_be_g7(cls, v):
         """Validate G7 country names"""
         g7_countries = {'Canada', 'France', 'Germany', 'Italy', 'Japan', 'United Kingdom', 'United States'}
@@ -372,7 +360,8 @@ class OECDApplicationsData(BaseModel):
     usage_rate: float = Field(..., description="Usage rate (%)")
     category: str = Field(..., description="Application category")
     
-    @validator('application')
+    @field_validator('application')
+    @classmethod
     def application_name_valid(cls, v):
         """Validate AI application names"""
         valid_applications = {
@@ -392,7 +381,8 @@ class BarriersData(BaseModel):
     barrier: str = Field(..., description="Barrier description")
     percentage: float = Field(..., description="Percentage of companies reporting barrier")
     
-    @validator('barrier')
+    @field_validator('barrier')
+    @classmethod
     def barrier_name_valid(cls, v):
         """Validate barrier names"""
         valid_barriers = {
@@ -411,7 +401,8 @@ class SupportEffectivenessData(BaseModel):
     support_type: str = Field(..., description="Type of support")
     effectiveness_score: float = Field(..., description="Effectiveness score")
     
-    @validator('support_type')
+    @field_validator('support_type')
+    @classmethod
     def support_type_valid(cls, v):
         """Validate support types"""
         valid_types = {
@@ -432,7 +423,8 @@ class RegionalGrowthData(BaseModel):
     adoption_rate: float = Field(..., description="Current adoption rate (%)")
     investment_growth: float = Field(..., description="Investment growth (%)")
     
-    @validator('region')
+    @field_validator('region')
+    @classmethod
     def region_name_valid(cls, v):
         """Validate region names"""
         valid_regions = {
@@ -452,7 +444,8 @@ class AICostReductionData(BaseModel):
     cost_per_million_tokens: float = Field(..., ge=0, description="Cost per million tokens in USD")
     reduction_factor: Optional[float] = Field(None, gt=0, description="Cost reduction factor")
     
-    @validator('cost_per_million_tokens')
+    @field_validator('cost_per_million_tokens')
+    @classmethod
     def cost_reasonable(cls, v):
         """Cost should be reasonable"""
         if v > 100:
@@ -468,7 +461,8 @@ class AIPerceptionData(BaseModel):
     expect_job_change: float = Field(..., description="% expecting job change")
     expect_job_replacement: float = Field(..., description="% expecting job replacement")
     
-    @validator('generation')
+    @field_validator('generation')
+    @classmethod
     def generation_valid(cls, v):
         """Validate generation names"""
         valid_generations = {
@@ -486,7 +480,8 @@ class TrainingEmissionsData(BaseModel):
     model: str = Field(..., description="AI model name")
     carbon_tons: float = Field(..., description="Emissions in tons of CO2")
     
-    @validator('carbon_tons')
+    @field_validator('carbon_tons')
+    @classmethod
     def emissions_reasonable(cls, v):
         """Emissions should be reasonable"""
         if v > 1000000:  # 1 million kg CO2
@@ -502,7 +497,8 @@ class SkillGapData(BaseModel):
     gap_severity: float = Field(..., description="Gap severity (%)")
     training_initiatives: float = Field(..., description="Training initiatives (%)")
     
-    @validator('skill')
+    @field_validator('skill')
+    @classmethod
     def skill_name_valid(cls, v):
         """Validate skill names"""
         valid_skills = {
@@ -514,7 +510,8 @@ class SkillGapData(BaseModel):
             logger.warning(f'Skill "{v}" not in standard list')
         return v
     
-    @validator('gap_severity')
+    @field_validator('gap_severity')
+    @classmethod
     def gap_severity_reasonable(cls, v):
         """Gap severity should be reasonable"""
         if v > 100:
@@ -530,7 +527,8 @@ class AIGovernanceData(BaseModel):
     adoption_rate: float = Field(..., description="Adoption rate (%)")
     maturity_score: float = Field(..., description="Maturity score (out of 5)")
     
-    @validator('aspect')
+    @field_validator('aspect')
+    @classmethod
     def governance_area_valid(cls, v):
         """Validate governance areas"""
         valid_areas = {
@@ -549,7 +547,8 @@ class GenAI2025Data(BaseModel):
     function: str = Field(..., description="Business function")
     adoption: float = Field(..., description="GenAI adoption (%)")
     
-    @validator('function')
+    @field_validator('function')
+    @classmethod
     def function_valid(cls, v):
         """Validate function names"""
         valid_functions = {
@@ -571,7 +570,8 @@ class TokenUsagePatternsData(BaseModel):
     avg_output_tokens: float = Field(..., description="Average output tokens")
     input_output_ratio: float = Field(..., description="Input/output ratio")
     
-    @validator('use_case')
+    @field_validator('use_case')
+    @classmethod
     def use_case_valid(cls, v):
         """Validate use case names"""
         valid_use_cases = {
@@ -592,7 +592,8 @@ class TokenOptimizationData(BaseModel):
     implementation_complexity: float = Field(..., description="Implementation complexity (1-5)")
     time_to_implement: float = Field(..., description="Time to implement (days)")
     
-    @validator('strategy')
+    @field_validator('strategy')
+    @classmethod
     def strategy_valid(cls, v):
         """Validate optimization strategies"""
         valid_strategies = {
@@ -613,7 +614,8 @@ class TokenPricingEvolutionData(BaseModel):
     avg_price_output: float = Field(..., description="Average output token price")
     models_available: int = Field(..., description="Number of models available")
     
-    @validator('date')
+    @field_validator('date')
+    @classmethod
     def date_format_valid(cls, v):
         """Validate date format"""
         import re
@@ -632,7 +634,8 @@ class StateData(BaseModel):
     adoption_rate: Optional[float] = Field(None, ge=0, le=100, description="Adoption rate percentage (alias)")
     population_millions: Optional[float] = Field(None, gt=0, description="Population in millions")
 
-    @validator('state')
+    @field_validator('state')
+    @classmethod
     def state_name_valid(cls, v):
         """Validate US state names"""
         us_states = {
@@ -657,7 +660,8 @@ class TechStackData(BaseModel):
     technology: str = Field(..., description="Technology name")
     percentage: float = Field(..., ge=0, le=100, description="Usage percentage")
     
-    @validator('technology')
+    @field_validator('technology')
+    @classmethod
     def technology_valid(cls, v):
         """Validate technology names"""
         valid_technologies = {
@@ -679,13 +683,12 @@ class ValidationResult(BaseModel):
     validated_rows: int = Field(..., ge=0, description="Number of rows validated")
     total_rows: int = Field(..., ge=0, description="Total number of rows")
     
-    @validator('validated_rows')
-    def validated_cannot_exceed_total(cls, v, values):
+    @field_validator('validated_rows')
+    @classmethod
+    def validated_cannot_exceed_total(cls, v, info: ValidationInfo):
         """Validated rows cannot exceed total rows"""
-        total = values.get('total_rows')
-        if total is not None and v > total:
-            logger.warning(f'Validated rows ({v}) exceeded total rows ({total}), capping to {total}')
-            return total
+        if info.data and 'total_rows' in info.data and v > info.data['total_rows']:
+            raise ValueError("Validated rows cannot exceed total rows")
         return v
 
 
@@ -703,7 +706,7 @@ class DatasetInfo(BaseModel):
 
 
 # Model registry for easy access - UPDATED with all datasets
-MODEL_REGISTRY: Dict[str, BaseModel] = {
+MODEL_REGISTRY: Dict[str, Type[BaseModel]] = {
     "historical_data": HistoricalDataPoint,
     "sector_2018": SectorData,
     "sector_2025": SectorData,
@@ -737,7 +740,7 @@ MODEL_REGISTRY: Dict[str, BaseModel] = {
 
 def validate_dataframe(
     df: pd.DataFrame, 
-    model: BaseModel, 
+    model: Type[BaseModel], 
     sample_size: int = 100
 ) -> ValidationResult:
     """
@@ -828,13 +831,14 @@ def validate_required_columns(df: pd.DataFrame, required_columns: List[str]) -> 
     
     return ValidationResult(
         is_valid=True,
+        error_message=None,
         warning_messages=warnings,
         validated_rows=len(df),
         total_rows=len(df)
     )
 
 
-def get_model_for_dataset(dataset_name: str) -> Optional[BaseModel]:
+def get_model_for_dataset(dataset_name: str) -> Optional[Type[BaseModel]]:
     """Get the appropriate Pydantic model for a dataset"""
     return MODEL_REGISTRY.get(dataset_name)
 
@@ -862,7 +866,7 @@ def validate_dataset(df: pd.DataFrame, dataset_name: str) -> ValidationResult:
     return validate_dataframe(df, model)
 
 
-def safe_validate_data(df: pd.DataFrame, dataset_name: str, show_warnings: bool = True) -> bool:
+def safe_validate_data(df: pd.DataFrame, dataset_name: str, show_warnings: bool = True) -> ValidationResult:
     """
     Safely validate data with user-friendly output
     
@@ -872,21 +876,26 @@ def safe_validate_data(df: pd.DataFrame, dataset_name: str, show_warnings: bool 
         show_warnings: Whether to display warnings in UI
     
     Returns:
-        True if validation passes, False otherwise
+        ValidationResult object with validation status and errors
     """
     try:
         result = validate_dataset(df, dataset_name)
         
         if result.is_valid:
             logger.info(f"✅ {dataset_name} validation passed ({result.validated_rows}/{result.total_rows} rows)")
-            return True
         else:
             logger.error(f"❌ {dataset_name} validation failed: {result.error_message}")
             if show_warnings:
                 import streamlit as st
                 st.error(f"Data validation failed for {dataset_name}: {result.error_message}")
-            return False
-            
+        return result
+        
     except Exception as e:
         logger.error(f"Validation error for {dataset_name}: {e}")
-        return False
+        return ValidationResult(
+            is_valid=False,
+            error_message=str(e),
+            warning_messages=[],
+            validated_rows=0,
+            total_rows=0
+        )
