@@ -523,6 +523,37 @@ except Exception as e:
     st.error(f"Full error: {traceback.format_exc()}")
     st.stop()
 
+# Extract commonly used data variables for backward compatibility
+# This ensures old variable references continue to work
+historical_data = dashboard_data.get('historical_data', pd.DataFrame())
+sector_2018 = dashboard_data.get('sector_2018', pd.DataFrame())
+sector_2025 = dashboard_data.get('sector_2025', pd.DataFrame())
+firm_size = dashboard_data.get('firm_size', pd.DataFrame())
+ai_maturity = dashboard_data.get('ai_maturity', pd.DataFrame())
+geographic = dashboard_data.get('geographic', pd.DataFrame())
+tech_stack = dashboard_data.get('tech_stack', pd.DataFrame())
+productivity_data = dashboard_data.get('productivity_data', pd.DataFrame())
+productivity_by_skill = dashboard_data.get('productivity_by_skill', pd.DataFrame())
+ai_productivity_estimates = dashboard_data.get('ai_productivity_estimates', pd.DataFrame())
+oecd_g7_adoption = dashboard_data.get('oecd_g7_adoption', pd.DataFrame())
+oecd_applications = dashboard_data.get('oecd_applications', pd.DataFrame())
+barriers_data = dashboard_data.get('barriers_data', pd.DataFrame())
+support_effectiveness = dashboard_data.get('support_effectiveness', pd.DataFrame())
+state_data = dashboard_data.get('state_data', pd.DataFrame())
+ai_investment_data = dashboard_data.get('ai_investment_data', pd.DataFrame())
+regional_growth = dashboard_data.get('regional_growth', pd.DataFrame())
+ai_cost_reduction = dashboard_data.get('ai_cost_reduction', pd.DataFrame())
+financial_impact = dashboard_data.get('financial_impact', pd.DataFrame())
+ai_perception = dashboard_data.get('ai_perception', pd.DataFrame())
+training_emissions = dashboard_data.get('training_emissions', pd.DataFrame())
+skill_gap_data = dashboard_data.get('skill_gap_data', pd.DataFrame())
+ai_governance = dashboard_data.get('ai_governance', pd.DataFrame())
+genai_2025 = dashboard_data.get('genai_2025', pd.DataFrame())
+token_economics = dashboard_data.get('token_economics', pd.DataFrame())
+token_usage_patterns = dashboard_data.get('token_usage_patterns', pd.DataFrame())
+token_optimization = dashboard_data.get('token_optimization', pd.DataFrame())
+token_pricing_evolution = dashboard_data.get('token_pricing_evolution', pd.DataFrame())
+
 # McKinsey Causal Analysis Integration
 @st.cache_data
 def perform_causal_analysis():
@@ -3130,28 +3161,29 @@ elif view_type == "Adoption Rates":
     if "2025" in data_year:
         st.write("📊 **GenAI Adoption by Business Function (2025)**")
         
-        # Enhanced function data with financial impact
-        function_data = financial_impact.copy()
-        function_data['adoption'] = [42, 23, 7, 22, 28, 23, 13, 15]  # GenAI adoption rates
-        
-        # Create comprehensive visualization
-        fig = go.Figure()
-        
-        # Adoption rate bars
-        fig.add_trace(go.Bar(
-            x=function_data['function'],
-            y=function_data['adoption'],
-            name='GenAI Adoption Rate',
-            marker_color='#3498DB',
-            yaxis='y',
-            text=[f'{x}%' for x in function_data['adoption']],
-            textposition='outside'
-        ))
-        
-        # Revenue impact line
-        fig.add_trace(go.Scatter(
-            x=function_data['function'],
-            y=function_data['companies_reporting_revenue_gains'],
+        if not financial_impact.empty:
+            # Enhanced function data with financial impact
+            function_data = financial_impact.copy()
+            function_data['adoption'] = [42, 23, 7, 22, 28, 23, 13, 15]  # GenAI adoption rates
+            
+            # Create comprehensive visualization
+            fig = go.Figure()
+            
+            # Adoption rate bars
+            fig.add_trace(go.Bar(
+                x=function_data['function'],
+                y=function_data['adoption'],
+                name='GenAI Adoption Rate',
+                marker_color='#3498DB',
+                yaxis='y',
+                text=[f'{x}%' for x in function_data['adoption']],
+                textposition='outside'
+            ))
+            
+            # Revenue impact line
+            fig.add_trace(go.Scatter(
+                x=function_data['function'],
+                y=function_data['companies_reporting_revenue_gains'],
             mode='lines+markers',
             name='% Reporting Revenue Gains',
             line=dict(width=3, color='#2ECC71'),
@@ -3185,37 +3217,45 @@ elif view_type == "Adoption Rates":
                 with st.expander("Data Source", expanded=True):
                     st.info(show_source_info('mckinsey'))
         
-        # Note about adoption definition
-        st.info("**Note:** Adoption rates include any GenAI use (pilots, experiments, production) among firms using AI")
+            # Note about adoption definition
+            st.info("**Note:** Adoption rates include any GenAI use (pilots, experiments, production) among firms using AI")
+        else:
+            st.warning("Financial impact data not available for GenAI adoption analysis")
         
     else:
         # 2018 view
-        weighting = st.sidebar.radio("Weighting Method", ["Firm-Weighted", "Employment-Weighted"])
-        y_col = 'firm_weighted' if weighting == "Firm-Weighted" else 'employment_weighted'
+        sector_2018 = dashboard_data.get('sector_2018', pd.DataFrame())
         
-        fig = px.bar(
-            sector_2018, 
+        if not sector_2018.empty:
+            weighting = st.sidebar.radio("Weighting Method", ["Firm-Weighted", "Employment-Weighted"])
+            y_col = 'firm_weighted' if weighting == "Firm-Weighted" else 'employment_weighted'
+            
+            fig = px.bar(
+                sector_2018, 
             x='sector', 
             y=y_col, 
             title=f'AI Adoption by Sector (2018) - {weighting}',
             color=y_col, 
             color_continuous_scale='blues',
             text=y_col
-        )
-        fig.update_traces(texttemplate='%{text}%', textposition='outside')
-        fig.update_layout(xaxis_tickangle=45, height=500)
-        st.plotly_chart(fig, use_container_width=True)
-        
-        st.write("🏭 **Key Insight**: Manufacturing and Information sectors led early AI adoption at 12% each")
+            )
+            fig.update_traces(texttemplate='%{text}%', textposition='outside')
+            fig.update_layout(xaxis_tickangle=45, height=500)
+            st.plotly_chart(fig, use_container_width=True)
+            
+            st.write("🏭 **Key Insight**: Manufacturing and Information sectors led early AI adoption at 12% each")
+        else:
+            st.warning("2018 sector data not available")
 
 elif view_type == "Skill Gap Analysis":
     st.write("🎓 **AI Skills Gap Analysis**")
     
-    # Skills gap visualization
-    fig = go.Figure()
-    
-    # Sort by gap severity
-    skill_sorted = skill_gap_data.sort_values('gap_severity', ascending=True)
+    if not skill_gap_data.empty:
+        # Skills gap visualization
+        fig = go.Figure()
+        
+        # Sort by gap severity
+        skill_sorted = skill_gap_data.sort_values('gap_severity', ascending=True)
     
     # Create diverging bar chart
     fig.add_trace(go.Bar(
@@ -3521,18 +3561,19 @@ elif view_type == "Technology Stack":
 elif view_type == "AI Technology Maturity":
     st.write("🎯 **AI Technology Maturity & Adoption (Gartner 2025)**")
     
-    # Enhanced maturity visualization
-    color_map = {
-        'Peak of Expectations': '#F59E0B',
-        'Trough of Disillusionment': '#6B7280', 
-        'Slope of Enlightenment': '#10B981'
-    }
-    
-    fig = go.Figure()
-    
-    # Group by maturity stage
-    for stage in ai_maturity['maturity'].unique():
-        stage_data = ai_maturity[ai_maturity['maturity'] == stage]
+    if not ai_maturity.empty:
+        # Enhanced maturity visualization
+        color_map = {
+            'Peak of Expectations': '#F59E0B',
+            'Trough of Disillusionment': '#6B7280', 
+            'Slope of Enlightenment': '#10B981'
+        }
+        
+        fig = go.Figure()
+        
+        # Group by maturity stage
+        for stage in ai_maturity['maturity'].unique():
+            stage_data = ai_maturity[ai_maturity['maturity'] == stage]
         
         fig.add_trace(go.Scatter(
             x=stage_data['adoption_rate'],
