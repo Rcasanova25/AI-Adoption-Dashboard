@@ -4,6 +4,13 @@ pandas
 numpy
 pydantic>=2.5.0
 psutil>=5.9.0  # For memory management and system monitoring
+
+# McKinsey Tools Integration (optional - graceful fallback if unavailable)
+# causalnex>=0.12.0  # McKinsey CausalNX for causal analysis
+# kedro>=0.18.0      # McKinsey Kedro for data pipelines  
+# vizro>=0.1.0       # McKinsey Vizro for dashboards
+
+# Testing dependencies
 pytest>=7.0.0
 pytest-cov>=4.0.0
 pytest-mock>=3.10.0
