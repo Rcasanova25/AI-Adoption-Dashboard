@@ -5564,7 +5564,7 @@ with st.expander("📊 Comprehensive AI Impact Analysis - Full Report", expanded
         - **Patent surge:** 3,833 (2010) → 122,511 (2023), China holds 69.7%
         
         **Compute Centralization Concerns:**
-        - **Private firm concentration:** Centralized access undermining academic transparency
+        - **Private firm concentration:** Centralized access undermines academic transparency
         - **Reproducibility challenges:** Limited access to compute resources
         - **Energy intensity:** Future AI systems may rival global cloud infrastructure
         - **Environmental constraints:** Growing carbon footprint requiring sustainable solutions
@@ -5720,7 +5720,7 @@ with trust_cols[1]:
     <div style='text-align: center;'>
         <h4>🔄 Update Status</h4>
         <div style='color: #28a745;'>
-            ✅ June 2025
+            ✅ June 28, 2025
         </div>
     </div>
     """, unsafe_allow_html=True)
