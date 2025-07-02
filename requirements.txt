@@ -1,13 +1,31 @@
-streamlit
-plotly
-pandas
-numpy
-scipy
-scikit-learn
-pyyaml
-networkx
+streamlit>=1.28.0
+plotly>=5.17.0
+pandas>=1.5.0
+numpy>=1.24.0
+scipy>=1.10.0
+scikit-learn>=1.3.0
+pyyaml>=6.0
+networkx>=3.0
 pydantic>=2.5.0
 psutil>=5.9.0  # For memory management and system monitoring
+
+# OECD Integration Dependencies
+requests>=2.31.0  # For OECD API calls
+urllib3>=2.0.0    # For HTTP requests
+tenacity>=8.2.0   # For retry logic
+
+# Enhanced Data Processing
+openpyxl>=3.1.0   # For Excel file handling
+python-dateutil>=2.8.0  # For date parsing
+pytz>=2023.3      # For timezone handling
+
+# Visualization Enhancements
+seaborn>=0.12.0   # Additional plotting capabilities
+matplotlib>=3.7.0 # Base plotting library
+
+# Performance and Caching
+diskcache>=5.6.0  # For enhanced caching
+joblib>=1.3.0     # For parallel processing
 
 # McKinsey Tools Integration (optional - graceful fallback if unavailable)
 # causalnex>=0.12.0  # McKinsey CausalNX for causal analysis
