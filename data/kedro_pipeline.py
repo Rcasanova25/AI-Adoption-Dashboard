@@ -10,8 +10,15 @@ from dataclasses import dataclass
 from enum import Enum
 from datetime import datetime
 import logging
-import yaml
 from pathlib import Path
+
+# Import yaml with fallback
+try:
+    import yaml
+except ImportError:
+    yaml = None
+    import logging
+    logging.warning("PyYAML not available. Kedro pipeline features will use fallback configuration.")
 
 # Kedro imports with fallback classes
 try:
