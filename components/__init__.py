@@ -98,4 +98,30 @@ if PERSONA_COMPARISON_AVAILABLE:
 # Version and metadata
 __version__ = "1.0.0"
 __author__ = "AI Dashboard Team"
-__description__ = "Professional UI components for strategic AI dashboards" 
+__description__ = "Professional UI components for strategic AI dashboards"
+
+"""
+Components module for Dash AI Adoption Dashboard
+Contains reusable UI components
+"""
+
+from .charts import *
+from .metrics import *
+from .tables import *
+
+__all__ = [
+    # Chart components
+    'create_adoption_trends_chart',
+    'create_sector_comparison_chart',
+    'create_roi_analysis_chart',
+    'create_productivity_trends_chart',
+    'create_geographic_chart',
+    
+    # Metric components
+    'create_metric_card',
+    'create_metric_row',
+    
+    # Table components
+    'create_data_table',
+    'create_summary_table'
+] 

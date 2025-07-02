@@ -1,0 +1,177 @@
+/* Custom styles for Dash AI Adoption Dashboard */
+
+.sidebar {
+    background-color: #f8f9fa;
+    padding: 20px;
+    border-right: 1px solid #dee2e6;
+    height: 100vh;
+    overflow-y: auto;
+    position: sticky;
+    top: 0;
+}
+
+.sidebar-header {
+    color: #495057;
+    border-bottom: 2px solid #007bff;
+    padding-bottom: 10px;
+    margin-bottom: 20px;
+}
+
+.sidebar-content {
+    padding: 10px 0;
+}
+
+.metric-card {
+    border-left: 4px solid #007bff;
+    transition: transform 0.2s ease-in-out;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.metric-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,123,255,0.3);
+}
+
+.insight-box {
+    background-color: rgba(31, 119, 180, 0.1);
+    border-left: 4px solid #1f77b4;
+    padding: 1rem;
+    margin: 1rem 0;
+    border-radius: 0.25rem;
+}
+
+/* AI Chart Generator specific styles */
+.ai-chart-container {
+    border: 2px dashed #007bff;
+    border-radius: 10px;
+    padding: 20px;
+    background-color: #f8f9ff;
+}
+
+/* Make tabs look more like Streamlit */
+.nav-tabs .nav-link {
+    color: #495057;
+    border: none;
+    border-bottom: 2px solid transparent;
+}
+
+.nav-tabs .nav-link.active {
+    background-color: transparent;
+    border-color: #007bff;
+    border-bottom: 2px solid #007bff;
+}
+
+/* Dashboard header styling */
+h1 {
+    color: #1f77b4;
+    font-weight: 600;
+}
+
+.lead {
+    color: #6c757d;
+    font-size: 1.1rem;
+}
+
+/* Card styling */
+.card {
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    transition: box-shadow 0.2s ease-in-out;
+}
+
+.card:hover {
+    box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+}
+
+.card-header {
+    background-color: #f8f9fa;
+    border-bottom: 1px solid #dee2e6;
+    border-radius: 8px 8px 0 0 !important;
+}
+
+/* Button styling */
+.btn {
+    border-radius: 6px;
+    font-weight: 500;
+    transition: all 0.2s ease-in-out;
+}
+
+.btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+/* Form controls */
+.form-label {
+    font-weight: 600;
+    color: #495057;
+    margin-bottom: 0.5rem;
+}
+
+/* Dropdown styling */
+.Select-control {
+    border-radius: 6px;
+    border: 1px solid #ced4da;
+}
+
+/* Range slider styling */
+.rc-slider-track {
+    background-color: #007bff;
+}
+
+.rc-slider-handle {
+    border: 2px solid #007bff;
+    background-color: #fff;
+}
+
+/* Alert styling */
+.alert {
+    border-radius: 8px;
+    border: none;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+/* Graph container styling */
+.js-plotly-plot {
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    .sidebar {
+        height: auto;
+        position: relative;
+    }
+    
+    .metric-card {
+        margin-bottom: 1rem;
+    }
+}
+
+/* Loading spinner styling */
+._dash-loading {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 200px;
+}
+
+/* Custom scrollbar for sidebar */
+.sidebar::-webkit-scrollbar {
+    width: 6px;
+}
+
+.sidebar::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 3px;
+}
+
+.sidebar::-webkit-scrollbar-thumb {
+    background: #c1c1c1;
+    border-radius: 3px;
+}
+
+.sidebar::-webkit-scrollbar-thumb:hover {
+    background: #a8a8a8;
+} 
