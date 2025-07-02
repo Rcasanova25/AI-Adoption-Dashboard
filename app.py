@@ -16,7 +16,8 @@ from data.kedro_pipeline import kedro_manager, AIAdoptionKedroManager
 from visualization.vizro_dashboard import vizro_dashboard, PersonaType
 
 # Import data infrastructure
-from data.loaders import load_all_datasets, validate_all_loaded_data
+from data.loaders import validate_all_loaded_data
+from data.pipeline_integration import load_all_datasets_integrated, integration_manager
 from data.models import safe_validate_data
 from data.geographic import get_geographic_data, get_country_details, generate_geographic_insights
 
@@ -26,6 +27,9 @@ from performance.caching import smart_cache, performance_monitor, DataPipeline
 # Import utilities
 from Utils.helpers import clean_filename, safe_execute, safe_data_check
 from Utils.navigation import setup_navigation
+
+# Import accessibility features
+from accessibility.integrate_accessibility import initialize_accessibility, accessibility_integrator
 
 # Page config
 st.set_page_config(
@@ -5771,15 +5775,34 @@ st.markdown("""
 
 def main():
     """
-    Main application entry point
+    Main application entry point with automated PDF data integration
     Orchestrates the dashboard initialization and execution
     """
     try:
         # Initialize performance monitoring
         performance_monitor.start_timer('app_initialization')
         
-        # Load and validate data
-        datasets = load_data_with_mckinsey_tools()
+        # Initialize accessibility features
+        initialize_accessibility()
+        
+        # Display integration status in sidebar
+        integration_manager.display_integration_status()
+        
+        # Load data using integrated pipeline (automated + manual)
+        datasets, integration_metadata = load_all_datasets_integrated()
+        
+        # Display integration summary
+        with st.sidebar:
+            st.subheader("📊 Data Loading Summary") 
+            summary = integration_metadata.get('summary', {})
+            if summary:
+                st.metric("Datasets Loaded", f"{summary['successful_loads']}/{summary['total_datasets']}")
+                st.metric("Success Rate", f"{summary['success_rate']:.1f}%")
+                
+                if summary.get('automated_loads', 0) > 0:
+                    st.success(f"🚀 {summary['automated_loads']} datasets auto-extracted from PDFs")
+                if summary.get('manual_loads', 0) > 0:
+                    st.info(f"📋 {summary['manual_loads']} datasets from manual integration")
         
         # Validate loaded data
         if validate_all_loaded_data:
@@ -5787,8 +5810,8 @@ def main():
             # Check if any dataset failed validation
             failed_validations = [result for result in validation_results.values() if not result.is_valid]
             if failed_validations:
-                st.error("Data validation failed. Using fallback data.")
-                datasets = load_fallback_data()
+                st.warning("Some datasets had validation issues, but proceeding with available data.")
+                # Note: No longer falling back completely - partial data is still useful
         
         # Setup navigation and run main dashboard logic
         setup_navigation()
@@ -5804,10 +5827,13 @@ def main():
             
     except Exception as e:
         st.error(f"Application initialization failed: {e}")
-        st.info("Using fallback mode with default data")
+        st.info("Falling back to McKinsey tools or basic functionality")
         
-        # Fallback to basic functionality
-        datasets = load_fallback_data()
+        # Fallback to McKinsey tools or basic functionality
+        try:
+            datasets = load_data_with_mckinsey_tools()
+        except Exception:
+            datasets = load_fallback_data()
 
 if __name__ == "__main__":
     main()

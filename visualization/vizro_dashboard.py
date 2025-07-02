@@ -82,8 +82,8 @@ def filter_interaction(*args, **kwargs):
 # Now try to import and override with real Vizro classes if available
 try:
     import vizro
-    from vizro import Vizro as VizroReal, VizroBaseModel as VizroBaseModelReal
-    from vizro.models import Dashboard as DashboardReal, Page as PageReal, Graph as GraphReal, Card as CardReal, Container as ContainerReal, Button as ButtonReal
+    from vizro import Vizro as VizroReal
+    from vizro.models import Dashboard as DashboardReal, Page as PageReal, Graph as GraphReal, Card as CardReal, Container as ContainerReal, Button as ButtonReal, VizroBaseModel as VizroBaseModelReal
     from vizro.models.types import capture as capture_real
     from vizro.actions import filter_interaction as filter_interaction_real
     
@@ -288,7 +288,7 @@ class AIAdoptionVizroDashboard:
         if not summary_data.empty:
             components.append(
                 Graph(
-                    figure=capture("executive_roi_trends")(self._create_executive_roi_chart),
+                    figure=self._create_executive_roi_chart(),
                     id="executive_roi_trends"
                 )
             )
@@ -327,11 +327,11 @@ class AIAdoptionVizroDashboard:
                 id="strategic_header"
             ),
             Graph(
-                figure=capture("strategic_positioning")(self._create_strategic_positioning_chart),
+                figure=self._create_strategic_positioning_chart(),
                 id="strategic_positioning"
             ),
             Graph(
-                figure=capture("competitive_analysis")(self._create_competitive_analysis_chart),
+                figure=self._create_competitive_analysis_chart(),
                 id="competitive_analysis"
             )
         ]
@@ -355,11 +355,11 @@ class AIAdoptionVizroDashboard:
                 id="roi_header"
             ),
             Graph(
-                figure=capture("roi_by_sector")(self._create_roi_by_sector_chart),
+                figure=self._create_roi_by_sector_chart(),
                 id="roi_by_sector"
             ),
             Graph(
-                figure=capture("roi_projections")(self._create_roi_projections_chart),
+                figure=self._create_roi_projections_chart(),
                 id="roi_projections"
             )
         ]
@@ -383,11 +383,11 @@ class AIAdoptionVizroDashboard:
                 id="geographic_header"
             ),
             Graph(
-                figure=capture("world_map")(self._create_world_map_chart),
+                figure=self._create_world_map_chart(),
                 id="world_map"
             ),
             Graph(
-                figure=capture("regional_comparison")(self._create_regional_comparison_chart),
+                figure=self._create_regional_comparison_chart(),
                 id="regional_comparison"
             )
         ]
@@ -411,7 +411,7 @@ class AIAdoptionVizroDashboard:
                 id="policy_header"
             ),
             Graph(
-                figure=capture("policy_correlation")(self._create_policy_correlation_chart),
+                figure=self._create_policy_correlation_chart(),
                 id="policy_correlation"
             ),
             Card(
@@ -446,11 +446,11 @@ class AIAdoptionVizroDashboard:
                 id="causal_header"
             ),
             Graph(
-                figure=capture("causal_network")(self._create_causal_network_chart),
+                figure=self._create_causal_network_chart(),
                 id="causal_network"
             ),
             Graph(
-                figure=capture("intervention_impact")(self._create_intervention_impact_chart),
+                figure=self._create_intervention_impact_chart(),
                 id="intervention_impact"
             ),
             Card(
@@ -485,11 +485,11 @@ class AIAdoptionVizroDashboard:
                 id="explorer_header"
             ),
             Graph(
-                figure=capture("data_quality_dashboard")(self._create_data_quality_chart),
+                figure=self._create_data_quality_chart(),
                 id="data_quality_dashboard"
             ),
             Graph(
-                figure=capture("correlation_matrix")(self._create_correlation_matrix_chart),
+                figure=self._create_correlation_matrix_chart(),
                 id="correlation_matrix"
             )
         ]
@@ -513,7 +513,7 @@ class AIAdoptionVizroDashboard:
                 id="overview_header"
             ),
             Graph(
-                figure=capture("adoption_trends")(self._create_simple_trends_chart),
+                figure=self._create_simple_trends_chart(),
                 id="adoption_trends"
             ),
             Card(
@@ -549,11 +549,11 @@ class AIAdoptionVizroDashboard:
                 id="industry_header"
             ),
             Graph(
-                figure=capture("sector_comparison")(self._create_sector_comparison_chart),
+                figure=self._create_sector_comparison_chart(),
                 id="sector_comparison"
             ),
             Graph(
-                figure=capture("maturity_levels")(self._create_maturity_levels_chart),
+                figure=self._create_maturity_levels_chart(),
                 id="maturity_levels"
             )
         ]
