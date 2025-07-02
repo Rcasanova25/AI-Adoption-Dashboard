@@ -12,6 +12,7 @@ import logging
 
 from Utils.data_validation import safe_plot_check, DataValidator, safe_download_button
 from Utils.helpers import clean_filename
+from data.loaders import load_oecd_employment_outlook_data
 
 logger = logging.getLogger(__name__)
 
@@ -34,6 +35,8 @@ def show_skill_gap_analysis(
         """Return source information for different data types"""
         if source_type == 'skills':
             return "**Source**: AI Skills Gap Survey 2025\n\n**Methodology**: Analysis of 2,500+ organizations across industries, examining skill demands, training initiatives, and workforce development programs."
+        elif source_type == 'oecd_employment':
+            return "**Source**: OECD Employment Outlook 2024 - AI Employment Analysis\n\n**Methodology**: Comprehensive analysis across 34 OECD countries examining AI's impact on employment by skill category, substitution risks, and augmentation potential."
         return "**Source**: AI Index 2025 Report"
     
     st.write("🎓 **AI Skills Gap Analysis**")
@@ -124,7 +127,7 @@ def show_skill_gap_analysis(
         ):
             
             # Create tabs for different analyses
-            tab1, tab2, tab3, tab4 = st.tabs(["📊 Overview", "🎯 Demand vs Supply", "💰 Salary Impact", "📋 Recommendations"])
+            tab1, tab2, tab3, tab4, tab5 = st.tabs(["📊 Overview", "🎯 Demand vs Supply", "💰 Salary Impact", "🌍 OECD Analysis", "📋 Recommendations"])
             
             with tab1:
                 # Key insights and metrics
@@ -269,6 +272,97 @@ def show_skill_gap_analysis(
                     st.info(f"💼 **Market Reality:** High-demand AI skills command significant salary premiums, with {highest_premium['skill']} leading at +{highest_premium['salary_premium']}% above baseline roles.")
             
             with tab4:
+                # OECD Employment Analysis (NEW Phase 2A integration)
+                st.write("🌍 **OECD Employment Outlook - International Perspective**")
+                
+                try:
+                    # Load OECD employment outlook data
+                    oecd_employment_data = load_oecd_employment_outlook_data()
+                    
+                    def plot_oecd_substitution_risk():
+                        """Plot OECD AI substitution risk by skill category"""
+                        fig = go.Figure()
+                        
+                        # Create horizontal bar chart
+                        fig.add_trace(go.Bar(
+                            y=oecd_employment_data['skill_category'],
+                            x=oecd_employment_data['ai_substitution_risk'],
+                            orientation='h',
+                            name='Substitution Risk',
+                            marker_color='#E74C3C',
+                            text=[f'{x}%' for x in oecd_employment_data['ai_substitution_risk']],
+                            textposition='outside'
+                        ))
+                        
+                        # Add augmentation potential as overlay
+                        fig.add_trace(go.Bar(
+                            y=oecd_employment_data['skill_category'],
+                            x=oecd_employment_data['ai_augmentation_potential'],
+                            orientation='h',
+                            name='Augmentation Potential',
+                            marker_color='#2ECC71',
+                            opacity=0.7,
+                            text=[f'{x}%' for x in oecd_employment_data['ai_augmentation_potential']],
+                            textposition='outside'
+                        ))
+                        
+                        fig.update_layout(
+                            title="AI Impact on Employment by Skill Category (OECD Analysis)",
+                            xaxis_title="Percentage (%)",
+                            yaxis_title="Skill Category",
+                            height=400,
+                            barmode='overlay',
+                            legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1)
+                        )
+                        
+                        st.plotly_chart(fig, use_container_width=True)
+                    
+                    if safe_plot_check(
+                        oecd_employment_data,
+                        "OECD Employment Data",
+                        required_columns=['skill_category', 'ai_substitution_risk', 'ai_augmentation_potential'],
+                        plot_func=plot_oecd_substitution_risk
+                    ):
+                        
+                        # Key insights from OECD data
+                        col1, col2 = st.columns(2)
+                        
+                        with col1:
+                            st.write("**🔍 Key OECD Findings:**")
+                            # Calculate insights
+                            highest_risk = oecd_employment_data.loc[oecd_employment_data['ai_substitution_risk'].idxmax()]
+                            highest_augmentation = oecd_employment_data.loc[oecd_employment_data['ai_augmentation_potential'].idxmax()]
+                            
+                            st.write(f"• **Highest substitution risk:** {highest_risk['skill_category']} ({highest_risk['ai_substitution_risk']}%)")
+                            st.write(f"• **Highest augmentation potential:** {highest_augmentation['skill_category']} ({highest_augmentation['ai_augmentation_potential']}%)")
+                            st.write(f"• **Coverage:** {oecd_employment_data['coverage'].iloc[0]}")
+                        
+                        with col2:
+                            st.write("**📊 Employment Impact Projections:**")
+                            # Show employment change projections
+                            positive_change = oecd_employment_data[oecd_employment_data['net_employment_change_2030'] > 0]
+                            negative_change = oecd_employment_data[oecd_employment_data['net_employment_change_2030'] < 0]
+                            
+                            if len(positive_change) > 0:
+                                st.write(f"• **Job growth expected:** {len(positive_change)} skill categories")
+                            if len(negative_change) > 0:
+                                st.write(f"• **Job displacement risk:** {len(negative_change)} skill categories")
+                            
+                            avg_retraining = oecd_employment_data['retraining_urgency_score'].mean()
+                            st.write(f"• **Average retraining urgency:** {avg_retraining:.0f}/100")
+                        
+                        st.success("✅ **OECD Insight:** This international analysis from 34 OECD countries provides authoritative data on AI's employment impact across different skill levels.")
+                        
+                        if st.button("📊 View OECD Data Source", key="oecd_employment_source"):
+                            with st.expander("OECD Employment Outlook Source", expanded=True):
+                                st.info(show_source_info('oecd_employment'))
+                
+                except Exception as e:
+                    logger.error(f"Error loading OECD employment data: {e}")
+                    st.warning("OECD Employment Outlook data temporarily unavailable")
+                    st.info("💡 This tab normally displays comprehensive international analysis of AI's impact on employment from the OECD's 34-country study.")
+            
+            with tab5:
                 # Training Recommendations
                 st.write("📋 **Training & Development Recommendations**")
                 

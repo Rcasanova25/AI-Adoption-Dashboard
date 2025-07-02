@@ -12,6 +12,7 @@ import logging
 
 from Utils.data_validation import safe_plot_check, DataValidator, safe_download_button
 from Utils.helpers import clean_filename
+from data.loaders import load_oecd_policy_observatory_data
 
 logger = logging.getLogger(__name__)
 
@@ -36,6 +37,8 @@ def show_ai_governance(
             return "**Source**: AI Index Report 2025, Stanford Human-Centered AI Institute\n\n**Methodology**: Analysis of responsible AI practices across 1,000+ organizations globally, with focus on ethics guidelines, regulatory compliance, and governance frameworks."
         elif source_type == 'nist':
             return "**Source**: NIST AI Risk Management Framework\n\n**Methodology**: Federal framework for AI governance based on 240+ organization collaboration and extensive public consultation."
+        elif source_type == 'oecd_policy':
+            return "**Source**: OECD AI Policy Observatory 2024\n\n**Methodology**: Multi-country comparative analysis covering AI governance, regulation maturity, and ethical frameworks across 15 leading nations."
         return "**Source**: AI Governance Research"
     
     st.write("⚖️ **AI Governance & Ethics Implementation**")
@@ -62,7 +65,7 @@ def show_ai_governance(
             })
         
         # Create governance visualization tabs
-        tab1, tab2, tab3 = st.tabs(["Governance Overview", "Regulatory Framework", "Policy Timeline"])
+        tab1, tab2, tab3, tab4 = st.tabs(["Governance Overview", "Regulatory Framework", "Policy Timeline", "🌍 International Comparison"])
         
         with tab1:
             def plot_governance_radar():
@@ -306,6 +309,135 @@ def show_ai_governance(
                 st.write("• Executive Order on AI Safety (Dec 2023) had highest policy impact")
                 st.write("• International coordination efforts gaining momentum in 2024")
                 st.write("• Regulatory frameworks moving from principles to implementation")
+        
+        with tab4:
+            # International AI Governance Comparison (NEW Phase 2A integration)
+            st.write("🌍 **International AI Governance - OECD Analysis**")
+            
+            try:
+                # Load OECD policy observatory data
+                oecd_policy_data = load_oecd_policy_observatory_data()
+                
+                def plot_international_governance():
+                    """Plot international AI governance comparison"""
+                    fig = go.Figure()
+                    
+                    # Create scatter plot with bubble sizes
+                    fig.add_trace(go.Scatter(
+                        x=oecd_policy_data['ai_regulation_maturity'],
+                        y=oecd_policy_data['ethical_ai_framework_score'],
+                        mode='markers+text',
+                        text=oecd_policy_data['country'],
+                        textposition='top center',
+                        marker=dict(
+                            size=oecd_policy_data['ai_readiness_index'] * 0.3,  # Scale bubble size
+                            color=oecd_policy_data['ai_readiness_index'],
+                            colorscale='Viridis',
+                            showscale=True,
+                            colorbar=dict(title="AI Readiness Index")
+                        ),
+                        hovertemplate='<b>%{text}</b><br>' +
+                                     'Regulation Maturity: %{x}<br>' +
+                                     'Ethics Framework: %{y}<br>' +
+                                     'AI Readiness: %{marker.color}<extra></extra>'
+                    ))
+                    
+                    fig.update_layout(
+                        title="International AI Governance Landscape",
+                        xaxis_title="AI Regulation Maturity Score",
+                        yaxis_title="Ethical AI Framework Score",
+                        height=500,
+                        showlegend=False
+                    )
+                    
+                    st.plotly_chart(fig, use_container_width=True)
+                
+                def plot_government_spending():
+                    """Plot government AI spending comparison"""
+                    fig = go.Figure()
+                    
+                    # Sort by spending for better visualization
+                    spending_data = oecd_policy_data.sort_values('government_ai_spending_millions', ascending=True)
+                    
+                    fig.add_trace(go.Bar(
+                        y=spending_data['country'],
+                        x=spending_data['government_ai_spending_millions'],
+                        orientation='h',
+                        marker_color='#3498DB',
+                        text=[f'${x}M' for x in spending_data['government_ai_spending_millions']],
+                        textposition='outside'
+                    ))
+                    
+                    fig.update_layout(
+                        title="Government AI Investment by Country",
+                        xaxis_title="Government AI Spending (Millions USD)",
+                        yaxis_title="Country",
+                        height=500
+                    )
+                    
+                    st.plotly_chart(fig, use_container_width=True)
+                
+                if safe_plot_check(
+                    oecd_policy_data,
+                    "OECD Policy Data",
+                    required_columns=['country', 'ai_regulation_maturity', 'ethical_ai_framework_score'],
+                    plot_func=plot_international_governance
+                ):
+                    
+                    # Key international insights
+                    col1, col2 = st.columns(2)
+                    
+                    with col1:
+                        st.write("**🏆 Leading Nations:**")
+                        # Get top performers
+                        top_ethics = oecd_policy_data.loc[oecd_policy_data['ethical_ai_framework_score'].idxmax()]
+                        top_regulation = oecd_policy_data.loc[oecd_policy_data['ai_regulation_maturity'].idxmax()]
+                        top_readiness = oecd_policy_data.loc[oecd_policy_data['ai_readiness_index'].idxmax()]
+                        
+                        st.write(f"• **Ethics Leadership:** {top_ethics['country']} ({top_ethics['ethical_ai_framework_score']})")
+                        st.write(f"• **Regulation Maturity:** {top_regulation['country']} ({top_regulation['ai_regulation_maturity']})")
+                        st.write(f"• **Overall Readiness:** {top_readiness['country']} ({top_readiness['ai_readiness_index']})")
+                    
+                    with col2:
+                        st.write("**📊 Global Averages:**")
+                        avg_ethics = oecd_policy_data['ethical_ai_framework_score'].mean()
+                        avg_regulation = oecd_policy_data['ai_regulation_maturity'].mean()
+                        avg_readiness = oecd_policy_data['ai_readiness_index'].mean()
+                        
+                        st.write(f"• **Ethics Framework:** {avg_ethics:.1f}/100")
+                        st.write(f"• **Regulation Maturity:** {avg_regulation:.1f}/100")
+                        st.write(f"• **AI Readiness:** {avg_readiness:.1f}/100")
+                    
+                    st.markdown("---")
+                    
+                    # Government spending visualization
+                    if safe_plot_check(
+                        oecd_policy_data,
+                        "Government Spending Data",
+                        required_columns=['country', 'government_ai_spending_millions'],
+                        plot_func=plot_government_spending
+                    ):
+                        
+                        # Spending insights
+                        highest_spender = oecd_policy_data.loc[oecd_policy_data['government_ai_spending_millions'].idxmax()]
+                        total_spending = oecd_policy_data['government_ai_spending_millions'].sum()
+                        
+                        col1, col2 = st.columns(2)
+                        with col1:
+                            st.metric("Highest Government Investment", f"{highest_spender['country']}", f"${highest_spender['government_ai_spending_millions']}M")
+                        with col2:
+                            st.metric("Total OECD Government Spending", f"${total_spending}M", delta="Public sector AI investment")
+                        
+                        st.success("✅ **OECD Insight:** This analysis covers 15 leading nations and shows significant variation in AI governance approaches and investment levels.")
+                        
+                        if st.button("📊 View OECD Policy Source", key="oecd_policy_source"):
+                            with st.expander("OECD Policy Observatory Source", expanded=True):
+                                st.info(show_source_info('oecd_policy'))
+            
+            except Exception as e:
+                logger.error(f"Error loading OECD policy data: {e}")
+                st.warning("OECD Policy Observatory data temporarily unavailable")
+                st.info("💡 This tab normally displays comprehensive international comparison of AI governance frameworks from the OECD's multi-country analysis.")
         
         # Additional governance insights and controls
         st.markdown("---")

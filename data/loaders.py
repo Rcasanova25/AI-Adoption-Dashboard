@@ -243,6 +243,90 @@ def load_geographic_data() -> pd.DataFrame:
         raise DataLoadError(f"Geographic data loading failed: {e}")
 
 
+@st.cache_data(ttl=3600)
+def load_stlouis_fed_rapid_adoption_data() -> pd.DataFrame:
+    """
+    Load St. Louis Fed Rapid Adoption of Generative AI data
+    Source: Federal Reserve Bank of St. Louis Economic Research
+    """
+    try:
+        data = research_integrator.get_stlouis_fed_rapid_adoption_data()
+        
+        if safe_validate_data(data, "stlouis_fed_rapid_adoption", show_warnings=True).is_valid:
+            logger.info("✅ St. Louis Fed rapid adoption data loaded successfully")
+        else:
+            logger.warning("⚠️ St. Louis Fed rapid adoption data validation had issues, but proceeding")
+            
+        return data
+        
+    except Exception as e:
+        logger.error(f"Failed to load St. Louis Fed rapid adoption data: {e}")
+        raise DataLoadError(f"St. Louis Fed rapid adoption data loading failed: {e}")
+
+
+@st.cache_data(ttl=3600)
+def load_stlouis_fed_productivity_data() -> pd.DataFrame:
+    """
+    Load St. Louis Fed Impact of Generative AI on Work and Productivity data
+    Source: Federal Reserve Bank of St. Louis Economic Research
+    """
+    try:
+        data = research_integrator.get_stlouis_fed_productivity_impact_data()
+        
+        if safe_validate_data(data, "stlouis_fed_productivity", show_warnings=True).is_valid:
+            logger.info("✅ St. Louis Fed productivity impact data loaded successfully")
+        else:
+            logger.warning("⚠️ St. Louis Fed productivity impact data validation had issues, but proceeding")
+            
+        return data
+        
+    except Exception as e:
+        logger.error(f"Failed to load St. Louis Fed productivity impact data: {e}")
+        raise DataLoadError(f"St. Louis Fed productivity impact data loading failed: {e}")
+
+
+@st.cache_data(ttl=3600)
+def load_oecd_policy_observatory_data() -> pd.DataFrame:
+    """
+    Load OECD AI Policy Observatory data
+    Source: OECD AI Policy Observatory International Analysis
+    """
+    try:
+        data = research_integrator.get_oecd_policy_observatory_data()
+        
+        if safe_validate_data(data, "oecd_policy_observatory", show_warnings=True).is_valid:
+            logger.info("✅ OECD AI Policy Observatory data loaded successfully")
+        else:
+            logger.warning("⚠️ OECD AI Policy Observatory data validation had issues, but proceeding")
+            
+        return data
+        
+    except Exception as e:
+        logger.error(f"Failed to load OECD AI Policy Observatory data: {e}")
+        raise DataLoadError(f"OECD AI Policy Observatory data loading failed: {e}")
+
+
+@st.cache_data(ttl=3600)
+def load_oecd_employment_outlook_data() -> pd.DataFrame:
+    """
+    Load OECD AI Employment Outlook data
+    Source: OECD Employment Outlook Report
+    """
+    try:
+        data = research_integrator.get_oecd_employment_outlook_data()
+        
+        if safe_validate_data(data, "oecd_employment_outlook", show_warnings=True).is_valid:
+            logger.info("✅ OECD Employment Outlook data loaded successfully")
+        else:
+            logger.warning("⚠️ OECD Employment Outlook data validation had issues, but proceeding")
+            
+        return data
+        
+    except Exception as e:
+        logger.error(f"Failed to load OECD Employment Outlook data: {e}")
+        raise DataLoadError(f"OECD Employment Outlook data loading failed: {e}")
+
+
 @st.cache_data(ttl=3600) 
 def load_ai_maturity_data() -> pd.DataFrame:
     """Load and validate AI technology maturity data"""
@@ -360,13 +444,19 @@ def load_authentic_research_datasets():
         
         # Add authentic datasets to the collection
         complete_datasets = {
-            # Authentic research data
+            # Phase 1 - Core authentic research data
             'historical_data': authentic_datasets['historical_data'],
             'sector_2025': authentic_datasets['sector_2025'], 
             'ai_investment': authentic_datasets['ai_investment'],
             'financial_impact': authentic_datasets['financial_impact'],
             'productivity_data': authentic_datasets['productivity_data'],
             'gdp_impact': authentic_datasets['gdp_impact'],
+            
+            # Phase 2A - Government research integration (NEW)
+            'stlouis_fed_rapid_adoption': authentic_datasets['stlouis_fed_rapid_adoption'],
+            'stlouis_fed_productivity': authentic_datasets['stlouis_fed_productivity'],
+            'oecd_policy_observatory': authentic_datasets['oecd_policy_observatory'],
+            'oecd_employment_outlook': authentic_datasets['oecd_employment_outlook'],
             
             # Synthetic data pending research integration
             'token_economics': token_economics,
