@@ -85,8 +85,13 @@ def load_dashboard_data() -> Dict[str, Any]:
         # Import McKinsey tools (with fallback handling)
         try:
             from business.causal_analysis import causal_engine
-            from data.kedro_pipeline import kedro_manager
+            from data import kedro_manager
             from visualization.vizro_dashboard import vizro_dashboard
+            
+            # Check if kedro_manager is available
+            if kedro_manager is None:
+                logger.info("Kedro manager not available, proceeding to authentic research data")
+                raise ImportError("Kedro dependencies not available")
             
             # Try Kedro pipeline
             pipeline_result = kedro_manager.run_pipeline(

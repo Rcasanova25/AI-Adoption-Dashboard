@@ -6,7 +6,14 @@ from .geographic import get_geographic_data, get_country_details, generate_geogr
 from .advanced_analytics import advanced_analytics, PredictionResult, TrendAnalysis, ClusteringResult
 from .quality_assurance import quality_engine, QualityReport, QualityDimension
 from .integration import integration_engine, DataPipeline, PipelineExecution
-from .kedro_pipeline import kedro_manager, AIAdoptionKedroManager, KedroDataSource
+# Optional Kedro integration (graceful fallback if dependencies unavailable)
+try:
+    from .kedro_pipeline import kedro_manager, AIAdoptionKedroManager, KedroDataSource
+except ImportError as e:
+    # Kedro dependencies not available - use fallback
+    kedro_manager = None
+    AIAdoptionKedroManager = None
+    KedroDataSource = None
 
 __all__ = [
     'load_all_datasets', 'validate_all_loaded_data', 'safe_validate_data', 'ValidationResult',
