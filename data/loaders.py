@@ -1,5 +1,6 @@
 """
-Updated data loading functions with type safety and validation
+Updated data loading functions with authentic research integration
+Replaces synthetic data with real findings from Stanford AI Index, McKinsey, Goldman Sachs, etc.
 """
 
 import streamlit as st
@@ -15,6 +16,12 @@ from .models import (
     GeographicData, TokenEconomicsData, AIMaturityData, FirmSizeData
 )
 
+# Import authentic research integration
+from .research_integration import (
+    research_integrator, load_authentic_data_collection,
+    get_data_credibility_metrics, display_data_authenticity_dashboard
+)
+
 logger = logging.getLogger(__name__)
 
 
@@ -25,102 +32,134 @@ class DataLoadError(Exception):
 
 @st.cache_data(ttl=3600, show_spinner=True)
 def load_historical_data() -> pd.DataFrame:
-    """Load and validate historical AI adoption trends data (2017-2025)"""
+    """
+    Load authentic historical AI adoption trends data from Stanford AI Index 2025
+    Source: Stanford HAI AI Index Report 2025 - Authoritative academic research
+    """
     try:
-        data = pd.DataFrame({
-            'year': [2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024, 2025],
-            'ai_use': [20, 47, 58, 56, 55, 50, 55, 78, 78],
-            'genai_use': [0, 0, 0, 0, 0, 33, 33, 71, 71]
-        })
+        # Load authentic data from Stanford AI Index
+        data = research_integrator.get_authentic_historical_data()
         
-        # Validate the data
+        # Validate the authentic data
         if safe_validate_data(data, "historical_data", show_warnings=True).is_valid:
-            logger.info("✅ Historical data loaded and validated successfully")
+            logger.info("✅ Authentic historical data loaded from Stanford AI Index 2025")
             return data
         else:
-            logger.warning("⚠️ Historical data validation failed, but proceeding with data")
+            logger.warning("⚠️ Stanford AI Index data validation had issues, but proceeding")
             return data
             
     except Exception as e:
-        logger.error(f"Failed to load historical data: {e}")
-        raise DataLoadError(f"Historical data loading failed: {e}")
+        logger.error(f"Failed to load Stanford AI Index historical data: {e}")
+        # Fallback to ensure app continues working
+        logger.info("🔄 Using fallback historical data")
+        fallback_data = pd.DataFrame({
+            'year': [2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024, 2025],
+            'ai_use': [20, 47, 58, 56, 55, 50, 55, 78, 78],
+            'genai_use': [0, 0, 0, 0, 0, 33, 33, 71, 71],
+            'data_source': ['Fallback - Stanford AI Index unavailable'] * 9
+        })
+        return fallback_data
 
 
 @st.cache_data(ttl=3600)
 def load_sector_2025() -> pd.DataFrame:
-    """Load and validate 2025 sector data with ROI information"""
+    """
+    Load authentic 2025 sector data from McKinsey Global Survey
+    Source: McKinsey Global Survey on AI 2024 - 1,363 participant corporate survey
+    """
     try:
-        data = pd.DataFrame({
-            'sector': ['Technology', 'Financial Services', 'Healthcare', 'Manufacturing', 
-                      'Retail & E-commerce', 'Education', 'Energy & Utilities', 'Government'],
-            'adoption_rate': [92, 85, 78, 75, 72, 65, 58, 52],
-            'genai_adoption': [88, 78, 65, 58, 70, 62, 45, 38],
-            'avg_roi': [4.2, 3.8, 3.2, 3.5, 3.0, 2.5, 2.8, 2.2]
-        })
+        # Load authentic data from McKinsey survey
+        data = research_integrator.get_authentic_sector_data_2025()
         
-        # Validate the data
+        # Validate the authentic data
         if safe_validate_data(data, "sector_data", show_warnings=True).is_valid:
-            logger.info("✅ 2025 sector data loaded and validated successfully")
+            logger.info("✅ Authentic sector data loaded from McKinsey Global Survey 2024")
         else:
-            logger.warning("⚠️ Sector data validation had issues, but proceeding")
+            logger.warning("⚠️ McKinsey survey data validation had issues, but proceeding")
             
         return data
         
     except Exception as e:
-        logger.error(f"Failed to load 2025 sector data: {e}")
-        raise DataLoadError(f"2025 sector data loading failed: {e}")
+        logger.error(f"Failed to load McKinsey sector data: {e}")
+        # Fallback to ensure app continues working
+        logger.info("🔄 Using fallback sector data")
+        fallback_data = pd.DataFrame({
+            'sector': ['Technology', 'Financial Services', 'Healthcare', 'Manufacturing', 
+                      'Retail & E-commerce', 'Education', 'Energy & Utilities', 'Government'],
+            'adoption_rate': [92, 85, 78, 75, 72, 65, 58, 52],
+            'genai_adoption': [88, 78, 65, 58, 70, 62, 45, 38],
+            'avg_roi': [4.2, 3.8, 3.2, 3.5, 3.0, 2.5, 2.8, 2.2],
+            'data_source': ['Fallback - McKinsey survey unavailable'] * 8
+        })
+        return fallback_data
 
 
 @st.cache_data(ttl=3600)
 def load_ai_investment_data() -> pd.DataFrame:
-    """Load and validate AI investment data from AI Index 2025"""
+    """
+    Load authentic AI investment data from Stanford AI Index 2025
+    Source: Stanford HAI AI Index Report 2025 - Global venture capital tracking
+    """
     try:
-        data = pd.DataFrame({
+        # Load authentic investment data from Stanford AI Index
+        data = research_integrator.get_authentic_investment_data()
+        
+        # Validate the authentic data
+        if safe_validate_data(data, "investment_data", show_warnings=True).is_valid:
+            logger.info("✅ Authentic investment data loaded from Stanford AI Index 2025")
+        else:
+            logger.warning("⚠️ Stanford AI Index investment data validation had issues, but proceeding")
+            
+        return data
+        
+    except Exception as e:
+        logger.error(f"Failed to load Stanford AI Index investment data: {e}")
+        # Fallback to ensure app continues working
+        logger.info("🔄 Using fallback investment data")
+        fallback_data = pd.DataFrame({
             'year': [2014, 2020, 2021, 2022, 2023, 2024],
             'total_investment': [19.4, 72.5, 112.3, 148.5, 174.6, 252.3],
             'genai_investment': [0, 0, 0, 3.95, 28.5, 33.9],
             'us_investment': [8.5, 31.2, 48.7, 64.3, 75.6, 109.1],
             'china_investment': [1.2, 5.8, 7.1, 7.9, 8.4, 9.3],
-            'uk_investment': [0.3, 1.8, 2.5, 3.2, 3.8, 4.5]
+            'uk_investment': [0.3, 1.8, 2.5, 3.2, 3.8, 4.5],
+            'data_source': ['Fallback - Stanford AI Index unavailable'] * 6
         })
-        
-        # Validate the data
-        if safe_validate_data(data, "investment_data", show_warnings=True).is_valid:
-            logger.info("✅ AI investment data loaded and validated successfully")
-        else:
-            logger.warning("⚠️ Investment data validation had issues, but proceeding")
-            
-        return data
-        
-    except Exception as e:
-        logger.error(f"Failed to load AI investment data: {e}")
-        raise DataLoadError(f"AI investment data loading failed: {e}")
+        return fallback_data
 
 
 @st.cache_data(ttl=3600)
 def load_financial_impact_data() -> pd.DataFrame:
-    """Load and validate financial impact by business function"""
+    """
+    Load authentic financial impact data from McKinsey Global Survey
+    Source: McKinsey Global Survey on AI 2024 - Corporate financial impact analysis
+    """
     try:
-        data = pd.DataFrame({
+        # Load authentic financial data from McKinsey survey
+        data = research_integrator.get_authentic_financial_impact_data()
+        
+        # Validate the authentic data
+        if safe_validate_data(data, "financial_impact", show_warnings=True).is_valid:
+            logger.info("✅ Authentic financial impact data loaded from McKinsey Global Survey 2024")
+        else:
+            logger.warning("⚠️ McKinsey financial impact data validation had issues, but proceeding")
+            
+        return data
+        
+    except Exception as e:
+        logger.error(f"Failed to load McKinsey financial impact data: {e}")
+        # Fallback to ensure app continues working
+        logger.info("🔄 Using fallback financial impact data")
+        fallback_data = pd.DataFrame({
             'function': ['Marketing & Sales', 'Service Operations', 'Supply Chain', 'Software Engineering', 
                         'Product Development', 'IT', 'HR', 'Finance'],
             'companies_reporting_cost_savings': [38, 49, 43, 41, 35, 37, 28, 32],
             'companies_reporting_revenue_gains': [71, 57, 63, 45, 52, 40, 35, 38],
             'avg_cost_reduction': [7, 8, 9, 10, 6, 7, 5, 6],
-            'avg_revenue_increase': [4, 3, 4, 3, 4, 3, 2, 3]
+            'avg_revenue_increase': [4, 3, 4, 3, 4, 3, 2, 3],
+            'data_source': ['Fallback - McKinsey survey unavailable'] * 8
         })
-        
-        # Validate the data
-        if safe_validate_data(data, "financial_impact", show_warnings=True).is_valid:
-            logger.info("✅ Financial impact data loaded and validated successfully")
-        else:
-            logger.warning("⚠️ Financial impact data validation had issues, but proceeding")
-            
-        return data
-        
-    except Exception as e:
-        logger.error(f"Failed to load financial impact data: {e}")
-        raise DataLoadError(f"Financial impact data loading failed: {e}")
+        return fallback_data
 
 
 @st.cache_data(ttl=3600)
@@ -280,7 +319,89 @@ def validate_all_loaded_data(datasets: Dict[str, pd.DataFrame]) -> Dict[str, Val
 
 
 @st.cache_data(ttl=7200, show_spinner=True)
-def load_complete_datasets():
+def load_authentic_research_datasets():
+    """
+    Load complete authentic research dataset collection
+    Replaces synthetic data with real findings from authoritative sources
+    """
+    try:
+        logger.info("🔄 Loading authentic research data collection...")
+        
+        # Load all authentic datasets
+        authentic_datasets = load_authentic_data_collection()
+        
+        # Add additional synthetic datasets that don't have research equivalents yet
+        # (These will be progressively replaced with authentic data)
+        
+        # Token economics data (keeping current until we parse NVIDIA documentation)
+        token_economics = pd.DataFrame({
+            'model': ['GPT-3.5 (Nov 2022)', 'GPT-3.5 (Oct 2024)', 'Gemini-1.5-Flash-8B', 
+                      'Claude 3 Haiku', 'Llama 3 70B', 'GPT-4', 'Claude 3.5 Sonnet'],
+            'cost_per_million_input': [20.00, 0.14, 0.07, 0.25, 0.35, 15.00, 3.00],
+            'cost_per_million_output': [20.00, 0.14, 0.07, 1.25, 0.40, 30.00, 15.00],
+            'context_window': [4096, 16385, 1000000, 200000, 8192, 128000, 200000],
+            'tokens_per_second': [50, 150, 200, 180, 120, 80, 100],
+            'data_source': ['Token economics - pending NVIDIA doc integration'] * 7
+        })
+        
+        # Geographic data (keeping current until we integrate regional research)
+        geographic = pd.DataFrame({
+            'city': ['San Francisco Bay Area', 'Nashville', 'San Antonio', 'Las Vegas', 
+                    'New Orleans', 'San Diego', 'Seattle', 'Boston'],
+            'state': ['California', 'Tennessee', 'Texas', 'Nevada', 
+                     'Louisiana', 'California', 'Washington', 'Massachusetts'],
+            'lat': [37.7749, 36.1627, 29.4241, 36.1699, 
+                   29.9511, 32.7157, 47.6062, 42.3601],
+            'lon': [-122.4194, -86.7816, -98.4936, -115.1398, 
+                   -90.0715, -117.1611, -122.3321, -71.0589],
+            'rate': [9.5, 8.3, 8.3, 7.7, 7.4, 7.4, 6.8, 6.7],
+            'data_source': ['Geographic - pending regional research integration'] * 8
+        })
+        
+        # Add authentic datasets to the collection
+        complete_datasets = {
+            # Authentic research data
+            'historical_data': authentic_datasets['historical_data'],
+            'sector_2025': authentic_datasets['sector_2025'], 
+            'ai_investment': authentic_datasets['ai_investment'],
+            'financial_impact': authentic_datasets['financial_impact'],
+            'productivity_data': authentic_datasets['productivity_data'],
+            'gdp_impact': authentic_datasets['gdp_impact'],
+            
+            # Synthetic data pending research integration
+            'token_economics': token_economics,
+            'geographic': geographic,
+            
+            # Legacy datasets for backward compatibility
+            'sector_2018': pd.DataFrame({
+                'sector': ['Manufacturing', 'Information', 'Healthcare', 'Professional Services', 
+                          'Finance & Insurance', 'Retail Trade', 'Construction'],
+                'firm_weighted': [12, 12, 8, 7, 6, 4, 4],
+                'employment_weighted': [18, 22, 15, 14, 12, 8, 6],
+                'data_source': ['Legacy 2018 data - needs research update'] * 7
+            })
+        }
+        
+        # Log data authenticity status
+        authentic_count = sum(1 for k, v in complete_datasets.items() 
+                             if 'data_source' in v.columns and 
+                             not any('Fallback' in str(source) or 'pending' in str(source) or 'Legacy' in str(source) 
+                                    for source in v['data_source'].unique()))
+        
+        total_count = len(complete_datasets)
+        authenticity_rate = (authentic_count / total_count) * 100
+        
+        logger.info(f"✅ Data collection loaded: {authentic_count}/{total_count} datasets from authentic sources ({authenticity_rate:.0f}%)")
+        
+        return complete_datasets
+        
+    except Exception as e:
+        logger.error(f"❌ Failed to load authentic research datasets: {e}")
+        # Fallback to ensure app continues working
+        return load_complete_datasets_legacy()
+
+@st.cache_data(ttl=7200, show_spinner=True)
+def load_complete_datasets_legacy():
     """Load complete dataset collection from backup analysis"""
     try:
         # Historical trends data - UPDATED with AI Index 2025 findings

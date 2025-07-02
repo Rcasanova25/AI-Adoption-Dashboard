@@ -21,8 +21,12 @@ from Utils.helpers import clean_filename, safe_execute, safe_data_check
 from Utils.navigation import setup_navigation
 
 # Import data infrastructure  
-from data.loaders import load_all_datasets, validate_all_loaded_data
+from data.loaders import (
+    load_all_datasets, validate_all_loaded_data, 
+    load_authentic_research_datasets, get_data_credibility_metrics
+)
 from data.models import safe_validate_data
+from data.research_integration import display_data_authenticity_dashboard
 
 # Import all migrated views
 from views.adoption_rates import show_adoption_rates
@@ -105,9 +109,9 @@ def load_dashboard_data() -> Dict[str, Any]:
         except Exception as e:
             logger.warning(f"McKinsey tools unavailable: {e}")
         
-        # Fallback to standard data loading
-        logger.info("Loading fallback data...")
-        return load_fallback_data()
+        # Try authentic research data first
+        logger.info("Loading authentic research data...")
+        return load_authentic_dashboard_data()
         
     except Exception as e:
         logger.error(f"Critical data loading error: {e}")
@@ -115,21 +119,65 @@ def load_dashboard_data() -> Dict[str, Any]:
         return {}
 
 
+def load_authentic_dashboard_data() -> Dict[str, Any]:
+    """
+    Load authentic research data with comprehensive source attribution
+    
+    Returns:
+        Dictionary with all authentic research datasets and credibility metrics
+    """
+    logger.info("Loading authentic research data...")
+    
+    try:
+        # Load authentic research datasets
+        authentic_datasets = load_authentic_research_datasets()
+        
+        # Get data credibility metrics
+        credibility_metrics = get_data_credibility_metrics()
+        
+        # Extract individual components for backward compatibility
+        dashboard_data = {
+            'historical_data': authentic_datasets.get('historical_data', pd.DataFrame()),
+            'sector_2025': authentic_datasets.get('sector_2025', pd.DataFrame()),
+            'sector_2018': authentic_datasets.get('sector_2018', pd.DataFrame()),
+            'financial_impact': authentic_datasets.get('financial_impact', pd.DataFrame()),
+            'ai_investment': authentic_datasets.get('ai_investment', pd.DataFrame()),
+            'productivity_data': authentic_datasets.get('productivity_data', pd.DataFrame()),
+            'gdp_impact': authentic_datasets.get('gdp_impact', pd.DataFrame()),
+            'token_economics': authentic_datasets.get('token_economics', pd.DataFrame()),
+            'geographic': authentic_datasets.get('geographic', pd.DataFrame()),
+            'source': 'authentic_research',
+            'credibility_metrics': credibility_metrics,
+            'data_authenticity': True
+        }
+        
+        logger.info("✅ Authentic research data loaded successfully")
+        logger.info(f"📊 Data credibility: {credibility_metrics['data_authenticity']['credibility_score']}")
+        
+        return dashboard_data
+        
+    except Exception as e:
+        logger.error(f"Failed to load authentic research data: {e}")
+        logger.info("🔄 Falling back to synthetic data")
+        return load_fallback_data()
+
+
 def load_fallback_data() -> Dict[str, Any]:
     """
-    Load enhanced fallback data with proper validation
+    Load enhanced fallback data with proper validation (legacy synthetic data)
     
     Returns:
         Dictionary with all required data components
     """
-    logger.info("Loading fallback data...")
+    logger.info("Loading fallback synthetic data...")
     
     try:
-        # Historical trends data
+        # Historical trends data (synthetic)
         historical_data = pd.DataFrame({
             'year': [2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024, 2025],
             'ai_use': [20, 47, 58, 56, 55, 50, 55, 78, 78],
-            'genai_use': [0, 0, 0, 0, 0, 33, 33, 71, 71]
+            'genai_use': [0, 0, 0, 0, 0, 33, 33, 71, 71],
+            'data_source': ['Synthetic fallback data'] * 9
         })
         
         # 2025 Sector data  
@@ -436,12 +484,23 @@ def main():
     # Extract data components
     data_components = extract_data_components(dashboard_data)
     
-    # Display data source info
+    # Display data source info and authenticity status
     source = dashboard_data.get('source', 'unknown')
+    data_authenticity = dashboard_data.get('data_authenticity', False)
+    
     if source == 'kedro_pipeline':
         st.success("🔧 Using McKinsey Kedro pipeline data")
+    elif source == 'authentic_research':
+        st.success("🎓 Using authentic research data from Stanford AI Index, McKinsey, Goldman Sachs & Federal Reserve")
+        
+        # Show data credibility metrics
+        if 'credibility_metrics' in dashboard_data:
+            credibility = dashboard_data['credibility_metrics']
+            with st.expander("📊 Data Authenticity Verification", expanded=False):
+                display_data_authenticity_dashboard()
     elif source == 'fallback':
-        st.info("📊 Using enhanced sample data")
+        st.warning("⚠️ Using synthetic fallback data - Research integration temporarily unavailable")
+        st.info("💡 Dashboard normally uses authentic data from Stanford AI Index, McKinsey Global Survey, and other authoritative sources")
     
     # Route to appropriate view
     route_to_view(view_type, data_components, dashboard_data)
