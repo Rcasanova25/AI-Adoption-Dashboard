@@ -1,15 +1,45 @@
 """
-Data models and validation for AI Adoption Dashboard
+Enhanced Data models and validation for AI Adoption Dashboard
 Uses Pydantic for robust data validation and type safety
+Implements comprehensive validation patterns from code review recommendations
 """
 
 from typing import Any, Dict, List, Optional, Union, Literal, Type
 from datetime import datetime
+from enum import Enum
 import pandas as pd
+import numpy as np
 import logging
-from pydantic import BaseModel, Field, field_validator, ConfigDict, ValidationInfo
+from pydantic import BaseModel, Field, field_validator, ConfigDict, ValidationInfo, model_validator
 
 logger = logging.getLogger(__name__)
+
+
+# Enums for consistent data validation
+class CompanySize(str, Enum):
+    """Standardized company size categories"""
+    SMALL = "small"
+    MEDIUM = "medium" 
+    LARGE = "large"
+    ENTERPRISE = "enterprise"
+
+
+class DataQuality(str, Enum):
+    """Data quality indicators"""
+    EXCELLENT = "excellent"
+    GOOD = "good"
+    FAIR = "fair"
+    POOR = "poor"
+    UNKNOWN = "unknown"
+
+
+class DataSource(str, Enum):
+    """Valid data sources"""
+    MCKINSEY = "mckinsey"
+    AI_INDEX = "ai_index"
+    OECD = "oecd"
+    FALLBACK = "fallback"
+    USER_UPLOAD = "user_upload"
 
 
 class HistoricalDataPoint(BaseModel):
@@ -37,6 +67,63 @@ class HistoricalDataPoint(BaseModel):
         return v
 
 
+class AIAdoptionData(BaseModel):
+    """Enhanced model for AI adoption data with comprehensive validation"""
+    model_config = ConfigDict(str_strip_whitespace=True, validate_assignment=True)
+    
+    company_size: CompanySize = Field(..., description="Standardized company size category")
+    adoption_rate: float = Field(..., ge=0.0, le=100.0, description="AI adoption percentage (0-100)")
+    year: int = Field(..., ge=2017, le=2025, description="Valid year range")
+    sector: str = Field(..., min_length=2, max_length=50, description="Industry sector")
+    data_source: DataSource = Field(default=DataSource.FALLBACK, description="Source of the data")
+    data_quality: DataQuality = Field(default=DataQuality.UNKNOWN, description="Quality indicator")
+    
+    # Optional fields for enhanced data
+    genai_adoption: Optional[float] = Field(None, ge=0.0, le=100.0, description="GenAI adoption percentage")
+    roi_multiplier: Optional[float] = Field(None, gt=0.0, le=20.0, description="ROI multiplier")
+    investment_amount: Optional[float] = Field(None, gt=0, description="Investment amount in USD")
+    employees_count: Optional[int] = Field(None, gt=0, description="Number of employees")
+    
+    @field_validator('adoption_rate')
+    @classmethod
+    def validate_adoption_rate(cls, v):
+        """Validate and round adoption rate"""
+        if not isinstance(v, (int, float)):
+            raise ValueError('Adoption rate must be numeric')
+        if v < 0 or v > 100:
+            raise ValueError('Adoption rate must be between 0 and 100')
+        return round(float(v), 2)
+    
+    @field_validator('genai_adoption')
+    @classmethod
+    def validate_genai_adoption(cls, v, info: ValidationInfo):
+        """GenAI adoption cannot exceed overall AI adoption"""
+        if v is not None and info.data and 'adoption_rate' in info.data:
+            if v > info.data['adoption_rate']:
+                logger.warning(f"GenAI adoption ({v}) exceeds AI adoption ({info.data['adoption_rate']}), capping")
+                return info.data['adoption_rate']
+        return v
+    
+    @field_validator('sector')
+    @classmethod
+    def standardize_sector(cls, v):
+        """Standardize sector names"""
+        sector_mapping = {
+            'tech': 'Technology',
+            'technology': 'Technology',
+            'finance': 'Financial Services',
+            'financial services': 'Financial Services',
+            'healthcare': 'Healthcare',
+            'manufacturing': 'Manufacturing',
+            'retail': 'Retail & E-commerce',
+            'education': 'Education',
+            'energy': 'Energy & Utilities',
+            'government': 'Government'
+        }
+        standardized = sector_mapping.get(v.lower(), v.title())
+        return standardized
+
+
 class SectorData(BaseModel):
     """Model for sector-specific AI adoption data"""
     model_config = ConfigDict(str_strip_whitespace=True)
@@ -47,6 +134,12 @@ class SectorData(BaseModel):
     avg_roi: Optional[float] = Field(None, gt=0, le=10, description="Average ROI multiplier")
     firm_weighted: Optional[float] = Field(None, ge=0, le=100, description="Firm-weighted adoption rate")
     employment_weighted: Optional[float] = Field(None, ge=0, le=100, description="Employment-weighted adoption rate")
+    
+    @field_validator('sector')
+    @classmethod
+    def standardize_sector_name(cls, v):
+        """Standardize sector names consistently"""
+        return v.title().strip()
     
     @field_validator('sector')
     @classmethod
