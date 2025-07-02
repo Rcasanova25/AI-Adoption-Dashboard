@@ -327,6 +327,174 @@ def load_oecd_employment_outlook_data() -> pd.DataFrame:
         raise DataLoadError(f"OECD Employment Outlook data loading failed: {e}")
 
 
+@st.cache_data(ttl=3600)
+def load_goldman_sachs_economics_data() -> pd.DataFrame:
+    """
+    Load Goldman Sachs Global Economics Analysis data
+    Source: Goldman Sachs Research - Economic Growth Effects of AI
+    """
+    try:
+        data = research_integrator.get_goldman_sachs_economics_analysis_data()
+        
+        if safe_validate_data(data, "goldman_sachs_economics", show_warnings=True).is_valid:
+            logger.info("✅ Goldman Sachs Economics Analysis data loaded successfully")
+        else:
+            logger.warning("⚠️ Goldman Sachs Economics Analysis data validation had issues, but proceeding")
+            
+        return data
+        
+    except Exception as e:
+        logger.error(f"Failed to load Goldman Sachs Economics Analysis data: {e}")
+        raise DataLoadError(f"Goldman Sachs Economics Analysis data loading failed: {e}")
+
+
+@st.cache_data(ttl=3600)
+def load_nber_working_paper_data() -> pd.DataFrame:
+    """
+    Load NBER Working Paper on AI Economic Impact data
+    Source: National Bureau of Economic Research
+    """
+    try:
+        data = research_integrator.get_nber_working_paper_data()
+        
+        if safe_validate_data(data, "nber_working_paper", show_warnings=True).is_valid:
+            logger.info("✅ NBER Working Paper data loaded successfully")
+        else:
+            logger.warning("⚠️ NBER Working Paper data validation had issues, but proceeding")
+            
+        return data
+        
+    except Exception as e:
+        logger.error(f"Failed to load NBER Working Paper data: {e}")
+        raise DataLoadError(f"NBER Working Paper data loading failed: {e}")
+
+
+@st.cache_data(ttl=3600)
+def load_imf_working_paper_data() -> pd.DataFrame:
+    """
+    Load IMF Working Paper on AI Economic Analysis data
+    Source: International Monetary Fund
+    """
+    try:
+        data = research_integrator.get_imf_working_paper_data()
+        
+        if safe_validate_data(data, "imf_working_paper", show_warnings=True).is_valid:
+            logger.info("✅ IMF Working Paper data loaded successfully")
+        else:
+            logger.warning("⚠️ IMF Working Paper data validation had issues, but proceeding")
+            
+        return data
+        
+    except Exception as e:
+        logger.error(f"Failed to load IMF Working Paper data: {e}")
+        raise DataLoadError(f"IMF Working Paper data loading failed: {e}")
+
+
+@st.cache_data(ttl=3600)
+def load_machines_of_mind_data() -> pd.DataFrame:
+    """
+    Load Machines of Mind: AI-Powered Productivity Boom data
+    Source: Economic Research Institute
+    """
+    try:
+        data = research_integrator.get_machines_of_mind_data()
+        
+        if safe_validate_data(data, "machines_of_mind", show_warnings=True).is_valid:
+            logger.info("✅ Machines of Mind data loaded successfully")
+        else:
+            logger.warning("⚠️ Machines of Mind data validation had issues, but proceeding")
+            
+        return data
+        
+    except Exception as e:
+        logger.error(f"Failed to load Machines of Mind data: {e}")
+        raise DataLoadError(f"Machines of Mind data loading failed: {e}")
+
+
+@st.cache_data(ttl=3600)
+def load_nvidia_token_economics_data() -> pd.DataFrame:
+    """
+    Load NVIDIA Token Economics data
+    Source: NVIDIA Corporation - Token Economics Analysis
+    """
+    try:
+        data = research_integrator.get_nvidia_token_economics_data()
+        
+        if safe_validate_data(data, "nvidia_token_economics", show_warnings=True).is_valid:
+            logger.info("✅ NVIDIA Token Economics data loaded successfully")
+        else:
+            logger.warning("⚠️ NVIDIA Token Economics data validation had issues, but proceeding")
+            
+        return data
+        
+    except Exception as e:
+        logger.error(f"Failed to load NVIDIA Token Economics data: {e}")
+        raise DataLoadError(f"NVIDIA Token Economics data loading failed: {e}")
+
+
+@st.cache_data(ttl=3600)
+def load_ai_strategy_framework_data() -> pd.DataFrame:
+    """
+    Load AI Strategy Implementation Framework data
+    Source: Strategic Research Institute
+    """
+    try:
+        data = research_integrator.get_ai_strategy_framework_data()
+        
+        if safe_validate_data(data, "ai_strategy_framework", show_warnings=True).is_valid:
+            logger.info("✅ AI Strategy Framework data loaded successfully")
+        else:
+            logger.warning("⚠️ AI Strategy Framework data validation had issues, but proceeding")
+            
+        return data
+        
+    except Exception as e:
+        logger.error(f"Failed to load AI Strategy Framework data: {e}")
+        raise DataLoadError(f"AI Strategy Framework data loading failed: {e}")
+
+
+@st.cache_data(ttl=3600)
+def load_ai_use_case_analysis_data() -> pd.DataFrame:
+    """
+    Load AI Use Case Analysis data
+    Source: Implementation Research Group
+    """
+    try:
+        data = research_integrator.get_ai_use_case_analysis_data()
+        
+        if safe_validate_data(data, "ai_use_case_analysis", show_warnings=True).is_valid:
+            logger.info("✅ AI Use Case Analysis data loaded successfully")
+        else:
+            logger.warning("⚠️ AI Use Case Analysis data validation had issues, but proceeding")
+            
+        return data
+        
+    except Exception as e:
+        logger.error(f"Failed to load AI Use Case Analysis data: {e}")
+        raise DataLoadError(f"AI Use Case Analysis data loading failed: {e}")
+
+
+@st.cache_data(ttl=3600)
+def load_public_sector_ai_study_data() -> pd.DataFrame:
+    """
+    Load Public Sector AI Adoption Study data
+    Source: Public Administration Research
+    """
+    try:
+        data = research_integrator.get_public_sector_ai_study_data()
+        
+        if safe_validate_data(data, "public_sector_ai_study", show_warnings=True).is_valid:
+            logger.info("✅ Public Sector AI Study data loaded successfully")
+        else:
+            logger.warning("⚠️ Public Sector AI Study data validation had issues, but proceeding")
+            
+        return data
+        
+    except Exception as e:
+        logger.error(f"Failed to load Public Sector AI Study data: {e}")
+        raise DataLoadError(f"Public Sector AI Study data loading failed: {e}")
+
+
 @st.cache_data(ttl=3600) 
 def load_ai_maturity_data() -> pd.DataFrame:
     """Load and validate AI technology maturity data"""
@@ -457,6 +625,12 @@ def load_authentic_research_datasets():
             'stlouis_fed_productivity': authentic_datasets['stlouis_fed_productivity'],
             'oecd_policy_observatory': authentic_datasets['oecd_policy_observatory'],
             'oecd_employment_outlook': authentic_datasets['oecd_employment_outlook'],
+            
+            # Phase 2B - Economic analysis integration (NEW)
+            'goldman_sachs_economics': authentic_datasets['goldman_sachs_economics'],
+            'nber_working_paper': authentic_datasets['nber_working_paper'],
+            'imf_working_paper': authentic_datasets['imf_working_paper'],
+            'machines_of_mind': authentic_datasets['machines_of_mind'],
             
             # Synthetic data pending research integration
             'token_economics': token_economics,

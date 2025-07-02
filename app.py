@@ -5414,6 +5414,57 @@ Created by: Robert Casanova"""
         mime="text/plain"
     )
 
+elif view_type == "Research Scanner":
+    # Import the research scanner view
+    from views.research_scanner import show_research_scanner
+    
+    show_research_scanner(
+        data_year=data_year,
+        sources_data=sources_data,
+        dashboard_data={
+            'token_economics': token_economics,
+            'ai_investment': ai_investment_data,
+            'sector_2025': sector_2025,
+            'financial_impact': financial_impact,
+            'productivity_data': productivity_data
+        }
+    )
+
+elif view_type == "Technical Research":
+    # Import the technical research view
+    from views.technical_research import show_technical_research
+    
+    # Load Phase 2C technical research data
+    try:
+        from data.loaders import (
+            load_nvidia_token_economics_data, 
+            load_ai_strategy_framework_data,
+            load_ai_use_case_analysis_data, 
+            load_public_sector_ai_study_data
+        )
+        
+        nvidia_data = load_nvidia_token_economics_data()
+        strategy_data = load_ai_strategy_framework_data()
+        use_case_data = load_ai_use_case_analysis_data()
+        public_sector_data = load_public_sector_ai_study_data()
+        
+        technical_dashboard_data = {
+            'nvidia_token_economics': nvidia_data,
+            'ai_strategy_framework': strategy_data,
+            'ai_use_case_analysis': use_case_data,
+            'public_sector_ai_study': public_sector_data
+        }
+        
+        show_technical_research(
+            data_year=data_year,
+            sources_data=sources_data,
+            dashboard_data=technical_dashboard_data
+        )
+        
+    except Exception as e:
+        st.error(f"Error loading technical research data: {e}")
+        st.info("Technical research data will be available when Phase 2C integration is complete.")
+
 # Comprehensive Analysis Integration - UPDATED VERSION
 st.subheader("📋 Comprehensive AI Impact Analysis")
 

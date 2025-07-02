@@ -11,6 +11,7 @@ import logging
 
 from Utils.data_validation import safe_plot_check, DataValidator, safe_download_button
 from Utils.helpers import clean_filename
+from data.loaders import load_goldman_sachs_economics_data
 
 logger = logging.getLogger(__name__)
 
@@ -204,6 +205,85 @@ def show_financial_impact(
                     key="download_financial_impact",
                     help_text="Download financial impact data by business function"
                 )
+            
+            # Goldman Sachs Economics Analysis (NEW Phase 2B integration)
+            st.markdown("---")
+            st.write("📊 **Goldman Sachs Economic Analysis - Sectoral Impact Projections**")
+            
+            try:
+                # Load Goldman Sachs economics data
+                gs_economics_data = load_goldman_sachs_economics_data()
+                
+                def plot_gs_sectoral_analysis():
+                    """Plot Goldman Sachs sectoral economic analysis"""
+                    fig = go.Figure()
+                    
+                    # Create bubble chart
+                    fig.add_trace(go.Scatter(
+                        x=gs_economics_data['labor_cost_savings_percent'],
+                        y=gs_economics_data['productivity_gain_potential'],
+                        mode='markers+text',
+                        text=gs_economics_data['sector'],
+                        textposition='top center',
+                        marker=dict(
+                            size=gs_economics_data['economic_value_billions'] * 0.02,  # Scale bubble size
+                            color=gs_economics_data['automation_exposure_score'],
+                            colorscale='RdYlGn_r',  # Red for high automation risk
+                            showscale=True,
+                            colorbar=dict(title="Automation Exposure Score")
+                        ),
+                        hovertemplate='<b>%{text}</b><br>' +
+                                     'Labor Cost Savings: %{x}%<br>' +
+                                     'Productivity Gain: %{y}%<br>' +
+                                     'Economic Value: $%{customdata}B<br>' +
+                                     'Automation Exposure: %{marker.color}<extra></extra>',
+                        customdata=gs_economics_data['economic_value_billions']
+                    ))
+                    
+                    fig.update_layout(
+                        title="Goldman Sachs Sectoral Analysis: AI Economic Impact",
+                        xaxis_title="Labor Cost Savings Potential (%)",
+                        yaxis_title="Productivity Gain Potential (%)",
+                        height=500,
+                        showlegend=False
+                    )
+                    
+                    st.plotly_chart(fig, use_container_width=True)
+                
+                if safe_plot_check(
+                    gs_economics_data,
+                    "Goldman Sachs Economics Data",
+                    required_columns=['sector', 'labor_cost_savings_percent', 'productivity_gain_potential'],
+                    plot_func=plot_gs_sectoral_analysis
+                ):
+                    
+                    # Key insights from Goldman Sachs analysis
+                    col1, col2 = st.columns(2)
+                    
+                    with col1:
+                        st.write("**🏆 Highest Impact Sectors:**")
+                        # Get top sectors by economic value
+                        top_value = gs_economics_data.nlargest(3, 'economic_value_billions')
+                        for _, row in top_value.iterrows():
+                            st.write(f"• **{row['sector']}:** ${row['economic_value_billions']}B economic value")
+                    
+                    with col2:
+                        st.write("**⚡ Implementation Timelines:**")
+                        # Show fastest implementation sectors
+                        fast_impl = gs_economics_data.nsmallest(3, 'implementation_timeline_years')
+                        for _, row in fast_impl.iterrows():
+                            st.write(f"• **{row['sector']}:** {row['implementation_timeline_years']} years to implement")
+                    
+                    st.success("✅ **Goldman Sachs Research:** This analysis covers 10 major economic sectors with detailed economic modeling and historical analysis.")
+                    
+                    if st.button("📊 View Goldman Sachs Economics Source", key="gs_economics_source"):
+                        with st.expander("Goldman Sachs Economics Analysis Source", expanded=True):
+                            st.info("**Source**: Goldman Sachs Global Economics Analysis 2024 - Briggs & Kodnani\n\n**Methodology**: Sectoral economic modeling with historical analysis examining labor cost savings, productivity gains, and automation exposure across major economic sectors.")
+            
+            except Exception as e:
+                logger.error(f"Error loading Goldman Sachs economics data: {e}")
+                st.warning("Goldman Sachs Economics Analysis temporarily unavailable")
+                st.info("💡 This section normally displays comprehensive sectoral economic analysis from Goldman Sachs Research.")
             
             # Additional ROI calculations and projections
             if st.checkbox("🔬 **Show Advanced ROI Analysis**", key="advanced_roi"):

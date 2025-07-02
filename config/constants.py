@@ -58,7 +58,9 @@ VIEW_TYPES = [
     "Barriers & Support",
     "ROI Analysis",
     "Causal Analysis",
-    "Bibliography & Sources"
+    "Bibliography & Sources",
+    "Research Scanner",  # NEW - Automated research integration
+    "Technical Research"  # NEW - Phase 2C Technical Analysis
 ]
 
 # Color schemes for consistent visualization

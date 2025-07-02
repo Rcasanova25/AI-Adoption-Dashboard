@@ -100,8 +100,8 @@ def show_token_economics(
                 help="NVIDIA case study: 20x cost reduction = 25x revenue"
             )
         
-        # Create comprehensive token economics visualization
-        tab1, tab2, tab3, tab4, tab5 = st.tabs(["What Are Tokens?", "Token Pricing", "Usage Patterns", "Optimization", "Economic Impact"])
+        # Create comprehensive token economics visualization  
+        tab1, tab2, tab3, tab4, tab5, tab6 = st.tabs(["What Are Tokens?", "Token Pricing", "Usage Patterns", "Optimization", "Economic Impact", "🔧 NVIDIA Analysis"])
         
         with tab1:
             # Educational content about tokens
@@ -695,6 +695,179 @@ def show_token_economics(
                 "📥 Download Future Trends",
                 key="download_future_trends",
                 help_text="Download token economics future trend projections"
+            )
+        
+        with tab6:
+            # NVIDIA Technical Analysis (Phase 2C Integration)
+            st.subheader("🔧 NVIDIA Token Economics Analysis")
+            st.markdown("*Source: NVIDIA Corporation - Explaining Tokens — the Language and Currency of AI*")
+            
+            # Load NVIDIA data from dashboard_data if available
+            nvidia_data = dashboard_data.get('nvidia_token_economics', pd.DataFrame()) if dashboard_data else pd.DataFrame()
+            
+            if nvidia_data.empty:
+                # Fallback to sample data structure that matches the research integration
+                nvidia_data = pd.DataFrame({
+                    'model_type': ['GPT-3', 'GPT-4', 'Claude', 'Gemini', 'LLaMA 2'],
+                    'context_window_tokens': [4096, 8192, 100000, 32768, 4096],
+                    'cost_per_1k_input_tokens': [0.0015, 0.03, 0.008, 0.00025, 0.0007],
+                    'cost_per_1k_output_tokens': [0.002, 0.06, 0.024, 0.00075, 0.002],
+                    'processing_speed_tokens_sec': [150, 80, 120, 200, 180],
+                    'efficiency_score': [75, 85, 90, 95, 80],
+                    'use_case_suitability': ['General purpose', 'Complex reasoning', 'Long context', 'Multimodal', 'Open source']
+                })
+            
+            # Model comparison analysis
+            col1, col2 = st.columns(2)
+            
+            with col1:
+                st.markdown("### Model Performance Comparison")
+                
+                # Cost efficiency chart
+                def plot_cost_efficiency():
+                    fig = go.Figure()
+                    
+                    fig.add_trace(go.Scatter(
+                        x=nvidia_data['cost_per_1k_input_tokens'],
+                        y=nvidia_data['efficiency_score'],
+                        mode='markers+text',
+                        text=nvidia_data['model_type'],
+                        textposition='top center',
+                        marker=dict(
+                            size=[x*5 for x in nvidia_data['processing_speed_tokens_sec']],
+                            color=nvidia_data['context_window_tokens'],
+                            colorscale='viridis',
+                            colorbar=dict(title="Context Window"),
+                            line=dict(width=2, color='white')
+                        ),
+                        hovertemplate='<b>%{text}</b><br>Cost: $%{x:.4f}/1K<br>Efficiency: %{y}<br>Speed: %{customdata} tps<extra></extra>',
+                        customdata=nvidia_data['processing_speed_tokens_sec']
+                    ))
+                    
+                    fig.update_layout(
+                        title="Model Efficiency vs Cost Analysis",
+                        xaxis_title="Cost per 1K Input Tokens ($)",
+                        yaxis_title="Efficiency Score",
+                        height=400,
+                        showlegend=False
+                    )
+                    
+                    return fig
+                
+                if safe_plot_check(
+                    nvidia_data,
+                    "NVIDIA Model Data",
+                    required_columns=['cost_per_1k_input_tokens', 'efficiency_score'],
+                    plot_func=lambda: st.plotly_chart(plot_cost_efficiency(), use_container_width=True)
+                ):
+                    st.info("💡 Bubble size represents processing speed, color represents context window size")
+            
+            with col2:
+                st.markdown("### Context Window Capabilities")
+                
+                # Context window comparison
+                context_comparison = nvidia_data[['model_type', 'context_window_tokens']].sort_values('context_window_tokens')
+                
+                def plot_context_comparison():
+                    fig = go.Figure()
+                    
+                    fig.add_trace(go.Bar(
+                        x=context_comparison['model_type'],
+                        y=context_comparison['context_window_tokens'],
+                        text=[f'{x:,}' if x < 100000 else f'{x//1000}K' for x in context_comparison['context_window_tokens']],
+                        textposition='outside',
+                        marker_color=['#FF6B6B', '#4ECDC4', '#45B7D1', '#96CEB4', '#FECA57'],
+                        hovertemplate='<b>%{x}</b><br>Context: %{y:,} tokens<extra></extra>'
+                    ))
+                    
+                    fig.update_layout(
+                        title="Context Window Comparison",
+                        xaxis_title="Model",
+                        yaxis_title="Context Window (tokens)",
+                        height=400
+                    )
+                    
+                    return fig
+                
+                if safe_plot_check(
+                    context_comparison,
+                    "Context Window Data",
+                    required_columns=['model_type', 'context_window_tokens'],
+                    plot_func=lambda: st.plotly_chart(plot_context_comparison(), use_container_width=True)
+                ):
+                    pass
+            
+            # Model specifications table
+            st.markdown("### Model Specifications")
+            
+            display_columns = ['model_type', 'context_window_tokens', 'cost_per_1k_input_tokens', 
+                             'cost_per_1k_output_tokens', 'processing_speed_tokens_sec', 
+                             'efficiency_score', 'use_case_suitability']
+            
+            available_columns = [col for col in display_columns if col in nvidia_data.columns]
+            
+            if available_columns:
+                formatted_nvidia = nvidia_data[available_columns].copy()
+                
+                # Format columns for better display
+                if 'cost_per_1k_input_tokens' in formatted_nvidia.columns:
+                    formatted_nvidia['cost_per_1k_input_tokens'] = formatted_nvidia['cost_per_1k_input_tokens'].apply(lambda x: f"${x:.4f}")
+                if 'cost_per_1k_output_tokens' in formatted_nvidia.columns:
+                    formatted_nvidia['cost_per_1k_output_tokens'] = formatted_nvidia['cost_per_1k_output_tokens'].apply(lambda x: f"${x:.4f}")
+                if 'context_window_tokens' in formatted_nvidia.columns:
+                    formatted_nvidia['context_window_tokens'] = formatted_nvidia['context_window_tokens'].apply(lambda x: f"{x:,}")
+                
+                # Rename columns for display
+                column_mapping = {
+                    'model_type': 'Model',
+                    'context_window_tokens': 'Context Window',
+                    'cost_per_1k_input_tokens': 'Input Cost',
+                    'cost_per_1k_output_tokens': 'Output Cost',
+                    'processing_speed_tokens_sec': 'Speed (tokens/sec)',
+                    'efficiency_score': 'Efficiency',
+                    'use_case_suitability': 'Best Use Case'
+                }
+                
+                formatted_nvidia = formatted_nvidia.rename(columns=column_mapping)
+                
+                st.dataframe(formatted_nvidia, hide_index=True, use_container_width=True)
+            
+            # Key insights from NVIDIA analysis
+            st.markdown("### 🔍 Key Insights from NVIDIA Analysis")
+            
+            col1, col2, col3 = st.columns(3)
+            
+            with col1:
+                st.info("""
+                **💰 Cost Optimization**
+                - Model choice impacts costs by 100x+
+                - Output tokens typically 2x input cost
+                - Efficiency scores vary 20-40 points
+                """)
+            
+            with col2:
+                st.info("""
+                **⚡ Performance Trade-offs**
+                - Speed vs. context window trade-offs
+                - Larger contexts = slower processing
+                - Specialized models outperform general
+                """)
+            
+            with col3:
+                st.info("""
+                **🎯 Use Case Matching**
+                - Match model to specific needs
+                - Consider total cost of ownership
+                - Factor in development complexity
+                """)
+            
+            # Download NVIDIA data
+            safe_download_button(
+                nvidia_data,
+                clean_filename(f"nvidia_token_economics_{data_year}.csv"),
+                "📥 Download NVIDIA Analysis",
+                key="download_nvidia_analysis",
+                help_text="Download NVIDIA token economics analysis data"
             )
     
     else:
