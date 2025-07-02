@@ -8,6 +8,7 @@ import dash_bootstrap_components as dbc
 import plotly.graph_objects as go
 import plotly.express as px
 import pandas as pd
+import numpy as np
 
 @callback(
     Output('main-content-area', 'children'),
@@ -339,4 +340,114 @@ def create_default_view(view_type, dashboard_data):
                 "Please check back soon for the complete implementation."
             ], color="warning")
         ])
-    ]) 
+    ])
+
+def register_visualization_callbacks(app):
+    """Register all visualization callbacks with the Dash app"""
+    
+    @app.callback(
+        Output('chart-container', 'children'),
+        [Input('chart-type-selector', 'value'),
+         Input('data-store', 'data')]
+    )
+    def update_chart(chart_type, data):
+        """Update chart based on selected type and data"""
+        if data is None or chart_type is None:
+            return html.Div("Select chart type and ensure data is loaded", className="text-center")
+        
+        try:
+            if chart_type == 'adoption_trends':
+                return create_adoption_trends_chart(data)
+            elif chart_type == 'industry_comparison':
+                return create_industry_comparison_chart(data)
+            elif chart_type == 'investment_analysis':
+                return create_investment_analysis_chart(data)
+            else:
+                return html.Div("Chart type not implemented", className="text-center")
+        except Exception as e:
+            return html.Div(f"Error creating chart: {str(e)}", className="text-center text-danger")
+
+    def create_adoption_trends_chart(data):
+        """Create adoption trends line chart"""
+        try:
+            if 'historical_data' in data:
+                df = pd.DataFrame(data['historical_data'])
+                fig = px.line(df, x='year', y='ai_use', 
+                            title='AI Adoption Trends (2018-2025)',
+                            labels={'year': 'Year', 'ai_use': 'AI Adoption Rate (%)'})
+                fig.update_layout(
+                    xaxis_title="Year",
+                    yaxis_title="AI Adoption Rate (%)",
+                    hovermode='x unified'
+                )
+                return dcc.Graph(figure=fig)
+            else:
+                return html.Div("Historical data not available", className="text-center")
+        except Exception as e:
+            return html.Div(f"Error creating adoption trends chart: {str(e)}", className="text-center text-danger")
+
+    def create_industry_comparison_chart(data):
+        """Create industry comparison bar chart"""
+        try:
+            if 'industry_data' in data:
+                df = pd.DataFrame(data['industry_data'])
+                fig = px.bar(df, x='sector', y='adoption_rate',
+                           title='AI Adoption by Industry Sector',
+                           labels={'sector': 'Industry Sector', 'adoption_rate': 'Adoption Rate (%)'})
+                fig.update_layout(
+                    xaxis_title="Industry Sector",
+                    yaxis_title="Adoption Rate (%)"
+                )
+                return dcc.Graph(figure=fig)
+            else:
+                return html.Div("Industry data not available", className="text-center")
+        except Exception as e:
+            return html.Div(f"Error creating industry comparison chart: {str(e)}", className="text-center text-danger")
+
+    def create_investment_analysis_chart(data):
+        """Create investment analysis chart"""
+        try:
+            if 'historical_data' in data:
+                df = pd.DataFrame(data['historical_data'])
+                fig = px.line(df, x='year', y='investment_billions',
+                           title='AI Investment Trends (2018-2025)',
+                           labels={'year': 'Year', 'investment_billions': 'Investment ($B)'})
+                fig.update_layout(
+                    xaxis_title="Year",
+                    yaxis_title="Investment ($B)",
+                    hovermode='x unified'
+                )
+                return dcc.Graph(figure=fig)
+            else:
+                return html.Div("Investment data not available", className="text-center")
+        except Exception as e:
+            return html.Div(f"Error creating investment analysis chart: {str(e)}", className="text-center text-danger")
+
+    @app.callback(
+        Output('chart-options', 'children'),
+        [Input('data-store', 'data')]
+    )
+    def update_chart_options(data):
+        """Update available chart options based on loaded data"""
+        if data is None:
+            return html.Div("No data loaded", className="text-center")
+        
+        available_charts = []
+        if 'historical_data' in data:
+            available_charts.extend(['adoption_trends', 'investment_analysis'])
+        if 'industry_data' in data:
+            available_charts.append('industry_comparison')
+        
+        if available_charts:
+            return html.Div([
+                html.Label("Select Chart Type:", className="form-label"),
+                dcc.Dropdown(
+                    id='chart-type-selector',
+                    options=[{'label': chart.replace('_', ' ').title(), 'value': chart} 
+                            for chart in available_charts],
+                    value=available_charts[0] if available_charts else None,
+                    className="form-select"
+                )
+            ])
+        else:
+            return html.Div("No compatible data for charts", className="text-center") 

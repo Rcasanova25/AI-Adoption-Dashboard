@@ -1,11 +1,12 @@
 """
 Data Callbacks for Dash AI Adoption Dashboard
-Handle data loading and processing operations
+Handle data loading, validation, and processing
 """
 
 from dash import callback, Input, Output, State
 import pandas as pd
 import json
+import numpy as np
 
 @callback(
     Output('data-store', 'data'),
@@ -59,4 +60,46 @@ def load_fallback_data():
         'geographic_data': geographic_data.to_dict('records'),
         'dashboard_summary': historical_data.to_dict('records'),
         'dashboard_detailed': industry_data.to_dict('records')
-    } 
+    }
+
+def register_data_callbacks(app):
+    """Register all data callbacks with the Dash app"""
+    
+    @app.callback(
+        Output('data-validation-status', 'children'),
+        [Input('data-store', 'data')]
+    )
+    def validate_loaded_data(data):
+        """Validate loaded data and return status"""
+        if data is None:
+            return "⏳ Loading data..."
+        
+        try:
+            # Basic validation
+            if isinstance(data, dict) and len(data) > 0:
+                return "✅ Data loaded successfully"
+            else:
+                return "⚠️ Data format issue detected"
+        except Exception as e:
+            return f"❌ Data validation error: {str(e)}"
+
+    @app.callback(
+        Output('data-summary', 'children'),
+        [Input('data-store', 'data')]
+    )
+    def display_data_summary(data):
+        """Display summary of loaded data"""
+        if data is None:
+            return "No data available"
+        
+        try:
+            summary = []
+            for key, value in data.items():
+                if isinstance(value, pd.DataFrame):
+                    summary.append(f"{key}: {len(value)} rows, {len(value.columns)} columns")
+                else:
+                    summary.append(f"{key}: {type(value).__name__}")
+            
+            return html.Ul([html.Li(item) for item in summary])
+        except Exception as e:
+            return f"Error generating summary: {str(e)}" 
