@@ -1,0 +1,4 @@
+# file: C:\Users\rcasa\OneDrive\Documents\AI-Adoption-Dashboard\config\__init__.py
+# hypothesis_version: 6.135.20
+
+['APP_TITLE', 'APP_VERSION', 'DATA_SOURCES', 'ERROR_MESSAGES', 'SUCCESS_MESSAGES', 'VIEW_TYPES']

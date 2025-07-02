@@ -1060,9 +1060,9 @@ def load_complete_datasets_legacy():
             'historical_data': historical_data,
             'sector_2018': sector_2018,
             'sector_2025': sector_2025,
-            'firm_size': firm_size,
+            'firm_size_data': firm_size,
             'ai_maturity': ai_maturity,
-            'geographic': geographic,
+            'geographic_data': geographic,
             'state_data': state_data,
             'tech_stack': tech_stack,
             'productivity_data': productivity_data,
@@ -1072,14 +1072,14 @@ def load_complete_datasets_legacy():
             'oecd_applications': oecd_applications,
             'barriers_data': barriers_data,
             'support_effectiveness': support_effectiveness,
+            'skill_gap_data': skill_gap_data,
+            'ai_governance': ai_governance,
             'ai_investment_data': ai_investment_data,
             'regional_growth': regional_growth,
             'ai_cost_reduction': ai_cost_reduction,
-            'financial_impact': financial_impact,
+            'financial_impact_data': financial_impact,
             'ai_perception': ai_perception,
             'training_emissions': training_emissions,
-            'skill_gap_data': skill_gap_data,
-            'ai_governance': ai_governance,
             'genai_2025': genai_2025,
             'token_economics': token_economics,
             'token_usage_patterns': token_usage_patterns,
@@ -1098,8 +1098,8 @@ def load_all_datasets() -> dict:
     Returns a dictionary of all datasets
     """
     try:
-        # Use the new comprehensive data loading function
-        datasets = load_complete_datasets()
+        # Use the comprehensive data loading function
+        datasets = load_complete_datasets_legacy()
         
         if datasets is None:
             logger.error("Complete data loading failed")

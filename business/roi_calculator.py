@@ -479,3 +479,17 @@ class ROICalculator:
 
 # Create instance for easy import
 roi_calculator = ROICalculator()
+
+# Add compatibility method for calculate_roi
+def calculate_roi(investment: float, return_amount: float) -> float:
+    """Calculate simple ROI as (return_amount - investment) / investment"""
+    try:
+        if investment == 0:
+            return 0.0
+        return (return_amount - investment) / investment
+    except Exception as e:
+        logger.error(f"Error calculating ROI: {e}")
+        return 0.0
+
+# Add method to ROI calculator instance
+roi_calculator.calculate_roi = calculate_roi

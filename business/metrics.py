@@ -692,7 +692,207 @@ class BusinessMetrics:
             return f"{base_context}. Significant investment enables strategic AI capabilities."
         else:
             return f"{base_context}. Focused investment approach recommended."
+    
+    @staticmethod
+    def calculate_roi(investment: float, return_amount: float) -> float:
+        """Calculate ROI as (return_amount - investment) / investment"""
+        try:
+            if investment == 0:
+                return 0.0
+            return (return_amount - investment) / investment
+        except Exception as e:
+            logger.error(f"Error calculating ROI: {e}")
+            return 0.0
+
+    @classmethod
+    def calculate_productivity_gain(
+        cls,
+        skill_level: str = "Medium-skilled",
+        industry: str = "Technology",
+        function: str = "Software Engineering",
+        implementation_maturity: str = "Early Adoption",
+        investment_level: str = "Moderate",
+        time_horizon_years: int = 3
+    ) -> Dict[str, Union[float, str, List[str], Dict[str, float]]]:
+        """
+        Calculate AI productivity gains based on comprehensive project data.
+        
+        This method follows the standard approach by:
+        1. Using authentic data from the project's datasets
+        2. Applying industry-specific multipliers
+        3. Considering skill level impacts
+        4. Factoring in implementation maturity
+        5. Providing confidence intervals and recommendations
+        
+        Args:
+            skill_level: Worker skill level ('Low-skilled', 'Medium-skilled', 'High-skilled')
+            industry: Industry sector for industry-specific adjustments
+            function: Business function for function-specific gains
+            implementation_maturity: AI implementation stage
+            investment_level: Investment level ('Low', 'Moderate', 'High')
+            time_horizon_years: Time horizon for projection
+            
+        Returns:
+            Dictionary with productivity gain analysis including:
+            - base_gain: Base productivity gain percentage
+            - adjusted_gain: Industry and maturity adjusted gain
+            - annual_impact: Annual productivity impact
+            - cumulative_gain: Cumulative gain over time horizon
+            - confidence_level: Confidence in the estimate
+            - factors: Key factors influencing the gain
+            - recommendations: Implementation recommendations
+        """
+        try:
+            # Base productivity gains by skill level (from project data)
+            skill_gains = {
+                'Low-skilled': 14.0,
+                'Medium-skilled': 9.0,
+                'High-skilled': 5.0
+            }
+            
+            # Industry multipliers (from project's INDUSTRY_ROI data)
+            industry_multipliers = {
+                'Technology': 1.2,
+                'Financial Services': 1.1,
+                'Healthcare': 0.9,
+                'Manufacturing': 1.0,
+                'Retail & E-commerce': 0.8,
+                'Education': 0.7,
+                'Energy & Utilities': 0.9,
+                'Government': 0.6
+            }
+            
+            # Function-specific multipliers (from financial_impact data)
+            function_multipliers = {
+                'Marketing & Sales': 1.1,
+                'Service Operations': 1.0,
+                'Supply Chain': 1.2,
+                'Software Engineering': 1.3,
+                'Product Development': 1.1,
+                'IT': 1.0,
+                'HR': 0.8,
+                'Finance': 0.9
+            }
+            
+            # Implementation maturity multipliers
+            maturity_multipliers = {
+                'No AI': 0.1,
+                'Exploring': 0.2,
+                'Pilot Stage': 0.4,
+                'Piloting': 0.4,
+                'Early Adoption': 0.6,
+                'Implementing': 0.7,
+                'Scaling': 0.8,
+                'Advanced': 1.0,
+                'Leading': 1.0
+            }
+            
+            # Investment level multipliers
+            investment_multipliers = {
+                'Low': 0.6,
+                'Moderate': 1.0,
+                'High': 1.4
+            }
+            
+            # Get base gain from skill level
+            base_gain = skill_gains.get(skill_level, 9.0)
+            
+            # Apply multipliers
+            industry_mult = industry_multipliers.get(industry, 1.0)
+            function_mult = function_multipliers.get(function, 1.0)
+            maturity_mult = maturity_multipliers.get(implementation_maturity, 0.6)
+            investment_mult = investment_multipliers.get(investment_level, 1.0)
+            
+            # Calculate adjusted gain
+            adjusted_gain = base_gain * industry_mult * function_mult * maturity_mult * investment_mult
+            
+            # Calculate annual impact (using project's ai_productivity_estimates as reference)
+            # Average of research estimates: (0.07 + 1.5 + 2.0 + 2.5 + 0.1) / 5 = 1.23%
+            base_annual_impact = 1.23
+            annual_impact = base_annual_impact * industry_mult * function_mult * maturity_mult * investment_mult
+            
+            # Calculate cumulative gain over time horizon
+            cumulative_gain = adjusted_gain * (1 + annual_impact) ** time_horizon_years
+            
+            # Determine confidence level based on data quality
+            confidence_factors = []
+            confidence_score = 0.8  # Base confidence
+            
+            if industry in industry_multipliers:
+                confidence_factors.append("Industry data available")
+                confidence_score += 0.1
+            
+            if function in function_multipliers:
+                confidence_factors.append("Function-specific data available")
+                confidence_score += 0.1
+            
+            if skill_level in skill_gains:
+                confidence_factors.append("Skill-level research available")
+                confidence_score += 0.1
+            
+            confidence_level = "High" if confidence_score >= 0.9 else "Medium" if confidence_score >= 0.7 else "Low"
+            
+            # Generate recommendations based on analysis
+            recommendations = []
+            
+            if adjusted_gain < 5:
+                recommendations.append("Consider increasing AI investment level")
+                recommendations.append("Focus on implementation maturity improvement")
+            
+            if industry_mult < 0.8:
+                recommendations.append(f"Industry {industry} may need specialized AI strategies")
+            
+            if function_mult < 0.9:
+                recommendations.append(f"Function {function} may benefit from targeted AI use cases")
+            
+            if maturity_mult < 0.5:
+                recommendations.append("Prioritize AI implementation roadmap")
+                recommendations.append("Consider pilot programs to build maturity")
+            
+            # Add standard recommendations
+            recommendations.extend([
+                "Monitor productivity metrics quarterly",
+                "Provide AI training for skill level development",
+                "Align AI initiatives with business objectives"
+            ])
+            
+            return {
+                'base_gain': round(base_gain, 2),
+                'adjusted_gain': round(adjusted_gain, 2),
+                'annual_impact': round(annual_impact, 2),
+                'cumulative_gain': round(cumulative_gain, 2),
+                'confidence_level': confidence_level,
+                'confidence_score': round(confidence_score, 2),
+                'factors': confidence_factors,
+                'recommendations': recommendations,
+                'calculation_breakdown': {
+                    'skill_level_gain': base_gain,
+                    'industry_multiplier': industry_mult,
+                    'function_multiplier': function_mult,
+                    'maturity_multiplier': maturity_mult,
+                    'investment_multiplier': investment_mult
+                }
+            }
+            
+        except Exception as e:
+            logger.error(f"Error calculating productivity gain: {e}")
+            return {
+                'base_gain': 0.0,
+                'adjusted_gain': 0.0,
+                'annual_impact': 0.0,
+                'cumulative_gain': 0.0,
+                'confidence_level': 'Low',
+                'confidence_score': 0.0,
+                'factors': ['Calculation error'],
+                'recommendations': ['Review input parameters and try again'],
+                'calculation_breakdown': {}
+            }
 
 
 # Create instance for easy import
 business_metrics = BusinessMetrics()
+
+# Compatibility function for top-level import
+def calculate_roi(investment: float, return_amount: float) -> float:
+    """Compatibility function for ROI calculation"""
+    return BusinessMetrics.calculate_roi(investment, return_amount)

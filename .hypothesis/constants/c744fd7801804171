@@ -1,0 +1,4 @@
+# file: C:\Users\rcasa\OneDrive\Documents\AI-Adoption-Dashboard\views\__init__.py
+# hypothesis_version: 6.135.20
+
+['show_adoption_rates', 'show_ai_cost_trends', 'show_ai_governance', 'show_causal_analysis', 'show_labor_impact', 'show_regional_growth', 'show_roi_analysis', 'show_token_economics']

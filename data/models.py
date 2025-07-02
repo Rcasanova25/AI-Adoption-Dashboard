@@ -355,8 +355,9 @@ class AIMaturityData(BaseModel):
         valid_technologies = {
             'Machine Learning', 'Deep Learning', 'Natural Language Processing',
             'Computer Vision', 'Robotic Process Automation', 'Predictive Analytics',
-            'Generative AI', 'Large Language Models', 'Computer Vision',
-            'Speech Recognition', 'Recommendation Systems', 'Autonomous Systems'
+            'Generative AI', 'Large Language Models', 'Speech Recognition', 'Recommendation Systems', 'Autonomous Systems',
+            'AI Agents', 'Foundation Models', 'ModelOps', 'AI Engineering', 'Cloud AI Services', 'Knowledge Graphs', 'Composite AI',
+            'AI Only', 'AI + Cloud', 'AI + Digitization', 'AI + Cloud + Digitization'
         }
         if v not in valid_technologies:
             logger.warning(f'Technology "{v}" not in standard list')
@@ -403,7 +404,7 @@ class ProductivityBySkillData(BaseModel):
     @classmethod
     def skill_level_valid(cls, v):
         """Validate skill level categories"""
-        valid_levels = {'Low', 'Medium', 'High', 'Expert', 'Beginner', 'Advanced'}
+        valid_levels = {'Low', 'Medium', 'High', 'Expert', 'Beginner', 'Advanced', 'Low-skilled', 'Medium-skilled', 'High-skilled'}
         if v not in valid_levels:
             logger.warning(f'Skill level "{v}" not in standard categories')
         return v
@@ -420,7 +421,7 @@ class AIProductivityEstimatesData(BaseModel):
     @classmethod
     def source_valid(cls, v):
         """Validate source names"""
-        valid_sources = {'Conservative', 'Moderate', 'Optimistic', 'Aggressive'}
+        valid_sources = {'Conservative', 'Moderate', 'Optimistic', 'Aggressive', 'Acemoglu (2024)', 'Brynjolfsson et al. (2023)', 'McKinsey (potential)', 'Goldman Sachs (potential)', 'Richmond Fed'}
         if v not in valid_sources:
             logger.warning(f'Source "{v}" not in standard categories')
         return v
@@ -460,7 +461,11 @@ class OECDApplicationsData(BaseModel):
         valid_applications = {
             'Customer Service', 'Marketing', 'Sales', 'Product Development',
             'Supply Chain', 'HR', 'Finance', 'IT Operations', 'Research',
-            'Quality Control', 'Predictive Maintenance', 'Fraud Detection'
+            'Quality Control', 'Predictive Maintenance', 'Fraud Detection',
+            'Content Generation', 'Code Generation', 'Customer Service Chatbots',
+            'Process Automation', 'Customer Analytics', 'Supply Chain Optimization',
+            'Product Recommendation', 'Voice Recognition', 'Computer Vision',
+            'Natural Language Processing', 'Robotics Integration', 'Personalized Learning'
         }
         if v not in valid_applications:
             logger.warning(f'Application "{v}" not in standard list')
@@ -480,7 +485,9 @@ class BarriersData(BaseModel):
         """Validate barrier names"""
         valid_barriers = {
             'Lack of Skills', 'High Costs', 'Data Quality Issues', 'Integration Challenges',
-            'Security Concerns', 'Regulatory Uncertainty', 'Change Management', 'ROI Uncertainty'
+            'Security Concerns', 'Regulatory Uncertainty', 'Change Management', 'ROI Uncertainty',
+            'Lack of skilled personnel', 'Data availability/quality', 'Integration with legacy systems',
+            'Regulatory uncertainty', 'High implementation costs', 'Security concerns', 'Unclear ROI', 'Organizational resistance'
         }
         if v not in valid_barriers:
             logger.warning(f'Barrier "{v}" not in standard list')
@@ -500,7 +507,9 @@ class SupportEffectivenessData(BaseModel):
         """Validate support types"""
         valid_types = {
             'Training Programs', 'Consulting Services', 'Technical Support',
-            'Financial Incentives', 'Regulatory Guidance', 'Best Practices'
+            'Financial Incentives', 'Regulatory Guidance', 'Best Practices',
+            'Government education investment', 'University partnerships', 'Public-private collaboration',
+            'Regulatory clarity', 'Tax incentives', 'Innovation grants', 'Technology centers'
         }
         if v not in valid_types:
             logger.warning(f'Support type "{v}" not in standard list')
@@ -522,7 +531,7 @@ class RegionalGrowthData(BaseModel):
         """Validate region names"""
         valid_regions = {
             'North America', 'Europe', 'Asia Pacific', 'Latin America',
-            'Middle East', 'Africa', 'Global'
+            'Middle East', 'Africa', 'Global', 'Greater China', 'Asia-Pacific'
         }
         if v not in valid_regions:
             logger.warning(f'Region "{v}" not in standard list')

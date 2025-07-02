@@ -1852,10 +1852,16 @@ elif view_type == "Investment Trends":
             st.write("**🌍 Investment Leadership:**")
             st.write("• **US dominance:** $109.1B (43% of global)")
             # Ensure we're working with a pandas DataFrame
+            from Utils.dataframe_safety import ensure_dataframe, safe_dataframe_filter, safe_numeric_conversion
+            
             if isinstance(countries_extended, pd.DataFrame):
-                israel_data = countries_extended[countries_extended['country']=='Israel']
-                israel_per_capita = israel_data['per_capita'].iloc[0] if len(israel_data) > 0 else 0
-                israel_pct_gdp = israel_data['pct_of_gdp'].iloc[0] if len(israel_data) > 0 else 0
+                israel_data = safe_dataframe_filter(countries_extended, 'country == "Israel"')
+                if len(israel_data) > 0:
+                    israel_per_capita = safe_numeric_conversion(israel_data['per_capita'].iloc[0] if len(israel_data) > 0 else 0)
+                    israel_pct_gdp = safe_numeric_conversion(israel_data['pct_of_gdp'].iloc[0] if len(israel_data) > 0 else 0)
+                else:
+                    israel_per_capita = 0
+                    israel_pct_gdp = 0
             else:
                 israel_per_capita = 0
                 israel_pct_gdp = 0
@@ -2337,7 +2343,7 @@ elif view_type == "Token Economics":
             y=context_data['context_window'],
             text=[f'{x:,}' if x < 1000000 else f'{x/1000000:.1f}M' for x in context_data['context_window']],
             textposition='outside',
-            marker_color=['#FF6B6B' if x < 10000 else '#4ECDC4' if x < 100000 else '#45B7D1' for x in context_data['context_window']],
+            marker_color=['#FF6B6B' if x < 100000 else '#4ECDC4' if x < 1000000 else '#45B7D1' for x in context_data['context_window']],
             hovertemplate='<b>%{x}</b><br>Context: %{y:,} tokens<br>Equivalent to: %{customdata}<extra></extra>',
             customdata=['~3 pages', '~6 pages', '~12 pages', '~96 pages', '~150 pages', '~150 pages', '~750 pages']
         ))
@@ -4133,7 +4139,10 @@ elif view_type == "Geographic Distribution":
         
         if not hasattr(state_scorecard, 'sort_values'):
             state_scorecard = pd.DataFrame(state_scorecard)
-        rankings_display = state_scorecard[display_cols].sort_values(by='composite_score', ascending=False, ignore_index=True)
+        if 'composite_score' in state_scorecard.columns:
+            rankings_display = state_scorecard[display_cols].sort_values(by='composite_score', ascending=False, ignore_index=True)
+        else:
+            rankings_display = state_scorecard[display_cols].copy()
         rankings_display['rank'] = range(1, len(rankings_display) + 1)
         rankings_display = rankings_display[['rank'] + display_cols]
         
@@ -4312,7 +4321,10 @@ elif view_type == "Geographic Distribution":
             # Ensure we're working with a pandas DataFrame
             if isinstance(investment_flow, pd.DataFrame):
                 ca_data = investment_flow[investment_flow['state'] == 'California']
-                ca_vc = ca_data['venture_capital_millions'].iloc[0] if len(ca_data) > 0 else 0
+                if len(ca_data) > 0:
+                    ca_vc = float(ca_data['venture_capital_millions'].iloc[0])
+                else:
+                    ca_vc = 0
             else:
                 ca_vc = 0
             total_vc = investment_flow['venture_capital_millions'].sum()
@@ -4406,173 +4418,6 @@ elif view_type == "Geographic Distribution":
             file_name="ai_geographic_ecosystem_analysis.csv",
             mime="text/csv"
         )
-elif view_type == "OECD 2025 Findings":
-    st.write("📊 **OECD/BCG/INSEAD 2025 Report: Enterprise AI Adoption**")
-    
-    # Enhanced OECD visualization
-    tab1, tab2, tab3 = st.tabs(["Country Analysis", "Application Trends", "Success Factors"])
-    
-    with tab1:
-        # G7 comparison with context
-        fig = go.Figure()
-        
-        # Create grouped bars
-        x = oecd_g7_adoption['country']
-        
-        fig.add_trace(go.Bar(
-            name='Overall Adoption',
-            x=x,
-            y=oecd_g7_adoption['adoption_rate'],
-            marker_color='#3B82F6',
-            text=[f'{x}%' for x in oecd_g7_adoption['adoption_rate']],
-            textposition='outside'
-        ))
-        
-        fig.add_trace(go.Bar(
-            name='Manufacturing',
-            x=x,
-            y=oecd_g7_adoption['manufacturing'],
-            marker_color='#10B981',
-            text=[f'{x}%' for x in oecd_g7_adoption['manufacturing']],
-            textposition='outside'
-        ))
-        
-        fig.add_trace(go.Bar(
-            name='ICT Sector',
-            x=x,
-            y=oecd_g7_adoption['ict_sector'],
-            marker_color='#F59E0B',
-            text=[f'{x}%' for x in oecd_g7_adoption['ict_sector']],
-            textposition='outside'
-        ))
-        
-        # Add G7 average line
-        g7_avg = oecd_g7_adoption['adoption_rate'].mean()
-        fig.add_hline(y=g7_avg, line_dash="dash", line_color="red",
-                      annotation_text=f"G7 Average: {g7_avg:.0f}%", annotation_position="right")
-        
-        fig.update_layout(
-            title="AI Adoption Rates Across G7 Countries by Sector",
-            xaxis_title="Country",
-            yaxis_title="Adoption Rate (%)",
-            barmode='group',
-            height=450,
-            hovermode='x unified'
-        )
-        
-        st.plotly_chart(fig, use_container_width=True)
-        
-        # Country insights
-        col1, col2 = st.columns(2)
-        
-        with col1:
-            st.write("**🌍 Key Findings:**")
-            st.write("• **Japan** leads G7 with 48% overall adoption")
-            st.write("• **ICT sector** universally leads (55-70%)")
-            st.write("• **15-20pp** gap between ICT and other sectors")
-        
-        with col2:
-            if st.button("📊 View OECD Methodology", key="oecd_method"):
-                with st.expander("Methodology", expanded=True):
-                    st.info(show_source_info('oecd'))
-    
-    with tab2:
-        # Enhanced applications view
-        genai_apps = oecd_applications[oecd_applications['category'] == 'GenAI']
-        traditional_apps = oecd_applications[oecd_applications['category'] == 'Traditional AI']
-        
-        fig = go.Figure()
-        
-        # GenAI applications
-        fig.add_trace(go.Bar(
-            name='GenAI Applications',
-            y=genai_apps.sort_values('usage_rate')['application'],
-            x=genai_apps.sort_values('usage_rate')['usage_rate'],
-            orientation='h',
-            marker_color='#E74C3C',
-            text=[f'{x}%' for x in genai_apps.sort_values('usage_rate')['usage_rate']],
-            textposition='outside'
-        ))
-        
-        # Traditional AI applications
-        fig.add_trace(go.Bar(
-            name='Traditional AI',
-            y=traditional_apps.sort_values('usage_rate')['application'],
-            x=traditional_apps.sort_values('usage_rate')['usage_rate'],
-            orientation='h',
-            marker_color='#3498DB',
-            text=[f'{x}%' for x in traditional_apps.sort_values('usage_rate')['usage_rate']],
-            textposition='outside'
-        ))
-        
-        fig.update_layout(
-            title='AI Application Usage: GenAI vs Traditional AI',
-            xaxis_title='Usage Rate (% of AI-adopting firms)',
-            height=600,
-            showlegend=True,
-            barmode='overlay'
-        )
-        
-        st.plotly_chart(fig, use_container_width=True)
-        
-        st.success("**Key Trend:** GenAI applications (content generation, code generation, chatbots) now lead adoption rates")
-    
-    with tab3:
-        # Success factors analysis
-        success_factors = pd.DataFrame({
-            'factor': ['Leadership Commitment', 'Data Infrastructure', 'Talent Availability',
-                      'Change Management', 'Partnership Ecosystem', 'Regulatory Clarity'],
-            'importance': [92, 88, 85, 78, 72, 68],
-            'readiness': [65, 72, 45, 52, 58, 48]
-        })
-        
-        fig = go.Figure()
-        
-        # Create gap analysis
-        fig.add_trace(go.Bar(
-            name='Importance',
-            x=success_factors['factor'],
-            y=success_factors['importance'],
-            marker_color='#3498DB',
-            text=[f'{x}%' for x in success_factors['importance']],
-            textposition='outside'
-        ))
-        
-        fig.add_trace(go.Bar(
-            name='Current Readiness',
-            x=success_factors['factor'],
-            y=success_factors['readiness'],
-            marker_color='#E74C3C',
-            text=[f'{x}%' for x in success_factors['readiness']],
-            textposition='outside'
-        ))
-        
-        # Calculate and display gaps
-        gaps = success_factors['importance'] - success_factors['readiness']
-        fig.add_trace(go.Scatter(
-            name='Gap',
-            x=success_factors['factor'],
-            y=gaps,
-            mode='markers+text',
-            marker=dict(size=15, color='orange'),
-            text=[f'-{x}pp' for x in gaps],
-            textposition='top center',
-            yaxis='y2'
-        ))
-        
-        fig.update_layout(
-            title='AI Success Factors: Importance vs Readiness Gap',
-            xaxis_title='Success Factor',
-            yaxis=dict(title='Score (%)', side='left'),
-            yaxis2=dict(title='Gap (pp)', side='right', overlaying='y', range=[0, 50]),
-            height=450,
-            barmode='group',
-            xaxis_tickangle=45
-        )
-        
-        st.plotly_chart(fig, use_container_width=True)
-        
-        st.warning("**Critical Gap:** Talent availability shows the largest readiness gap (40pp), highlighting the global AI skills shortage")
 
 elif view_type == "Barriers & Support":
     st.write("🚧 **AI Adoption Barriers & Support Effectiveness**")
@@ -5124,8 +4969,10 @@ elif view_type == "Causal Analysis":
                 
                 target_metrics = [ProductivityMetric.REVENUE_PER_EMPLOYEE, ProductivityMetric.OPERATIONAL_EFFICIENCY]
                 
+                # Convert intervention values to float for type compatibility
+                intervention_float = {k: float(v) for k, v in intervention.items()}
                 prediction = causal_engine.predict_intervention_impact(
-                    intervention=intervention,
+                    intervention=intervention_float,
                     target_metrics=target_metrics,
                     sector="technology"
                 )
@@ -5418,12 +5265,21 @@ elif view_type == "Research Scanner":
     # Import the research scanner view
     from views.research_scanner import show_research_scanner
     
-    show_research_scanner(
-        data_year=data_year,
-        sources_data=sources_data,
-        dashboard_data={
+            # Define sources_data for research scanner
+        sources_data = {
             'token_economics': token_economics,
             'ai_investment': ai_investment_data,
+            'productivity_data': productivity_data,
+            'geographic_data': geographic,
+            'firm_size_data': firm_size
+        }
+        
+        show_research_scanner(
+            data_year=data_year,
+            sources_data=sources_data,
+            dashboard_data={
+                'token_economics': token_economics,
+                'ai_investment': ai_investment_data,
             'sector_2025': sector_2025,
             'financial_impact': financial_impact,
             'productivity_data': productivity_data
@@ -5454,6 +5310,16 @@ elif view_type == "Technical Research":
             'ai_use_case_analysis': use_case_data,
             'public_sector_ai_study': public_sector_data
         }
+        
+        # Ensure sources_data is available for technical research
+        if 'sources_data' not in locals():
+            sources_data = {
+                'token_economics': token_economics,
+                'ai_investment': ai_investment_data,
+                'productivity_data': productivity_data,
+                'geographic_data': geographic_data,
+                'firm_size_data': firm_size_data
+            }
         
         show_technical_research(
             data_year=data_year,
@@ -5884,8 +5750,6 @@ with st.expander("📊 Comprehensive AI Impact Analysis - Full Report", expanded
     - **Sector analysis** - Industry-specific impacts across technology, finance, healthcare, manufacturing
     - **Multi-dimensional assessment** - Technical capabilities, economic impact, policy implications, social effects
     """)
-
-# [Rest of the file continues with all the remaining sections...]
 
 # Footer - Enhanced with trust indicators
 st.markdown("---")

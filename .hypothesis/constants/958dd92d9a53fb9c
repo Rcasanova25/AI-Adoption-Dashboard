@@ -1,0 +1,4 @@
+# file: C:\Users\rcasa\OneDrive\Documents\AI-Adoption-Dashboard\data\oecd_realtime.py
+# hypothesis_version: 6.135.20
+
+[0.1, 429, 500, 502, 503, 504, 3600, '%Y-%m', '+', '.', './cache/oecd', '.A.PDTY.VPVOB', '.GERD.PC_GDP', '.M.BS.BLSA', '.M.LI...AA...H', '.Q.N.B1GQ.DOBSA.G1', 'AllDimensions', 'CAN', 'DEU', 'Employment Rate', 'FRA', 'GBR', 'GDP Growth Rate', 'GDP per hour worked', 'INDICATOR', 'INDICATOR_NAME', 'ITA', 'Index', 'JPN', 'Labour Productivity', 'M', 'OBS_VALUE', 'Percentage', 'R&D Expenditure', 'REF_AREA', 'TIME_PERIOD', 'UNIT', 'USA', '__main__', 'ai_adoption_score', 'best_predictors', 'business_confidence', 'cli', 'coerce', 'correlations', 'csvfilewithlabels', 'data', 'dataset', 'date_range', 'description', 'employment', 'endPeriod', 'ffill', 'format', 'gdp_growth', 'http://', 'https://', 'innovation', 'key', 'lag_correlations', 'mean', 'n_observations', 'name', 'productivity', 'r', 'records', 'startPeriod', 'timestamp', 'ttl', 'unit', 'w']

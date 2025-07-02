@@ -6,7 +6,7 @@ Tests the DataValidator class and related functions
 import pytest
 import pandas as pd
 import numpy as np
-from utils.data_validation import DataValidator, DataStatus, ValidationResult, safe_plot_check
+from Utils.data_validation import DataValidator, DataStatus, ValidationResult, safe_plot_check
 
 
 class TestDataValidator:
