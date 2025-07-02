@@ -38,6 +38,7 @@ DATA_SOURCES = {
 # View configuration
 VIEW_TYPES = [
     "Executive Dashboard",  # NEW - Executive summary view
+    "Real-time Analysis",  # NEW - OECD economic data integration
     "Historical Trends",
     "Industry Analysis", 
     "Financial Impact",

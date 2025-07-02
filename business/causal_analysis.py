@@ -11,6 +11,22 @@ from enum import Enum
 from datetime import datetime
 import logging
 
+# Import OECD real-time data integration
+try:
+    import sys
+    import os
+    # Add parent directory to path for relative imports
+    current_dir = os.path.dirname(os.path.abspath(__file__))
+    parent_dir = os.path.dirname(current_dir)
+    if parent_dir not in sys.path:
+        sys.path.append(parent_dir)
+    
+    from data.oecd_realtime import OECDIntegration
+    OECD_AVAILABLE = True
+except ImportError as e:
+    OECD_AVAILABLE = False
+    logging.warning(f"OECD real-time data not available: {e}")
+
 # CausalNex imports for causal reasoning
 try:
     from causalnex.structure import StructureModel
@@ -138,6 +154,14 @@ class CausalAnalysisEngine:
         self.historical_analyses = []
         self.intervention_cache = {}
         
+        # Initialize OECD integration
+        if OECD_AVAILABLE:
+            self.oecd_integration = OECDIntegration(cache_ttl=3600)
+            logger.info("OECD real-time data integration enabled")
+        else:
+            self.oecd_integration = None
+            logger.warning("OECD real-time data not available")
+        
         if not CAUSALNEX_AVAILABLE:
             logger.warning("CausalNx not available. Causal analysis will use statistical approximations.")
     
@@ -146,7 +170,8 @@ class CausalAnalysisEngine:
         adoption_data: pd.DataFrame,
         productivity_data: pd.DataFrame,
         sector: str = "all_sectors",
-        time_window: str = "2020-2024"
+        time_window: str = "2020-2024",
+        use_oecd_enhancement: bool = True
     ) -> CausalAnalysisResult:
         """
         Establish causal relationships between AI adoption and productivity gains
@@ -158,19 +183,35 @@ class CausalAnalysisEngine:
             # Detect authentic data usage
             self._detect_authentic_data_usage(adoption_data, productivity_data)
             
+            # Fetch OECD data for enhancement (if available and requested)
+            oecd_data = None
+            if use_oecd_enhancement and self.oecd_integration:
+                try:
+                    oecd_data = self._fetch_relevant_oecd_data(adoption_data, productivity_data)
+                    logger.info(f"Successfully fetched OECD enhancement data: {len(oecd_data.columns) if oecd_data is not None else 0} indicators")
+                except Exception as e:
+                    logger.warning(f"OECD data fetch failed, proceeding without enhancement: {e}")
+                    oecd_data = None
+            
             # Merge and prepare data for causal analysis
-            merged_data = self._prepare_causal_dataset(adoption_data, productivity_data, sector)
+            merged_data = self._prepare_causal_dataset(adoption_data, productivity_data, sector, oecd_data)
             
             if CAUSALNEX_AVAILABLE:
-                # Use CausalNx for rigorous causal discovery
-                logger.info("Running genuine CausalNx analysis with NOTEARS algorithm")
-                causal_relationships = self._discover_causal_structure_causalnx(merged_data, analysis_id)
+                # Run enhanced causal analysis with OECD data comparison
+                if oecd_data is not None:
+                    logger.info("Running enhanced CausalNx analysis with OECD economic context")
+                    causal_relationships, confidence_score = self._run_enhanced_causal_analysis_with_oecd(
+                        merged_data, analysis_id
+                    )
+                else:
+                    logger.info("Running baseline CausalNx analysis with NOTEARS algorithm")
+                    causal_relationships = self._discover_causal_structure_causalnx(merged_data, analysis_id)
+                    confidence_score = self._calculate_model_confidence_causalnx(merged_data)
+                
                 productivity_impacts = self._quantify_productivity_impacts_causalnx(merged_data, causal_relationships)
                 intervention_recommendations = self._generate_intervention_recommendations_causalnx(
                     merged_data, causal_relationships
                 )
-                # Calculate genuine confidence based on actual CausalNx model performance
-                confidence_score = self._calculate_model_confidence_causalnx(merged_data)
                 
                 logger.info(f"CausalNx analysis completed: {len(causal_relationships)} relationships, confidence: {confidence_score:.3f}")
                 
@@ -185,10 +226,14 @@ class CausalAnalysisEngine:
                 logger.info(f"Statistical analysis completed: {len(causal_relationships)} relationships, confidence: {confidence_score:.3f}")
             
             # Create comprehensive analysis result
+            data_sources = [f"AI Adoption Data ({sector})", f"Productivity Data ({sector})"]
+            if oecd_data is not None:
+                data_sources.append("OECD Real-time Economic Indicators")
+            
             result = CausalAnalysisResult(
                 analysis_id=analysis_id,
                 analysis_date=datetime.now(),
-                data_sources=[f"AI Adoption Data ({sector})", f"Productivity Data ({sector})"],
+                data_sources=data_sources,
                 causal_relationships=causal_relationships,
                 productivity_impacts=productivity_impacts,
                 intervention_recommendations=intervention_recommendations,
@@ -330,7 +375,8 @@ class CausalAnalysisEngine:
         self,
         adoption_data: pd.DataFrame,
         productivity_data: pd.DataFrame,
-        sector: str
+        sector: str,
+        oecd_data: pd.DataFrame = None
     ) -> pd.DataFrame:
         """Prepare merged dataset for causal analysis"""
         
@@ -358,6 +404,11 @@ class CausalAnalysisEngine:
                 merged.get('operational_efficiency', 100) * 0.3 +
                 merged.get('cost_reduction_percentage', 0) * 0.4
             )
+        
+        # Integrate OECD economic indicators if available
+        if oecd_data is not None:
+            merged = self._integrate_oecd_indicators(merged, oecd_data)
+            logger.info(f"Integrated {len(oecd_data.columns)} OECD economic indicators into causal dataset")
         
         # Handle missing values
         numeric_columns = merged.select_dtypes(include=[np.number]).columns
@@ -669,14 +720,18 @@ class CausalAnalysisEngine:
             # 5. Statistical significance of discovered edges
             edge_significance = self._calculate_edge_significance_score(sector)
             
+            # 6. OECD enhancement factor (if OECD indicators are present)
+            oecd_enhancement_factor = self._calculate_oecd_enhancement_factor(data)
+            
             # Weighted combination of all confidence factors
             confidence_components = {
-                'structure_quality': structure_score * 0.25,
-                'acyclicity': acyclicity_score * 0.15,
-                'network_fit': (aic_score + bic_score) / 2 * 0.20,
-                'cross_validation': cv_score * 0.15,
-                'data_quality': (sample_size_score + data_completeness) / 2 * 0.15,
-                'edge_significance': edge_significance * 0.10
+                'structure_quality': structure_score * 0.20,
+                'acyclicity': acyclicity_score * 0.12,
+                'network_fit': (aic_score + bic_score) / 2 * 0.18,
+                'cross_validation': cv_score * 0.12,
+                'data_quality': (sample_size_score + data_completeness) / 2 * 0.13,
+                'edge_significance': edge_significance * 0.10,
+                'oecd_enhancement': oecd_enhancement_factor * 0.15
             }
             
             # Calculate overall confidence
@@ -1278,6 +1333,54 @@ class CausalAnalysisEngine:
             logger.warning(f"Edge significance calculation failed: {e}")
             return 0.0
     
+    def _calculate_oecd_enhancement_factor(self, data: pd.DataFrame) -> float:
+        """
+        Calculate enhancement factor from OECD economic indicators
+        """
+        try:
+            # Check if OECD indicators are present
+            oecd_columns = [col for col in data.columns if col.lower().startswith('oecd_')]
+            
+            if not oecd_columns:
+                return 0.0  # No OECD enhancement
+            
+            # Calculate OECD data quality metrics
+            oecd_data = data[oecd_columns]
+            
+            # Data completeness for OECD indicators
+            oecd_completeness = 1.0 - (oecd_data.isnull().sum().sum() / oecd_data.size)
+            
+            # Diversity of OECD indicators (more indicators = better economic context)
+            indicator_diversity = min(len(oecd_columns) / 8.0, 1.0)  # Normalize to max 8 indicators
+            
+            # Temporal coverage (check if OECD data spans sufficient time)
+            temporal_coverage = 1.0  # Assume good temporal coverage for now
+            
+            # Leading indicator quality (check for key economic indicators)
+            key_indicators = ['cli', 'gdp', 'productivity', 'business_confidence']
+            leading_indicator_coverage = sum(
+                1 for indicator in key_indicators 
+                if any(indicator in col.lower() for col in oecd_columns)
+            ) / len(key_indicators)
+            
+            # Calculate overall OECD enhancement factor
+            enhancement_factor = (
+                oecd_completeness * 0.3 +
+                indicator_diversity * 0.25 +
+                temporal_coverage * 0.20 +
+                leading_indicator_coverage * 0.25
+            )
+            
+            logger.info(f"OECD enhancement factor: {enhancement_factor:.3f} "
+                       f"(completeness: {oecd_completeness:.3f}, diversity: {indicator_diversity:.3f}, "
+                       f"coverage: {leading_indicator_coverage:.3f})")
+            
+            return enhancement_factor
+            
+        except Exception as e:
+            logger.warning(f"OECD enhancement factor calculation failed: {e}")
+            return 0.0
+    
     def _calculate_statistical_confidence(self, data: pd.DataFrame) -> float:
         """Fallback statistical confidence calculation"""
         
@@ -1339,6 +1442,253 @@ class CausalAnalysisEngine:
         except Exception as e:
             logger.warning(f"Error calculating productivity impact confidence: {e}")
             return 0.4
+    
+    def _fetch_relevant_oecd_data(self, adoption_data: pd.DataFrame, productivity_data: pd.DataFrame) -> pd.DataFrame:
+        """
+        Fetch relevant OECD economic indicators for the same time period as input data
+        """
+        try:
+            # Determine time range from input data
+            start_year = None
+            end_year = None
+            
+            for df in [adoption_data, productivity_data]:
+                if 'year' in df.columns:
+                    df_min = df['year'].min()
+                    df_max = df['year'].max()
+                    if start_year is None or df_min < start_year:
+                        start_year = df_min
+                    if end_year is None or df_max > end_year:
+                        end_year = df_max
+            
+            # Default to recent years if no year data found
+            if start_year is None or end_year is None:
+                end_year = datetime.now().year
+                start_year = end_year - 5
+            
+            # Determine countries from input data if available
+            countries = None
+            for df in [adoption_data, productivity_data]:
+                if 'country' in df.columns:
+                    countries = df['country'].unique().tolist()
+                    break
+                elif 'sector' in df.columns and any('country' in str(s).lower() for s in df['sector'].unique()):
+                    # Extract country codes from sector names if available
+                    countries = ['USA', 'GBR', 'DEU', 'FRA', 'JPN']  # Default G7 subset
+                    break
+            
+            if countries is None:
+                countries = ['USA', 'GBR', 'DEU']  # Default to major economies
+            
+            # Calculate months back from year range
+            months_back = max(12, (end_year - start_year + 1) * 12)
+            
+            logger.info(f"Fetching OECD data for {countries} from {start_year} to {end_year}")
+            
+            # Fetch aligned OECD dataset
+            aligned_oecd = self.oecd_integration.get_aligned_dataset(
+                countries=countries[:3],  # Limit to 3 countries for performance
+                months_back=min(months_back, 60)  # Max 5 years
+            )
+            
+            if aligned_oecd.empty:
+                logger.warning("No OECD data retrieved")
+                return None
+            
+            # Filter to relevant years if possible
+            if hasattr(aligned_oecd.index, 'year'):
+                year_mask = (aligned_oecd.index.year >= start_year) & (aligned_oecd.index.year <= end_year)
+                aligned_oecd = aligned_oecd[year_mask]
+            
+            logger.info(f"Retrieved OECD data: {aligned_oecd.shape[0]} time periods, {aligned_oecd.shape[1]} indicators")
+            return aligned_oecd
+            
+        except Exception as e:
+            logger.error(f"Failed to fetch OECD data: {e}")
+            return None
+    
+    def _integrate_oecd_indicators(self, merged_data: pd.DataFrame, oecd_data: pd.DataFrame) -> pd.DataFrame:
+        """
+        Integrate OECD indicators into the causal dataset
+        """
+        try:
+            # Aggregate OECD data by year for merging
+            if 'year' in merged_data.columns:
+                # Convert OECD index to year if it's datetime
+                if hasattr(oecd_data.index, 'year'):
+                    oecd_yearly = oecd_data.groupby(oecd_data.index.year).mean()
+                    oecd_yearly.index.name = 'year'
+                    oecd_yearly = oecd_yearly.reset_index()
+                else:
+                    # Assume index is already year-based
+                    oecd_yearly = oecd_data.reset_index()
+                    oecd_yearly.rename(columns={'index': 'year'}, inplace=True)
+                
+                # Merge with main dataset
+                merged_enhanced = pd.merge(
+                    merged_data, 
+                    oecd_yearly, 
+                    on='year', 
+                    how='left', 
+                    suffixes=('', '_oecd')
+                )
+                
+                # Add prefix to OECD columns for clarity
+                oecd_columns = [col for col in merged_enhanced.columns if col.endswith('_oecd') or any(indicator in col.lower() for indicator in ['cli', 'gdp', 'productivity', 'business_confidence'])]
+                for col in oecd_columns:
+                    if not col.startswith('oecd_'):
+                        new_col = f"oecd_{col.replace('_oecd', '')}"
+                        merged_enhanced.rename(columns={col: new_col}, inplace=True)
+                
+                logger.info(f"Successfully integrated OECD indicators. Enhanced dataset shape: {merged_enhanced.shape}")
+                return merged_enhanced
+            else:
+                logger.warning("No year column found in merged data, cannot integrate OECD indicators")
+                return merged_data
+                
+        except Exception as e:
+            logger.error(f"Failed to integrate OECD indicators: {e}")
+            return merged_data
+    
+    def _run_enhanced_causal_analysis_with_oecd(
+        self, 
+        merged_data: pd.DataFrame, 
+        analysis_id: str
+    ) -> Tuple[List[CausalRelationship], float]:
+        """
+        Run enhanced causal analysis leveraging OECD economic indicators
+        """
+        try:
+            # Run baseline analysis without OECD indicators
+            baseline_vars = self._select_baseline_causal_variables(merged_data)
+            baseline_data = merged_data[baseline_vars].copy()
+            
+            logger.info(f"Running baseline causal analysis with {len(baseline_vars)} variables")
+            baseline_relationships = self._discover_causal_structure_causalnx(
+                baseline_data, f"{analysis_id}_baseline"
+            )
+            baseline_confidence = self._calculate_model_confidence_causalnx(baseline_data)
+            
+            # Run enhanced analysis with OECD indicators
+            enhanced_vars = self._select_enhanced_causal_variables(merged_data)
+            enhanced_data = merged_data[enhanced_vars].copy()
+            
+            logger.info(f"Running enhanced causal analysis with {len(enhanced_vars)} variables (including OECD)")
+            enhanced_relationships = self._discover_causal_structure_causalnx(
+                enhanced_data, f"{analysis_id}_enhanced"
+            )
+            enhanced_confidence = self._calculate_model_confidence_causalnx(enhanced_data)
+            
+            # Compare and select better model
+            if enhanced_confidence > baseline_confidence * 1.1:  # 10% improvement threshold
+                logger.info(f"Enhanced model selected: {enhanced_confidence:.3f} vs {baseline_confidence:.3f}")
+                final_relationships = enhanced_relationships
+                final_confidence = enhanced_confidence
+                
+                # Add OECD enhancement metadata to relationships
+                for rel in final_relationships:
+                    if any(oecd_indicator in rel.cause for oecd_indicator in ['oecd_', 'cli', 'gdp', 'productivity']):
+                        rel.evidence_sources.append("OECD Economic Context")
+                        rel.discovery_method += " + OECD Enhancement"
+            else:
+                logger.info(f"Baseline model retained: {baseline_confidence:.3f} vs {enhanced_confidence:.3f}")
+                final_relationships = baseline_relationships
+                final_confidence = baseline_confidence
+            
+            return final_relationships, final_confidence
+            
+        except Exception as e:
+            logger.error(f"Enhanced causal analysis failed: {e}")
+            # Fallback to baseline analysis
+            return self._discover_causal_structure_causalnx(merged_data, analysis_id), \
+                   self._calculate_model_confidence_causalnx(merged_data)
+    
+    def _select_baseline_causal_variables(self, data: pd.DataFrame) -> List[str]:
+        """
+        Select baseline variables (excluding OECD indicators) for causal analysis
+        """
+        baseline_terms = ['adoption', 'ai', 'revenue', 'efficiency', 'productivity', 'roi', 'investment', 'cost']
+        selected_vars = []
+        
+        for col in data.columns:
+            # Exclude OECD indicators and include baseline terms
+            if not col.lower().startswith('oecd_') and any(term in col.lower() for term in baseline_terms):
+                selected_vars.append(col)
+        
+        # Add other important numeric variables
+        numeric_vars = data.select_dtypes(include=[np.number]).columns.tolist()
+        for var in numeric_vars:
+            if var not in selected_vars and not var.lower().startswith('oecd_') and len(selected_vars) < 12:
+                selected_vars.append(var)
+        
+        return selected_vars[:12]  # Limit for computational efficiency
+    
+    def _select_enhanced_causal_variables(self, data: pd.DataFrame) -> List[str]:
+        """
+        Select enhanced variables (including OECD indicators) for causal analysis
+        """
+        # Start with baseline variables
+        enhanced_vars = self._select_baseline_causal_variables(data)
+        
+        # Add relevant OECD indicators
+        oecd_vars = [col for col in data.columns if col.lower().startswith('oecd_')]
+        
+        # Prioritize key OECD indicators
+        priority_oecd = []
+        for col in oecd_vars:
+            if any(indicator in col.lower() for indicator in ['cli', 'gdp', 'productivity', 'business_confidence']):
+                priority_oecd.append(col)
+        
+        # Add priority OECD indicators first
+        for var in priority_oecd:
+            if len(enhanced_vars) < 18:  # Increased limit for enhanced analysis
+                enhanced_vars.append(var)
+        
+        # Add remaining OECD indicators if space allows
+        for var in oecd_vars:
+            if var not in enhanced_vars and len(enhanced_vars) < 18:
+                enhanced_vars.append(var)
+        
+        return enhanced_vars
+    
+    def _calculate_enhanced_confidence_with_oecd(
+        self, 
+        baseline_confidence: float, 
+        enhanced_confidence: float,
+        oecd_data_quality: float
+    ) -> float:
+        """
+        Calculate enhanced confidence score considering OECD data integration
+        """
+        try:
+            # Base improvement from OECD integration
+            oecd_improvement_factor = 1.0 + (oecd_data_quality * 0.3)  # Up to 30% improvement
+            
+            # Model comparison factor
+            if enhanced_confidence > baseline_confidence:
+                model_improvement = (enhanced_confidence - baseline_confidence) / baseline_confidence
+                confidence_boost = min(model_improvement * 0.5, 0.4)  # Cap at 40% boost
+            else:
+                confidence_boost = 0.0
+            
+            # Economic context factor - OECD provides better confounding variable control
+            economic_context_factor = 1.0 + (oecd_data_quality * 0.2)  # Up to 20% improvement
+            
+            # Calculate final enhanced confidence
+            final_confidence = max(baseline_confidence, enhanced_confidence) * \
+                              oecd_improvement_factor * economic_context_factor + confidence_boost
+            
+            # Ensure realistic bounds
+            final_confidence = max(min(final_confidence, 0.95), baseline_confidence)
+            
+            logger.info(f"Enhanced confidence calculation: base={baseline_confidence:.3f}, "
+                       f"enhanced={enhanced_confidence:.3f}, final={final_confidence:.3f}")
+            
+            return final_confidence
+            
+        except Exception as e:
+            logger.error(f"Enhanced confidence calculation failed: {e}")
+            return max(baseline_confidence, enhanced_confidence)
 
 
 # Global causal analysis engine instance

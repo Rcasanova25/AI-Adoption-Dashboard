@@ -47,6 +47,11 @@ def _configure_page_navigation():
             'title': 'Executive Dashboard',
             'description': 'Executive-focused analytics and insights',
             'breadcrumb': 'Executive'
+        },
+        'realtime_analysis': {
+            'title': 'Real-time Economic Analysis',
+            'description': 'Live OECD data integration with AI adoption metrics',
+            'breadcrumb': 'Real-time Analysis'
         }
     }
     
@@ -117,7 +122,8 @@ def setup_sidebar_navigation():
     nav_options = {
         'main_dashboard': '🏠 Main Dashboard',
         'causal_analysis': '🔗 Causal Analysis',
-        'executive_dashboard': '👔 Executive View'
+        'executive_dashboard': '👔 Executive View',
+        'realtime_analysis': '🌍 Real-time Analysis'
     }
     
     current_page = get_current_page()

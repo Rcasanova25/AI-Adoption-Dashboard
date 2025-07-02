@@ -52,6 +52,7 @@ from views.roi_analysis import show_roi_analysis
 from views.causal_analysis import show_causal_analysis
 from views.bibliography import show_bibliography_sources
 from views.executive_dashboard import show_executive_dashboard
+from views.realtime_analysis import show_realtime_analysis
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -328,6 +329,8 @@ def route_to_view(view_type: str, data_components: Dict[str, pd.DataFrame], dash
                 dashboard_data=dashboard_data,
                 sources_data=data_components.get('sources_data', pd.DataFrame())
             )
+        elif view_type == "Real-time Analysis":
+            show_realtime_analysis()
         elif view_type == "Historical Trends":
             show_historical_trends(
                 data_year=data_year,
