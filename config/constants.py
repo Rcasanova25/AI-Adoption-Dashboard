@@ -37,6 +37,7 @@ DATA_SOURCES = {
 
 # View configuration
 VIEW_TYPES = [
+    "Executive Dashboard",  # NEW - Executive summary view
     "Historical Trends",
     "Industry Analysis", 
     "Financial Impact",

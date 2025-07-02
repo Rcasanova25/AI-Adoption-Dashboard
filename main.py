@@ -51,6 +51,7 @@ from views.barriers_support import show_barriers_support
 from views.roi_analysis import show_roi_analysis
 from views.causal_analysis import show_causal_analysis
 from views.bibliography import show_bibliography_sources
+from views.executive_dashboard import show_executive_dashboard
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -321,7 +322,13 @@ def route_to_view(view_type: str, data_components: Dict[str, pd.DataFrame], dash
     data_year = st.session_state.get('data_year', '2025')
     
     try:
-        if view_type == "Historical Trends":
+        if view_type == "Executive Dashboard":
+            show_executive_dashboard(
+                data_year=data_year,
+                dashboard_data=dashboard_data,
+                sources_data=data_components.get('sources_data', pd.DataFrame())
+            )
+        elif view_type == "Historical Trends":
             show_historical_trends(
                 data_year=data_year,
                 historical_data=data_components.get('historical_data', pd.DataFrame()),
