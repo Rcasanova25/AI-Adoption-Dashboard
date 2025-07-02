@@ -9,6 +9,7 @@ import pandas as pd
 from typing import Dict, Any
 import logging
 import plotly.express as px
+from dash import html, dcc
 
 from Utils.data_validation import safe_plot_check, DataValidator, safe_download_button
 from Utils.helpers import clean_filename
