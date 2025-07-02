@@ -11,7 +11,7 @@ from typing import Dict, Any
 import logging
 from plotly.subplots import make_subplots
 
-from utils.data_validation import safe_plot_check, DataValidator, safe_download_button
+from Utils.data_validation import safe_plot_check, DataValidator, safe_download_button
 from Utils.helpers import clean_filename
 
 logger = logging.getLogger(__name__)
