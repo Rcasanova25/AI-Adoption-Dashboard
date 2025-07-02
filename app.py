@@ -4137,18 +4137,22 @@ elif view_type == "Geographic Distribution":
         display_cols = ['state', 'composite_score', 'ai_adoption_rate', 'nsf_ai_institutes_total', 
                        'total_federal_funding_billions', 'ai_workforce_thousands']
         
+        # Ensure we're working with a pandas DataFrame
+        from Utils.dataframe_safety import ensure_dataframe, safe_dataframe_operation, safe_numeric_conversion
+        
         if not hasattr(state_scorecard, 'sort_values'):
-            state_scorecard = pd.DataFrame(state_scorecard)
+            state_scorecard = ensure_dataframe(state_scorecard)
         if 'composite_score' in state_scorecard.columns:
-            rankings_display = state_scorecard[display_cols].sort_values(by='composite_score', ascending=False, ignore_index=True)
+            rankings_display = safe_dataframe_operation(state_scorecard[display_cols], "sort_values", by='composite_score', ascending=False, ignore_index=True)
         else:
             rankings_display = state_scorecard[display_cols].copy()
         rankings_display['rank'] = range(1, len(rankings_display) + 1)
         rankings_display = rankings_display[['rank'] + display_cols]
         
         # Rename columns for display
-        rankings_display.columns = ['Rank', 'State', 'Composite Score', 'AI Adoption (%)', 
-                                   'NSF Institutes', 'Federal Funding ($B)', 'AI Workforce (K)']
+        if hasattr(rankings_display, 'columns'):
+            rankings_display.columns = ['Rank', 'State', 'Composite Score', 'AI Adoption (%)', 
+                                      'NSF Institutes', 'Federal Funding ($B)', 'AI Workforce (K)']
         
         # Format the dataframe
         rankings_display['Composite Score'] = rankings_display['Composite Score'].round(1)
@@ -4418,120 +4422,6 @@ elif view_type == "Geographic Distribution":
             file_name="ai_geographic_ecosystem_analysis.csv",
             mime="text/csv"
         )
-
-elif view_type == "Barriers & Support":
-    st.write("🚧 **AI Adoption Barriers & Support Effectiveness**")
-    
-    # Enhanced barriers visualization
-    fig = go.Figure()
-    
-    # Sort barriers by severity
-    barriers_sorted = barriers_data.sort_values('percentage', ascending=True)
-    
-    # Create horizontal bar chart with categories
-    barrier_categories = {
-        'Lack of skilled personnel': 'Talent',
-        'Data availability/quality': 'Data',
-        'Integration with legacy systems': 'Technical',
-        'Regulatory uncertainty': 'Regulatory',
-        'High implementation costs': 'Financial',
-        'Security concerns': 'Risk',
-        'Unclear ROI': 'Financial',
-        'Organizational resistance': 'Cultural'
-    }
-    
-    colors = {
-        'Talent': '#E74C3C',
-        'Data': '#3498DB',
-        'Technical': '#9B59B6',
-        'Regulatory': '#F39C12',
-        'Financial': '#2ECC71',
-        'Risk': '#1ABC9C',
-        'Cultural': '#34495E'
-    }
-    
-    barriers_sorted['category'] = barriers_sorted['barrier'].map(barrier_categories)
-    barriers_sorted['color'] = barriers_sorted['category'].map(colors)
-    
-    fig.add_trace(go.Bar(
-        y=barriers_sorted['barrier'],
-        x=barriers_sorted['percentage'],
-        orientation='h',
-        marker_color=barriers_sorted['color'],
-        text=[f'{x}%' for x in barriers_sorted['percentage']],
-        textposition='outside',
-        hovertemplate='<b>%{y}</b><br>Severity: %{x}%<br>Category: %{customdata}<extra></extra>',
-        customdata=barriers_sorted['category']
-    ))
-    
-    fig.update_layout(
-        title='Main Barriers to AI Adoption by Category',
-        xaxis_title='Companies Reporting Barrier (%)',
-        height=400,
-        showlegend=False
-    )
-    
-    st.plotly_chart(fig, use_container_width=True)
-    
-    # Support effectiveness with implementation roadmap
-    st.subheader("🎯 Support Measures & Implementation Roadmap")
-    
-    # Create implementation timeline
-    support_timeline = pd.DataFrame({
-        'measure': ['Regulatory clarity', 'Government education investment', 'Tax incentives',
-                   'University partnerships', 'Innovation grants', 'Technology centers',
-                   'Public-private collaboration'],
-        'effectiveness': [73, 82, 68, 78, 65, 62, 75],
-        'implementation_time': [6, 24, 12, 18, 9, 36, 15],  # months
-        'cost': [1, 5, 4, 3, 4, 5, 3]  # 1-5 scale
-    })
-    
-    fig2 = px.scatter(
-        support_timeline,
-        x='implementation_time',
-        y='effectiveness',
-        size='cost',
-        color='measure',
-        title='Support Measures: Effectiveness vs Implementation Time',
-        labels={
-            'implementation_time': 'Implementation Time (months)',
-            'effectiveness': 'Effectiveness Score (%)',
-            'cost': 'Relative Cost'
-        },
-        height=400
-    )
-    
-    # Add quadrant dividers
-    fig2.add_hline(y=70, line_dash="dash", line_color="gray")
-    fig2.add_vline(x=18, line_dash="dash", line_color="gray")
-    
-    # Quadrant labels
-    fig2.add_annotation(x=9, y=75, text="Quick Wins", showarrow=False, font=dict(color="green", size=14))
-    fig2.add_annotation(x=30, y=75, text="Long-term Strategic", showarrow=False, font=dict(color="blue", size=14))
-    
-    fig2.update_traces(textposition='top center')
-    
-    st.plotly_chart(fig2, use_container_width=True)
-    
-    # Policy recommendations
-    col1, col2 = st.columns(2)
-    
-    with col1:
-        st.write("**🚀 Quick Wins (< 1 year):**")
-        st.write("• **Regulatory clarity:** High impact, low cost")
-        st.write("• **Innovation grants:** Fast deployment")
-        st.write("• **Tax incentives:** Immediate effect")
-    
-    with col2:
-        st.write("**🎯 Strategic Investments:**")
-        st.write("• **Education investment:** Highest effectiveness (82%)")
-        st.write("• **University partnerships:** Strong talent pipeline")
-        st.write("• **Technology centers:** Infrastructure development")
-    
-    st.success("""
-    **Recommended Approach:** Start with regulatory clarity and tax incentives for immediate impact while building 
-    long-term capacity through education and partnerships.
-    """)
 
 elif view_type == "ROI Analysis":
     st.write("💰 **ROI Analysis: Comprehensive Economic Impact**")
@@ -5265,21 +5155,21 @@ elif view_type == "Research Scanner":
     # Import the research scanner view
     from views.research_scanner import show_research_scanner
     
-            # Define sources_data for research scanner
-        sources_data = {
+    # Define sources_data for research scanner
+    sources_data = {
+        'token_economics': token_economics,
+        'ai_investment': ai_investment_data,
+        'productivity_data': productivity_data,
+        'geographic_data': geographic,
+        'firm_size_data': firm_size
+    }
+    
+    show_research_scanner(
+        data_year=data_year,
+        sources_data=sources_data,
+        dashboard_data={
             'token_economics': token_economics,
             'ai_investment': ai_investment_data,
-            'productivity_data': productivity_data,
-            'geographic_data': geographic,
-            'firm_size_data': firm_size
-        }
-        
-        show_research_scanner(
-            data_year=data_year,
-            sources_data=sources_data,
-            dashboard_data={
-                'token_economics': token_economics,
-                'ai_investment': ai_investment_data,
             'sector_2025': sector_2025,
             'financial_impact': financial_impact,
             'productivity_data': productivity_data
@@ -5317,8 +5207,8 @@ elif view_type == "Technical Research":
                 'token_economics': token_economics,
                 'ai_investment': ai_investment_data,
                 'productivity_data': productivity_data,
-                'geographic_data': geographic_data,
-                'firm_size_data': firm_size_data
+                'geographic_data': geographic,
+                'firm_size_data': firm_size
             }
         
         show_technical_research(
@@ -5347,13 +5237,13 @@ elif view_type == "Implementation Guides":
             'sector_2025': sector_2025,
             'financial_impact': financial_impact,
             'ai_investment': ai_investment_data,
-            'nvidia_token_economics': research_data.get('nvidia_token_economics', pd.DataFrame()),
-            'ai_strategy_framework': research_data.get('ai_strategy_framework', pd.DataFrame()),
-            'ai_use_case_analysis': research_data.get('ai_use_case_analysis', pd.DataFrame()),
-            'public_sector_ai_study': research_data.get('public_sector_ai_study', pd.DataFrame()),
-            'goldman_sachs_economics': research_data.get('goldman_sachs_economics', pd.DataFrame()),
-            'nber_working_paper': research_data.get('nber_working_paper', pd.DataFrame()),
-            'imf_working_paper': research_data.get('imf_working_paper', pd.DataFrame()),
+            'nvidia_token_economics': research_data.get('nvidia_token_economics', pd.DataFrame()) if research_data else pd.DataFrame(),
+            'ai_strategy_framework': research_data.get('ai_strategy_framework', pd.DataFrame()) if research_data else pd.DataFrame(),
+            'ai_use_case_analysis': research_data.get('ai_use_case_analysis', pd.DataFrame()) if research_data else pd.DataFrame(),
+            'public_sector_ai_study': research_data.get('public_sector_ai_study', pd.DataFrame()) if research_data else pd.DataFrame(),
+            'goldman_sachs_economics': research_data.get('goldman_sachs_economics', pd.DataFrame()) if research_data else pd.DataFrame(),
+            'nber_working_paper': research_data.get('nber_working_paper', pd.DataFrame()) if research_data else pd.DataFrame(),
+            'imf_working_paper': research_data.get('imf_working_paper', pd.DataFrame()) if research_data else pd.DataFrame(),
             'productivity_data': productivity_data
         }
         
@@ -5380,11 +5270,11 @@ elif view_type == "Governance & Compliance":
         
         # Create consolidated dashboard data for governance
         governance_dashboard_data = {
-            'ai_governance_framework': research_data.get('ai_governance_framework', pd.DataFrame()),
-            'regulatory_landscape_study': research_data.get('regulatory_landscape_study', pd.DataFrame()),
-            'ai_skills_gap_analysis': research_data.get('ai_skills_gap_analysis', pd.DataFrame()),
-            'change_management_study': research_data.get('change_management_study', pd.DataFrame()),
-            'industry_transformation_study': research_data.get('industry_transformation_study', pd.DataFrame())
+            'ai_governance_framework': research_data.get('ai_governance_framework', pd.DataFrame()) if research_data else pd.DataFrame(),
+            'regulatory_landscape_study': research_data.get('regulatory_landscape_study', pd.DataFrame()) if research_data else pd.DataFrame(),
+            'ai_skills_gap_analysis': research_data.get('ai_skills_gap_analysis', pd.DataFrame()) if research_data else pd.DataFrame(),
+            'change_management_study': research_data.get('change_management_study', pd.DataFrame()) if research_data else pd.DataFrame(),
+            'industry_transformation_study': research_data.get('industry_transformation_study', pd.DataFrame()) if research_data else pd.DataFrame()
         }
         
         show_governance_compliance(
@@ -5549,7 +5439,7 @@ with st.expander("📊 Comprehensive AI Impact Analysis - Full Report", expanded
         - **Information processing:** Highest exposure to AI capabilities
         - **Manufacturing/agriculture/mining:** Lower exposure levels
         - **All wage levels affected:** Not limited to recent high-productivity sectors
-        - **Geographic concentration:** AI talent clustering in SF, London creates disparities
+        - **Geographic concentration:** AI talent clustering in SF, London creating disparities
         
         **Career Transitions:**
         - **Into AI engineering:** Software engineers (26.9%), Data scientists (13.3%)
