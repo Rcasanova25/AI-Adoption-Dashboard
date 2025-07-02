@@ -18,10 +18,21 @@ try:
     from causalnex.network import BayesianNetwork
     from causalnex.inference import InferenceEngine
     from causalnex.discretiser import Discretiser
+    from causalnex.evaluation import classification_report, roc_auc
+    from sklearn.model_selection import cross_val_score, KFold
+    from sklearn.metrics import mean_squared_error, r2_score
+    import networkx as nx
     CAUSALNEX_AVAILABLE = True
 except ImportError:
     CAUSALNEX_AVAILABLE = False
     logging.warning("CausalNx not available. Install with: pip install causalnex")
+    # Import sklearn for fallback metrics
+    try:
+        from sklearn.model_selection import cross_val_score, KFold
+        from sklearn.metrics import mean_squared_error, r2_score
+        import networkx as nx
+    except ImportError:
+        pass
     
     # Fallback classes when CausalNx is not available
     class StructureModel:
@@ -126,7 +137,6 @@ class CausalAnalysisEngine:
         self.trained_networks = {}
         self.historical_analyses = []
         self.intervention_cache = {}
-        self._using_authentic_data = True  # Flag for authentic research data usage
         
         if not CAUSALNEX_AVAILABLE:
             logger.warning("CausalNx not available. Causal analysis will use statistical approximations.")
@@ -152,20 +162,27 @@ class CausalAnalysisEngine:
             merged_data = self._prepare_causal_dataset(adoption_data, productivity_data, sector)
             
             if CAUSALNEX_AVAILABLE:
-                # Use CausalNex for rigorous causal discovery
+                # Use CausalNx for rigorous causal discovery
+                logger.info("Running genuine CausalNx analysis with NOTEARS algorithm")
                 causal_relationships = self._discover_causal_structure_causalnx(merged_data, analysis_id)
                 productivity_impacts = self._quantify_productivity_impacts_causalnx(merged_data, causal_relationships)
                 intervention_recommendations = self._generate_intervention_recommendations_causalnx(
                     merged_data, causal_relationships
                 )
+                # Calculate genuine confidence based on actual CausalNx model performance
                 confidence_score = self._calculate_model_confidence_causalnx(merged_data)
+                
+                logger.info(f"CausalNx analysis completed: {len(causal_relationships)} relationships, confidence: {confidence_score:.3f}")
                 
             else:
                 # Fallback to statistical correlation analysis
+                logger.info("CausalNx not available, using statistical fallback methods")
                 causal_relationships = self._discover_causal_structure_statistical(merged_data)
                 productivity_impacts = self._quantify_productivity_impacts_statistical(merged_data)
                 intervention_recommendations = self._generate_basic_intervention_recommendations(merged_data)
-                confidence_score = 0.92  # Enhanced confidence for robust statistical methods with comprehensive data
+                confidence_score = self._calculate_statistical_confidence(merged_data)
+                
+                logger.info(f"Statistical analysis completed: {len(causal_relationships)} relationships, confidence: {confidence_score:.3f}")
             
             # Create comprehensive analysis result
             result = CausalAnalysisResult(
@@ -353,46 +370,104 @@ class CausalAnalysisEngine:
         data: pd.DataFrame,
         analysis_id: str
     ) -> List[CausalRelationship]:
-        """Use CausalNex to discover causal structure"""
+        """Use CausalNx to discover causal structure with genuine NOTEARS algorithm"""
         
-        # Select relevant variables for causal discovery
-        causal_vars = self._select_causal_variables(data)
-        causal_data = data[causal_vars].copy()
-        
-        # Learn structure using NOTEARS algorithm
-        structure_model = from_pandas(causal_data, alpha=0.1)
-        
-        # Create Bayesian Network
-        bayesian_network = BayesianNetwork(structure_model)
-        
-        # Discretize continuous variables for Bayesian Network
-        discretiser = Discretiser(method="fixed", numeric_split_points=[0.25, 0.5, 0.75])
-        causal_data_discrete = discretiser.transform(causal_data)
-        
-        # Fit network parameters
-        bayesian_network = bayesian_network.fit_node_states_and_cpds(causal_data_discrete)
-        
-        # Store trained network for future use
-        sector = data.get('sector', ['general']).iloc[0] if 'sector' in data.columns else 'general'
-        self.trained_networks[sector] = bayesian_network
-        
-        # Extract causal relationships
-        relationships = []
-        for parent, child in structure_model.edges:
-            strength = abs(structure_model[parent][child]['weight']) if 'weight' in structure_model[parent][child] else 0.5
+        try:
+            # Select relevant variables for causal discovery
+            causal_vars = self._select_causal_variables(data)
+            causal_data = data[causal_vars].copy()
             
-            relationships.append(CausalRelationship(
-                cause=parent,
-                effect=child,
-                relationship_type=CausalRelationType.DIRECT,
-                strength=min(strength, 1.0),
-                confidence=0.8,  # High confidence with CausalNx
-                impact_direction="positive" if strength > 0 else "negative",
-                evidence_sources=[f"CausalNX Structure Learning - {analysis_id}"],
-                discovery_method="NOTEARS Algorithm"
-            ))
-        
-        return relationships
+            # Standardize data for NOTEARS algorithm
+            causal_data_standardized = (causal_data - causal_data.mean()) / causal_data.std()
+            causal_data_standardized = causal_data_standardized.fillna(0)
+            
+            # Learn structure using NOTEARS algorithm with proper hyperparameters
+            logger.info(f"Running NOTEARS algorithm on {len(causal_vars)} variables")
+            structure_model = from_pandas(
+                causal_data_standardized,
+                alpha=0.05,  # Stricter alpha for genuine discovery
+                beta=3.0,    # Beta parameter for sparsity
+                max_iter=100,  # Maximum iterations
+                h_tol=1e-8,  # Tolerance for acyclicity constraint
+                rho_max=1e+16,  # Maximum penalty parameter
+                w_threshold=0.3  # Threshold for edge weights
+            )
+            
+            logger.info(f"NOTEARS discovered {len(structure_model.edges)} causal relationships")
+            
+            # Validate discovered structure
+            structure_quality = self._validate_causal_structure(structure_model, causal_data_standardized)
+            
+            # Create and validate Bayesian Network
+            bayesian_network = BayesianNetwork(structure_model)
+            
+            # Discretize continuous variables for Bayesian Network
+            discretiser = Discretiser(method="quantile", num_buckets=3)
+            discretiser.fit(causal_data)
+            causal_data_discrete = discretiser.transform(causal_data)
+            
+            # Fit network parameters with error handling
+            try:
+                bayesian_network = bayesian_network.fit_node_states(causal_data_discrete)
+                bayesian_network = bayesian_network.fit_cpds(causal_data_discrete)
+                
+                # Perform network validation
+                network_quality = self._validate_bayesian_network(bayesian_network, causal_data_discrete)
+                
+            except Exception as e:
+                logger.warning(f"Bayesian network fitting failed: {e}")
+                network_quality = {'log_likelihood': -np.inf, 'aic': np.inf, 'bic': np.inf}
+            
+            # Store trained network and quality metrics
+            sector = data.get('sector', ['general']).iloc[0] if 'sector' in data.columns else 'general'
+            self.trained_networks[sector] = {
+                'network': bayesian_network,
+                'structure_quality': structure_quality,
+                'network_quality': network_quality,
+                'discretiser': discretiser
+            }
+            
+            # Extract causal relationships with genuine confidence scores
+            relationships = []
+            for parent, child in structure_model.edges:
+                edge_data = structure_model[parent][child]
+                
+                # Get actual edge weight from NOTEARS
+                weight = edge_data.get('weight', 0.0)
+                strength = abs(weight)
+                
+                # Calculate genuine confidence based on multiple factors
+                edge_confidence = self._calculate_edge_confidence(
+                    parent, child, weight, causal_data_standardized, structure_quality
+                )
+                
+                # Determine relationship type based on network analysis
+                relationship_type = self._determine_relationship_type(
+                    parent, child, structure_model
+                )
+                
+                relationships.append(CausalRelationship(
+                    cause=parent,
+                    effect=child,
+                    relationship_type=relationship_type,
+                    strength=min(strength, 1.0),
+                    confidence=edge_confidence,
+                    impact_direction="positive" if weight > 0 else "negative",
+                    evidence_sources=[
+                        f"NOTEARS Structure Learning - {analysis_id}",
+                        f"Edge Weight: {weight:.4f}",
+                        f"Structure Quality Score: {structure_quality.get('overall_score', 0):.3f}"
+                    ],
+                    discovery_method="NOTEARS Algorithm with Validation"
+                ))
+            
+            logger.info(f"Extracted {len(relationships)} validated causal relationships")
+            return relationships
+            
+        except Exception as e:
+            logger.error(f"CausalNx structure discovery failed: {e}")
+            # Fallback to statistical methods
+            return self._discover_causal_structure_statistical(data)
     
     def _discover_causal_structure_statistical(self, data: pd.DataFrame) -> List[CausalRelationship]:
         """Fallback statistical approach for causal discovery"""
@@ -415,7 +490,7 @@ class CausalAnalysisEngine:
                             effect=prod_var,
                             relationship_type=CausalRelationType.DIRECT,
                             strength=abs(correlation),
-                            confidence=0.88,  # Enhanced confidence with robust statistical validation
+                            confidence=0.6,
                             impact_direction="positive" if correlation > 0 else "negative",
                             evidence_sources=["Statistical Correlation Analysis"],
                             discovery_method="Pearson Correlation"
@@ -464,12 +539,17 @@ class CausalAnalysisEngine:
                         if rel.effect == data_column and rel.strength > 0.5
                     ]
                     
+                    # Calculate causal confidence based on relationship strength and quality
+                    causal_confidence = self._calculate_productivity_impact_confidence(
+                        data_column, relationships, data
+                    )
+                    
                     impacts.append(ProductivityImpact(
                         metric=metric,
                         baseline_value=baseline,
                         post_ai_value=post_ai,
                         improvement_percentage=improvement,
-                        causal_confidence=0.93,
+                        causal_confidence=causal_confidence,
                         contributing_factors=contributing_factors or ["AI Adoption"],
                         measurement_period="Historical Analysis",
                         sector=data.get('sector', pd.Series(['General'])).iloc[0] if 'sector' in data.columns else 'General'
@@ -500,7 +580,7 @@ class CausalAnalysisEngine:
                         baseline_value=baseline_revenue,
                         post_ai_value=enhanced_revenue,
                         improvement_percentage=improvement,
-                        causal_confidence=0.91,
+                        causal_confidence=0.6,
                         contributing_factors=["AI Adoption Rate"],
                         measurement_period="Comparative Analysis",
                         sector="Statistical Analysis"
@@ -553,29 +633,65 @@ class CausalAnalysisEngine:
         ]
     
     def _calculate_model_confidence_causalnx(self, data: pd.DataFrame) -> float:
-        """Calculate enhanced confidence score for CausalNx model with authentic research data"""
+        """Calculate confidence score based on actual CausalNx model performance metrics"""
         
-        # Enhanced factors reflecting high-quality authentic research data
-        sample_size_score = min(len(data) / 500, 1.0)  # Lower threshold for quality research data
-        data_quality_score = 1.0 - (data.isnull().sum().sum() / data.size)  # Penalize missing data
-        variable_coverage_score = min(len(data.columns) / 15, 1.0)  # Adjusted for focused variables
-        data_authenticity_bonus = 0.15  # Bonus for using authentic Stanford AI Index, McKinsey, Goldman Sachs data
-        research_credibility_bonus = 0.1  # Bonus for A+ rated research sources
-        
-        # Enhanced weighted confidence score
-        base_confidence = (
-            sample_size_score * 0.35 +
-            data_quality_score * 0.35 +
-            variable_coverage_score * 0.15 +
-            data_authenticity_bonus +
-            research_credibility_bonus
-        )
-        
-        # Apply research quality multiplier for authentic data
-        if hasattr(self, '_using_authentic_data') and self._using_authentic_data:
-            base_confidence *= 1.05  # 5% boost for authentic research integration
-        
-        return max(min(base_confidence, 0.98), 0.90)  # Clamp between 0.90 and 0.98 for authentic data
+        try:
+            # Get stored model quality metrics
+            sector = data.get('sector', ['general']).iloc[0] if 'sector' in data.columns else 'general'
+            
+            if sector not in self.trained_networks:
+                logger.warning(f"No trained network found for sector {sector}")
+                return self._calculate_statistical_confidence(data)
+            
+            network_info = self.trained_networks[sector]
+            structure_quality = network_info.get('structure_quality', {})
+            network_quality = network_info.get('network_quality', {})
+            
+            # Calculate confidence based on multiple CausalNx-specific metrics
+            
+            # 1. Structure learning quality (from NOTEARS algorithm)
+            structure_score = structure_quality.get('overall_score', 0.0)
+            acyclicity_score = 1.0 - structure_quality.get('acyclicity_violation', 1.0)
+            sparsity_score = structure_quality.get('sparsity_score', 0.0)
+            
+            # 2. Bayesian network fit quality
+            log_likelihood = network_quality.get('log_likelihood', -np.inf)
+            aic_score = self._normalize_aic_score(network_quality.get('aic', np.inf))
+            bic_score = self._normalize_bic_score(network_quality.get('bic', np.inf))
+            
+            # 3. Cross-validation performance if available
+            cv_score = self._perform_causal_cross_validation(data, sector)
+            
+            # 4. Data quality factors
+            sample_size_score = self._calculate_sample_size_adequacy(len(data))
+            data_completeness = 1.0 - (data.isnull().sum().sum() / data.size)
+            
+            # 5. Statistical significance of discovered edges
+            edge_significance = self._calculate_edge_significance_score(sector)
+            
+            # Weighted combination of all confidence factors
+            confidence_components = {
+                'structure_quality': structure_score * 0.25,
+                'acyclicity': acyclicity_score * 0.15,
+                'network_fit': (aic_score + bic_score) / 2 * 0.20,
+                'cross_validation': cv_score * 0.15,
+                'data_quality': (sample_size_score + data_completeness) / 2 * 0.15,
+                'edge_significance': edge_significance * 0.10
+            }
+            
+            # Calculate overall confidence
+            total_confidence = sum(confidence_components.values())
+            
+            # Log confidence breakdown for transparency
+            logger.info(f"Confidence breakdown: {confidence_components}")
+            logger.info(f"Total model confidence: {total_confidence:.3f}")
+            
+            # Return bounded confidence score
+            return max(min(total_confidence, 0.95), 0.05)
+            
+        except Exception as e:
+            logger.error(f"Error calculating CausalNx model confidence: {e}")
+            return self._calculate_statistical_confidence(data)
     
     def _calculate_quality_metrics(self, data: pd.DataFrame) -> Dict[str, float]:
         """Calculate model quality metrics"""
@@ -861,41 +977,368 @@ class CausalAnalysisEngine:
         }
     
     def _detect_authentic_data_usage(self, adoption_data: pd.DataFrame, productivity_data: pd.DataFrame) -> None:
-        """Detect if we're using authentic research data to enhance confidence calculations"""
+        """Simple data validation without artificial confidence boosting"""
         
-        # Check for indicators of authentic research data
-        authentic_indicators = [
-            'data_source',
-            'source_credibility',
-            'stanford_ai_index',
-            'mckinsey_survey',
-            'goldman_sachs',
-            'federal_reserve',
-            'nber_paper',
-            'imf_study'
-        ]
+        # Simple validation without confidence manipulation
+        total_records = len(adoption_data) + len(productivity_data)
         
-        has_authentic_markers = False
+        if total_records > 0:
+            logger.info(f"Processing {total_records} total records for causal analysis")
+        else:
+            logger.warning("No data available for causal analysis")
+    
+    def _validate_causal_structure(self, structure_model: StructureModel, data: pd.DataFrame) -> Dict[str, float]:
+        """Validate the discovered causal structure using CausalNx metrics"""
         
-        # Check both dataframes for authentic data markers
-        for df in [adoption_data, productivity_data]:
-            if not df.empty:
-                # Check column names for authentic data indicators
-                for indicator in authentic_indicators:
-                    if any(indicator in str(col).lower() for col in df.columns):
-                        has_authentic_markers = True
-                        break
+        try:
+            if not CAUSALNEX_AVAILABLE:
+                return {'overall_score': 0.5, 'acyclicity_violation': 0.0, 'sparsity_score': 0.5}
+            
+            # Check acyclicity constraint (NOTEARS should guarantee this)
+            try:
+                import networkx as nx
+                G = nx.DiGraph()
+                G.add_edges_from(structure_model.edges)
+                is_acyclic = nx.is_directed_acyclic_graph(G)
+                acyclicity_violation = 0.0 if is_acyclic else 1.0
+            except Exception:
+                acyclicity_violation = 0.5  # Unknown
+            
+            # Calculate sparsity score (prefer sparser models)
+            num_possible_edges = len(data.columns) * (len(data.columns) - 1)
+            num_discovered_edges = len(structure_model.edges)
+            sparsity_score = 1.0 - (num_discovered_edges / max(num_possible_edges, 1))
+            
+            # Calculate edge weight distribution quality
+            if structure_model.edges:
+                edge_weights = [abs(structure_model[u][v].get('weight', 0)) for u, v in structure_model.edges]
+                weight_variance = np.var(edge_weights) if edge_weights else 0
+                weight_quality = min(weight_variance * 10, 1.0)  # Higher variance indicates clearer structure
+            else:
+                weight_quality = 0.0
+            
+            # Overall structure quality score
+            overall_score = (
+                (1.0 - acyclicity_violation) * 0.4 +
+                sparsity_score * 0.3 +
+                weight_quality * 0.3
+            )
+            
+            return {
+                'overall_score': overall_score,
+                'acyclicity_violation': acyclicity_violation,
+                'sparsity_score': sparsity_score,
+                'weight_quality': weight_quality,
+                'num_edges': num_discovered_edges
+            }
+            
+        except Exception as e:
+            logger.warning(f"Structure validation failed: {e}")
+            return {'overall_score': 0.3, 'acyclicity_violation': 0.5, 'sparsity_score': 0.3}
+    
+    def _validate_bayesian_network(self, network: BayesianNetwork, data: pd.DataFrame) -> Dict[str, float]:
+        """Validate the fitted Bayesian network"""
+        
+        try:
+            if not CAUSALNEX_AVAILABLE:
+                return {'log_likelihood': -100, 'aic': 200, 'bic': 220}
+            
+            # Calculate log-likelihood of the data given the network
+            try:
+                # This would require access to CausalNx internal methods
+                # Placeholder implementation
+                log_likelihood = -len(data) * len(data.columns) * 0.5  # Rough estimate
+            except Exception:
+                log_likelihood = -np.inf
+            
+            # Calculate AIC and BIC scores
+            num_parameters = len(network.nodes) * 2  # Rough estimate
+            n_samples = len(data)
+            
+            aic = -2 * log_likelihood + 2 * num_parameters
+            bic = -2 * log_likelihood + np.log(n_samples) * num_parameters
+            
+            return {
+                'log_likelihood': log_likelihood,
+                'aic': aic,
+                'bic': bic,
+                'num_parameters': num_parameters
+            }
+            
+        except Exception as e:
+            logger.warning(f"Network validation failed: {e}")
+            return {'log_likelihood': -np.inf, 'aic': np.inf, 'bic': np.inf}
+    
+    def _calculate_edge_confidence(
+        self, 
+        parent: str, 
+        child: str, 
+        weight: float, 
+        data: pd.DataFrame, 
+        structure_quality: Dict[str, float]
+    ) -> float:
+        """Calculate confidence score for a specific causal edge"""
+        
+        try:
+            # Weight magnitude factor
+            weight_factor = min(abs(weight), 1.0)
+            
+            # Sample correlation as supporting evidence
+            if parent in data.columns and child in data.columns:
+                correlation = abs(data[parent].corr(data[child]))
+                correlation_support = correlation if not np.isnan(correlation) else 0.0
+            else:
+                correlation_support = 0.0
+            
+            # Structure quality contribution
+            structure_factor = structure_quality.get('overall_score', 0.0)
+            
+            # Statistical significance (simplified bootstrap test)
+            significance_factor = self._bootstrap_edge_significance(parent, child, data)
+            
+            # Combine factors for edge confidence
+            edge_confidence = (
+                weight_factor * 0.4 +
+                correlation_support * 0.2 +
+                structure_factor * 0.2 +
+                significance_factor * 0.2
+            )
+            
+            return max(min(edge_confidence, 0.95), 0.05)
+            
+        except Exception as e:
+            logger.warning(f"Edge confidence calculation failed for {parent}->{child}: {e}")
+            return 0.3
+    
+    def _bootstrap_edge_significance(self, parent: str, child: str, data: pd.DataFrame, n_bootstrap: int = 50) -> float:
+        """Bootstrap test for edge significance (simplified implementation)"""
+        
+        try:
+            if parent not in data.columns or child not in data.columns:
+                return 0.0
+            
+            original_corr = abs(data[parent].corr(data[child]))
+            if np.isnan(original_corr):
+                return 0.0
+            
+            # Simple bootstrap resampling
+            bootstrap_corrs = []
+            for _ in range(n_bootstrap):
+                sample_indices = np.random.choice(len(data), size=len(data), replace=True)
+                bootstrap_data = data.iloc[sample_indices]
+                bootstrap_corr = abs(bootstrap_data[parent].corr(bootstrap_data[child]))
+                if not np.isnan(bootstrap_corr):
+                    bootstrap_corrs.append(bootstrap_corr)
+            
+            if not bootstrap_corrs:
+                return 0.0
+            
+            # Calculate stability of the relationship
+            corr_std = np.std(bootstrap_corrs)
+            stability = 1.0 - min(corr_std / max(original_corr, 0.01), 1.0)
+            
+            return stability
+            
+        except Exception as e:
+            logger.warning(f"Bootstrap significance test failed: {e}")
+            return 0.0
+    
+    def _determine_relationship_type(self, parent: str, child: str, structure_model: StructureModel) -> CausalRelationType:
+        """Determine the type of causal relationship"""
+        
+        try:
+            # Check for bidirectional relationship
+            has_forward = (parent, child) in structure_model.edges
+            has_backward = (child, parent) in structure_model.edges
+            
+            if has_forward and has_backward:
+                return CausalRelationType.BIDIRECTIONAL
+            
+            # Check for indirect relationships through common causes/effects
+            try:
+                import networkx as nx
+                G = nx.DiGraph()
+                G.add_edges_from(structure_model.edges)
                 
-                # Check if data has specific authentic research characteristics
-                if has_authentic_markers or len(df) > 100:  # Substantial dataset size
-                    self._using_authentic_data = True
-                    logger.info("Detected authentic research data - applying enhanced confidence calculations")
-                    break
+                # Simple path analysis
+                if nx.has_path(G, parent, child):
+                    shortest_path = nx.shortest_path(G, parent, child)
+                    if len(shortest_path) > 2:
+                        return CausalRelationType.INDIRECT
+            except Exception:
+                pass
+            
+            return CausalRelationType.DIRECT
+            
+        except Exception:
+            return CausalRelationType.DIRECT
+    
+    def _normalize_aic_score(self, aic: float) -> float:
+        """Normalize AIC score to 0-1 range (lower is better)"""
+        if np.isinf(aic) or np.isnan(aic):
+            return 0.0
+        # Simple normalization - in practice this would need domain-specific scaling
+        return max(0.0, min(1.0, 1.0 / (1.0 + abs(aic) / 1000)))
+    
+    def _normalize_bic_score(self, bic: float) -> float:
+        """Normalize BIC score to 0-1 range (lower is better)"""
+        if np.isinf(bic) or np.isnan(bic):
+            return 0.0
+        # Simple normalization - in practice this would need domain-specific scaling
+        return max(0.0, min(1.0, 1.0 / (1.0 + abs(bic) / 1000)))
+    
+    def _perform_causal_cross_validation(self, data: pd.DataFrame, sector: str, cv_folds: int = 3) -> float:
+        """Perform cross-validation on causal structure learning"""
         
-        # Default to authentic data assumption for production dashboard
-        if not has_authentic_markers:
-            self._using_authentic_data = True  # Assume authentic data in production
-            logger.info("Applying enhanced confidence for integrated research data")
+        try:
+            if not CAUSALNEX_AVAILABLE or len(data) < cv_folds * 10:
+                return 0.5  # Default score if not enough data
+            
+            from sklearn.model_selection import KFold
+            kf = KFold(n_splits=cv_folds, shuffle=True, random_state=42)
+            
+            fold_scores = []
+            causal_vars = self._select_causal_variables(data)
+            causal_data = data[causal_vars].copy()
+            causal_data_standardized = (causal_data - causal_data.mean()) / causal_data.std()
+            causal_data_standardized = causal_data_standardized.fillna(0)
+            
+            for train_idx, test_idx in kf.split(causal_data_standardized):
+                try:
+                    train_data = causal_data_standardized.iloc[train_idx]
+                    test_data = causal_data_standardized.iloc[test_idx]
+                    
+                    # Learn structure on training data
+                    train_structure = from_pandas(train_data, alpha=0.1, w_threshold=0.3)
+                    
+                    # Simple validation: check edge consistency
+                    if len(train_structure.edges) > 0:
+                        # Calculate correlation consistency between train and test
+                        edge_consistency = 0.0
+                        for parent, child in train_structure.edges:
+                            if parent in test_data.columns and child in test_data.columns:
+                                train_corr = train_data[parent].corr(train_data[child])
+                                test_corr = test_data[parent].corr(test_data[child])
+                                if not (np.isnan(train_corr) or np.isnan(test_corr)):
+                                    consistency = 1.0 - abs(train_corr - test_corr)
+                                    edge_consistency += max(consistency, 0.0)
+                        
+                        fold_score = edge_consistency / len(train_structure.edges)
+                    else:
+                        fold_score = 0.0
+                    
+                    fold_scores.append(fold_score)
+                    
+                except Exception as e:
+                    logger.warning(f"Cross-validation fold failed: {e}")
+                    fold_scores.append(0.0)
+            
+            return np.mean(fold_scores) if fold_scores else 0.0
+            
+        except Exception as e:
+            logger.warning(f"Cross-validation failed: {e}")
+            return 0.0
+    
+    def _calculate_sample_size_adequacy(self, n_samples: int) -> float:
+        """Calculate sample size adequacy score"""
+        # Generally need 10-20 samples per variable for causal discovery
+        min_adequate = 200  # Minimum for reasonable causal discovery
+        optimal = 1000     # Optimal sample size
+        
+        if n_samples < min_adequate:
+            return n_samples / min_adequate
+        elif n_samples >= optimal:
+            return 1.0
+        else:
+            return 0.5 + 0.5 * (n_samples - min_adequate) / (optimal - min_adequate)
+    
+    def _calculate_edge_significance_score(self, sector: str) -> float:
+        """Calculate overall significance score of discovered edges"""
+        
+        try:
+            if sector not in self.trained_networks:
+                return 0.0
+            
+            network_info = self.trained_networks[sector]
+            structure_quality = network_info.get('structure_quality', {})
+            
+            # Use structure quality metrics as proxy for edge significance
+            weight_quality = structure_quality.get('weight_quality', 0.0)
+            num_edges = structure_quality.get('num_edges', 0)
+            
+            # Penalize too few or too many edges
+            if num_edges == 0:
+                return 0.0
+            elif num_edges > 20:  # Too complex
+                return max(0.3, weight_quality * 0.5)
+            else:
+                return weight_quality
+            
+        except Exception as e:
+            logger.warning(f"Edge significance calculation failed: {e}")
+            return 0.0
+    
+    def _calculate_statistical_confidence(self, data: pd.DataFrame) -> float:
+        """Fallback statistical confidence calculation"""
+        
+        # Basic data quality metrics
+        sample_size_score = self._calculate_sample_size_adequacy(len(data))
+        data_completeness = 1.0 - (data.isnull().sum().sum() / data.size)
+        variable_coverage = min(len(data.columns) / 10, 1.0)
+        
+        statistical_confidence = (
+            sample_size_score * 0.4 +
+            data_completeness * 0.4 +
+            variable_coverage * 0.2
+        )
+        
+        return max(min(statistical_confidence, 0.75), 0.1)  # Lower ceiling for statistical methods
+    
+    def _calculate_productivity_impact_confidence(
+        self, 
+        target_variable: str, 
+        relationships: List[CausalRelationship], 
+        data: pd.DataFrame
+    ) -> float:
+        """Calculate confidence for productivity impact based on causal relationships"""
+        
+        try:
+            # Find relationships that affect this productivity metric
+            affecting_relationships = [
+                rel for rel in relationships 
+                if rel.effect == target_variable
+            ]
+            
+            if not affecting_relationships:
+                return 0.3  # Low confidence if no causal relationships found
+            
+            # Calculate weighted confidence based on relationship strengths and confidences
+            total_strength = sum(rel.strength for rel in affecting_relationships)
+            weighted_confidence = sum(
+                rel.confidence * rel.strength for rel in affecting_relationships
+            ) / max(total_strength, 0.01)
+            
+            # Factor in data quality for this variable
+            if target_variable in data.columns:
+                data_quality = 1.0 - (data[target_variable].isnull().sum() / len(data))
+                variable_variance = data[target_variable].var()
+                variance_factor = min(variable_variance / data[target_variable].mean() if data[target_variable].mean() != 0 else 0, 1.0)
+            else:
+                data_quality = 0.5
+                variance_factor = 0.5
+            
+            # Combine factors
+            impact_confidence = (
+                weighted_confidence * 0.6 +
+                data_quality * 0.25 +
+                variance_factor * 0.15
+            )
+            
+            return max(min(impact_confidence, 0.95), 0.05)
+            
+        except Exception as e:
+            logger.warning(f"Error calculating productivity impact confidence: {e}")
+            return 0.4
 
 
 # Global causal analysis engine instance
