@@ -60,7 +60,10 @@ VIEW_TYPES = [
     "Causal Analysis",
     "Bibliography & Sources",
     "Research Scanner",  # NEW - Automated research integration
-    "Technical Research"  # NEW - Phase 2C Technical Analysis
+    "Technical Research",  # NEW - Phase 2C Technical Analysis
+    "Implementation Guides",  # NEW - Stakeholder-specific guidance
+    "Governance & Compliance",  # NEW - Phase 3 Governance Analysis
+    "Research Meta-Analysis"  # NEW - Phase 4 100% Complete Integration
 ]
 
 # Color schemes for consistent visualization

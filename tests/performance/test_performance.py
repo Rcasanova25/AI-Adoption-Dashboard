@@ -501,6 +501,106 @@ def pytest_configure(config):
     config.addinivalue_line("markers", "performance: performance tests")
     config.addinivalue_line("markers", "slow: slow running tests")
 
+class TestAdvancedPerformance:
+    """Advanced performance tests for complex scenarios"""
+    
+    @pytest.mark.performance
+    def test_dashboard_full_load_performance(self):
+        """Test full dashboard loading performance"""
+        from data.loaders import (
+            load_historical_data, load_sector_2025, 
+            load_ai_investment_data, load_financial_impact_data
+        )
+        
+        start_time = time.time()
+        
+        # Load all main datasets
+        historical = load_historical_data()
+        sector = load_sector_2025()
+        investment = load_ai_investment_data()
+        financial = load_financial_impact_data()
+        
+        end_time = time.time()
+        load_time = end_time - start_time
+        
+        # Full dashboard load should be fast
+        assert load_time < 5.0, f"Full dashboard load took {load_time:.2f}s"
+        
+        # Verify all data loaded
+        assert not historical.empty
+        assert not sector.empty
+        assert not investment.empty
+        assert not financial.empty
+        
+        print(f"Full dashboard load: {load_time:.2f}s")
+    
+    @pytest.mark.performance
+    def test_view_switching_performance(self):
+        """Test performance when switching between dashboard views"""
+        from views.historical_trends import show_historical_trends
+        from views.industry_analysis import show_industry_analysis
+        
+        # Mock streamlit to avoid actual rendering
+        with patch('streamlit.write'), \
+             patch('streamlit.plotly_chart'), \
+             patch('streamlit.metric'):
+            
+            historical_data = pd.DataFrame({
+                'year': [2022, 2023, 2024],
+                'ai_use': [50, 65, 78],
+                'genai_use': [0, 33, 71]
+            })
+            
+            sector_data = pd.DataFrame({
+                'sector': ['Technology', 'Finance'],
+                'adoption_rate': [92, 85],
+                'genai_adoption': [88, 78]
+            })
+            
+            start_time = time.time()
+            
+            # Simulate rapid view switching
+            for i in range(10):
+                show_historical_trends("2024", pd.DataFrame(), historical_data)
+                show_industry_analysis("2024", pd.DataFrame(), sector_data)
+            
+            end_time = time.time()
+            switching_time = end_time - start_time
+            
+            # View switching should be efficient
+            assert switching_time < 3.0, f"View switching took {switching_time:.2f}s"
+            print(f"10 view switches: {switching_time:.2f}s")
+    
+    @pytest.mark.performance
+    def test_data_export_performance(self):
+        """Test performance of data export operations"""
+        
+        # Create large export dataset
+        export_data = pd.DataFrame({
+            'category': np.random.choice(['A', 'B', 'C'], 10000),
+            'value': np.random.rand(10000),
+            'metric': np.random.rand(10000)
+        })
+        
+        start_time = time.time()
+        
+        # Test CSV export
+        csv_buffer = export_data.to_csv(index=False)
+        
+        # Test JSON export
+        json_data = export_data.to_json(orient='records')
+        
+        end_time = time.time()
+        export_time = end_time - start_time
+        
+        # Export should be fast
+        assert export_time < 2.0, f"Data export took {export_time:.2f}s"
+        assert len(csv_buffer) > 0
+        assert len(json_data) > 0
+        
+        print(f"Export 10k rows: {export_time:.2f}s")
+
+
 # Run performance tests
 if __name__ == "__main__":
     pytest.main([

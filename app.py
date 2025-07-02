@@ -5465,6 +5465,107 @@ elif view_type == "Technical Research":
         st.error(f"Error loading technical research data: {e}")
         st.info("Technical research data will be available when Phase 2C integration is complete.")
 
+elif view_type == "Implementation Guides":
+    # Import the implementation guides view
+    from views.implementation_guides import show_implementation_guides
+    
+    # Load all relevant dashboard data for stakeholder guides
+    try:
+        from data.loaders import load_authentic_research_datasets
+        
+        # Get comprehensive data for implementation guidance
+        research_data = load_authentic_research_datasets()
+        
+        # Create consolidated dashboard data for guides
+        implementation_dashboard_data = {
+            'sector_2025': sector_2025,
+            'financial_impact': financial_impact,
+            'ai_investment': ai_investment_data,
+            'nvidia_token_economics': research_data.get('nvidia_token_economics', pd.DataFrame()),
+            'ai_strategy_framework': research_data.get('ai_strategy_framework', pd.DataFrame()),
+            'ai_use_case_analysis': research_data.get('ai_use_case_analysis', pd.DataFrame()),
+            'public_sector_ai_study': research_data.get('public_sector_ai_study', pd.DataFrame()),
+            'goldman_sachs_economics': research_data.get('goldman_sachs_economics', pd.DataFrame()),
+            'nber_working_paper': research_data.get('nber_working_paper', pd.DataFrame()),
+            'imf_working_paper': research_data.get('imf_working_paper', pd.DataFrame()),
+            'productivity_data': productivity_data
+        }
+        
+        show_implementation_guides(
+            data_year=data_year,
+            sources_data=sources_data,
+            dashboard_data=implementation_dashboard_data
+        )
+        
+    except Exception as e:
+        st.error(f"Error loading implementation guide data: {e}")
+        st.info("Implementation guides will be available when all research data is loaded.")
+
+elif view_type == "Governance & Compliance":
+    # Import the governance & compliance view
+    from views.governance_compliance import show_governance_compliance
+    
+    # Load Phase 3 governance data
+    try:
+        from data.loaders import load_authentic_research_datasets
+        
+        # Get comprehensive data for governance analysis
+        research_data = load_authentic_research_datasets()
+        
+        # Create consolidated dashboard data for governance
+        governance_dashboard_data = {
+            'ai_governance_framework': research_data.get('ai_governance_framework', pd.DataFrame()),
+            'regulatory_landscape_study': research_data.get('regulatory_landscape_study', pd.DataFrame()),
+            'ai_skills_gap_analysis': research_data.get('ai_skills_gap_analysis', pd.DataFrame()),
+            'change_management_study': research_data.get('change_management_study', pd.DataFrame()),
+            'industry_transformation_study': research_data.get('industry_transformation_study', pd.DataFrame())
+        }
+        
+        show_governance_compliance(
+            data_year=data_year,
+            sources_data=sources_data,
+            dashboard_data=governance_dashboard_data
+        )
+        
+    except Exception as e:
+        st.error(f"Error loading governance & compliance data: {e}")
+        st.info("Governance & compliance analysis will be available when all research data is loaded.")
+
+elif view_type == "Research Meta-Analysis":
+    # Import the research meta-analysis view
+    from views.research_meta_analysis import show_research_meta_analysis
+    
+    # Load Phase 4 meta-analysis data
+    try:
+        from data.loaders import (
+            load_comprehensive_ai_adoption_meta_study_data,
+            load_ai_future_trends_forecast_data
+        )
+        
+        # Load the Phase 4 final completion datasets
+        meta_study_data = load_comprehensive_ai_adoption_meta_study_data()
+        future_trends_data = load_ai_future_trends_forecast_data()
+        
+        # Create consolidated dashboard data for meta-analysis
+        meta_analysis_dashboard_data = {
+            'comprehensive_ai_adoption_meta_study': meta_study_data,
+            'ai_future_trends_forecast': future_trends_data,
+            'historical_data': historical_data,
+            'sector_2025': sector_2025,
+            'ai_investment': ai_investment_data,
+            'financial_impact': financial_impact
+        }
+        
+        show_research_meta_analysis(
+            data_year=data_year,
+            sources_data=sources_data,
+            dashboard_data=meta_analysis_dashboard_data
+        )
+        
+    except Exception as e:
+        st.error(f"Error loading research meta-analysis data: {e}")
+        st.info("Research meta-analysis will be available when all data is loaded.")
+
 # Comprehensive Analysis Integration - UPDATED VERSION
 st.subheader("📋 Comprehensive AI Impact Analysis")
 

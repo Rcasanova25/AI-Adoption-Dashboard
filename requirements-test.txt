@@ -1,14 +1,41 @@
-pytest>=7.0.0
-pytest-cov>=4.0.0
-pytest-mock>=3.10.0
+# Testing dependencies for AI Adoption Dashboard
+# Core testing framework
+pytest>=7.4.0
+pytest-cov>=4.1.0
+pytest-mock>=3.11.1
 pytest-benchmark>=4.0.0
-hypothesis>=6.0.0
+pytest-xdist>=3.3.1  # For parallel test execution
+
+# Performance and memory testing
 memory-profiler>=0.60.0
 psutil>=5.9.0
-black>=22.0.0
-isort>=5.10.0
-flake8>=5.0.0
-mypy>=0.991
-pylint>=2.15.0
-bandit[toml]>=1.7.0
+
+# Code quality and security
+flake8>=6.0.0
+black>=23.1.0
+isort>=5.12.0
+mypy>=1.0.0
+pylint>=2.17.0
+bandit[toml]>=1.7.4
 safety>=2.3.0
+
+# Coverage reporting
+coverage>=7.2.0
+codecov>=2.1.12
+
+# HTTP and API testing (if needed)
+requests-mock>=1.11.0
+responses>=0.23.0
+
+# Data testing utilities
+pytest-datafiles>=3.0.0
+hypothesis>=6.75.0  # Property-based testing
+
+# Additional utilities
+freezegun>=1.2.2  # Time mocking
+factory-boy>=3.2.1  # Test data factories
+faker>=18.10.0  # Fake data generation
+
+# CI/CD utilities  
+tox>=4.6.0  # Multi-environment testing
+pre-commit>=3.0.0
