@@ -227,6 +227,7 @@ class ROICalculator:
             if monthly_benefits <= 0:
                 return {
                     "simple_payback": float('inf'),
+                    "growth_adjusted_payback": float('inf'),
                     "discounted_payback": float('inf'),
                     "break_even_month": float('inf')
                 }

@@ -157,8 +157,27 @@ class TestInvestmentCaseCalculation:
             primary_goal="Cost Reduction",
             risk_tolerance="Medium"
         )
-        
+
         assert expected_payback(case.payback_months)
+
+    def test_payback_scenarios_zero_benefits(self):
+        """Ensure payback scenario keys exist even with zero benefits"""
+        from business.roi_calculator import roi_calculator
+
+        scenarios = roi_calculator.calculate_payback_scenarios(
+            investment=100000,
+            monthly_benefits=0,
+            growth_rate=0.01,
+            discount_rate=0.05,
+        )
+
+        assert set(scenarios.keys()) == {
+            "simple_payback",
+            "growth_adjusted_payback",
+            "discounted_payback",
+            "break_even_month",
+        }
+        assert all(val == float("inf") for val in scenarios.values())
         
     def test_roi_consistency_across_goals(self):
         """Test ROI consistency across different goals"""
