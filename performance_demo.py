@@ -1,1 +1,0 @@
-﻿# Performance Demo Script
