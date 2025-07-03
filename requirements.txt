@@ -33,3 +33,5 @@ folium>=0.12.0
 pytest>=6.0.0
 black>=22.0.0
 flake8>=4.0.0
+kedro>=0.19.14
+causalnex>=0.12.1
