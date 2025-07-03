@@ -1,4 +1,0 @@
-# file: C:\Users\rcasa\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.13_qbz5n2kfra8p0\LocalCache\local-packages\Python313\site-packages\plotly\validators\histogram2d\__init__.py
-# hypothesis_version: 6.135.17
-
-['._ids.IdsValidator', '._meta.MetaValidator', '._name.NameValidator', '._uid.UidValidator', '._x.XValidator', '._xgap.XgapValidator', '._xsrc.XsrcValidator', '._y.YValidator', '._ygap.YgapValidator', '._ysrc.YsrcValidator', '._z.ZValidator', '._zmax.ZmaxValidator', '._zmid.ZmidValidator', '._zmin.ZminValidator', '._zsrc.ZsrcValidator']

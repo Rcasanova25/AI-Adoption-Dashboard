@@ -1,4 +1,0 @@
-# file: C:\Users\rcasa\OneDrive\Documents\AI-Adoption-Dashboard\Utils\data_validation.py
-# hypothesis_version: 6.135.20
-
-['Failed to load data', 'adoption_rate', 'ai_use', 'all', 'avg_roi', 'coerce', 'datetime', 'default', 'empty', 'financial_impact', 'float32', 'float64', 'function', 'genai_adoption', 'genai_investment', 'genai_use', 'historical_data', 'invalid', 'investment_data', 'missing_columns', 'numeric', 'required', 'sector', 'sector_data', 'string', 'text/csv', 'total_investment', 'type', 'valid', 'wrong_type', 'year', '📥 Download Data', '🔄 Retry']

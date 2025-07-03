@@ -1,4 +1,0 @@
-# file: C:\Users\rcasa\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.13_qbz5n2kfra8p0\LocalCache\local-packages\Python313\site-packages\plotly\validators\waterfall\__init__.py
-# hypothesis_version: 6.135.17
-
-['._base.BaseValidator', '._dx.DxValidator', '._dy.DyValidator', '._ids.IdsValidator', '._meta.MetaValidator', '._name.NameValidator', '._text.TextValidator', '._uid.UidValidator', '._x.XValidator', '._x0.X0Validator', '._xsrc.XsrcValidator', '._y.YValidator', '._y0.Y0Validator', '._ysrc.YsrcValidator']

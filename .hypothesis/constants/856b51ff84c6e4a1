@@ -1,4 +1,0 @@
-# file: C:\Users\rcasa\OneDrive\Documents\AI-Adoption-Dashboard\business\roi_calculator.py
-# hypothesis_version: 6.135.17
-
-[0.0, 0.01, 0.02, 0.03, 0.04, 0.05, 0.06, 0.07, 0.08, 0.1, 0.2, 0.5, 0.8, 0.85, 1.0, 1.15, 1.2, 1.5, 2.0, 2.5, 3.0, 3.5, 100, 120, 999, 'Below Threshold', 'Education', 'Energy & Utilities', 'Excellent', 'Financial Services', 'Good', 'Government', 'Healthcare', 'High', 'Low', 'Manufacturing', 'Medium', 'Retail & E-commerce', 'Technology', 'Very Low', 'adoption_rate', 'avg_roi', 'benefits_+20%', 'benefits_-20%', 'break_even_month', 'discount_+2%', 'discount_-2%', 'discounted_payback', 'inf', 'investment_+15%', 'investment_-15%', 'min', 'performance_category', 'recommended_action', 'risk_level', 'roi_percentile', 'roi_rank', 'sector', 'simple_payback']

@@ -1,4 +1,0 @@
-# file: C:\Users\rcasa\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.13_qbz5n2kfra8p0\LocalCache\local-packages\Python313\site-packages\pytest_html\plugin.py
-# hypothesis_version: 6.135.17
-
-[255, '--css', '--html', 'append', 'bool', 'call', 'css', 'extra', 'extras', 'html', 'htmlpath', 'initial_sort', 'linelist', 'passed', 'path', 'render_collapsed', 'resources', 'result', 'self_contained_html', 'store', 'store_true', 'string', 'style.css', 'terminal reporting', 'workerinput']

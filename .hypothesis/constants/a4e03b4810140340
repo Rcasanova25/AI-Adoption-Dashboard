@@ -1,4 +1,0 @@
-# file: C:\Users\rcasa\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.13_qbz5n2kfra8p0\LocalCache\local-packages\Python313\site-packages\streamlit\watcher\folder_black_list.py
-# hypothesis_version: 6.135.17
-
-['**/.*', '**/anaconda', '**/anaconda2', '**/anaconda3', '**/dist-packages', '**/htmlcov', '**/miniconda', '**/miniconda2', '**/miniconda3', '**/node_modules', '**/pyenv', '**/site-packages', '**/venv', '**/virtualenv']

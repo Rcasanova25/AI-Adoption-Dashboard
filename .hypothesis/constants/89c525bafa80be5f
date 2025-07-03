@@ -1,4 +1,0 @@
-# file: C:\Users\rcasa\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.13_qbz5n2kfra8p0\LocalCache\local-packages\Python313\site-packages\plotly\graph_objs\_candlestick.py
-# hypothesis_version: 6.135.17
-
-['_parent', '_validate', 'candlestick', 'close', 'closesrc', 'customdata', 'customdatasrc', 'decreasing', 'high', 'highsrc', 'hoverinfo', 'hoverinfosrc', 'hoverlabel', 'hovertext', 'hovertextsrc', 'ids', 'idssrc', 'increasing', 'legend', 'legendgroup', 'legendgrouptitle', 'legendrank', 'legendwidth', 'line', 'low', 'lowsrc', 'meta', 'metasrc', 'name', 'opacity', 'open', 'opensrc', 'selectedpoints', 'showlegend', 'skip_invalid', 'stream', 'text', 'textsrc', 'type', 'uid', 'uirevision', 'visible', 'whiskerwidth', 'x', 'xaxis', 'xcalendar', 'xhoverformat', 'xperiod', 'xperiod0', 'xperiodalignment', 'xsrc', 'yaxis', 'yhoverformat', 'zorder']

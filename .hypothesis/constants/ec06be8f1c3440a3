@@ -1,4 +1,0 @@
-# file: C:\Users\rcasa\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.13_qbz5n2kfra8p0\LocalCache\local-packages\Python313\site-packages\streamlit\elements\arrow.py
-# hypothesis_version: 6.135.17
-
-[100, 'DataframeState', 'DeltaGenerator', 'WidgetCallback', 'add_rows', 'add_rows_metadata', 'arrow_data_frame', 'arrow_table', 'columns', 'dataframe', 'hidden', 'ignore', 'multi-column', 'multi-row', 'rerun', 'rows', 'selection', 'single-column', 'single-row', 'string_value', 'table']

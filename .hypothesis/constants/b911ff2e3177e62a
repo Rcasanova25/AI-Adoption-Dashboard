@@ -1,4 +1,0 @@
-# file: C:\Users\rcasa\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.13_qbz5n2kfra8p0\LocalCache\local-packages\Python313\site-packages\streamlit\elements\widgets\time_widgets.py
-# hypothesis_version: 6.135.17
-
-['%H:%M', '%Y/%m/%d', 'DateWidgetReturn', 'DeltaGenerator', 'YYYY/MM/DD', 'date_input', 'list[date]', 'now', 'string_array_value', 'string_value', 'time_input', 'today', 'visible']

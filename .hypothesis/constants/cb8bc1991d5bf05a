@@ -1,4 +1,0 @@
-# file: C:\Users\rcasa\OneDrive\Documents\AI-Adoption-Dashboard\views\financial_impact.py
-# hypothesis_version: 6.135.20
-
-[0.02, 0.035, 0.05, 0.075, 0.1, 1.02, 100, 400, 500, '#27AE60', '#2ECC71', '#3498DB', '#E74C3C', '#F39C12', '---', '35-50%', '38.8%', '50.0%', '<b>%{text}</b><br>', 'Business Function', 'Conservative', 'Data Source', 'Estimated Avg ROI', 'Function', 'Moderate', 'Optimistic', 'Projected ROI (%)', 'RdYlGn_r', 'Scenario', 'Total_ROI_Estimate', 'advanced_roi', 'ai_index', 'auto', 'avg_cost_reduction', 'avg_revenue_increase', 'bottom', 'cost_multiplier', 'financial_source', 'function', 'group', 'gs_economics_source', 'h', 'markers+text', 'revenue_multiplier', 'right', 'sector', 'top center', '📊 View Data Source', '🔄 Reload Data']
