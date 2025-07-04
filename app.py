@@ -1232,6 +1232,11 @@ elif view_type == "Historical Trends":
         # Display chart with enhanced source info
         col1, col2 = st.columns([10, 1])
         with col1:
+            fig = a11y.make_chart_accessible(
+                fig,
+                title="AI Adoption Trends: The GenAI Revolution with Authoritative Timeline",
+                description="Line chart showing AI adoption trends from 2017-2025. Overall AI use grew from 20% to 78%, while GenAI use emerged in 2022 at 33% and reached 71% by 2025. Key milestones marked include ChatGPT launch in 2022, foundation year 2021 with DALL-E and Copilot releases, and 2024 acceleration with 78% business adoption."
+            )
             st.plotly_chart(fig, use_container_width=True)
         with col2:
             if st.button("📊", key="hist_source", help="View data sources"):
@@ -1323,6 +1328,11 @@ elif view_type == "Historical Trends":
             showlegend=False
         )
         
+        fig2 = a11y.make_chart_accessible(
+            fig2,
+            title="Convergence Factors: Multi-Source Analysis of 2021-2022 Acceleration",
+            description="Horizontal bar chart showing impact scores for four convergence factors that created the AI tipping point in 2021-2022. Technical Maturation leads at 95%, followed by Market Validation at 90%, Institutional Support at 85%, and Policy Framework at 75%."
+        )
         st.plotly_chart(fig2, use_container_width=True)
         
         # NEW: Show milestone timeline if requested
@@ -1544,6 +1554,11 @@ elif view_type == "Industry Analysis":
         xaxis_tickangle=45
     )
     
+    fig = a11y.make_chart_accessible(
+        fig,
+        title="AI Adoption and ROI by Industry Sector",
+        description="Combined bar and line chart showing AI adoption rates and ROI by industry sector. Technology sector leads with 92% overall AI adoption and 88% GenAI adoption, achieving 4.2x ROI. Financial Services follows with 85% overall adoption and 3.8x ROI. Healthcare shows 78% adoption with 3.2x ROI. Government has the lowest adoption at 52% with 2.2x ROI."
+    )
     st.plotly_chart(fig, use_container_width=True)
     
     # Industry insights
@@ -1620,6 +1635,11 @@ elif view_type == "Financial Impact":
         legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1)
     )
     
+    fig = a11y.make_chart_accessible(
+        fig,
+        title="Percentage of Companies Reporting Financial Benefits from AI",
+        description="Horizontal grouped bar chart showing percentage of companies reporting cost savings and revenue gains from AI by business function. Marketing & Sales leads with 71% reporting revenue gains, while Service Operations shows 49% reporting cost savings. Data shows the proportion of companies seeing benefits, with actual magnitude typically being modest (5-10% cost savings, 2-4% revenue gains)."
+    )
     st.plotly_chart(fig, use_container_width=True)
     
     # Function-specific insights with magnitude clarification
@@ -1735,6 +1755,11 @@ elif view_type == "Investment Trends":
         
         col1, col2 = st.columns([10, 1])
         with col1:
+            fig = a11y.make_chart_accessible(
+                fig,
+                title="AI Investment Has Grown 13x Since 2014",
+                description="Line chart showing AI investment trends from 2014-2024. Total AI investment grew from $19.4B to $252.3B, representing 13x growth. GenAI investment emerged in 2022 and reached $33.9B by 2024, now representing 20% of all AI investment. The chart shows steady growth with significant acceleration after 2022."
+            )
             st.plotly_chart(fig, use_container_width=True)
         with col2:
             if st.button("📊", key="inv_source", help="View data source"):
@@ -1804,6 +1829,11 @@ elif view_type == "Investment Trends":
         fig.update_xaxes(tickangle=45)
         fig.update_layout(height=400, title_text="AI Investment by Country - Multiple Perspectives (2024)")
         
+        fig = a11y.make_chart_accessible(
+            fig,
+            title="AI Investment by Country - Multiple Perspectives (2024)",
+            description="Three-panel bar chart showing AI investment by country from different perspectives. Left panel shows total investment with US leading at $109.1B, followed by China at $9.3B. Center panel shows per capita investment with Israel leading at $232 per capita, followed by US at $325. Right panel shows investment as percentage of GDP with Israel leading at 0.48%, followed by US at 0.43%."
+        )
         st.plotly_chart(fig, use_container_width=True)
         
         col1, col2 = st.columns(2)
@@ -1876,6 +1906,11 @@ elif view_type == "Investment Trends":
             )
         )
         
+        fig = a11y.make_chart_accessible(
+            fig,
+            title="GenAI Investment: From $3.95B to $33.9B in Two Years",
+            description="Dual-axis chart showing GenAI investment growth from 2022-2024. Bar chart shows investment amounts: $3.95B in 2022, $28.5B in 2023 (+621% growth), and $33.9B in 2024 (+18.7% growth). Line chart shows GenAI's share of total AI investment, growing from 2.7% in 2022 to 16.3% in 2023, then stabilizing at 13.4% in 2024."
+        )
         st.plotly_chart(fig, use_container_width=True)
         
         st.success("**🚀 GenAI represents over 20% of all AI-related private investment, up from near zero in 2021**")
@@ -1919,6 +1954,11 @@ elif view_type == "Investment Trends":
             height=400
         )
         
+        fig = a11y.make_chart_accessible(
+            fig,
+            title="AI Investment Growth Rates",
+            description="Grouped bar chart comparing 2024 growth rates vs 5-year CAGR across AI investment categories. GenAI shows exceptional 5-year CAGR of 156.8% due to starting from near-zero base. Total AI shows 44.5% growth in 2024 with 28.3% 5-year CAGR. US investment grew 44.3% in 2024 with 31.2% 5-year CAGR, while China showed 10.7% growth in 2024 with 15.4% 5-year CAGR."
+        )
         st.plotly_chart(fig, use_container_width=True)
         
         st.info("**Note:** GenAI shows exceptional 5-year CAGR due to starting from near-zero base in 2019")
@@ -1978,6 +2018,11 @@ elif view_type == "Regional Growth":
     
     fig.update_layout(height=450, title_text="Regional AI Adoption and Investment Dynamics")
     
+    fig = a11y.make_chart_accessible(
+        fig,
+        title="Regional AI Adoption and Investment Dynamics",
+        description="Two-panel chart showing regional AI growth patterns. Left panel shows 2024 adoption growth with Greater China leading at +27 percentage points, followed by Europe at +23pp and North America at +15pp. Right panel shows investment growth vs adoption rate scatter plot, with bubble sizes indicating 2024 growth. North America shows highest adoption rate at 82% but slower growth, while Greater China shows rapid growth with 32% investment increase."
+    )
     st.plotly_chart(fig, use_container_width=True)
     
     # Regional insights with metrics
@@ -2030,6 +2075,11 @@ elif view_type == "Regional Growth":
     fig2.add_annotation(x=50, y=13, text="Low Growth<br>Low Base", showarrow=False, font=dict(color="gray"))
     fig2.add_annotation(x=75, y=13, text="Low Growth<br>High Base", showarrow=False, font=dict(color="gray"))
     
+    fig2 = a11y.make_chart_accessible(
+        fig2,
+        title="Regional AI Competitive Positioning Matrix",
+        description="Scatter plot showing regional AI competitive positioning with four quadrants. X-axis shows current adoption rate, Y-axis shows growth rate, bubble size indicates investment growth. Greater China appears in High Growth/Low Base quadrant, Europe in High Growth/High Base, North America in Low Growth/High Base, and other regions distributed across quadrants. Quadrant lines divide regions by mean adoption rate and growth rate."
+    )
     st.plotly_chart(fig2, use_container_width=True)
     
     st.info("""
@@ -2092,6 +2142,11 @@ elif view_type == "AI Cost Trends":
             showlegend=False
         )
         
+        fig = a11y.make_chart_accessible(
+            fig,
+            title="AI Inference Cost Collapse: 286x Reduction in 2 Years",
+            description="Line chart on logarithmic scale showing dramatic AI inference cost reduction from November 2022 to October 2024. Costs dropped from $20.00 per million tokens at GPT-3.5 launch to $0.07 with Gemini, representing a 286x cost reduction. Key milestones marked include 2x reduction by January 2023, 10x by July 2023, 40x by January 2024, and 143x by October 2024."
+        )
         st.plotly_chart(fig, use_container_width=True)
         
         # Cost impact analysis
@@ -2136,6 +2191,11 @@ elif view_type == "AI Cost Trends":
             showlegend=False
         )
         
+        fig = a11y.make_chart_accessible(
+            fig,
+            title="ML Hardware Annual Improvement Rates",
+            description="Bar chart showing annual improvement rates for ML hardware metrics. Performance Growth shows +43% annual improvement in green, Energy Efficiency shows +40% annual improvement in green, while Price/Performance shows -30% annual change (cost reduction) displayed in red to indicate decreasing costs."
+        )
         st.plotly_chart(fig, use_container_width=True)
         
         st.success("""
@@ -2186,6 +2246,11 @@ elif view_type == "AI Cost Trends":
             hovermode='x unified'
         )
         
+        fig = a11y.make_chart_accessible(
+            fig,
+            title="AI Cost Projections: 2024-2027",
+            description="Line chart with logarithmic scale showing AI cost projections from 2024-2027. Two scenarios plotted: Conservative scenario assumes 50% annual cost reduction, dropping from $0.07 in 2024 to $0.009 in 2027. Aggressive scenario assumes 80% annual reduction, reaching $0.0006 by 2027. Both scenarios use filled areas to show the range of possible outcomes."
+        )
         st.plotly_chart(fig, use_container_width=True)
         
         st.info("""
@@ -2302,6 +2367,11 @@ elif view_type == "Token Economics":
             xaxis_tickangle=45
         )
         
+        fig = a11y.make_chart_accessible(
+            fig,
+            title="AI Model Context Windows: From Pages to Novels",
+            description="Bar chart on logarithmic scale showing context window capabilities across AI models. Models range from 3-page equivalents to novel-length capabilities. Gemini 1.5 leads with 1M tokens (750 pages), while smaller models like GPT-3.5 handle 4K tokens (3 pages). Color coding shows progression from red (small context) to blue (large context)."
+        )
         st.plotly_chart(fig, use_container_width=True)
         
         st.success("**Key Insight:** Larger context windows enable processing entire books, codebases, or hours of video in a single prompt")
@@ -2356,6 +2426,11 @@ elif view_type == "Token Economics":
             legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1)
         )
         
+        fig1 = a11y.make_chart_accessible(
+            fig1,
+            title="Token Pricing Collapse: Competition Drives Costs Down",
+            description="Dual-axis line chart showing token pricing evolution and model availability over time. Left axis shows pricing on logarithmic scale with input and output token costs both declining dramatically from $20+ to under $1 per million tokens. Right axis shows increasing number of available models from 1 to 7+, with dashed line indicating growing competition driving prices down."
+        )
         st.plotly_chart(fig1, use_container_width=True)
         
         # Current model pricing comparison
@@ -2392,6 +2467,11 @@ elif view_type == "Token Economics":
                 yaxis_type="log"
             )
             
+            fig2 = a11y.make_chart_accessible(
+                fig2,
+                title="Current Model Pricing (per Million Tokens)",
+                description="Grouped bar chart on logarithmic scale comparing input and output token costs across AI models. Models sorted by input cost from lowest to highest. Gemini Flash is most affordable at under $0.10, while GPT-4 commands premium pricing at $15-30. Output tokens consistently cost 2-5x more than input tokens across all models."
+            )
             st.plotly_chart(fig2, use_container_width=True)
         
         with col2:
@@ -2448,6 +2528,11 @@ elif view_type == "Token Economics":
         fig.update_xaxes(type="log")
         fig.update_yaxes(type="log")
         
+        fig = a11y.make_chart_accessible(
+            fig,
+            title="Token Usage Patterns: Input vs Output by Use Case",
+            description="Scatter plot on logarithmic scale showing token usage patterns across different AI use cases. X-axis shows average input tokens, Y-axis shows average output tokens, bubble size indicates input/output ratio. Gray diagonal line shows equal input/output ratio. Use cases vary from input-heavy (document analysis, code review) to output-heavy (content generation, creative writing)."
+        )
         st.plotly_chart(fig, use_container_width=True)
         
         # Usage pattern insights
@@ -2513,6 +2598,11 @@ elif view_type == "Token Economics":
         fig.add_annotation(x=1.5, y=20, text="Easy but Limited", showarrow=False, font=dict(color="orange", size=14))
         fig.add_annotation(x=4, y=20, text="Complex & Limited", showarrow=False, font=dict(color="red", size=14))
         
+        fig = a11y.make_chart_accessible(
+            fig,
+            title="Token Optimization: Cost Reduction vs Implementation Complexity",
+            description="Scatter plot showing optimization strategies across four quadrants based on implementation complexity (X-axis) and cost reduction potential (Y-axis). Bubble size indicates time to implement. Quick Wins quadrant (low complexity, high impact) includes prompt engineering and context caching. Major Projects quadrant shows model fine-tuning and advanced techniques requiring more effort but offering significant cost savings."
+        )
         st.plotly_chart(fig, use_container_width=True)
         
         # Optimization recommendations
@@ -2758,6 +2848,11 @@ elif view_type == "Labor Impact":
             hovermode='x unified'
         )
         
+        fig = a11y.make_chart_accessible(
+            fig,
+            title="AI Job Impact Expectations by Generation",
+            description="Grouped bar chart showing AI job impact expectations across generations. Gen Z shows highest expectation of job changes (72%) and replacement (45%), while Baby Boomers show lowest (54% and 27% respectively). Horizontal dashed lines show averages across all generations. 18 percentage point gap exists between youngest and oldest generations on job change expectations."
+        )
         st.plotly_chart(fig, use_container_width=True)
         
         # Generation insights
@@ -2806,6 +2901,11 @@ elif view_type == "Labor Impact":
             legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1)
         )
         
+        fig = a11y.make_chart_accessible(
+            fig,
+            title="AI Impact by Job Category",
+            description="Grouped bar chart showing three metrics across job categories: Productivity Gain, Job Risk, and Reskilling Need. Entry-Level/Low-Skill workers show highest productivity gains (14%) but also highest job risk (45%) and reskilling needs (85%). Senior/High-Skill workers have lowest job risk (22%) but also lowest productivity gains (5%). Creative/Specialized roles show moderate impacts across all metrics."
+        )
         st.plotly_chart(fig, use_container_width=True)
         
         st.success("""
@@ -2852,6 +2952,11 @@ elif view_type == "Labor Impact":
             hovermode='x unified'
         )
         
+        fig = a11y.make_chart_accessible(
+            fig,
+            title="Projected Job Market Transformation Timeline",
+            description="A stacked area chart showing workforce transformation projections across three timeframes. In the Near-term (0-2 years), 15% of jobs face displacement risk (dark area at bottom), 60% will be augmented by AI (middle area), and 25% remain unchanged (top area). In the Medium-term (2-5 years), displacement risk decreases to 12%, augmented jobs increase to 68%, and unchanged jobs drop to 20%. In the Long-term (5+ years), only 8% face displacement, 75% will be augmented, and 17% remain unchanged. The visualization shows a clear trend toward job augmentation rather than replacement, with displacement risk decreasing over time as workers adapt and new roles emerge."
+        )
         st.plotly_chart(fig, use_container_width=True)
         
         st.info("""
@@ -2896,6 +3001,11 @@ elif view_type == "Labor Impact":
         
         fig.update_traces(textposition='top center')
         
+        fig = a11y.make_chart_accessible(
+            fig,
+            title="Policy Investment Priorities Matrix",
+            description="A scatter plot showing policy areas positioned by current funding percentage (x-axis, 0-100%) versus priority score (y-axis, 0-100%), with bubble sizes representing the funding gap in millions. The chart is divided into four quadrants by dashed lines at 50% funding and 85% priority. High Priority/Low Investment quadrant (red label) contains critical gaps: Education Reform (20% funding, 95 priority, $3000M gap) and Reskilling Programs (25% funding, 92 priority, $2500M gap). High Priority/High Investment quadrant (green label) includes Safety Standards (60% funding, 88 priority, $1000M gap) and R&D Investment (70% funding, 85 priority, $800M gap). Lower priority items include Infrastructure (80% funding, 75 priority, $500M gap), Tax Incentives (65% funding, 70 priority, $600M gap), Regulatory Framework (55% funding, 82 priority, $1200M gap), and Public-Private Partnerships (45% funding, 78 priority, $1500M gap). The visualization highlights severe underfunding in education and workforce development despite their critical importance."
+        )
         st.plotly_chart(fig, use_container_width=True)
         
         st.warning("""
@@ -2945,6 +3055,11 @@ elif view_type == "Environmental Impact":
             showlegend=True
         )
         
+        fig = a11y.make_chart_accessible(
+            fig,
+            title="Carbon Emissions from AI Model Training: Exponential Growth",
+            description="A combination bar and line chart showing the exponential growth in carbon emissions from AI model training. The x-axis shows four AI models: BERT (2019), GPT-3 (2020), GPT-4 (2023), and Llama 3.1 (2024). The y-axis uses a logarithmic scale to show carbon emissions in tons of CO₂. BERT shows negligible emissions, GPT-3 produces 552 tons (equivalent to 125 cars per year), GPT-4 generates 4,850 tons (equivalent to 1,100 cars per year), and Llama 3.1 produces 8,930 tons (equivalent to 1,900 cars per year). A red dashed trend line illustrates the exponential growth pattern, showing a 900,000x increase from 2012 to 2024, with emissions roughly doubling every 2 years."
+        )
         st.plotly_chart(fig, use_container_width=True)
         
         # Emissions context
@@ -3005,6 +3120,11 @@ elif view_type == "Environmental Impact":
             hovermode='x unified'
         )
         
+        fig = a11y.make_chart_accessible(
+            fig,
+            title="AI Energy Consumption Driving Nuclear Energy Revival",
+            description="A dual-axis chart showing the relationship between AI energy consumption and nuclear energy deals from 2020 to 2025. The left y-axis displays AI energy use in terawatt hours (TWh) as blue bars, growing from 2.1 TWh in 2020 to 27.3 TWh in 2025. The right y-axis shows the number of nuclear energy deals as a green line with markers, increasing from 0 deals in 2020-2021 to 15 deals in 2025. The chart demonstrates how rapidly increasing AI energy demands are driving a revival in nuclear energy investments, with major tech companies like Microsoft, Google, Amazon, and Meta securing nuclear power agreements."
+        )
         st.plotly_chart(fig, use_container_width=True)
         
         st.info("""
@@ -3059,6 +3179,11 @@ elif view_type == "Environmental Impact":
         
         fig.update_traces(textposition='top center')
         
+        fig = a11y.make_chart_accessible(
+            fig,
+            title="AI Sustainability Strategies: Impact vs Adoption",
+            description="A scatter plot analyzing AI sustainability strategies by their potential emission reduction (y-axis, 0-100%) versus current adoption rate (x-axis, 0-100%). Point sizes represent implementation timeframe in years. Six strategies are shown: Model Reuse (95% reduction potential, 35% adoption, 1 year), Renewable Energy (85% reduction, 45% adoption, 3 years), Carbon Offsets (100% reduction, 30% adoption, 1 year), Edge Computing (60% reduction, 25% adoption, 2 years), Efficient Architectures (40% reduction, 65% adoption, 1 year), and Quantum Computing (90% reduction, 5% adoption, 7 years). A green 'Target Zone' is highlighted in the upper right (70-100% adoption, 70-100% reduction), representing the ideal high-impact, high-adoption area. Most strategies fall outside this zone, indicating significant opportunity for improvement."
+        )
         st.plotly_chart(fig, use_container_width=True)
         
         st.success("""
@@ -3111,6 +3236,11 @@ elif view_type == "Environmental Impact":
             height=400
         )
         
+        fig = a11y.make_chart_accessible(
+            fig,
+            title="AI Company Sustainability Scores",
+            description="A radar chart comparing sustainability performance across five major AI companies: OpenAI, Google, Microsoft, Meta, and Amazon. Three metrics are displayed on a 0-10 scale: Renewable Energy Percentage (scaled), Efficiency Score, and Transparency Score. Google leads with the highest scores across all metrics (7.8 renewable, 8.5 efficiency, 8.2 transparency). Microsoft follows closely (6.5 renewable, 7.8 efficiency, 7.9 transparency). Amazon shows strength in efficiency (7.5) but lags in renewable energy (4.0). Meta and OpenAI show lower transparency scores (6.2 and 6.5 respectively). The overlapping polygons reveal that while companies are making progress, significant improvements are needed across all dimensions to achieve sustainability goals."
+        )
         st.plotly_chart(fig, use_container_width=True)
         
         st.info("""
@@ -3163,6 +3293,11 @@ elif view_type == "Adoption Rates":
             legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1)
         )
         
+        fig = a11y.make_chart_accessible(
+            fig,
+            title="GenAI Adoption and Business Impact by Function",
+            description="A dual-axis chart showing GenAI adoption rates and business impact across eight business functions. Blue bars represent GenAI adoption rates on the left y-axis, while a green line shows the percentage of companies reporting revenue gains on the right y-axis. Marketing & Sales leads with 42% adoption and 71% reporting revenue gains. Product Development follows with 28% adoption and 52% revenue gains. Service Operations, Operations, and Customer Service all show 23% adoption with varying revenue impacts (49%, 51%, and 45% respectively). Supply Chain Management shows 22% adoption with 48% revenue gains. Risk Management has 15% adoption with 38% revenue gains, while HR has the lowest adoption at 13% with 36% reporting gains. The chart demonstrates a positive correlation between adoption rates and business impact, with customer-facing functions showing the highest returns."
+        )
         st.plotly_chart(fig, use_container_width=True)
         
         # Function insights
@@ -3198,6 +3333,11 @@ elif view_type == "Adoption Rates":
         )
         fig.update_traces(texttemplate='%{text}%', textposition='outside')
         fig.update_layout(xaxis_tickangle=45, height=500)
+        fig = a11y.make_chart_accessible(
+            fig,
+            title=f"AI Adoption by Sector (2018) - {weighting}",
+            description=f"A bar chart showing AI adoption rates across different sectors in 2018 using {weighting.lower()} data. The chart uses a blue color gradient where darker colors indicate higher adoption rates. Manufacturing and Information sectors lead with 12% adoption each, followed by Wholesale (8%), Finance & Insurance (7%), and Retail Trade (6%). Lower adoption is seen in sectors like Educational Services (4%), Health Care (4%), and Construction (3%). The data represents early AI adoption patterns before the widespread deployment of generative AI technologies."
+        )
         st.plotly_chart(fig, use_container_width=True)
         
         st.write("🏭 **Key Insight**: Manufacturing and Information sectors led early AI adoption at 12% each")
@@ -3242,6 +3382,11 @@ elif view_type == "Skill Gap Analysis":
         barmode='overlay'
     )
     
+    fig = a11y.make_chart_accessible(
+        fig,
+        title="AI Skills Gap vs Training Initiatives",
+        description="A horizontal diverging bar chart comparing AI skills gap severity (red bars) against the percentage of companies with training initiatives (green bars) across seven skill areas. AI/ML Engineering shows the highest gap severity at 85% with only 45% of companies having training programs. Data Science follows with 75% gap severity and 42% training coverage. AI Strategy has a 65% gap with 35% training initiatives. Change Management shows a 55% gap but higher training coverage at 48%. Ethical AI Implementation has a 50% gap with 30% training programs. AI Product Management shows 45% gap severity with 38% training coverage. AI Security has the lowest gap at 40% with 25% of companies offering training. The chart reveals significant mismatches between skill needs and training investments, particularly in technical areas."
+    )
     st.plotly_chart(fig, use_container_width=True)
     
     # Key insights
@@ -3288,6 +3433,11 @@ elif view_type == "AI Governance":
         height=500
     )
     
+    fig = a11y.make_chart_accessible(
+        fig,
+        title="AI Governance Implementation and Maturity",
+        description="A radar chart displaying AI governance aspects across six dimensions, with two overlapping polygons showing adoption rates (blue) and maturity scores (red, scaled to 100). Data Privacy leads with 78% adoption and 76 maturity score (3.8/5). Regulatory Compliance follows with 72% adoption and 70 maturity (3.5/5). Ethics Guidelines shows 62% adoption and 64 maturity (3.2/5). Transparency has 52% adoption and 56 maturity (2.8/5). Accountability Framework shows 48% adoption and 52 maturity (2.6/5). Bias Detection lags with only 45% adoption and 50 maturity (2.5/5). The chart reveals that while traditional compliance areas are well-established, emerging AI-specific governance areas like bias detection and accountability need significant improvement."
+    )
     st.plotly_chart(fig, use_container_width=True)
     
     # Governance insights
@@ -3341,6 +3491,11 @@ elif view_type == "Productivity Research":
             height=500,
             hovermode='x unified'
         )
+        fig = a11y.make_chart_accessible(
+            fig,
+            title="The Productivity Paradox: Demographics vs Technology",
+            description="A dual-axis line chart showing the relationship between productivity growth and workforce demographics from 1950 to 2025. The blue line represents productivity growth percentage on the left y-axis, starting at 3.5% in 1950, peaking at 3.8% in 1960, then declining to 0.8% by 2010 before recovering slightly to 1.5% in 2025. The red line shows the share of young workers (ages 25-34) on the right y-axis, starting at 24% in 1950, declining to 19% in 1980, rising to 23% in 1990, then steadily declining to 20% by 2025. The chart illustrates the productivity paradox where technological advances haven't translated to productivity gains, partly explained by demographic shifts in the workforce."
+        )
         st.plotly_chart(fig, use_container_width=True)
         
     with tab2:
@@ -3356,6 +3511,11 @@ elif view_type == "Productivity Research":
         )
         
         fig.update_layout(height=400)
+        fig = a11y.make_chart_accessible(
+            fig,
+            title="AI Impact by Worker Skill Level",
+            description="A grouped bar chart comparing productivity gains (green bars) and skill gap reduction (blue bars) across three worker skill levels. Low-skilled workers see the highest productivity gain at 14% and 12% skill gap reduction. Medium-skilled workers experience 8% productivity gain and 7% skill gap reduction. High-skilled workers show the smallest gains with 5% productivity improvement and 4% skill gap reduction. This data demonstrates that AI tools provide the greatest relative benefit to low-skilled workers, potentially helping to reduce workplace inequality by narrowing the performance gap between skill levels."
+        )
         st.plotly_chart(fig, use_container_width=True)
         
         st.success("""
@@ -3376,6 +3536,11 @@ elif view_type == "Productivity Research":
         )
         fig.update_traces(texttemplate='%{text}%', textposition='outside')
         fig.update_layout(height=450)
+        fig = a11y.make_chart_accessible(
+            fig,
+            title="AI Productivity Impact Estimates: Academic vs Industry",
+            description="A bar chart comparing AI productivity impact estimates from different sources, colored using a red-yellow-blue reversed scale. Conservative academic estimates show the lowest impact: Brynjolfsson et al. at 0.07% and Acemoglu at 0.1% annual productivity growth. Moderate estimates come from Goldman Sachs at 0.5% and PWC at 0.8%. The most optimistic projections are from McKinsey at 1.5% and OpenAI at 2.5% annual impact. The wide range from 0.07% to 2.5% reflects different assumptions about AI implementation speed, scope, and complementary investments. Conservative estimates focus on task-level automation while optimistic projections assume economy-wide transformation."
+        )
         st.plotly_chart(fig, use_container_width=True)
         
         st.info("""
@@ -3442,6 +3607,11 @@ elif view_type == "Firm Size Analysis":
         showlegend=True
     )
     
+    fig = a11y.make_chart_accessible(
+        fig,
+        title="AI Adoption Shows Strong Correlation with Firm Size",
+        description="A bar chart with trend line showing AI adoption rates by company size, using a green color gradient. The x-axis shows employee count ranges from smallest (1-4 employees) to largest (5000+ employees). Adoption rates increase dramatically with firm size: 3.2% for 1-4 employees, 5.8% for 5-9, 8.5% for 10-19, 11.2% for 20-49, 12.5% for 50-99, 15.3% for 100-249, 22.8% for 250-499, 31.5% for 500-999, 42.7% for 1000-2499, 48.6% for 2500-4999, and 58.5% for 5000+ employees. A red dashed polynomial trend line emphasizes the exponential relationship. Key annotations highlight the SME threshold at 12.5% adoption (100-249 employees) and enterprise leaders at 58.5% (5000+ employees), showing an 18x gap between the smallest and largest firms."
+    )
     st.plotly_chart(fig, use_container_width=True)
     
     # Size insights
@@ -3492,6 +3662,11 @@ elif view_type == "Technology Stack":
         annotations=[dict(text='Tech<br>Stack', x=0.5, y=0.5, font_size=20, showarrow=False)]
     )
     
+    fig = a11y.make_chart_accessible(
+        fig,
+        title="Technology Stack Combinations and Their Prevalence",
+        description="A donut chart showing the distribution of AI technology stack combinations among organizations. The largest segment is 'AI + Cloud + Digitization' at 38% adoption with 3.5x ROI multiplier, shown in light green. 'AI + Digitization' follows at 24% adoption with 2.5x ROI in light blue. 'AI + Cloud' represents 23% adoption with 2.8x ROI in teal. The smallest segment is 'AI Only' at 15% adoption with 1.5x ROI in coral red. The chart demonstrates that 85% of organizations combine AI with other technologies, and the full stack combination yields the highest return on investment. The center of the donut displays 'Tech Stack' as a label."
+    )
     st.plotly_chart(fig, use_container_width=True)
     
     # Stack insights with ROI
@@ -3562,6 +3737,11 @@ elif view_type == "AI Technology Maturity":
         showlegend=True
     )
     
+    fig = a11y.make_chart_accessible(
+        fig,
+        title="AI Technology Risk-Adoption Matrix",
+        description="A scatter plot showing AI technologies positioned by adoption rate (x-axis, 0-100%) and risk score (y-axis, 0-100), with bubble sizes representing time to value in years. The chart is divided into four quadrants by dashed lines at 50% on each axis. Technologies are grouped by maturity stage: Peak of Expectations (orange) includes GenAI (68% adoption, 75 risk, 2 years), AI Agents (15% adoption, 85 risk, 4 years), and AGI (5% adoption, 95 risk, 10 years). Trough of Disillusionment (gray) includes Foundation Models (45% adoption, 60 risk, 3 years) and Edge AI (35% adoption, 40 risk, 3 years). Slope of Enlightenment (green) includes Cloud AI Services (82% adoption, 25 risk, 1 year), MLOps (55% adoption, 35 risk, 2 years), and Composite AI (25% adoption, 45 risk, 7 years). The chart helps identify mature, low-risk technologies versus emerging, high-risk opportunities."
+    )
     st.plotly_chart(fig, use_container_width=True)
     
     # Maturity insights
@@ -3813,6 +3993,11 @@ elif view_type == "Geographic Distribution":
             margin=dict(l=50, r=80, t=50, b=50)  # Add margins for colorbars
         )
         
+        fig = a11y.make_chart_accessible(
+            fig,
+            title=f"US AI Ecosystem: {map_metric} Distribution",
+            description=f"An interactive map of the United States showing AI ecosystem metrics. The base layer is a choropleth map displaying state-level AI adoption rates using a blue color scale. Cities are shown as circular markers sized and colored by {map_metric}, with larger and darker circles indicating higher values. The map includes {len(enhanced_geographic)} metropolitan areas with data ranging from {enhanced_geographic[selected_metric].min():.1f} to {enhanced_geographic[selected_metric].max():.1f} {unit}. Optional overlays include NSF AI Institute locations (gold stars) and major university hubs (purple diamonds). The visualization reveals geographic concentration of AI resources in coastal regions and major metropolitan areas, with significant disparities between innovation hubs and interior regions. Interactive features allow exploration of multiple metrics including adoption rates, federal funding, research centers, startups, and venture capital investment."
+        )
         st.plotly_chart(fig, use_container_width=True)
         
         # Dynamic insights based on selected metric
@@ -3952,6 +4137,11 @@ elif view_type == "Geographic Distribution":
         fig.update_xaxes(tickangle=45)
         fig.update_layout(height=600, showlegend=False, title_text="Federal AI Research Infrastructure by State")
         
+        fig = a11y.make_chart_accessible(
+            fig,
+            title="Federal AI Research Infrastructure by State",
+            description="A four-panel visualization of state AI research infrastructure. Top left: Bar chart of NSF AI Institutes by state, with California leading at 5 institutes, followed by Massachusetts (4), and New York, Texas, and Washington (3 each). Top right: Federal research funding by state in billions, with California receiving $3.2B, Massachusetts $1.1B, and New York $1.0B. Bottom left: R1 research universities count, showing California with 9, Texas with 8, and New York with 7. Bottom right: Scatter plot correlating federal funding (x-axis) with AI workforce in thousands (y-axis), where bubble sizes represent NSF institutes and colors show AI adoption rates. California (CA) stands out with the highest funding and workforce, while states like Texas (TX) and Massachusetts (MA) show strong but smaller ecosystems."
+        )
         st.plotly_chart(fig, use_container_width=True)
         
         # Research infrastructure insights
@@ -4048,6 +4238,11 @@ elif view_type == "Geographic Distribution":
             xaxis_tickangle=45
         )
         
+        fig = a11y.make_chart_accessible(
+            fig,
+            title="State AI Ecosystem Composite Scores (Top 10)",
+            description="A stacked bar chart showing the top 10 states' AI ecosystem composite scores, broken down into five components. Each bar represents a state's total score (0-100 scale) composed of: AI Adoption (blue), NSF Institutes (red), Federal Funding (green), Universities (purple), and AI Workforce (orange). California leads with the highest composite score, showing strong performance across all metrics. Massachusetts and New York follow, with particular strength in universities and federal funding. Texas, Washington, Illinois, Pennsylvania, Georgia, Colorado, and Florida round out the top 10, each showing different strengths. The stacked format reveals how different factors contribute to each state's overall AI ecosystem maturity, with coastal states generally showing more balanced development across all dimensions."
+        )
         st.plotly_chart(fig, use_container_width=True)
         
         # State rankings table
@@ -4129,6 +4324,11 @@ elif view_type == "Geographic Distribution":
         fig.update_xaxes(title_text="Federal Funding ($M)", row=1, col=2)
         fig.update_yaxes(title_text="AI Patents (2024)", row=1, col=2)
         
+        fig = a11y.make_chart_accessible(
+            fig,
+            title="Academic AI Research Ecosystem",
+            description="A two-panel visualization of academic AI research activity. Left panel: Horizontal bar chart showing AI research centers by state, with California leading at 23 centers, followed by Massachusetts (17), New York (16), Texas (11), Washington (6), Pennsylvania (5), Illinois (5), Florida (5), Georgia (4), and Colorado (3). Right panel: Scatter plot correlating federal AI funding (x-axis, in millions) with AI patents filed in 2024 (y-axis). Bubble sizes represent the number of research centers, and colors indicate the count of major universities using a Viridis color scale. California shows the highest values with over $3,500M in funding and 3,445 patents. The visualization reveals a strong correlation between funding, patent output, and university concentration, with California, Massachusetts, and New York forming a distinct top tier."
+        )
         st.plotly_chart(fig, use_container_width=True)
         
         # Academic insights
@@ -4225,6 +4425,11 @@ elif view_type == "Geographic Distribution":
         
         fig.update_layout(height=700, title_text="AI Investment Ecosystem Analysis")
         
+        fig = a11y.make_chart_accessible(
+            fig,
+            title="AI Investment Ecosystem Analysis",
+            description="A four-panel investment analysis dashboard. Top left: Dual-axis bar chart comparing venture capital (red) and federal funding (blue) for top 10 states, with California showing massive VC dominance at over $15B. Top right: Pie chart showing VC distribution concentration, with California taking the largest slice, followed by New York, Massachusetts, and other states. Bottom left: Bar chart of private-to-federal funding ratios, with California showing the highest ratio above 5x, indicating strong private sector preference. Bottom right: Scatter plot correlating total investment with AI startups, where bubble sizes represent federal funding and position shows the relationship between investment levels and startup creation. The visualization reveals extreme geographic concentration of private investment in coastal states, while federal funding shows more geographic distribution."
+        )
         st.plotly_chart(fig, use_container_width=True)
         
         # Investment insights with data
@@ -4378,6 +4583,11 @@ elif view_type == "OECD 2025 Findings":
             hovermode='x unified'
         )
         
+        fig = a11y.make_chart_accessible(
+            fig,
+            title="AI Adoption Rates Across G7 Countries by Sector",
+            description="A grouped bar chart comparing AI adoption rates across G7 countries with three categories per country: Overall Adoption (blue), Manufacturing (green), and ICT Sector (orange). Japan leads with 48% overall adoption, 52% in manufacturing, and 65% in ICT. United States follows with 45% overall, 48% manufacturing, and 62% ICT. Canada shows 42% overall, 45% manufacturing, and 60% ICT. United Kingdom has 40% overall, 43% manufacturing, and 58% ICT. Germany displays 38% overall, 42% manufacturing, and 55% ICT. France shows 35% overall, 38% manufacturing, and 52% ICT. Italy has the lowest rates at 32% overall, 35% manufacturing, and 50% ICT. A red dashed line indicates the G7 average of 40%. The chart reveals that ICT sectors consistently lead adoption across all countries, with a 15-20 percentage point gap compared to other sectors."
+        )
         st.plotly_chart(fig, use_container_width=True)
         
         # Country insights
@@ -4431,6 +4641,11 @@ elif view_type == "OECD 2025 Findings":
             barmode='overlay'
         )
         
+        fig = a11y.make_chart_accessible(
+            fig,
+            title="AI Application Usage: GenAI vs Traditional AI",
+            description="A horizontal bar chart comparing usage rates of GenAI applications (red) versus Traditional AI applications (blue) among AI-adopting firms. GenAI applications are led by Content Generation at 68%, followed by Code Generation at 55%, Chatbots/Virtual Assistants at 48%, and Knowledge Management at 42%. Traditional AI applications show Computer Vision at 45%, Recommendation Systems at 38%, Fraud Detection at 35%, Predictive Maintenance at 32%, and Process Automation at 28%. The chart demonstrates that GenAI applications, particularly content and code generation, have overtaken traditional AI use cases in enterprise adoption, reflecting the transformative impact of large language models on business operations."
+        )
         st.plotly_chart(fig, use_container_width=True)
         
         st.success("**Key Trend:** GenAI applications (content generation, code generation, chatbots) now lead adoption rates")
@@ -4488,6 +4703,11 @@ elif view_type == "OECD 2025 Findings":
             xaxis_tickangle=45
         )
         
+        fig = a11y.make_chart_accessible(
+            fig,
+            title="AI Success Factors: Importance vs Readiness Gap",
+            description="A combination chart showing AI success factors with three metrics: Importance (blue bars), Readiness (green bars), and the Gap between them (orange scatter points with values). Data Quality shows the highest importance at 85% but only 55% readiness, creating a 30 percentage point gap. Talent/Skills follows with 82% importance, 45% readiness, and a 37pp gap. Strategic Alignment shows 78% importance, 60% readiness, with an 18pp gap. Change Management has 75% importance, 40% readiness, resulting in a 35pp gap. Technology Infrastructure displays 72% importance, 65% readiness, with the smallest gap of 7pp. Governance/Ethics shows 68% importance, 35% readiness, creating a 33pp gap. The visualization reveals that while organizations recognize the importance of various success factors, significant readiness gaps exist, particularly in talent/skills and data quality."
+        )
         st.plotly_chart(fig, use_container_width=True)
         
         st.warning("**Critical Gap:** Talent availability shows the largest readiness gap (40pp), highlighting the global AI skills shortage")
@@ -4544,6 +4764,11 @@ elif view_type == "Barriers & Support":
         showlegend=False
     )
     
+    fig = a11y.make_chart_accessible(
+        fig,
+        title="Main Barriers to AI Adoption by Category",
+        description="A horizontal bar chart showing barriers to AI adoption, color-coded by category and sorted by severity. Data quality issues lead at 68% (Technical barrier, red). Integration complexity follows at 62% (Technical, red). Budget constraints show 58% (Resource barrier, blue). Skill shortage reports 55% (Human barrier, green). Unclear ROI shows 48% (Strategic barrier, orange). Cultural resistance reports 45% (Human, green). Regulatory concerns show 42% (Strategic, orange). Security issues report 38% (Technical, red). The chart reveals that technical barriers dominate the top concerns, followed by resource and human factors, with data quality and integration being the most significant obstacles to AI adoption."
+    )
     st.plotly_chart(fig, use_container_width=True)
     
     # Support effectiveness with implementation roadmap
@@ -4584,6 +4809,11 @@ elif view_type == "Barriers & Support":
     
     fig2.update_traces(textposition='top center')
     
+    fig2 = a11y.make_chart_accessible(
+        fig2,
+        title="Support Measures: Effectiveness vs Implementation Time",
+        description="A scatter plot analyzing AI adoption support measures by their effectiveness (y-axis, 0-100%) versus implementation time (x-axis, in months). Bubble sizes represent relative cost (1-5 scale). The chart is divided into quadrants by dashed lines at 70% effectiveness and 18 months. Quick Wins quadrant (high effectiveness, short time) includes Training Programs (12 months, 75% effectiveness), Pilot Projects (6 months, 72%), and Internal Champions (9 months, 70%). Long-term Strategic quadrant includes AI Strategy (24 months, 85% effectiveness) and Centers of Excellence (36 months, 82%). Lower effectiveness measures include External Partnerships (18 months, 68%), Vendor Solutions (15 months, 65%), Consultant Support (6 months, 60%), Infrastructure Upgrade (30 months, 78%), and Regulatory Compliance (24 months, 55%). The visualization helps organizations prioritize support measures based on their goals and resources."
+    )
     st.plotly_chart(fig2, use_container_width=True)
     
     # Policy recommendations
@@ -4655,6 +4885,11 @@ elif view_type == "ROI Analysis":
             hovermode='x unified'
         )
         
+        fig = a11y.make_chart_accessible(
+            fig,
+            title="AI ROI by Investment Level",
+            description="A dual-axis chart showing the relationship between AI investment levels and returns. Green bars display average ROI multipliers on the left y-axis: Small investments (<$100K) yield 1.2x ROI, Medium ($100K-$1M) achieve 2.5x, Large ($1M-$10M) reach 3.8x, and Enterprise (>$10M) deliver 4.5x returns. A blue line shows success rates on the right y-axis, increasing from 45% for small investments to 58% for medium, 72% for large, and 85% for enterprise-level investments. The chart demonstrates that larger AI investments correlate with both higher returns and greater success rates, suggesting economies of scale and the importance of comprehensive AI strategies."
+        )
         st.plotly_chart(fig, use_container_width=True)
         
         st.info("""
@@ -4689,6 +4924,11 @@ elif view_type == "ROI Analysis":
             height=350
         )
         
+        fig = a11y.make_chart_accessible(
+            fig,
+            title="AI Investment Payback Period Distribution",
+            description="A funnel chart showing the distribution of AI investment payback periods across three scenarios. Best Case scenario (green) achieves payback in 8 months with 20% probability. Typical scenario (orange) takes 15 months with 60% probability, representing the most common outcome. Conservative scenario (red) requires 24 months with 20% probability. The funnel shape visualizes that most AI investments (60%) achieve payback within 15 months under typical conditions, while faster and slower outcomes each occur 20% of the time. This distribution helps organizations set realistic expectations for AI investment returns."
+        )
         st.plotly_chart(fig, use_container_width=True)
         
         # Factors affecting payback
@@ -4733,6 +4973,11 @@ elif view_type == "ROI Analysis":
             showlegend=False
         )
         
+        fig = a11y.make_chart_accessible(
+            fig,
+            title="Average AI ROI by Industry Sector",
+            description="A bar chart showing average AI return on investment across industry sectors, sorted from lowest to highest ROI and colored using a Viridis gradient. Healthcare leads with 2.2x ROI despite 28% adoption. Retail Trade follows at 2.5x ROI with 32% adoption. Professional Services shows 2.8x ROI and 45% adoption. Manufacturing achieves 3.2x ROI with 42% adoption. Finance reaches 3.5x ROI with the highest adoption at 55%. Technology/Telecom delivers 3.8x ROI with 52% adoption. The chart reveals that while Finance has the highest adoption rate, Technology/Telecom achieves the best returns, and even sectors with lower adoption like Healthcare can achieve significant ROI multiples."
+        )
         st.plotly_chart(fig, use_container_width=True)
         
         # Top performers analysis

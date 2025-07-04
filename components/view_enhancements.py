@@ -37,27 +37,37 @@ class ViewEnhancer:
     
     @staticmethod
     def add_industry_analysis_insights(sector_data: pd.DataFrame, your_industry: Optional[str] = None):
-        """Add insights to Industry Analysis view."""
+        """Add insights to Industry Analysis view with sector-specific parameters."""
+        from .economic_models import AIEconomicModels, EconomicParameters
+        models = AIEconomicModels()
+        params = EconomicParameters()
+        
         # Top and bottom performers
         top_3 = sector_data.nlargest(3, 'adoption_rate')
         bottom_3 = sector_data.nsmallest(3, 'adoption_rate')
         
         key_points = [
-            f"Technology leads with {top_3.iloc[0]['adoption_rate']:.0f}% adoption",
+            f"Technology leads with {top_3.iloc[0]['adoption_rate']:.0f}% adoption (40% productivity potential)",
             f"Bottom sectors lag by {top_3.iloc[0]['adoption_rate'] - bottom_3.iloc[0]['adoption_rate']:.0f} points",
-            "Financial services investing 2x more than average",
-            "Healthcare showing fastest growth trajectory"
+            "Financial services: 35% productivity gains, 18-month payback",
+            "Healthcare: 30% gains but 24-month implementation cycle"
         ]
         
         if your_industry:
             industry_data = sector_data[sector_data['sector'] == your_industry].iloc[0]
             rank = len(sector_data) - (sector_data['adoption_rate'] > industry_data['adoption_rate']).sum()
-            key_points.append(f"{your_industry} ranks #{rank} of {len(sector_data)} sectors")
+            
+            # Get industry-specific parameters
+            productivity = params.sector_productivity_gains.get(your_industry, 0.30) * 100
+            payback = params.industry_payback_periods.get(your_industry, 18)
+            
+            key_points.append(f"{your_industry}: #{rank} rank, {productivity:.0f}% productivity gain, {payback}-month payback")
         
         recommendations = [
-            "Benchmark against sector leaders, not average",
-            "Identify sector-specific use cases for quick wins",
-            "Partner with tech leaders for knowledge transfer"
+            "Target sector-specific productivity gains (25-40% range)",
+            "Plan for industry-specific implementation timelines",
+            "Leverage industry P/E ratios for value creation",
+            "Account for sector learning curves"
         ]
         
         from .economic_insights import EconomicInsights
@@ -99,19 +109,39 @@ class ViewEnhancer:
         )
     
     @staticmethod
-    def add_roi_insights(roi_data: Dict[str, float]):
-        """Add insights to ROI Analysis view."""
+    def add_roi_insights(roi_data: Dict[str, float], industry: str = "Other"):
+        """Add insights to ROI Analysis view with accurate calculations."""
+        from .economic_models import AIEconomicModels
+        models = AIEconomicModels()
+        
+        # Calculate market value impact
+        market_impact = models.calculate_market_value_impact(
+            revenue=100_000_000,  # Example $100M revenue
+            industry=industry,
+            ai_adoption_level=50,  # 50% adoption
+            competitive_position="Average"
+        )
+        
+        # Calculate payback period
+        payback = models.calculate_payback_period(
+            investment=1_000_000,
+            annual_benefit=2_500_000,  # Based on avg ROI
+            industry=industry
+        )
+        
         key_points = [
-            f"Average ROI of {roi_data.get('avg_roi', 150):.0f}% within 18 months",
-            "Early adopters seeing 2x higher returns",
-            "GenAI projects showing fastest payback",
-            "80% of projects exceed initial ROI projections"
+            f"Average ROI of {roi_data.get('avg_roi', 150):.0f}% with {payback['payback_months']:.0f}-month payback",
+            f"Market value increase potential: {market_impact['market_value_increase_percentage']:.0f}%",
+            f"Industry P/E ratio: {market_impact['pe_ratio']:.1f}x",
+            f"Network effect multiplier: {market_impact['network_effect_multiplier']:.2f}x",
+            "Implementation includes {:.0f}-month ramp-up period".format(payback['ramp_up_months'])
         ]
         
         recommendations = [
-            "Start with high-confidence use cases",
-            "Measure both hard and soft ROI benefits",
-            "Reinvest early gains for compounding returns"
+            "Account for learning curve in ROI projections",
+            "Leverage network effects for exponential value",
+            "Plan for {:.0f}-month total implementation".format(payback['total_implementation_months']),
+            "Focus on market value creation, not just cost savings"
         ]
         
         from .economic_insights import EconomicInsights
@@ -290,23 +320,35 @@ class ViewEnhancer:
         )
     
     @staticmethod
-    def add_productivity_insights(productivity_data: pd.DataFrame):
-        """Add insights to Productivity Research view."""
+    def add_productivity_insights(productivity_data: pd.DataFrame, industry: str = "Other"):
+        """Add insights to Productivity Research view with accurate models."""
+        from .economic_models import AIEconomicModels
+        models = AIEconomicModels()
+        
         avg_gain = productivity_data['productivity_gain'].mean()
         max_gain = productivity_data.iloc[productivity_data['productivity_gain'].idxmax()]
         
+        # Calculate industry-specific productivity gains
+        productivity_calc = models.calculate_productivity_gain(
+            revenue=100_000_000,  # Example $100M revenue
+            years=3,
+            industry=industry,
+            skill_level="Mixed"
+        )
+        
         key_points = [
-            f"Average productivity gain of {avg_gain:.0f}%",
+            f"Industry baseline productivity gain: {productivity_calc['industry_baseline']:.0f}% (Goldman Sachs data)",
+            f"Skill-adjusted potential: {productivity_calc['skill_adjusted_gain']:.0f}%",
             f"{max_gain['worker_category']} seeing {max_gain['productivity_gain']:.0f}% improvement",
-            "Quality improvements exceeding speed gains",
-            "Human-AI collaboration multiplying impact"
+            "Low-skilled workers benefit most from AI augmentation",
+            "Diminishing returns factor: {:.0%}".format(productivity_calc['time_adjusted_factor'])
         ]
         
         recommendations = [
-            "Target high-impact worker categories first",
-            "Measure quality alongside productivity",
-            "Design for human-AI synergy",
-            "Share success stories broadly"
+            "Focus on low-skilled worker augmentation for maximum impact",
+            "Implement learning curve optimization strategies",
+            "Plan for diminishing returns in long-term projections",
+            "Measure both productivity and quality improvements"
         ]
         
         from .economic_insights import EconomicInsights
