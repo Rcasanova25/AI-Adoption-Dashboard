@@ -3,6 +3,8 @@
 import streamlit as st
 from typing import List, Dict, Optional, Any, Tuple
 import plotly.graph_objects as go
+import pandas as pd
+import streamlit.components.v1 as components
 
 
 class ResponsiveUI:
@@ -15,10 +17,67 @@ class ResponsiveUI:
         Returns:
             Device type: 'mobile', 'tablet', or 'desktop'
         """
-        # Streamlit doesn't provide direct viewport detection
-        # This would need JavaScript injection in production
-        # For now, return based on sidebar state
-        return 'desktop'  # Default fallback
+        # Initialize session state for device type
+        if 'device_type' not in st.session_state:
+            st.session_state.device_type = 'desktop'
+        
+        # Inject JavaScript to detect viewport width
+        device_detector = """
+        <script>
+        function detectDevice() {
+            const width = window.innerWidth;
+            let deviceType = 'desktop';
+            
+            if (width <= 768) {
+                deviceType = 'mobile';
+            } else if (width <= 1024) {
+                deviceType = 'tablet';
+            }
+            
+            // Send device type to Streamlit
+            const event = new CustomEvent('streamlit:setComponentValue', {
+                detail: deviceType
+            });
+            window.parent.document.dispatchEvent(event);
+        }
+        
+        // Detect on load and resize
+        window.addEventListener('load', detectDevice);
+        window.addEventListener('resize', detectDevice);
+        detectDevice();
+        </script>
+        """
+        
+        # Use a component to get viewport info
+        device_type = components.html(
+            device_detector + """
+            <div id="device-detector" style="display: none;"></div>
+            <script>
+                // Also use query container for better detection
+                const container = window.parent.document.querySelector('.main');
+                if (container) {
+                    const width = container.offsetWidth;
+                    if (width < 640) {
+                        window.parent.postMessage({type: 'device', value: 'mobile'}, '*');
+                    } else if (width < 1024) {
+                        window.parent.postMessage({type: 'device', value: 'tablet'}, '*');
+                    } else {
+                        window.parent.postMessage({type: 'device', value: 'desktop'}, '*');
+                    }
+                }
+            </script>
+            """,
+            height=0,
+            scrolling=False
+        )
+        
+        # Fallback detection based on Streamlit container
+        # Check if sidebar is collapsed (often indicates mobile)
+        if 'sidebar_state' in st.session_state and st.session_state.sidebar_state == 'collapsed':
+            return 'mobile'
+        
+        # Return detected or stored device type
+        return st.session_state.get('device_type', 'desktop')
     
     @staticmethod
     def responsive_columns(

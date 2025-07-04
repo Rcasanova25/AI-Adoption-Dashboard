@@ -3,6 +3,7 @@
 import streamlit as st
 from typing import Dict, List, Optional, Any, Callable
 from enum import Enum
+from components.accessibility import AccessibilityManager
 
 
 class DisclosureLevel(Enum):
@@ -45,17 +46,33 @@ class ProgressiveDisclosure:
         # Create radio buttons with descriptions
         current_level = st.session_state.disclosure_level
         
+        # Add ARIA label for screen readers
+        st.sidebar.markdown(
+            '<div role="group" aria-label="Information detail level selector">',
+            unsafe_allow_html=True
+        )
+        
         for level in DisclosureLevel:
+            button_label = level_descriptions[level]
+            is_selected = level == current_level
+            
             if st.sidebar.button(
-                level_descriptions[level],
+                button_label,
                 key=f"level_{level.value}",
                 use_container_width=True,
-                type="primary" if level == current_level else "secondary"
+                type="primary" if is_selected else "secondary",
+                help=f"{'Currently selected' if is_selected else 'Click to select'} {level.value} view"
             ):
                 self.set_level(level)
+                # Announce change to screen readers
+                AccessibilityManager.announce_to_screen_reader(
+                    f"View changed to {level.value} level"
+                )
                 st.rerun()
         
-        # Add visual indicator
+        st.sidebar.markdown('</div>', unsafe_allow_html=True)
+        
+        # Add visual indicator with ARIA label
         st.sidebar.info(f"Currently viewing: **{current_level.value.title()} Level**")
     
     def progressive_container(
