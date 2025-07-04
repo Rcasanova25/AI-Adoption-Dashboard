@@ -79,7 +79,7 @@ ENABLE_LAZY_LOADING = st.sidebar.checkbox("Enable Lazy Loading", value=False)
 # Import based on feature flags
 if ENABLE_NEW_DATA_MANAGER:
     try:
-        from data.optimized_data_manager import create_optimized_manager
+        from data.data_manager import DataManager
         st.sidebar.success("✅ New Data Manager loaded")
     except ImportError as e:
         st.sidebar.error(f"❌ Failed to load Data Manager: {e}")
