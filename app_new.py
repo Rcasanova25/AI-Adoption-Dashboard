@@ -17,7 +17,7 @@ import time
 from typing import Dict, Any, Optional
 
 # Import optimized components
-from data.optimized_data_manager import create_optimized_manager
+from data.data_manager import create_optimized_manager
 from components.competitive_assessor import CompetitivePositionAssessor
 from components.accessibility import AccessibilityManager, create_accessible_dashboard_layout
 from components.progressive_disclosure import ProgressiveDisclosure

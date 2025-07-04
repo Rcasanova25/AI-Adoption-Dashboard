@@ -20,7 +20,7 @@ if project_root not in sys.path:
 
 # Try to import new components, fallback gracefully
 try:
-    from data.optimized_data_manager import create_optimized_manager
+    from data.data_manager import create_optimized_manager
     USE_OPTIMIZED_MANAGER = True
 except ImportError:
     USE_OPTIMIZED_MANAGER = False

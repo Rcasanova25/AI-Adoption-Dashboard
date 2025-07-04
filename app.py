@@ -10,7 +10,7 @@ from plotly.subplots import make_subplots
 from components.accessibility import AccessibilityManager, create_accessible_dashboard_layout
 
 # Import optimized data management
-from data.optimized_data_manager import OptimizedDataManager, create_optimized_manager
+from data.data_manager import OptimizedDataManager, create_optimized_manager
 from performance.monitor import track_performance, get_metrics
 from performance.cache_manager import get_cache
 

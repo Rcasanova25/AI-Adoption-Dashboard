@@ -10,7 +10,7 @@ import concurrent.futures
 
 from performance.cache_manager import MultiLayerCache, TTLCache, DiskCache, CacheKeyGenerator
 from performance.monitor import PerformanceMetrics, track_performance, PerformanceContext
-from data.optimized_data_manager import OptimizedDataManager, LazyDataLoader
+from data.data_manager import OptimizedDataManager
 from tests.fixtures.mock_data import generate_adoption_data, generate_industry_data
 from tests.utils.test_helpers import PerformanceTimer
 

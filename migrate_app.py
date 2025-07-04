@@ -25,7 +25,7 @@ def backup_original():
 def validate_dependencies():
     """Check if all required components exist."""
     required_files = [
-        'data/optimized_data_manager.py',
+        'data/data_manager.py',
         'components/competitive_assessor.py',
         'components/accessibility.py',
         'components/progressive_disclosure.py',

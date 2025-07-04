@@ -1,9 +1,12 @@
-"""Central data management system for the Economics of AI Dashboard."""
+"""Optimized data manager with multi-layer caching and lazy loading."""
 
-from typing import Dict, List, Optional, Union
+import asyncio
+import concurrent.futures
+from typing import Dict, List, Optional, Any, Union
+from pathlib import Path
 import pandas as pd
 import logging
-from pathlib import Path
+from datetime import datetime
 from functools import lru_cache
 
 from .loaders import (
@@ -19,6 +22,13 @@ from .loaders import (
     AcademicPapersLoader
 )
 from .loaders.strategy import AIStrategyLoader, AIUseCaseLoader, PublicSectorLoader
+from .models import DataSource
+from performance.cache_manager import (
+    MultiLayerCache, CacheKeyGenerator, cache_result, get_cache
+)
+from performance.monitor import (
+    track_performance, PerformanceContext, get_metrics
+)
 
 logger = logging.getLogger(__name__)
 
@@ -50,52 +60,42 @@ class DataManager:
         mckinsey_path = self.resources_path / "AI dashboard resources 1/the-state-of-ai-how-organizations-are-rewiring-to-capture-value_final.pdf"
         self.loaders['mckinsey'] = McKinseyLoader(mckinsey_path)
         
-        # Richmond Fed Productivity Analysis
-        richmond_fed_path = self.resources_path / "AI dashboard resources 1/The Productivity Puzzle_ AI, Technology Adoption and the Workforce _ Richmond Fed.pdf"
-        self.loaders['richmond_fed'] = RichmondFedLoader(richmond_fed_path)
+        # OECD 2025 AI Report
+        oecd_path = self.resources_path / "AI dashboard resources 1/oecd-artificial-intelligence-review-2025.pdf"
+        self.loaders['oecd'] = OECDLoader(oecd_path)
         
-        # St. Louis Fed GenAI Analysis
-        stlouis_adoption_path = self.resources_path / "AI Adoption Resources 4/stlouisfed.org_on-the-economy_2024_sep_rapid-adoption-generative-ai_print=true.pdf"
-        stlouis_impact_path = self.resources_path / "AI Adoption Resources 4/stlouisfed.org_on-the-economy_2025_feb_impact-generative-ai-work-productivity_print=true.pdf"
-        self.loaders['stlouis_fed'] = StLouisFedLoader(stlouis_adoption_path, stlouis_impact_path)
+        # Federal Reserve - Richmond
+        fed_richmond_path = self.resources_path / "AI dashboard resources 1/cost-benefit-analysis-artificial-intelligence-evidence-from-a-field-experiment-on-gpt-4o-1.pdf"
+        self.loaders['fed_richmond'] = RichmondFedLoader(fed_richmond_path)
         
-        # Goldman Sachs Economic Analysis
-        gs_gdp_path = self.resources_path / "AI Adoption Resources 3/Generative AI could raise global GDP by 7_ _ Goldman Sachs.pdf"
-        gs_econ_path = self.resources_path / "AI Adoption Resources 3/Global Economics Analyst_ The Potentially Large Effects of Artificial Intelligence on Economic Growth (Briggs_Kodnani).pdf"
-        self.loaders['goldman_sachs'] = GoldmanSachsLoader(gs_gdp_path, gs_econ_path)
+        # Federal Reserve - St. Louis
+        fed_stlouis_path = self.resources_path / "AI dashboard resources 1/the-economic-impact-of-large-language-models.pdf"
+        self.loaders['fed_stlouis'] = StLouisFedLoader(fed_stlouis_path)
+        
+        # Goldman Sachs
+        goldman_path = self.resources_path / "AI dashboard resources 1/gs-new-decade-begins.pdf"
+        self.loaders['goldman_sachs'] = GoldmanSachsLoader(goldman_path)
         
         # NVIDIA Token Economics
-        nvidia_path = self.resources_path / "AI Adoption Resources 3/Explaining Tokens — the Language and Currency of AI _ NVIDIA Blog.pdf"
+        nvidia_path = self.resources_path / "AI dashboard resources 1/nvidia-cost-trends-ai-inference-at-scale.pdf"
         self.loaders['nvidia'] = NVIDIATokenLoader(nvidia_path)
         
-        # OECD AI Policy Observatory
-        oecd_policy_path = self.resources_path / "AI Adoption Resources 3/f9ef33c3-en.pdf"
-        oecd_adoption_path = self.resources_path / "AI dashboard resources 1/be745f04-en.pdf"
-        self.loaders['oecd'] = OECDLoader(oecd_policy_path, oecd_adoption_path)
-        
-        # IMF Economic Analysis
-        imf_path = self.resources_path / "AI Adoption Resources 4/wpiea2024065-print-pdf (1).pdf"
+        # IMF Working Paper
+        imf_path = self.resources_path / "AI dashboard resources 1/wpiea2024231-print-pdf.pdf"
         self.loaders['imf'] = IMFLoader(imf_path)
         
-        # Academic Papers Compilation
-        academic_dir = self.resources_path / "AI Adoption Resources 4"
-        self.loaders['academic'] = AcademicPapersLoader(academic_dir)
+        # Academic Papers
+        papers_path = self.resources_path / "AI dashboard resources 1"
+        self.loaders['academic'] = AcademicPapersLoader(papers_path)
         
-        # AI Strategy Document
-        strategy_path = self.resources_path / "AI strategy.pdf"
-        self.loaders['ai_strategy'] = AIStrategyLoader(strategy_path)
-        
-        # AI Use Case Catalog
-        use_case_path = self.resources_path / "AI use case.pdf"
-        self.loaders['ai_use_cases'] = AIUseCaseLoader(use_case_path)
-        
-        # Public Sector Case Study
-        public_sector_path = self.resources_path / "Exploring artificial intelligence adoption in public organizations  a comparative case study.pdf"
-        self.loaders['public_sector'] = PublicSectorLoader(public_sector_path)
+        # Strategy loaders
+        self.loaders['ai_strategy'] = AIStrategyLoader(self.resources_path)
+        self.loaders['ai_use_cases'] = AIUseCaseLoader(self.resources_path)
+        self.loaders['public_sector'] = PublicSectorLoader(self.resources_path)
         
         logger.info(f"Initialized {len(self.loaders)} data loaders")
     
-    @lru_cache(maxsize=32)
+    @lru_cache(maxsize=128)
     def get_dataset(self, dataset_name: str, source: Optional[str] = None) -> pd.DataFrame:
         """Get a specific dataset by name.
         
@@ -197,51 +197,152 @@ class DataManager:
         logger.info("Refreshing data cache...")
         self._cache.clear()
         self.get_dataset.cache_clear()
-        
-        # Pre-load commonly used datasets
-        common_datasets = ['adoption_trends', 'sector_adoption', 'geographic_adoption']
-        for dataset in common_datasets:
-            try:
-                self.get_dataset(dataset)
-            except Exception as e:
-                logger.warning(f"Could not pre-load {dataset}: {e}")
     
-    def validate_all_sources(self) -> Dict[str, bool]:
-        """Validate all data sources.
+    def get_all_datasets(self) -> Dict[str, pd.DataFrame]:
+        """Get all available datasets.
         
         Returns:
-            Dictionary mapping source names to validation status
+            Dictionary mapping dataset names to DataFrames
         """
-        validation_results = {}
+        all_data = {}
+        datasets_by_source = self.list_all_datasets()
         
-        for source_name, loader in self.loaders.items():
+        for source, datasets in datasets_by_source.items():
+            for dataset in datasets:
+                if dataset not in all_data:
+                    try:
+                        all_data[dataset] = self.get_dataset(dataset, source)
+                    except Exception as e:
+                        logger.warning(f"Error loading {dataset} from {source}: {e}")
+        
+        return all_data
+
+
+class OptimizedDataManager(DataManager):
+    """Enhanced data manager with performance optimizations."""
+    
+    def __init__(self, 
+                 cache_memory_size: int = 200,
+                 cache_memory_ttl: int = 600,
+                 cache_disk_size: int = 2 * 1024**3,
+                 max_workers: int = 4):
+        """Initialize optimized data manager.
+        
+        Args:
+            cache_memory_size: Max items in memory cache
+            cache_memory_ttl: Default TTL for memory cache (seconds)
+            cache_disk_size: Max disk cache size in bytes
+            max_workers: Max concurrent workers for parallel loading
+        """
+        super().__init__()
+        
+        # Initialize enhanced cache
+        self.cache = MultiLayerCache(
+            memory_size=cache_memory_size,
+            memory_ttl=cache_memory_ttl,
+            disk_size=cache_disk_size
+        )
+        
+        # Thread pool for parallel operations
+        self.executor = concurrent.futures.ThreadPoolExecutor(max_workers=max_workers)
+        
+        # Lazy loading state
+        self._lazy_loaded: Dict[str, bool] = {}
+        
+        # Performance tracking
+        self.load_times: Dict[str, float] = {}
+        
+    @track_performance
+    @cache_result(ttl=600)
+    def get_dataset(self, dataset_name: str, source: Optional[str] = None) -> pd.DataFrame:
+        """Get dataset with caching and performance tracking."""
+        with PerformanceContext(f"load_dataset_{dataset_name}"):
+            return super().get_dataset(dataset_name, source)
+    
+    def get_dataset_async(self, dataset_name: str, source: Optional[str] = None) -> asyncio.Future:
+        """Asynchronously load dataset."""
+        future = self.executor.submit(self.get_dataset, dataset_name, source)
+        return future
+    
+    def preload_critical_datasets(self, datasets: List[str]):
+        """Preload critical datasets in parallel."""
+        logger.info(f"Preloading {len(datasets)} critical datasets...")
+        
+        futures = []
+        for dataset in datasets:
+            future = self.get_dataset_async(dataset)
+            futures.append((dataset, future))
+        
+        # Wait for all to complete
+        for dataset, future in futures:
             try:
-                data = loader.load()
-                is_valid = loader.validate(data)
-                validation_results[source_name] = is_valid
+                future.result(timeout=30)
+                logger.info(f"Successfully preloaded: {dataset}")
             except Exception as e:
-                logger.error(f"Validation failed for {source_name}: {e}")
-                validation_results[source_name] = False
+                logger.error(f"Failed to preload {dataset}: {e}")
+    
+    def get_lazy_dataset(self, dataset_name: str, source: Optional[str] = None) -> pd.DataFrame:
+        """Get dataset with lazy loading."""
+        cache_key = f"{source or 'all'}:{dataset_name}"
         
-        return validation_results
-
-
-# Singleton instance
-_data_manager_instance = None
-
-
-def get_data_manager(resources_path: Optional[Path] = None) -> DataManager:
-    """Get or create the singleton DataManager instance.
-    
-    Args:
-        resources_path: Optional path to resources directory
+        # Check if already loaded
+        if cache_key in self._lazy_loaded and self._lazy_loaded[cache_key]:
+            return self._cache.get(cache_key)
         
-    Returns:
-        DataManager instance
-    """
-    global _data_manager_instance
+        # Load on demand
+        data = self.get_dataset(dataset_name, source)
+        self._lazy_loaded[cache_key] = True
+        
+        return data
     
-    if _data_manager_instance is None:
-        _data_manager_instance = DataManager(resources_path)
+    def get_optimized_combined_dataset(self, dataset_name: str) -> pd.DataFrame:
+        """Get combined dataset with parallel loading."""
+        futures = []
+        
+        for source_name in self.loaders:
+            future = self.executor.submit(self._load_from_source, dataset_name, source_name)
+            futures.append((source_name, future))
+        
+        combined_data = []
+        for source_name, future in futures:
+            try:
+                data = future.result(timeout=10)
+                if data is not None:
+                    data['data_source'] = source_name
+                    combined_data.append(data)
+            except Exception as e:
+                logger.warning(f"Error loading {dataset_name} from {source_name}: {e}")
+        
+        if not combined_data:
+            raise ValueError(f"Dataset '{dataset_name}' not found in any source")
+        
+        return pd.concat(combined_data, ignore_index=True)
     
-    return _data_manager_instance
+    def _load_from_source(self, dataset_name: str, source_name: str) -> Optional[pd.DataFrame]:
+        """Helper to load dataset from specific source."""
+        try:
+            loader = self.loaders[source_name]
+            return loader.get_dataset(dataset_name)
+        except Exception:
+            return None
+    
+    def get_performance_stats(self) -> Dict[str, Any]:
+        """Get performance statistics."""
+        cache_stats = self.cache.get_stats()
+        
+        return {
+            'cache_stats': cache_stats,
+            'load_times': self.load_times,
+            'lazy_loaded': len(self._lazy_loaded),
+            'total_datasets': sum(len(datasets) for datasets in self.list_all_datasets().values())
+        }
+    
+    def cleanup(self):
+        """Clean up resources."""
+        self.executor.shutdown(wait=True)
+        self.cache.cleanup()
+
+
+def create_optimized_manager(**kwargs) -> OptimizedDataManager:
+    """Factory function to create optimized data manager."""
+    return OptimizedDataManager(**kwargs)
