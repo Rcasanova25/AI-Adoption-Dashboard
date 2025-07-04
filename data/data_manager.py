@@ -9,10 +9,16 @@ from functools import lru_cache
 from .loaders import (
     BaseDataLoader,
     AIIndexLoader,
-    # McKinseyLoader,
-    # OECDLoader,
-    # FederalReserveLoader
+    McKinseyLoader,
+    OECDLoader,
+    RichmondFedLoader,
+    StLouisFedLoader,
+    GoldmanSachsLoader,
+    NVIDIATokenLoader,
+    IMFLoader,
+    AcademicPapersLoader
 )
+from .loaders.strategy import AIStrategyLoader, AIUseCaseLoader, PublicSectorLoader
 
 logger = logging.getLogger(__name__)
 
@@ -36,14 +42,56 @@ class DataManager:
         """Initialize all data loaders."""
         logger.info("Initializing data loaders...")
         
-        # AI Index loader
+        # AI Index loader - Stanford HAI
         ai_index_path = self.resources_path / "AI dashboard resources 1/hai_ai_index_report_2025.pdf"
         self.loaders['ai_index'] = AIIndexLoader(ai_index_path)
         
-        # TODO: Add other loaders as they are implemented
-        # self.loaders['mckinsey'] = McKinseyLoader(mckinsey_path)
-        # self.loaders['oecd'] = OECDLoader(oecd_path)
-        # self.loaders['fed'] = FederalReserveLoader(fed_path)
+        # McKinsey State of AI
+        mckinsey_path = self.resources_path / "AI dashboard resources 1/the-state-of-ai-how-organizations-are-rewiring-to-capture-value_final.pdf"
+        self.loaders['mckinsey'] = McKinseyLoader(mckinsey_path)
+        
+        # Richmond Fed Productivity Analysis
+        richmond_fed_path = self.resources_path / "AI dashboard resources 1/The Productivity Puzzle_ AI, Technology Adoption and the Workforce _ Richmond Fed.pdf"
+        self.loaders['richmond_fed'] = RichmondFedLoader(richmond_fed_path)
+        
+        # St. Louis Fed GenAI Analysis
+        stlouis_adoption_path = self.resources_path / "AI Adoption Resources 4/stlouisfed.org_on-the-economy_2024_sep_rapid-adoption-generative-ai_print=true.pdf"
+        stlouis_impact_path = self.resources_path / "AI Adoption Resources 4/stlouisfed.org_on-the-economy_2025_feb_impact-generative-ai-work-productivity_print=true.pdf"
+        self.loaders['stlouis_fed'] = StLouisFedLoader(stlouis_adoption_path, stlouis_impact_path)
+        
+        # Goldman Sachs Economic Analysis
+        gs_gdp_path = self.resources_path / "AI Adoption Resources 3/Generative AI could raise global GDP by 7_ _ Goldman Sachs.pdf"
+        gs_econ_path = self.resources_path / "AI Adoption Resources 3/Global Economics Analyst_ The Potentially Large Effects of Artificial Intelligence on Economic Growth (Briggs_Kodnani).pdf"
+        self.loaders['goldman_sachs'] = GoldmanSachsLoader(gs_gdp_path, gs_econ_path)
+        
+        # NVIDIA Token Economics
+        nvidia_path = self.resources_path / "AI Adoption Resources 3/Explaining Tokens — the Language and Currency of AI _ NVIDIA Blog.pdf"
+        self.loaders['nvidia'] = NVIDIATokenLoader(nvidia_path)
+        
+        # OECD AI Policy Observatory
+        oecd_policy_path = self.resources_path / "AI Adoption Resources 3/f9ef33c3-en.pdf"
+        oecd_adoption_path = self.resources_path / "AI dashboard resources 1/be745f04-en.pdf"
+        self.loaders['oecd'] = OECDLoader(oecd_policy_path, oecd_adoption_path)
+        
+        # IMF Economic Analysis
+        imf_path = self.resources_path / "AI Adoption Resources 4/wpiea2024065-print-pdf (1).pdf"
+        self.loaders['imf'] = IMFLoader(imf_path)
+        
+        # Academic Papers Compilation
+        academic_dir = self.resources_path / "AI Adoption Resources 4"
+        self.loaders['academic'] = AcademicPapersLoader(academic_dir)
+        
+        # AI Strategy Document
+        strategy_path = self.resources_path / "AI strategy.pdf"
+        self.loaders['ai_strategy'] = AIStrategyLoader(strategy_path)
+        
+        # AI Use Case Catalog
+        use_case_path = self.resources_path / "AI use case.pdf"
+        self.loaders['ai_use_cases'] = AIUseCaseLoader(use_case_path)
+        
+        # Public Sector Case Study
+        public_sector_path = self.resources_path / "Exploring artificial intelligence adoption in public organizations  a comparative case study.pdf"
+        self.loaders['public_sector'] = PublicSectorLoader(public_sector_path)
         
         logger.info(f"Initialized {len(self.loaders)} data loaders")
     
