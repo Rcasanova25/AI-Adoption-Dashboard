@@ -6,6 +6,19 @@ import numpy as np
 from datetime import datetime
 from plotly.subplots import make_subplots
 
+# Import accessibility components
+from components.accessibility import AccessibilityManager, create_accessible_dashboard_layout
+
+# Import optimized data management
+from data.optimized_data_manager import OptimizedDataManager, create_optimized_manager
+from performance.monitor import track_performance, get_metrics
+from performance.cache_manager import get_cache
+
+# Import economic insights components
+from components.economic_insights import EconomicInsights
+from components.competitive_assessor import CompetitiveAssessor
+from components.view_enhancements import ViewEnhancements
+
 # Page config
 st.set_page_config(
     page_title="AI Adoption Dashboard | 2018-2025 Analysis",
@@ -19,40 +32,58 @@ st.set_page_config(
     }
 )
 
-# Data loading function - updated with AI Index 2025 data and Token Economics
+# Initialize accessibility features
+a11y = create_accessible_dashboard_layout()
+
+# Initialize optimized data manager
+@st.cache_resource
+def init_data_manager():
+    """Initialize the optimized data manager once per session."""
+    return create_optimized_manager()
+
+# Data loading function - now using OptimizedDataManager with real PDF data
+@track_performance
 @st.cache_data
 def load_data():
     try:
-        # Historical trends data - UPDATED with AI Index 2025 findings
-        historical_data = pd.DataFrame({
-            'year': [2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024, 2025],
-            'ai_use': [20, 47, 58, 56, 55, 50, 55, 78, 78],  # Updated: 78% in 2024
-            'genai_use': [0, 0, 0, 0, 0, 33, 33, 71, 71]  # Updated: 71% in 2024
-        })
+        # Get optimized data manager
+        data_manager = init_data_manager()
         
-        # 2018 Sector data
-        sector_2018 = pd.DataFrame({
+        # Load real data from PDF sources
+        ai_index_data = data_manager.get_data('ai_index')
+        mckinsey_data = data_manager.get_data('mckinsey')
+        goldman_sachs_data = data_manager.get_data('goldman_sachs')
+        
+        # Extract historical trends from AI Index data
+        historical_data = ai_index_data.get('adoption_trends', pd.DataFrame({
+            'year': [2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024, 2025],
+            'ai_use': [20, 47, 58, 56, 55, 50, 55, 78, 78],  # Fallback data
+            'genai_use': [0, 0, 0, 0, 0, 33, 33, 71, 71]  # Fallback data
+        }))
+        
+        # Extract sector data from real sources
+        sector_2018 = ai_index_data.get('sector_adoption', pd.DataFrame({
             'sector': ['Manufacturing', 'Information', 'Healthcare', 'Professional Services', 
                       'Finance & Insurance', 'Retail Trade', 'Construction'],
             'firm_weighted': [12, 12, 8, 7, 6, 4, 4],
             'employment_weighted': [18, 22, 15, 14, 12, 8, 6]
-        })
+        }))
         
-        # 2025 Sector data - NEW for industry-specific insights
-        sector_2025 = pd.DataFrame({
+        # 2025 Sector data from McKinsey and AI Index
+        sector_2025 = mckinsey_data.get('use_cases', pd.DataFrame({
             'sector': ['Technology', 'Financial Services', 'Healthcare', 'Manufacturing', 
                       'Retail & E-commerce', 'Education', 'Energy & Utilities', 'Government'],
             'adoption_rate': [92, 85, 78, 75, 72, 65, 58, 52],
             'genai_adoption': [88, 78, 65, 58, 70, 62, 45, 38],
             'avg_roi': [4.2, 3.8, 3.2, 3.5, 3.0, 2.5, 2.8, 2.2]
-        })
+        }))
         
-        # Firm size data
-        firm_size = pd.DataFrame({
+        # Firm size data from AI Index
+        firm_size = ai_index_data.get('firm_size', pd.DataFrame({
             'size': ['1-4', '5-9', '10-19', '20-49', '50-99', '100-249', '250-499', 
                     '500-999', '1000-2499', '2500-4999', '5000+'],
             'adoption': [3.2, 3.8, 4.5, 5.2, 7.8, 12.5, 18.2, 25.6, 35.4, 42.8, 58.5]
-        })
+        }))
         
         # AI Maturity data
         ai_maturity = pd.DataFrame({
@@ -457,6 +488,12 @@ st.markdown("""
 st.title("🤖 AI Adoption Dashboard: 2018-2025")
 st.markdown("**Comprehensive analysis from early AI adoption (2018) to current GenAI trends (2025)**")
 
+# Accessibility toolbar
+a11y.render_accessibility_toolbar()
+
+# Add ARIA landmark for main navigation
+st.markdown('<nav role="navigation" aria-label="Dashboard navigation">', unsafe_allow_html=True)
+
 # What's New section
 with st.expander("🆕 What's New in Version 2.2.0", expanded=st.session_state.show_changelog):
     st.markdown("""
@@ -479,27 +516,33 @@ Enterprise-wide production use rates are typically lower. Data sources include A
 OECD AI Policy Observatory, and US Census Bureau AI Use Supplement.
 """)
 
-# Sidebar controls
+# Sidebar controls with accessibility
+st.sidebar.markdown('<aside role="complementary" aria-label="Dashboard controls and filters">', unsafe_allow_html=True)
 st.sidebar.header("📊 Dashboard Controls")
 
-# Show persona selection
-persona = st.sidebar.selectbox(
-    "Select Your Role",
-    ["General", "Business Leader", "Policymaker", "Researcher"],
-    index=["General", "Business Leader", "Policymaker", "Researcher"].index(st.session_state.selected_persona)
+# Show persona selection with accessibility features
+persona = a11y.create_accessible_form_field(
+    field_type="select",
+    label="Select Your Role",
+    field_id="persona-selector",
+    required=False,
+    help_text="Choose your role to see personalized dashboard recommendations",
+    options=["General", "Business Leader", "Policymaker", "Researcher"],
+    index=["General", "Business Leader", "Policymaker", "Researcher"].index(st.session_state.selected_persona),
+    key="persona-selector"
 )
 st.session_state.selected_persona = persona
 
 # Persona-based view recommendations and filtering
 persona_views = {
-    "Business Leader": ["Industry Analysis", "Financial Impact", "Investment Trends", "ROI Analysis"],
+    "Business Leader": ["Competitive Assessment", "Industry Analysis", "Financial Impact", "Investment Trends", "ROI Analysis"],
     "Policymaker": ["Geographic Distribution", "OECD 2025 Findings", "Regional Growth", "AI Governance"],
     "Researcher": ["Historical Trends", "Productivity Research", "Environmental Impact", "Skill Gap Analysis"],
-    "General": ["Adoption Rates", "Historical Trends", "Investment Trends", "Labor Impact"]
+    "General": ["Competitive Assessment", "Adoption Rates", "Historical Trends", "Investment Trends", "Labor Impact"]
 }
 
 # Filter views based on persona
-all_views = ["Adoption Rates", "Historical Trends", "Industry Analysis", "Investment Trends", 
+all_views = ["Competitive Assessment", "Adoption Rates", "Historical Trends", "Industry Analysis", "Investment Trends", 
              "Regional Growth", "AI Cost Trends", "Token Economics", "Financial Impact", "Labor Impact", 
              "Firm Size Analysis", "Technology Stack", "AI Technology Maturity", 
              "Productivity Research", "Environmental Impact", "Geographic Distribution", 
@@ -509,16 +552,24 @@ all_views = ["Adoption Rates", "Historical Trends", "Industry Analysis", "Invest
 if persona != "General":
     st.sidebar.info(f"💡 **Recommended views for {persona}:**\n" + "\n".join([f"• {v}" for v in persona_views[persona]]))
 
-data_year = st.sidebar.selectbox(
-    "Select Data Year", 
-    ["2018 (Early AI)", "2025 (GenAI Era)"],
-    index=1
+data_year = a11y.create_accessible_form_field(
+    field_type="select",
+    label="Select Data Year",
+    field_id="data-year-selector", 
+    help_text="Choose between 2018 early AI data or 2025 GenAI era data",
+    options=["2018 (Early AI)", "2025 (GenAI Era)"],
+    index=1,
+    key="data-year-selector"
 )
 
-view_type = st.sidebar.selectbox(
-    "Analysis View", 
-    all_views,
-    index=all_views.index(persona_views[persona][0]) if persona != "General" else 0
+view_type = a11y.create_accessible_form_field(
+    field_type="select",
+    label="Analysis View",
+    field_id="analysis-view-selector",
+    help_text="Select the type of analysis to display on the dashboard",
+    options=all_views,
+    index=all_views.index(persona_views[persona][0]) if persona != "General" else 0,
+    key="analysis-view-selector"
 )
 
 # Advanced filters
@@ -527,21 +578,46 @@ st.sidebar.markdown("### 🔧 Advanced Options")
 
 # Year filter for historical data
 if view_type == "Historical Trends":
-    year_range = st.sidebar.slider(
-        "Select Year Range",
+    year_range = a11y.create_accessible_form_field(
+        field_type="slider",
+        label="Select Year Range",
+        field_id="year-range-slider",
+        help_text="Choose the range of years to display in historical trends",
         min_value=2017,
         max_value=2025,
         value=(2017, 2025),
-        step=1
+        step=1,
+        key="year-range-slider"
     )
     
-    compare_mode = st.sidebar.checkbox("Compare specific years", value=False)
+    compare_mode = st.sidebar.checkbox(
+        "Compare specific years", 
+        value=False,
+        help="Enable to compare data between two specific years",
+        key="compare-mode-checkbox"
+    )
     if compare_mode:
         col1, col2 = st.sidebar.columns(2)
         with col1:
-            year1 = st.selectbox("Year 1", range(2017, 2026), index=1)
+            year1 = a11y.create_accessible_form_field(
+                field_type="select",
+                label="Year 1",
+                field_id="comparison-year-1",
+                help_text="First year for comparison",
+                options=list(range(2017, 2026)),
+                index=1,
+                key="comparison-year-1"
+            )
         with col2:
-            year2 = st.selectbox("Year 2", range(2017, 2026), index=7)
+            year2 = a11y.create_accessible_form_field(
+                field_type="select",
+                label="Year 2", 
+                field_id="comparison-year-2",
+                help_text="Second year for comparison",
+                options=list(range(2017, 2026)),
+                index=7,
+                key="comparison-year-2"
+            )
 
 # Export functionality
 st.sidebar.markdown("---")
@@ -571,9 +647,14 @@ data_map = {
     "ROI Analysis": sector_2025
 }
 
-export_format = st.sidebar.selectbox(
-    "Export Format",
-    ["CSV Data", "PNG Image", "PDF Report (Beta)"]
+export_format = a11y.create_accessible_form_field(
+    field_type="select",
+    label="Export Format",
+    field_id="export-format-selector",
+    help_text="Choose the format for exporting dashboard data",
+    options=["CSV Data", "PNG Image", "PDF Report (Beta)"],
+    index=0,
+    key="export-format-selector"
 )
 
 if export_format == "CSV Data":
@@ -598,11 +679,21 @@ elif export_format in ["PNG Image", "PDF Report (Beta)"]:
 # Feedback widget
 st.sidebar.markdown("---")
 st.sidebar.markdown("### 💬 Feedback")
-feedback = st.sidebar.text_area("Share your thoughts or request features:", height=100)
-if st.sidebar.button("Submit Feedback"):
-    st.sidebar.success("Thank you for your feedback!")
+feedback = a11y.create_accessible_form_field(
+    field_type="text",
+    label="Share your thoughts or request features",
+    field_id="feedback-textarea",
+    help_text="Your feedback helps us improve the dashboard experience",
+    key="feedback-textarea"
+)
+if st.sidebar.button("Submit Feedback", help="Send your feedback to the development team"):
+    if feedback:
+        st.sidebar.success("Thank you for your feedback!")
+        a11y.announce_to_screen_reader("Feedback submitted successfully", priority="polite")
+    else:
+        st.sidebar.warning("Please enter some feedback before submitting")
 
-# Help section
+# Help section with accessibility information
 with st.sidebar.expander("❓ Need Help?"):
     st.markdown("""
     **Navigation Tips:**
@@ -611,62 +702,152 @@ with st.sidebar.expander("❓ Need Help?"):
     - Hover over chart elements for details
     
     **Keyboard Shortcuts:**
-    - `Ctrl + K`: Quick search
-    - `F`: Toggle fullscreen
-    - `?`: Show help
+    - `Tab`: Navigate forward through interactive elements
+    - `Shift + Tab`: Navigate backward
+    - `Enter/Space`: Activate buttons and links
+    - `Arrow Keys`: Navigate within data tables and charts
+    - `Escape`: Close popups and modals
+    
+    **Accessibility Features:**
+    - Screen reader optimized
+    - High contrast mode available
+    - Keyboard navigation support
+    - ARIA labels and descriptions
+    - Adjustable font sizes
     """)
+    
+    # Add keyboard navigation help
+    a11y.create_keyboard_navigation_help()
+
+# Performance monitoring section
+with st.sidebar.expander("⚡ Performance Metrics"):
+    try:
+        # Get performance metrics
+        metrics = get_metrics()
+        if metrics:
+            st.metric("Load Time", f"{metrics.get('load_time', 0):.2f}s")
+            st.metric("Memory Usage", f"{metrics.get('memory_mb', 0):.1f} MB")
+            st.metric("CPU Usage", f"{metrics.get('cpu_percent', 0):.1f}%")
+        
+        # Get cache statistics
+        cache = get_cache()
+        if cache:
+            cache_stats = cache.get_stats()
+            st.metric("Cache Hit Rate", f"{cache_stats.get('hit_rate', 0):.1%}")
+            st.metric("Cached Items", str(cache_stats.get('total_items', 0)))
+    except Exception as e:
+        st.text("Performance monitoring unavailable")
+
+# Close sidebar accessibility markup
+st.sidebar.markdown('</aside>', unsafe_allow_html=True)
 
 # Key metrics row - UPDATED with AI Index 2025 data
-st.subheader("📈 Key Metrics")
+st.markdown('<section role="region" aria-labelledby="key-metrics-heading">', unsafe_allow_html=True)
+st.markdown('<h2 id="key-metrics-heading">📈 Key Metrics</h2>', unsafe_allow_html=True)
 col1, col2, col3, col4 = st.columns(4)
 
 if "2025" in data_year:
     with col1:
-        st.metric(
-            label="Overall AI Adoption*", 
-            value="78%", 
+        a11y.create_accessible_metric(
+            label="Overall AI Adoption",
+            value="78%",
             delta="+23pp from 2023",
-            help="*Includes any AI use. Jumped from 55% in 2023 (AI Index 2025)"
+            help_text="Includes any AI use. Jumped from 55% in 2023 (AI Index 2025)",
+            metric_id="overall-ai-adoption"
         )
     with col2:
-        st.metric(
-            label="GenAI Adoption*", 
-            value="71%", 
+        a11y.create_accessible_metric(
+            label="GenAI Adoption",
+            value="71%",
             delta="+38pp from 2023",
-            help="*More than doubled from 33% in 2023 (AI Index 2025)"
+            help_text="More than doubled from 33% in 2023 (AI Index 2025)",
+            metric_id="genai-adoption"
         )
     with col3:
-        st.metric(
-            label="2024 AI Investment", 
-            value="$252.3B", 
+        a11y.create_accessible_metric(
+            label="2024 AI Investment",
+            value="$252.3B",
             delta="+44.5% YoY",
-            help="Total corporate AI investment reached record levels"
+            help_text="Total corporate AI investment reached record levels",
+            metric_id="ai-investment"
         )
     with col4:
-        st.metric(
-            label="Cost Reduction", 
-            value="280x cheaper", 
+        a11y.create_accessible_metric(
+            label="Cost Reduction",
+            value="280x cheaper",
             delta="Since Nov 2022",
-            help="AI inference cost dropped from $20 to $0.07 per million tokens"
+            help_text="AI inference cost dropped from $20 to $0.07 per million tokens",
+            metric_id="cost-reduction"
         )
 else:
     with col1:
-        st.metric("Overall AI Adoption", "5.8%", "📊 Firm-weighted")
+        a11y.create_accessible_metric(
+            label="Overall AI Adoption",
+            value="5.8%",
+            help_text="Firm-weighted average across all businesses",
+            metric_id="overall-ai-2018"
+        )
     with col2:
-        st.metric("Large Firms (5000+)", "58.5%", "🏢 High adoption")
+        a11y.create_accessible_metric(
+            label="Large Firms (5000+)",
+            value="58.5%",
+            help_text="High adoption rate among large enterprises",
+            metric_id="large-firms-2018"
+        )
     with col3:
-        st.metric("AI + Cloud", "45%", "☁️ Technology stack")
+        a11y.create_accessible_metric(
+            label="AI + Cloud",
+            value="45%",
+            help_text="Technology stack combination adoption",
+            metric_id="ai-cloud-2018"
+        )
     with col4:
-        st.metric("Top City", "SF Bay (9.5%)", "🌍 Geographic leader")
+        a11y.create_accessible_metric(
+            label="Top City",
+            value="SF Bay (9.5%)",
+            help_text="Geographic leader in AI adoption",
+            metric_id="top-city-2018"
+        )
+st.markdown('</section>', unsafe_allow_html=True)
 
 # Main visualization section
-st.subheader(f"📊 {view_type}")
+st.markdown(f'<section role="region" aria-labelledby="main-visualization-heading">', unsafe_allow_html=True)
+st.markdown(f'<h2 id="main-visualization-heading">📊 {view_type}</h2>', unsafe_allow_html=True)
 
 # View implementations - ALL COMPLETE VISUALIZATIONS
 # Enhanced Historical Trends View - Add this to your existing Historical Trends section
 # Replace the existing Historical Trends view implementation with this enhanced version
 
-if view_type == "Historical Trends":
+if view_type == "Competitive Assessment":
+    # Initialize competitive assessor
+    assessor = CompetitiveAssessor()
+    
+    # Display competitive assessment interface
+    st.markdown("### 🎯 AI Competitive Position Assessment")
+    st.markdown("Evaluate your organization's AI readiness and competitive position in the market.")
+    
+    # Render the main assessment interface
+    assessor.render_assessment_interface()
+    
+    # Add economic insights
+    EconomicInsights.display_executive_summary(
+        title="Strategic AI Assessment Summary",
+        key_points=[
+            "78% of organizations report some AI use in 2025, up from 55% in 2023",
+            "GenAI adoption doubled from 33% to 71% in just two years",
+            "AI inference costs dropped 280x since November 2022",
+            "Organizations with comprehensive AI strategies show 4.2x better ROI"
+        ],
+        recommendations=[
+            "Complete competitive assessment to identify gaps and opportunities",
+            "Develop comprehensive AI strategy aligned with business objectives",
+            "Invest in employee training and change management",
+            "Start with high-impact, low-complexity use cases"
+        ],
+        urgency="high"
+    )
+
+elif view_type == "Historical Trends":
     # Apply year filter if set
     if 'compare_mode' in locals() and compare_mode:
         # Compare mode: Show specific years comparison (existing functionality preserved)
@@ -753,6 +934,12 @@ if view_type == "Historical Trends":
             hovermode='x unified'
         )
         
+        # Make chart accessible
+        fig = a11y.make_chart_accessible(
+            fig,
+            title=f"AI Adoption Comparison: {year1} vs {year2}",
+            description=f"Bar chart comparing AI adoption rates between {year1} and {year2}. Shows overall AI use and GenAI use with numerical values displayed on each bar."
+        )
         st.plotly_chart(fig, use_container_width=True)
         
         # Add insights for comparison
@@ -1368,6 +1555,9 @@ elif view_type == "Industry Analysis":
         st.metric("Highest ROI", "Technology (4.2x)", delta="Best returns")
     with col3:
         st.metric("Fastest Growing", "Healthcare", delta="+15pp YoY")
+    
+    # Add enhanced insights using ViewEnhancements
+    ViewEnhancements.add_industry_analysis_insights(sector_2025)
     
     # Export option
     csv = sector_2025.to_csv(index=False)
@@ -5355,6 +5545,10 @@ with footer_cols[3]:
     - [Request Feature](https://github.com/Rcasanova25/AI-Adoption-Dashboard/issues/new?labels=enhancement)
     - [Discussions](https://github.com/Rcasanova25/AI-Adoption-Dashboard/discussions)
     """)
+
+# Close main visualization and content sections
+st.markdown('</section>', unsafe_allow_html=True)  # Close main visualization section
+st.markdown('</main>', unsafe_allow_html=True)     # Close main content
 
 # Final attribution
 st.markdown("""
