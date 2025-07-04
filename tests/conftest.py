@@ -1,0 +1,249 @@
+"""Pytest configuration and shared fixtures for all tests."""
+
+import pytest
+import pandas as pd
+import numpy as np
+from datetime import datetime, timedelta
+from pathlib import Path
+import sys
+import os
+
+# Add parent directory to path for imports
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
+from data.models import (
+    AdoptionMetrics,
+    CompetitivePosition,
+    ROIMetrics,
+    IndustryData,
+    GeographicData,
+    LaborImpact,
+    CostTrends,
+    TokenEconomics,
+    DataSource
+)
+
+
+@pytest.fixture
+def mock_data_source():
+    """Create a mock data source for testing."""
+    return DataSource(
+        name="Test Source",
+        type="pdf",
+        path="/test/path.pdf",
+        year=2024,
+        credibility_score=0.95
+    )
+
+
+@pytest.fixture
+def sample_adoption_metrics():
+    """Create sample adoption metrics for testing."""
+    return AdoptionMetrics(
+        overall_adoption_rate=87.3,
+        enterprise_adoption_rate=92.1,
+        sme_adoption_rate=78.5,
+        growth_rate_yoy=15.2,
+        adoption_by_function={
+            "Marketing": 89.5,
+            "Sales": 85.2,
+            "Operations": 78.9,
+            "HR": 72.3,
+            "Finance": 68.7
+        },
+        adoption_by_size={
+            "Large (>1000)": 92.1,
+            "Medium (100-1000)": 82.3,
+            "Small (<100)": 67.8
+        },
+        timestamp=datetime.now()
+    )
+
+
+@pytest.fixture
+def sample_competitive_data():
+    """Create sample competitive position data."""
+    return CompetitivePosition(
+        industry="Technology",
+        position="Leader",
+        score=8.5,
+        gap_to_leaders=0,
+        peers=["Microsoft", "Google", "Amazon"],
+        strengths=["Innovation", "Talent", "Infrastructure"],
+        weaknesses=["Cost", "Governance"],
+        opportunities=["Market expansion", "New use cases"],
+        threats=["Competition", "Regulation"]
+    )
+
+
+@pytest.fixture
+def sample_roi_metrics():
+    """Create sample ROI metrics."""
+    return ROIMetrics(
+        expected_roi=185.5,
+        payback_period_months=18,
+        confidence_level="high",
+        cost_breakdown={
+            "Infrastructure": 250000,
+            "Talent": 450000,
+            "Training": 100000,
+            "Maintenance": 150000
+        },
+        benefit_breakdown={
+            "Productivity": 850000,
+            "Cost Savings": 650000,
+            "Revenue Growth": 1250000
+        },
+        risk_factors=["Implementation complexity", "Change management"]
+    )
+
+
+@pytest.fixture
+def sample_dataframe():
+    """Create a sample dataframe for testing."""
+    dates = pd.date_range(start='2020-01-01', end='2024-12-01', freq='M')
+    return pd.DataFrame({
+        'date': dates,
+        'adoption_rate': np.random.uniform(50, 95, len(dates)),
+        'investment': np.random.uniform(100000, 1000000, len(dates)),
+        'productivity_gain': np.random.uniform(5, 30, len(dates))
+    })
+
+
+@pytest.fixture
+def mock_streamlit_state():
+    """Mock Streamlit session state."""
+    class MockSessionState:
+        def __init__(self):
+            self.data = {}
+        
+        def __getitem__(self, key):
+            return self.data.get(key)
+        
+        def __setitem__(self, key, value):
+            self.data[key] = value
+        
+        def get(self, key, default=None):
+            return self.data.get(key, default)
+        
+        def update(self, items):
+            self.data.update(items)
+    
+    return MockSessionState()
+
+
+@pytest.fixture
+def test_data_path():
+    """Path to test data directory."""
+    return Path(__file__).parent / "fixtures" / "test_data"
+
+
+@pytest.fixture
+def performance_threshold():
+    """Performance testing thresholds."""
+    return {
+        'data_load_time': 1.0,  # seconds
+        'view_render_time': 0.5,  # seconds
+        'memory_usage': 500,  # MB
+        'cache_hit_ratio': 0.8  # 80%
+    }
+
+
+@pytest.fixture
+def test_pdf_content():
+    """Mock PDF content for testing extractors."""
+    return {
+        'text': """
+        AI Adoption Report 2024
+        
+        Executive Summary:
+        - Overall adoption rate: 87%
+        - YoY growth: 15%
+        - Leading industries: Technology, Finance, Healthcare
+        
+        Economic Impact:
+        - GDP contribution: 7.2% by 2030
+        - Job displacement: 12%
+        - Job augmentation: 45%
+        
+        Investment Trends:
+        - Average investment: $2.5M
+        - ROI: 185%
+        - Payback period: 18 months
+        """,
+        'tables': [
+            pd.DataFrame({
+                'Industry': ['Tech', 'Finance', 'Healthcare'],
+                'Adoption Rate': [92, 88, 75],
+                'Growth': [18, 15, 22]
+            })
+        ]
+    }
+
+
+@pytest.fixture(autouse=True)
+def reset_imports():
+    """Reset imports between tests to avoid state pollution."""
+    yield
+    # Clean up any module-level state if needed
+
+
+@pytest.fixture
+def mock_plotly_figure():
+    """Create a mock Plotly figure for testing."""
+    import plotly.graph_objects as go
+    
+    fig = go.Figure()
+    fig.add_trace(go.Scatter(
+        x=[1, 2, 3, 4],
+        y=[10, 15, 13, 17],
+        mode='lines+markers',
+        name='Test Data'
+    ))
+    return fig
+
+
+# Test environment configuration
+@pytest.fixture(scope="session")
+def test_env():
+    """Configure test environment."""
+    os.environ['TESTING'] = 'true'
+    os.environ['STREAMLIT_THEME_BASE'] = 'light'
+    yield
+    os.environ.pop('TESTING', None)
+
+
+# Utility functions for tests
+def assert_dataframe_equal(df1: pd.DataFrame, df2: pd.DataFrame, **kwargs):
+    """Assert two dataframes are equal with better error messages."""
+    try:
+        pd.testing.assert_frame_equal(df1, df2, **kwargs)
+    except AssertionError as e:
+        print(f"\nDataFrame comparison failed:")
+        print(f"Expected shape: {df1.shape}, Actual shape: {df2.shape}")
+        print(f"Expected columns: {list(df1.columns)}")
+        print(f"Actual columns: {list(df2.columns)}")
+        raise e
+
+
+def create_test_file(path: Path, content: str):
+    """Create a test file with content."""
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(content)
+    return path
+
+
+# Performance timing decorator
+def time_function(func):
+    """Decorator to time function execution."""
+    import time
+    import functools
+    
+    @functools.wraps(func)
+    def wrapper(*args, **kwargs):
+        start_time = time.time()
+        result = func(*args, **kwargs)
+        end_time = time.time()
+        print(f"\n{func.__name__} took {end_time - start_time:.3f} seconds")
+        return result
+    return wrapper
