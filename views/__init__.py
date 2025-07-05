@@ -4,29 +4,30 @@ This module contains all the individual view components extracted from the main 
 Each view is a self-contained module with its own render function.
 """
 
+from .adoption_rates import render as render_adoption_rates
+from .ai_cost_trends import render as render_ai_cost_trends
+from .ai_governance import render as render_ai_governance
+from .ai_technology_maturity import render as render_ai_technology_maturity
+from .barriers_support import render as render_barriers_support
+from .bibliography_sources import render as render_bibliography_sources
+
 # Import all view modules
 from .competitive_assessment import render as render_competitive_assessment
+from .environmental_impact import render as render_environmental_impact
+from .financial_impact import render as render_financial_impact
+from .firm_size_analysis import render as render_firm_size_analysis
+from .geographic_distribution import render as render_geographic_distribution
 from .historical_trends import render as render_historical_trends
 from .industry_analysis import render as render_industry_analysis
-from .financial_impact import render as render_financial_impact
 from .investment_trends import render as render_investment_trends
-from .regional_growth import render as render_regional_growth
-from .ai_cost_trends import render as render_ai_cost_trends
-from .token_economics import render as render_token_economics
 from .labor_impact import render as render_labor_impact
-from .environmental_impact import render as render_environmental_impact
-from .adoption_rates import render as render_adoption_rates
-from .productivity_research import render as render_productivity_research
-from .skill_gap_analysis import render as render_skill_gap_analysis
-from .ai_governance import render as render_ai_governance
-from .firm_size_analysis import render as render_firm_size_analysis
-from .technology_stack import render as render_technology_stack
-from .ai_technology_maturity import render as render_ai_technology_maturity
-from .geographic_distribution import render as render_geographic_distribution
 from .oecd_2025_findings import render as render_oecd_2025_findings
-from .barriers_support import render as render_barriers_support
+from .productivity_research import render as render_productivity_research
+from .regional_growth import render as render_regional_growth
 from .roi_analysis import render as render_roi_analysis
-from .bibliography_sources import render as render_bibliography_sources
+from .skill_gap_analysis import render as render_skill_gap_analysis
+from .technology_stack import render as render_technology_stack
+from .token_economics import render as render_token_economics
 
 # Create VIEW_REGISTRY mapping view names to render functions
 VIEW_REGISTRY = {

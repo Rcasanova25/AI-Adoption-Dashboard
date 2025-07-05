@@ -1,14 +1,15 @@
 """Interactive guided tour system for new users."""
 
-import streamlit as st
-from typing import List, Dict, Optional, Callable
-from enum import Enum
 import json
+from enum import Enum
+from typing import Callable, Dict, List, Optional
+
+import streamlit as st
 
 
 class TourStep:
     """Represents a single step in the guided tour."""
-    
+
     def __init__(
         self,
         element_id: str,
@@ -16,10 +17,10 @@ class TourStep:
         description: str,
         position: str = "bottom",
         action: Optional[Callable] = None,
-        highlight: bool = True
+        highlight: bool = True,
     ):
         """Initialize tour step.
-        
+
         Args:
             element_id: ID of the element to highlight
             title: Step title
@@ -38,6 +39,7 @@ class TourStep:
 
 class UserLevel(Enum):
     """User experience levels."""
+
     BEGINNER = "beginner"
     INTERMEDIATE = "intermediate"
     ADVANCED = "advanced"
@@ -45,29 +47,29 @@ class UserLevel(Enum):
 
 class GuidedTour:
     """Manages interactive guided tours for the dashboard."""
-    
+
     def __init__(self):
         """Initialize guided tour system."""
         # Initialize session state
-        if 'tour_completed' not in st.session_state:
+        if "tour_completed" not in st.session_state:
             st.session_state.tour_completed = False
-        
-        if 'tour_step' not in st.session_state:
+
+        if "tour_step" not in st.session_state:
             st.session_state.tour_step = 0
-        
-        if 'user_level' not in st.session_state:
+
+        if "user_level" not in st.session_state:
             st.session_state.user_level = UserLevel.BEGINNER
-        
-        if 'show_tooltips' not in st.session_state:
+
+        if "show_tooltips" not in st.session_state:
             st.session_state.show_tooltips = True
-        
+
         # Define tour steps
         self.tours = {
-            'main_dashboard': self._create_main_tour(),
-            'competitive_position': self._create_competitive_tour(),
-            'roi_calculator': self._create_roi_tour()
+            "main_dashboard": self._create_main_tour(),
+            "competitive_position": self._create_competitive_tour(),
+            "roi_calculator": self._create_roi_tour(),
         }
-    
+
     def _create_main_tour(self) -> List[TourStep]:
         """Create the main dashboard tour."""
         return [
@@ -75,40 +77,40 @@ class GuidedTour:
                 "welcome",
                 "Welcome to the Economics of AI Dashboard! 🎯",
                 "This dashboard helps you understand the economic impact of AI on your organization. Let's take a quick tour!",
-                position="center"
+                position="center",
             ),
             TourStep(
                 "persona_selector",
                 "Choose Your Perspective",
                 "Select your role to get personalized insights and recommendations tailored to your needs.",
-                position="right"
+                position="right",
             ),
             TourStep(
                 "key_metrics",
                 "Key Metrics at a Glance",
                 "These cards show the most important AI metrics for your industry and role.",
-                position="bottom"
+                position="bottom",
             ),
             TourStep(
                 "competitive_position",
                 "Your Competitive Position",
                 "See how you compare to industry peers and leaders in AI adoption.",
-                position="top"
+                position="top",
             ),
             TourStep(
                 "action_plan",
                 "Personalized Action Plan",
                 "Get specific recommendations based on your current position and goals.",
-                position="left"
+                position="left",
             ),
             TourStep(
                 "export_options",
                 "Export and Share",
                 "Download reports and insights to share with your team.",
-                position="top"
-            )
+                position="top",
+            ),
         ]
-    
+
     def _create_competitive_tour(self) -> List[TourStep]:
         """Create the competitive position tour."""
         return [
@@ -116,28 +118,28 @@ class GuidedTour:
                 "assessment_inputs",
                 "Quick Assessment",
                 "Enter your organization's details to get a personalized competitive analysis.",
-                position="right"
+                position="right",
             ),
             TourStep(
                 "position_matrix",
                 "Competitive Position Matrix",
                 "See where you stand compared to industry leaders and peers.",
-                position="bottom"
+                position="bottom",
             ),
             TourStep(
                 "gap_analysis",
                 "Gap Analysis",
                 "Understand what separates you from industry leaders.",
-                position="top"
+                position="top",
             ),
             TourStep(
                 "recommendations",
                 "Strategic Recommendations",
                 "Get actionable steps to improve your competitive position.",
-                position="bottom"
-            )
+                position="bottom",
+            ),
         ]
-    
+
     def _create_roi_tour(self) -> List[TourStep]:
         """Create the ROI calculator tour."""
         return [
@@ -145,95 +147,98 @@ class GuidedTour:
                 "investment_inputs",
                 "Investment Parameters",
                 "Enter your planned AI investment details.",
-                position="right"
+                position="right",
             ),
             TourStep(
                 "roi_projection",
                 "ROI Projection",
                 "See projected returns over time based on industry benchmarks.",
-                position="bottom"
+                position="bottom",
             ),
             TourStep(
                 "scenario_analysis",
                 "What-If Scenarios",
                 "Explore different investment scenarios and their impacts.",
-                position="top"
-            )
+                position="top",
+            ),
         ]
-    
+
     def should_show_tour(self) -> bool:
         """Check if tour should be shown."""
         # Show tour for first-time users or if requested
         return (
-            not st.session_state.tour_completed and
-            st.session_state.user_level == UserLevel.BEGINNER
+            not st.session_state.tour_completed
+            and st.session_state.user_level == UserLevel.BEGINNER
         )
-    
-    def start_tour(self, tour_name: str = 'main_dashboard'):
+
+    def start_tour(self, tour_name: str = "main_dashboard"):
         """Start a specific tour."""
         st.session_state.tour_step = 0
         st.session_state.current_tour = tour_name
         st.session_state.tour_active = True
-    
+
     def render_tour_controls(self):
         """Render tour control buttons in sidebar."""
         st.sidebar.markdown("### 🎓 Learning Center")
-        
+
         col1, col2 = st.sidebar.columns(2)
-        
+
         with col1:
             if st.button("Start Tour", key="start_tour_btn", use_container_width=True):
                 self.start_tour()
                 st.rerun()
-        
+
         with col2:
             if st.button(
                 "Tips On" if st.session_state.show_tooltips else "Tips Off",
                 key="toggle_tips_btn",
-                use_container_width=True
+                use_container_width=True,
             ):
                 st.session_state.show_tooltips = not st.session_state.show_tooltips
                 st.rerun()
-        
+
         # User level selector
         st.sidebar.selectbox(
             "Experience Level",
             options=[level.value for level in UserLevel],
             index=[level.value for level in UserLevel].index(st.session_state.user_level.value),
             key="user_level_select",
-            on_change=self._on_level_change
+            on_change=self._on_level_change,
         )
-    
+
     def _on_level_change(self):
         """Handle user level change."""
         new_level = st.session_state.user_level_select
         st.session_state.user_level = UserLevel(new_level)
-    
+
     def render_tour_step(self):
         """Render the current tour step."""
-        if not hasattr(st.session_state, 'tour_active') or not st.session_state.tour_active:
+        if not hasattr(st.session_state, "tour_active") or not st.session_state.tour_active:
             return
-        
-        tour_name = st.session_state.get('current_tour', 'main_dashboard')
+
+        tour_name = st.session_state.get("current_tour", "main_dashboard")
         tour_steps = self.tours.get(tour_name, [])
-        
+
         if st.session_state.tour_step >= len(tour_steps):
             self.complete_tour()
             return
-        
+
         current_step = tour_steps[st.session_state.tour_step]
-        
+
         # Create tour overlay
         with st.container():
-            st.markdown("""
+            st.markdown(
+                """
             <div style='position: fixed; top: 0; left: 0; right: 0; bottom: 0; 
                         background-color: rgba(0,0,0,0.5); z-index: 999;'>
             </div>
-            """, unsafe_allow_html=True)
-            
+            """,
+                unsafe_allow_html=True,
+            )
+
             # Create tour tooltip
             self._render_tooltip(current_step)
-    
+
     def _render_tooltip(self, step: TourStep):
         """Render tour tooltip."""
         # Calculate position based on step.position
@@ -242,11 +247,11 @@ class GuidedTour:
             "top": "top: 20%; left: 50%; transform: translateX(-50%);",
             "bottom": "bottom: 20%; left: 50%; transform: translateX(-50%);",
             "left": "top: 50%; left: 20%; transform: translateY(-50%);",
-            "right": "top: 50%; right: 20%; transform: translateY(-50%);"
+            "right": "top: 50%; right: 20%; transform: translateY(-50%);",
         }
-        
+
         style = position_styles.get(step.position, position_styles["center"])
-        
+
         # Create tooltip container
         tooltip_html = f"""
         <div style='position: fixed; {style} background-color: white; 
@@ -261,23 +266,23 @@ class GuidedTour:
             </div>
         </div>
         """
-        
+
         st.markdown(tooltip_html, unsafe_allow_html=True)
-        
+
         # Tour navigation buttons
         col1, col2, col3 = st.columns([1, 1, 1])
-        
+
         with col1:
             if st.button("Skip Tour", key="skip_tour"):
                 self.complete_tour()
                 st.rerun()
-        
+
         with col2:
             if st.session_state.tour_step > 0:
                 if st.button("← Previous", key="prev_step"):
                     st.session_state.tour_step -= 1
                     st.rerun()
-        
+
         with col3:
             if st.session_state.tour_step < len(self.tours[st.session_state.current_tour]) - 1:
                 if st.button("Next →", key="next_step"):
@@ -287,34 +292,35 @@ class GuidedTour:
                 if st.button("Finish ✓", key="finish_tour"):
                     self.complete_tour()
                     st.rerun()
-    
+
     def complete_tour(self):
         """Complete the current tour."""
         st.session_state.tour_completed = True
         st.session_state.tour_active = False
         st.success("🎉 Tour completed! You're ready to explore the dashboard.")
-    
+
     def render_contextual_help(self, help_id: str, content: str):
         """Render contextual help tooltip.
-        
+
         Args:
             help_id: Unique identifier for the help item
             content: Help content to display
         """
         if not st.session_state.show_tooltips:
             return
-        
+
         # Create help icon with popover
         if st.button("ℹ️", key=f"help_{help_id}", help=content):
             pass
-    
+
     def render_onboarding_wizard(self):
         """Render initial onboarding wizard for new users."""
-        if 'onboarding_complete' in st.session_state and st.session_state.onboarding_complete:
+        if "onboarding_complete" in st.session_state and st.session_state.onboarding_complete:
             return
-        
+
         # Create modal-style onboarding
-        st.markdown("""
+        st.markdown(
+            """
         <div style='position: fixed; top: 0; left: 0; right: 0; bottom: 0;
                     background-color: rgba(0,0,0,0.8); z-index: 1000;
                     display: flex; align-items: center; justify-content: center;'>
@@ -328,35 +334,40 @@ class GuidedTour:
                 </p>
             </div>
         </div>
-        """, unsafe_allow_html=True)
-        
+        """,
+            unsafe_allow_html=True,
+        )
+
         # Onboarding questions
         with st.form("onboarding_form"):
             st.markdown("### Tell us about yourself")
-            
+
             role = st.selectbox(
-                "What's your role?",
-                ["Executive", "Manager", "Analyst", "Researcher", "Other"]
+                "What's your role?", ["Executive", "Manager", "Analyst", "Researcher", "Other"]
             )
-            
+
             objective = st.selectbox(
                 "What's your primary objective?",
-                ["Assess competitive position", "Calculate ROI", "Explore market trends", 
-                 "Build investment case", "General exploration"]
+                [
+                    "Assess competitive position",
+                    "Calculate ROI",
+                    "Explore market trends",
+                    "Build investment case",
+                    "General exploration",
+                ],
             )
-            
+
             experience = st.radio(
-                "How familiar are you with AI?",
-                ["New to AI", "Some experience", "Very familiar"]
+                "How familiar are you with AI?", ["New to AI", "Some experience", "Very familiar"]
             )
-            
+
             if st.form_submit_button("Get Started", type="primary", use_container_width=True):
                 # Store preferences
                 st.session_state.user_role = role
                 st.session_state.user_objective = objective
                 st.session_state.user_experience = experience
                 st.session_state.onboarding_complete = True
-                
+
                 # Set appropriate user level
                 if experience == "New to AI":
                     st.session_state.user_level = UserLevel.BEGINNER
@@ -364,34 +375,35 @@ class GuidedTour:
                     st.session_state.user_level = UserLevel.INTERMEDIATE
                 else:
                     st.session_state.user_level = UserLevel.ADVANCED
-                
+
                 st.rerun()
 
 
 class InteractiveTutorial:
     """Provides interactive tutorials for specific features."""
-    
+
     def __init__(self):
         """Initialize tutorial system."""
         self.tutorials = {
-            'roi_calculator': self._roi_calculator_tutorial,
-            'competitive_matrix': self._competitive_matrix_tutorial,
-            'scenario_planner': self._scenario_planner_tutorial
+            "roi_calculator": self._roi_calculator_tutorial,
+            "competitive_matrix": self._competitive_matrix_tutorial,
+            "scenario_planner": self._scenario_planner_tutorial,
         }
-    
+
     def render_tutorial(self, tutorial_name: str):
         """Render a specific tutorial.
-        
+
         Args:
             tutorial_name: Name of the tutorial to render
         """
         if tutorial_name in self.tutorials:
             self.tutorials[tutorial_name]()
-    
+
     def _roi_calculator_tutorial(self):
         """ROI calculator tutorial."""
         with st.expander("📚 How to use the ROI Calculator", expanded=False):
-            st.markdown("""
+            st.markdown(
+                """
             ### ROI Calculator Tutorial
             
             **Step 1: Enter Investment Details**
@@ -413,12 +425,14 @@ class InteractiveTutorial:
             - Start with conservative estimates
             - Consider both direct and indirect benefits
             - Factor in implementation risks
-            """)
-    
+            """
+            )
+
     def _competitive_matrix_tutorial(self):
         """Competitive matrix tutorial."""
         with st.expander("📚 Understanding the Competitive Matrix", expanded=False):
-            st.markdown("""
+            st.markdown(
+                """
             ### Competitive Position Matrix Guide
             
             **Reading the Matrix:**
@@ -437,12 +451,14 @@ class InteractiveTutorial:
             - Red star indicates your current position
             - Compare to industry average (dotted lines)
             - Identify gaps to leaders
-            """)
-    
+            """
+            )
+
     def _scenario_planner_tutorial(self):
         """Scenario planner tutorial."""
         with st.expander("📚 Scenario Planning Guide", expanded=False):
-            st.markdown("""
+            st.markdown(
+                """
             ### What-If Scenario Planning
             
             **Available Scenarios:**
@@ -460,29 +476,32 @@ class InteractiveTutorial:
             - Test both optimistic and pessimistic cases
             - Consider external factors (market, competition)
             - Update scenarios quarterly
-            """)
+            """
+            )
 
 
 def render_help_system():
     """Render the integrated help system."""
     tour = GuidedTour()
-    
+
     # Check if onboarding needed
-    if 'onboarding_complete' not in st.session_state:
+    if "onboarding_complete" not in st.session_state:
         tour.render_onboarding_wizard()
         return
-    
+
     # Render tour controls in sidebar
     tour.render_tour_controls()
-    
+
     # Render active tour step if any
     tour.render_tour_step()
-    
+
     # Show welcome message for new users
     if st.session_state.user_level == UserLevel.BEGINNER and not st.session_state.tour_completed:
-        st.info("""
+        st.info(
+            """
         👋 **New to the dashboard?** Click 'Start Tour' in the sidebar for a 
         guided walkthrough of key features!
-        """)
-    
+        """
+        )
+
     return tour

@@ -566,10 +566,12 @@ else:
 # INSTRUCTIONS FOR INTEGRATION
 # ============================================================================
 
+
 def print_integration_instructions():
     """Print step-by-step integration instructions."""
-    
-    print("""
+
+    print(
+        """
     ==========================================
     INTEGRATION INSTRUCTIONS FOR app.py
     ==========================================
@@ -611,7 +613,9 @@ def print_integration_instructions():
     - Confidence scoring for all calculations
     - Better error handling and user guidance
     - Data source citations and methodology transparency
-    """)
+    """
+    )
+
 
 if __name__ == "__main__":
     print_integration_instructions()

@@ -4,29 +4,40 @@ This module provides comprehensive bibliography and source citations
 for all data and insights presented in the dashboard.
 """
 
+from typing import Any, Dict
+
 import streamlit as st
-from typing import Dict, Any
 
 
 def render(data: Dict[str, Any]) -> None:
     """Render the Bibliography & Sources view.
-    
+
     Args:
         data: Dictionary containing required data (none needed for this view)
     """
     st.write("📚 **Complete Bibliography & Source Citations**")
-    
-    st.markdown("""
+
+    st.markdown(
+        """
     This dashboard synthesizes data from multiple authoritative sources to provide comprehensive 
     AI adoption insights. All sources are cited using Chicago Manual of Style format.
-    """)
-    
+    """
+    )
+
     # Create tabs for different source categories
-    bib_tabs = st.tabs(["🏛️ Government & Institutional", "🏢 Corporate & Industry", "🎓 Academic Research", 
-                        "📰 News & Analysis", "📊 Databases & Collections"])
-    
+    bib_tabs = st.tabs(
+        [
+            "🏛️ Government & Institutional",
+            "🏢 Corporate & Industry",
+            "🎓 Academic Research",
+            "📰 News & Analysis",
+            "📊 Databases & Collections",
+        ]
+    )
+
     with bib_tabs[0]:
-        st.markdown("""
+        st.markdown(
+            """
         ### Government and Institutional Sources
         
         1. **Stanford Human-Centered AI Institute.** "AI Index Report 2025." Stanford University. Accessed June 28, 2025. https://aiindex.stanford.edu/ai-index-report-2025/.
@@ -46,10 +57,12 @@ def render(data: Dict[str, Any]) -> None:
         8. **Organisation for Economic Co-operation and Development.** "OECD AI Policy Observatory." Accessed June 28, 2025. https://oecd.ai.
 
         9. **U.S. Food and Drug Administration.** "AI-Enabled Medical Device Approvals Database." Washington, DC: FDA. Accessed June 28, 2025.
-        """)
-        
+        """
+        )
+
     with bib_tabs[1]:
-        st.markdown("""
+        st.markdown(
+            """
         ### Corporate and Industry Sources
         
         10. **McKinsey & Company.** "The State of AI: McKinsey Global Survey on AI." McKinsey Global Institute. Accessed June 28, 2025. https://www.mckinsey.com/capabilities/quantumblack/our-insights/the-state-of-ai.
@@ -69,10 +82,12 @@ def render(data: Dict[str, Any]) -> None:
         17. **Goldman Sachs Research.** "The Potentially Large Effects of Artificial Intelligence on Economic Growth." Economic Research, 2023.
 
         18. **NVIDIA Corporation.** "AI Infrastructure and Token Economics Case Studies." 2024-2025.
-        """)
-        
+        """
+        )
+
     with bib_tabs[2]:
-        st.markdown("""
+        st.markdown(
+            """
         ### Academic Publications
         
         19. **Bick, Alexander, Adam Blandin, and David Deming.** "The Rapid Adoption of Generative AI." Federal Reserve Bank working paper, 2024.
@@ -96,10 +111,12 @@ def render(data: Dict[str, Any]) -> None:
         28. **Richmond Federal Reserve Bank.** "AI Productivity Estimates." Economic research papers, 2024.
 
         29. **BCG and INSEAD.** "OECD/BCG/INSEAD Report 2025: Enterprise AI Adoption." Organisation for Economic Co-operation and Development, 2025.
-        """)
-        
+        """
+        )
+
     with bib_tabs[3]:
-        st.markdown("""
+        st.markdown(
+            """
         ### News and Analysis Sources
         
         30. **MIT Technology Review.** "Artificial Intelligence." Accessed June 28, 2025. https://www.technologyreview.com/topic/artificial-intelligence/.
@@ -111,10 +128,12 @@ def render(data: Dict[str, Any]) -> None:
         33. **IEEE Computer Society.** "IEEE Computer Society Publications." Accessed June 28, 2025. https://www.computer.org/publications/.
 
         34. **Gartner, Inc.** "AI Technology Maturity Analysis." Technology research reports, 2025.
-        """)
-        
+        """
+        )
+
     with bib_tabs[4]:
-        st.markdown("""
+        st.markdown(
+            """
         ### Multi-Source Collections and Databases
         
         35. **Federal Reserve Banks.** "Multiple Economic Impact Analyses on AI." Various working papers and research documents, 2023-2025.
@@ -124,13 +143,15 @@ def render(data: Dict[str, Any]) -> None:
         37. **Various Academic Institutions.** "University AI Research Center Mapping Data." Compiled from multiple university sources, 2024-2025.
 
         38. **Various Federal Agencies.** "Grant and Funding Allocation Data for AI Research." Compiled from NSF, DOD, NIH databases, 2020-2025.
-        """)
-    
+        """
+        )
+
     # Add methodology and verification section
     st.markdown("---")
     st.subheader("📋 Source Verification Methodology")
-    
-    st.info("""
+
+    st.info(
+        """
     **Source Quality Assurance Process:**
     
     ✅ **Primary Source Verification** - All data traced to original publications and reports
@@ -144,47 +165,54 @@ def render(data: Dict[str, Any]) -> None:
     ✅ **Peer Review Priority** - Academic sources required to be from peer-reviewed publications where applicable
     
     ✅ **Industry Verification** - Corporate data validated against official earnings reports and regulatory filings
-    """)
-    
+    """
+    )
+
     # Data transparency section
     st.markdown("---")
     st.subheader("📊 Data Transparency & Limitations")
-    
+
     col1, col2 = st.columns(2)
-    
+
     with col1:
-        st.markdown("""
+        st.markdown(
+            """
         **Data Collection Methods:**
         - Government surveys (Census Bureau, BLS)
         - Academic research studies
         - Industry reports and analyses
         - Public regulatory filings
         - Open-source research databases
-        """)
-    
+        """
+        )
+
     with col2:
-        st.markdown("""
+        st.markdown(
+            """
         **Known Limitations:**
         - Survey response bias in self-reported data
         - Geographic focus on US markets
         - Rapidly evolving technology landscape
         - Varying definitions of "AI adoption"
         - Limited data on failed implementations
-        """)
-    
+        """
+        )
+
     # Citation guide
     st.markdown("---")
     st.subheader("📝 How to Cite This Dashboard")
-    
-    st.code("""
+
+    st.code(
+        """
     AI Adoption Dashboard. 2025. "Comprehensive AI Adoption Analysis." 
     Version 3.0. Accessed [Date]. https://[dashboard-url].
     
     Individual View Citation Example:
     AI Adoption Dashboard. 2025. "Financial Impact Analysis." 
     In Comprehensive AI Adoption Analysis. Accessed [Date].
-    """)
-    
+    """
+    )
+
     # Export bibliography
     if st.button("📥 Export Complete Bibliography"):
         bibliography_text = """
@@ -206,10 +234,10 @@ def render(data: Dict[str, Any]) -> None:
         MULTI-SOURCE COLLECTIONS AND DATABASES
         [Full list of sources as shown above...]
         """
-        
+
         st.download_button(
             label="Download Bibliography (TXT)",
             data=bibliography_text,
             file_name="ai_adoption_dashboard_bibliography.txt",
-            mime="text/plain"
+            mime="text/plain",
         )

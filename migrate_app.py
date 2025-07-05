@@ -10,41 +10,43 @@ import os
 import shutil
 from datetime import datetime
 
+
 def backup_original():
     """Create backup of original app.py."""
-    if os.path.exists('app.py'):
-        timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
-        backup_name = f'app_backup_{timestamp}.py'
-        shutil.copy('app.py', backup_name)
+    if os.path.exists("app.py"):
+        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+        backup_name = f"app_backup_{timestamp}.py"
+        shutil.copy("app.py", backup_name)
         print(f"✅ Created backup: {backup_name}")
         return backup_name
     else:
         print("❌ No app.py found to backup")
         return None
 
+
 def validate_dependencies():
     """Check if all required components exist."""
     required_files = [
-        'data/data_manager.py',
-        'components/competitive_assessor.py',
-        'components/accessibility.py',
-        'components/progressive_disclosure.py',
-        'components/economic_insights.py',
-        'components/persona_dashboards.py',
-        'components/guided_tour.py',
-        'components/key_takeaways.py',
-        'components/mobile_responsive.py',
-        'components/view_enhancements.py',
-        'components/lazy_loading.py',
-        'performance/monitor.py',
-        'performance/cache_manager.py'
+        "data/data_manager.py",
+        "components/competitive_assessor.py",
+        "components/accessibility.py",
+        "components/progressive_disclosure.py",
+        "components/economic_insights.py",
+        "components/persona_dashboards.py",
+        "components/guided_tour.py",
+        "components/key_takeaways.py",
+        "components/mobile_responsive.py",
+        "components/view_enhancements.py",
+        "components/lazy_loading.py",
+        "performance/monitor.py",
+        "performance/cache_manager.py",
     ]
-    
+
     missing = []
     for file in required_files:
         if not os.path.exists(file):
             missing.append(file)
-    
+
     if missing:
         print("❌ Missing required files:")
         for file in missing:
@@ -53,6 +55,7 @@ def validate_dependencies():
     else:
         print("✅ All required components found")
         return True
+
 
 def create_transition_app():
     """Create a transition app that gradually migrates functionality."""
@@ -107,14 +110,15 @@ if os.path.exists('app_backup_latest.py'):
 else:
     st.error("Original app backup not found. Please run migrate_app.py first.")
 '''
-    
-    with open('app_transition.py', 'w') as f:
+
+    with open("app_transition.py", "w") as f:
         f.write(transition_code)
     print("✅ Created transition app: app_transition.py")
 
+
 def create_environment_template():
     """Create environment configuration template."""
-    env_template = '''# Environment Configuration for Economics of AI Dashboard
+    env_template = """# Environment Configuration for Economics of AI Dashboard
 # =====================================================
 
 # Cache Configuration
@@ -143,15 +147,16 @@ ENABLE_MOBILE_RESPONSIVE=true
 # Logging
 LOG_LEVEL=INFO
 LOG_FILE=./logs/dashboard.log
-'''
-    
-    with open('.env.template', 'w') as f:
+"""
+
+    with open(".env.template", "w") as f:
         f.write(env_template)
     print("✅ Created environment template: .env.template")
 
+
 def create_migration_guide():
     """Create migration guide documentation."""
-    guide = '''# Migration Guide: Economics of AI Dashboard
+    guide = """# Migration Guide: Economics of AI Dashboard
 
 ## Overview
 This guide helps you migrate from the original AI Adoption Dashboard to the new Economics of AI Dashboard.
@@ -222,45 +227,47 @@ cp app_backup_[timestamp].py app.py
 ## Support
 - Documentation: https://github.com/Rcasanova25/AI-Adoption-Dashboard/wiki
 - Issues: https://github.com/Rcasanova25/AI-Adoption-Dashboard/issues
-'''
-    
-    with open('MIGRATION_GUIDE.md', 'w') as f:
+"""
+
+    with open("MIGRATION_GUIDE.md", "w") as f:
         f.write(guide)
     print("✅ Created migration guide: MIGRATION_GUIDE.md")
+
 
 def main():
     """Run migration process."""
     print("🚀 Starting Economics of AI Dashboard Migration")
     print("=" * 50)
-    
+
     # Step 1: Backup
     backup_file = backup_original()
     if backup_file:
         # Create a latest backup link
-        if os.path.exists('app_backup_latest.py'):
-            os.remove('app_backup_latest.py')
-        shutil.copy(backup_file, 'app_backup_latest.py')
-    
+        if os.path.exists("app_backup_latest.py"):
+            os.remove("app_backup_latest.py")
+        shutil.copy(backup_file, "app_backup_latest.py")
+
     # Step 2: Validate dependencies
     if not validate_dependencies():
         print("\n⚠️  Please ensure all components are installed before migrating")
         return
-    
+
     # Step 3: Create transition app
     create_transition_app()
-    
+
     # Step 4: Create environment template
     create_environment_template()
-    
+
     # Step 5: Create migration guide
     create_migration_guide()
-    
+
     print("\n✅ Migration preparation complete!")
     print("\nNext steps:")
     print("1. Review MIGRATION_GUIDE.md")
     print("2. Test with: streamlit run app_transition.py")
     print("3. When ready, copy app_new.py to app.py")
     print("\n💡 Tip: Use the transition app to test features incrementally")
+
 
 if __name__ == "__main__":
     main()

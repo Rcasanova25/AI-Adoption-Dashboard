@@ -1,12 +1,13 @@
 """Pytest configuration and shared fixtures for all tests."""
 
-import pytest
-import pandas as pd
-import numpy as np
+import os
+import sys
 from datetime import datetime, timedelta
 from pathlib import Path
-import sys
-import os
+
+import numpy as np
+import pandas as pd
+import pytest
 
 # Add parent directory to path for imports
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -14,13 +15,13 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from data.models import (
     AdoptionMetrics,
     CompetitivePosition,
-    ROIMetrics,
-    IndustryData,
-    GeographicData,
-    LaborImpact,
     CostTrends,
+    DataSource,
+    GeographicData,
+    IndustryData,
+    LaborImpact,
+    ROIMetrics,
     TokenEconomics,
-    DataSource
 )
 
 
@@ -28,11 +29,7 @@ from data.models import (
 def mock_data_source():
     """Create a mock data source for testing."""
     return DataSource(
-        name="Test Source",
-        type="pdf",
-        path="/test/path.pdf",
-        year=2024,
-        credibility_score=0.95
+        name="Test Source", type="pdf", path="/test/path.pdf", year=2024, credibility_score=0.95
     )
 
 
@@ -49,14 +46,10 @@ def sample_adoption_metrics():
             "Sales": 85.2,
             "Operations": 78.9,
             "HR": 72.3,
-            "Finance": 68.7
+            "Finance": 68.7,
         },
-        adoption_by_size={
-            "Large (>1000)": 92.1,
-            "Medium (100-1000)": 82.3,
-            "Small (<100)": 67.8
-        },
-        timestamp=datetime.now()
+        adoption_by_size={"Large (>1000)": 92.1, "Medium (100-1000)": 82.3, "Small (<100)": 67.8},
+        timestamp=datetime.now(),
     )
 
 
@@ -72,7 +65,7 @@ def sample_competitive_data():
         strengths=["Innovation", "Talent", "Infrastructure"],
         weaknesses=["Cost", "Governance"],
         opportunities=["Market expansion", "New use cases"],
-        threats=["Competition", "Regulation"]
+        threats=["Competition", "Regulation"],
     )
 
 
@@ -87,48 +80,51 @@ def sample_roi_metrics():
             "Infrastructure": 250000,
             "Talent": 450000,
             "Training": 100000,
-            "Maintenance": 150000
+            "Maintenance": 150000,
         },
         benefit_breakdown={
             "Productivity": 850000,
             "Cost Savings": 650000,
-            "Revenue Growth": 1250000
+            "Revenue Growth": 1250000,
         },
-        risk_factors=["Implementation complexity", "Change management"]
+        risk_factors=["Implementation complexity", "Change management"],
     )
 
 
 @pytest.fixture
 def sample_dataframe():
     """Create a sample dataframe for testing."""
-    dates = pd.date_range(start='2020-01-01', end='2024-12-01', freq='M')
-    return pd.DataFrame({
-        'date': dates,
-        'adoption_rate': np.random.uniform(50, 95, len(dates)),
-        'investment': np.random.uniform(100000, 1000000, len(dates)),
-        'productivity_gain': np.random.uniform(5, 30, len(dates))
-    })
+    dates = pd.date_range(start="2020-01-01", end="2024-12-01", freq="M")
+    return pd.DataFrame(
+        {
+            "date": dates,
+            "adoption_rate": np.random.uniform(50, 95, len(dates)),
+            "investment": np.random.uniform(100000, 1000000, len(dates)),
+            "productivity_gain": np.random.uniform(5, 30, len(dates)),
+        }
+    )
 
 
 @pytest.fixture
 def mock_streamlit_state():
     """Mock Streamlit session state."""
+
     class MockSessionState:
         def __init__(self):
             self.data = {}
-        
+
         def __getitem__(self, key):
             return self.data.get(key)
-        
+
         def __setitem__(self, key, value):
             self.data[key] = value
-        
+
         def get(self, key, default=None):
             return self.data.get(key, default)
-        
+
         def update(self, items):
             self.data.update(items)
-    
+
     return MockSessionState()
 
 
@@ -142,10 +138,10 @@ def test_data_path():
 def performance_threshold():
     """Performance testing thresholds."""
     return {
-        'data_load_time': 1.0,  # seconds
-        'view_render_time': 0.5,  # seconds
-        'memory_usage': 500,  # MB
-        'cache_hit_ratio': 0.8  # 80%
+        "data_load_time": 1.0,  # seconds
+        "view_render_time": 0.5,  # seconds
+        "memory_usage": 500,  # MB
+        "cache_hit_ratio": 0.8,  # 80%
     }
 
 
@@ -153,7 +149,7 @@ def performance_threshold():
 def test_pdf_content():
     """Mock PDF content for testing extractors."""
     return {
-        'text': """
+        "text": """
         AI Adoption Report 2024
         
         Executive Summary:
@@ -171,13 +167,15 @@ def test_pdf_content():
         - ROI: 185%
         - Payback period: 18 months
         """,
-        'tables': [
-            pd.DataFrame({
-                'Industry': ['Tech', 'Finance', 'Healthcare'],
-                'Adoption Rate': [92, 88, 75],
-                'Growth': [18, 15, 22]
-            })
-        ]
+        "tables": [
+            pd.DataFrame(
+                {
+                    "Industry": ["Tech", "Finance", "Healthcare"],
+                    "Adoption Rate": [92, 88, 75],
+                    "Growth": [18, 15, 22],
+                }
+            )
+        ],
     }
 
 
@@ -192,14 +190,11 @@ def reset_imports():
 def mock_plotly_figure():
     """Create a mock Plotly figure for testing."""
     import plotly.graph_objects as go
-    
+
     fig = go.Figure()
-    fig.add_trace(go.Scatter(
-        x=[1, 2, 3, 4],
-        y=[10, 15, 13, 17],
-        mode='lines+markers',
-        name='Test Data'
-    ))
+    fig.add_trace(
+        go.Scatter(x=[1, 2, 3, 4], y=[10, 15, 13, 17], mode="lines+markers", name="Test Data")
+    )
     return fig
 
 
@@ -207,10 +202,10 @@ def mock_plotly_figure():
 @pytest.fixture(scope="session")
 def test_env():
     """Configure test environment."""
-    os.environ['TESTING'] = 'true'
-    os.environ['STREAMLIT_THEME_BASE'] = 'light'
+    os.environ["TESTING"] = "true"
+    os.environ["STREAMLIT_THEME_BASE"] = "light"
     yield
-    os.environ.pop('TESTING', None)
+    os.environ.pop("TESTING", None)
 
 
 # Utility functions for tests
@@ -236,9 +231,9 @@ def create_test_file(path: Path, content: str):
 # Performance timing decorator
 def time_function(func):
     """Decorator to time function execution."""
-    import time
     import functools
-    
+    import time
+
     @functools.wraps(func)
     def wrapper(*args, **kwargs):
         start_time = time.time()
@@ -246,4 +241,5 @@ def time_function(func):
         end_time = time.time()
         print(f"\n{func.__name__} took {end_time - start_time:.3f} seconds")
         return result
+
     return wrapper

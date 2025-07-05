@@ -11,15 +11,16 @@ import subprocess
 import sys
 from pathlib import Path
 
+
 def restore_original_dashboard():
     """Restore the original dashboard with all its sophisticated features"""
-    
+
     print("🔄 Restoring Original Dashboard Functionality")
     print("=" * 60)
-    
+
     # Step 1: Restore the original app.py (Streamlit version)
     print("📝 Step 1: Restoring original Streamlit dashboard...")
-    
+
     original_app_content = '''#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
@@ -405,16 +406,16 @@ def main():
 if __name__ == "__main__":
     main()
 '''
-    
-    with open('app.py', 'w', encoding='utf-8') as f:
+
+    with open("app.py", "w", encoding="utf-8") as f:
         f.write(original_app_content)
-    
+
     print("✅ Original Streamlit dashboard restored")
-    
+
     # Step 2: Create a clean requirements file
     print("📦 Step 2: Creating comprehensive requirements file...")
-    
-    requirements_content = '''# Core dependencies
+
+    requirements_content = """# Core dependencies
 streamlit>=1.28.0
 pandas>=2.0.0
 numpy>=1.20.0
@@ -455,39 +456,39 @@ pytest>=6.0.0
 black>=22.0.0
 flake8>=4.0.0
 mypy>=0.950
-'''
-    
-    with open('requirements.txt', 'w', encoding='utf-8') as f:
+"""
+
+    with open("requirements.txt", "w", encoding="utf-8") as f:
         f.write(requirements_content)
-    
+
     print("✅ Comprehensive requirements file created")
-    
+
     # Step 3: Create a proper project structure
     print("📁 Step 3: Creating clean project structure...")
-    
+
     # Create essential directories
     directories = [
-        'business',
-        'data', 
-        'performance',
-        'Utils',
-        'views',
-        'components',
-        'config',
-        'tests'
+        "business",
+        "data",
+        "performance",
+        "Utils",
+        "views",
+        "components",
+        "config",
+        "tests",
     ]
-    
+
     for directory in directories:
         os.makedirs(directory, exist_ok=True)
-        with open(f'{directory}/__init__.py', 'w', encoding='utf-8') as f:
-            f.write('# -*- coding: utf-8 -*-\n')
-    
+        with open(f"{directory}/__init__.py", "w", encoding="utf-8") as f:
+            f.write("# -*- coding: utf-8 -*-\n")
+
     print("✅ Project structure created")
-    
+
     # Step 4: Create a comprehensive README
     print("📖 Step 4: Creating comprehensive README...")
-    
-    readme_content = '''# AI Adoption Dashboard v3.0.0
+
+    readme_content = """# AI Adoption Dashboard v3.0.0
 
 ## 🚀 Enterprise-Grade AI Strategy Suite
 
@@ -655,16 +656,16 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 **Version**: 3.0.0 "Enterprise Evolution"  
 **Status**: Production Ready  
 **Quality Score**: 119/100 (Grade A+)
-'''
-    
-    with open('README.md', 'w', encoding='utf-8') as f:
+"""
+
+    with open("README.md", "w", encoding="utf-8") as f:
         f.write(readme_content)
-    
+
     print("✅ Comprehensive README created")
-    
+
     # Step 5: Create a cleanup script for the mess
     print("🧹 Step 5: Creating cleanup script for remaining mess...")
-    
+
     cleanup_script = '''#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
@@ -733,12 +734,12 @@ def final_cleanup():
 if __name__ == '__main__':
     final_cleanup()
 '''
-    
-    with open('final_cleanup.py', 'w', encoding='utf-8') as f:
+
+    with open("final_cleanup.py", "w", encoding="utf-8") as f:
         f.write(cleanup_script)
-    
+
     print("✅ Cleanup script created")
-    
+
     print("=" * 60)
     print("🎉 DASHBOARD RESTORATION COMPLETE!")
     print("=" * 60)
@@ -764,5 +765,6 @@ if __name__ == '__main__':
     print()
     print("🎯 Your sophisticated dashboard is back with all its powerful features!")
 
-if __name__ == '__main__':
-    restore_original_dashboard() 
+
+if __name__ == "__main__":
+    restore_original_dashboard()
