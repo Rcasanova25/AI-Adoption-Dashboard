@@ -7,7 +7,6 @@ import pandas as pd
 import pytest
 
 from data.data_manager import DataManager
-from data.models import DataSource
 from tests.fixtures.mock_data import (
     generate_adoption_data,
     generate_geographic_data,

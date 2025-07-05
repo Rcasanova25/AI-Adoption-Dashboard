@@ -24,7 +24,7 @@ class TestDataFlowIntegration:
     @pytest.fixture
     def mock_pdf_extractor(self):
         """Mock PDF extractor for all tests."""
-        with patch("data.extractors.pdf.PDFExtractor") as mock:
+        with patch("data.extractors.pdf_extractor_impl.EnhancedPDFExtractor") as mock:
             extractor = Mock()
             extractor.extract_text.return_value = """
             AI Adoption Report 2025
