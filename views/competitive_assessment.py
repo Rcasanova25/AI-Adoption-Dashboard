@@ -5,7 +5,7 @@ from typing import Any, Dict
 import pandas as pd
 import streamlit as st
 
-from components.competitive_assessor import CompetitiveAssessor
+from components.competitive_assessor import CompetitivePositionAssessor
 from components.economic_insights import EconomicInsights
 
 
@@ -17,7 +17,12 @@ def render(data: Dict[str, pd.DataFrame]) -> None:
     """
     try:
         # Initialize competitive assessor
-        assessor = CompetitiveAssessor()
+        assessor = CompetitivePositionAssessor(
+            sector_data=data.get("sector_adoption", pd.DataFrame()),
+            firm_size_data=data.get("firm_size_adoption", pd.DataFrame()),
+            adoption_trends=data.get("adoption_metrics", pd.DataFrame()),
+            investment_data=data.get("investment_trends", pd.DataFrame())
+        )
 
         # Display competitive assessment interface
         st.markdown("### 🎯 AI Competitive Position Assessment")
@@ -26,7 +31,7 @@ def render(data: Dict[str, pd.DataFrame]) -> None:
         )
 
         # Render the main assessment interface
-        assessor.render_assessment_interface()
+        assessor.render()
 
         # Add economic insights
         EconomicInsights.display_executive_summary(
