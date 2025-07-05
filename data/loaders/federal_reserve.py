@@ -813,21 +813,8 @@ class StLouisFedLoader(BaseDataLoader):
 
     def __init__(self, file_paths: Optional[List[Path]] = None):
         """Initialize with St. Louis Fed report file paths."""
-        if file_paths is None:
-            file_paths = [
-                Path(
-                    "/mnt/c/Users/rcasa/OneDrive/Documents/AI-Adoption-Dashboard/"
-                    "AI adoption resources/AI Adoption Resources 4/"
-                    "stlouisfed.org_on-the-economy_2024_sep_rapid-adoption-generative-ai_print=true.pdf"
-                ),
-                Path(
-                    "/mnt/c/Users/rcasa/OneDrive/Documents/AI-Adoption-Dashboard/"
-                    "AI adoption resources/AI Adoption Resources 4/"
-                    "stlouisfed.org_on-the-economy_2025_feb_impact-generative-ai-work-productivity_print=true.pdf"
-                ),
-            ]
-
-        # Use the first file as primary source
+        if file_paths and not isinstance(file_paths, list):
+            file_paths = [file_paths]
         primary_file = file_paths[0] if file_paths else None
 
         source = DataSource(

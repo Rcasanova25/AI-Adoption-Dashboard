@@ -5,6 +5,7 @@ import pandas as pd
 import numpy as np
 from datetime import datetime
 from plotly.subplots import make_subplots
+from data.data_manager import DataManager
 
 # Page config
 st.set_page_config(
@@ -37,8 +38,8 @@ def load_data():
     }
     # Validate all required data is present and non-empty
     for key, ds in data_sources.items():
-        if ds is None or (hasattr(ds, 'empty') and ds.empty) or (isinstance(ds, dict) and not ds):
-            st.error(f"Required data source '{key}' is missing or empty. Please check data sources.")
+        if not isinstance(ds, (pd.DataFrame, dict)) or (isinstance(ds, pd.DataFrame) and ds.empty) or (isinstance(ds, dict) and not ds):
+            st.error(f"Required data source '{key}' is missing, empty, or not a DataFrame. Please check data sources.")
             st.stop()
     return data_sources
 
@@ -318,15 +319,17 @@ export_format = st.sidebar.selectbox(
 if export_format == "CSV Data":
     if view_type in data_map:
         df_to_download = data_map[view_type]
-        csv = df_to_download.to_csv(index=False).encode('utf-8')
-        
-        st.sidebar.download_button(
-           label="📥 Download CSV for Current View",
-           data=csv,
-           file_name=f"ai_adoption_{view_type.lower().replace(' ', '_')}.csv",
-           mime="text/csv",
-           use_container_width=True
-        )
+        if not isinstance(df_to_download, pd.DataFrame):
+            st.sidebar.warning(f"Export unavailable: '{view_type}' data is not a DataFrame.")
+        else:
+            csv = df_to_download.to_csv(index=False).encode('utf-8')
+            st.sidebar.download_button(
+               label="📥 Download CSV for Current View",
+               data=csv,
+               file_name=f"ai_adoption_{view_type.lower().replace(' ', '_')}.csv",
+               mime="text/csv",
+               use_container_width=True
+            )
     else:
         st.sidebar.warning(f"CSV export is not available for the '{view_type}' view.")
 
@@ -412,8 +415,13 @@ if view_type == "Historical Trends":
         st.write(f"📊 **Comparing AI Adoption: {year1} vs {year2}**")
         
         # Get data for comparison years
-        year1_data = historical_data[historical_data['year'] == year1].iloc[0]
-        year2_data = historical_data[historical_data['year'] == year2].iloc[0]
+        year1_df = historical_data[historical_data['year'] == year1]
+        year2_df = historical_data[historical_data['year'] == year2]
+        if not isinstance(year1_df, pd.DataFrame) or year1_df.empty or not isinstance(year2_df, pd.DataFrame) or year2_df.empty:
+            st.error("Historical data for selected years is missing or invalid.")
+            st.stop()
+        year1_data = year1_df.iloc[0]
+        year2_data = year2_df.iloc[0]
         
         # Create comparison metrics
         col1, col2, col3, col4 = st.columns(4)
@@ -644,31 +652,36 @@ if view_type == "Historical Trends":
         ]
         
         # Filter milestones based on year range
-        visible_milestones = [m for m in authoritative_milestones if year_range[0] <= m['year'] <= year_range[1]]
+        visible_milestones = [m for m in authoritative_milestones if isinstance(m['year'], (int, float)) and year_range[0] <= m['year'] <= year_range[1]]
         
+        if not isinstance(filtered_data, pd.DataFrame) or filtered_data.empty:
+            st.error("No historical data available for the selected year range.")
+            st.stop()
         fig = go.Figure()
         
         # Add overall AI use line
-        fig.add_trace(go.Scatter(
-            x=filtered_data['year'], 
-            y=filtered_data['ai_use'], 
-            mode='lines+markers', 
-            name='Overall AI Use', 
-            line=dict(width=4, color='#1f77b4'),
-            marker=dict(size=8),
-            hovertemplate='Year: %{x}<br>Adoption: %{y}%<br>Source: AI Index & McKinsey<extra></extra>'
-        ))
+        if isinstance(filtered_data, pd.DataFrame) and 'year' in filtered_data.columns and 'ai_use' in filtered_data.columns:
+            fig.add_trace(go.Scatter(
+                x=filtered_data['year'], 
+                y=filtered_data['ai_use'], 
+                mode='lines+markers', 
+                name='Overall AI Use', 
+                line=dict(width=4, color='#1f77b4'),
+                marker=dict(size=8),
+                hovertemplate='Year: %{x}<br>Adoption: %{y}%<br>Source: AI Index & McKinsey<extra></extra>'
+            ))
         
         # Add GenAI use line
-        fig.add_trace(go.Scatter(
-            x=filtered_data['year'], 
-            y=filtered_data['genai_use'], 
-            mode='lines+markers', 
-            name='GenAI Use', 
-            line=dict(width=4, color='#ff7f0e'),
-            marker=dict(size=8),
-            hovertemplate='Year: %{x}<br>Adoption: %{y}%<br>Source: AI Index 2025<extra></extra>'
-        ))
+        if isinstance(filtered_data, pd.DataFrame) and 'year' in filtered_data.columns and 'genai_use' in filtered_data.columns:
+            fig.add_trace(go.Scatter(
+                x=filtered_data['year'], 
+                y=filtered_data['genai_use'], 
+                mode='lines+markers', 
+                name='GenAI Use', 
+                line=dict(width=4, color='#ff7f0e'),
+                marker=dict(size=8),
+                hovertemplate='Year: %{x}<br>Adoption: %{y}%<br>Source: AI Index 2025<extra></extra>'
+            ))
         
         # NEW: Add milestone markers
         milestone_years = [m['year'] for m in visible_milestones]
@@ -5118,3 +5131,6 @@ st.markdown("""
     </p>
 </div>
 """, unsafe_allow_html=True)
+
+def init_data_manager():
+    return DataManager()

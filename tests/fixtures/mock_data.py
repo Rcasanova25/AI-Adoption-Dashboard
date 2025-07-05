@@ -211,26 +211,15 @@ def generate_governance_data() -> Dict[str, Any]:
 
 
 def generate_competitive_matrix() -> pd.DataFrame:
-    """Generate mock competitive positioning matrix."""
-    companies = ["Your Company", "Leader A", "Leader B", "Peer 1", "Peer 2", "Laggard 1"]
-
-    return pd.DataFrame(
-        {
-            "company": companies,
-            "ai_maturity": [7.5, 9.2, 8.8, 7.2, 6.8, 4.5],
-            "innovation_score": [8.0, 9.5, 9.0, 7.0, 6.5, 3.5],
-            "implementation_speed": [7.0, 8.5, 8.8, 6.5, 6.0, 4.0],
-            "roi_achieved": [165, 210, 195, 150, 140, 85],
-            "market_position": [
-                "Competitive",
-                "Leader",
-                "Leader",
-                "Competitive",
-                "Follower",
-                "Laggard",
-            ],
-        }
-    )
+    """Generate mock competitive positioning matrix for sector analysis."""
+    sectors = ["Finance", "Healthcare", "Retail", "Manufacturing", "Tech"]
+    return pd.DataFrame({
+        "sector": sectors,
+        "adoption_rate": [65, 72, 58, 49, 88],
+        "investment_millions": [120, 95, 60, 80, 200],
+        "genai_adoption": [40, 35, 25, 20, 60],
+        "avg_roi": [18, 22, 15, 12, 30],
+    })
 
 
 def generate_skill_gap_data() -> pd.DataFrame:
