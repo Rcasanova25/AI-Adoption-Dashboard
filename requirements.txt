@@ -41,3 +41,6 @@ black>=22.0.0
 flake8>=4.0.0
 kedro>=0.19.14
 causalnex>=0.12.1
+Pytorch>=2.0
+Graphviz>=2.46
+Pygraphviz>=1.14
