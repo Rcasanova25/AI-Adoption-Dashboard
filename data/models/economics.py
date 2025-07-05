@@ -16,8 +16,7 @@ class EconomicImpact(BaseModel):
     confidence_interval_high: Optional[float] = None
     source: str = Field(..., description="Data source")
 
-    class Config:
-        str_strip_whitespace = True
+    model_config = {"str_strip_whitespace": True}
 
 
 class ROIMetrics(BaseModel):

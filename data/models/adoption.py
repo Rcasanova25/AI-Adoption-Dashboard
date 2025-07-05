@@ -23,7 +23,8 @@ class AdoptionMetrics(BaseModel):
     )
     robotics_adoption: float = Field(..., ge=0, le=100, description="Robotics adoption percentage")
 
-    @field_validator("*_adoption")
+    @field_validator("overall_adoption", "genai_adoption", "predictive_adoption", 
+                     "nlp_adoption", "computer_vision_adoption", "robotics_adoption")
     def validate_percentage(cls, v):
         """Ensure adoption rates are valid percentages."""
         if not 0 <= v <= 100:
@@ -43,10 +44,7 @@ class SectorAdoption(BaseModel):
     maturity_score: Optional[float] = Field(None, ge=0, le=5)
     barriers: List[str] = Field(default_factory=list)
 
-    class Config:
-        """Pydantic configuration."""
-
-        str_strip_whitespace = True
+    model_config = {"str_strip_whitespace": True}
 
 
 class GeographicAdoption(BaseModel):
