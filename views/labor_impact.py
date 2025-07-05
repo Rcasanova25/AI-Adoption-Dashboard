@@ -8,6 +8,8 @@ import plotly.graph_objects as go
 import streamlit as st
 
 from components.accessibility import AccessibilityManager
+from business.labor_impact import compute_net_employment_change, analyze_skill_gaps
+from data.models.workforce import WorkforceImpact, SkillGaps
 
 
 def render(data: Dict[str, pd.DataFrame]) -> None:
@@ -79,6 +81,27 @@ def render(data: Dict[str, pd.DataFrame]) -> None:
 
         with tab4:
             _render_policy_implications(a11y)
+
+        # In the appropriate tab (e.g., Job Transformation or Policy Implications), add:
+        # Example: Use compute_net_employment_change if workforce impact data is available
+        workforce_impact_data = data.get("workforce_impact_data")
+        if workforce_impact_data is not None and not workforce_impact_data.empty:
+            impacts = [WorkforceImpact(**row) for _, row in workforce_impact_data.iterrows()]
+            net_change = compute_net_employment_change(impacts)
+            st.info(f"Net Employment Change: {net_change}")
+        # Example: Use analyze_skill_gaps if skill gap data is available
+        skill_gap_data = data.get("skill_gap_data")
+        if skill_gap_data is not None and not skill_gap_data.empty:
+            gaps = [SkillGaps(
+                skill_category=row['skill'],
+                demand_index=row.get('demand_index', 0),
+                supply_index=row.get('supply_index', 0),
+                gap_severity=row['gap_severity'],
+                training_time_months=row.get('training_time_months'),
+                salary_premium_percent=row.get('salary_premium_percent'),
+            ) for _, row in skill_gap_data.iterrows()]
+            summary = analyze_skill_gaps(gaps)
+            st.info(f"Overall Skill Gap Severity: {summary}")
 
     except Exception as e:
         st.error(f"Error rendering labor impact view: {str(e)}")

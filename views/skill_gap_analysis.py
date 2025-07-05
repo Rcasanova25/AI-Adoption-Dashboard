@@ -8,6 +8,7 @@ from typing import Any, Dict
 
 import plotly.graph_objects as go
 import streamlit as st
+from business.labor_impact import analyze_skill_gaps, compute_net_employment_change
 
 
 def render(data: Dict[str, Any]) -> None:
@@ -91,3 +92,20 @@ def render(data: Dict[str, Any]) -> None:
     - The gap between severity and training initiatives indicates significant opportunity for workforce development
     """
     )
+
+    # Skill gap summary
+    summary = analyze_skill_gaps([
+        # Convert each row to SkillGaps model if needed
+        # This assumes skill_gap_data is a DataFrame with columns matching SkillGaps fields
+        *[
+            SkillGaps(
+                skill_category=row['skill'],
+                demand_index=row.get('demand_index', 0),
+                supply_index=row.get('supply_index', 0),
+                gap_severity=row['gap_severity'],
+                training_time_months=row.get('training_time_months'),
+                salary_premium_percent=row.get('salary_premium_percent'),
+            ) for _, row in skill_gap_data.iterrows()
+        ]
+    ])
+    st.info(f"Overall Skill Gap Severity: {summary}")

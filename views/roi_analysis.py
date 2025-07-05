@@ -13,6 +13,7 @@ import pandas as pd
 import plotly.express as px
 import plotly.graph_objects as go
 import streamlit as st
+from business.roi_analysis import compute_roi
 
 
 def render(data: Dict[str, Any]) -> None:
@@ -305,232 +306,21 @@ def _render_sector_roi(sector_2025: pd.DataFrame, a11y: Any) -> None:
 
 def _render_roi_calculator() -> None:
     """Render the ROI calculator tab."""
-    st.subheader("🧮 Interactive AI ROI Calculator")
-
-    st.info("Estimate your potential AI investment returns based on your specific parameters")
-
-    col1, col2 = st.columns(2)
-
-    with col1:
-        investment = st.number_input(
-            "Initial Investment ($)",
-            min_value=10000,
-            max_value=50000000,
-            value=500000,
-            step=50000,
-            help="Total upfront AI investment including technology, talent, and implementation",
+    st.subheader("ROI Calculator")
+    with st.form("roi_form"):
+        initial_investment = st.number_input("Initial Investment ($)", min_value=0.0, value=100000.0)
+        annual_savings = st.number_input("Annual Savings ($)", min_value=0.0, value=25000.0)
+        payback_period_months = st.number_input("Payback Period (months)", min_value=1, value=12)
+        risk_level = st.selectbox("Risk Level", ["Low", "Medium", "High", "Very High"], index=1)
+        productivity_gain_percent = st.number_input("Productivity Gain (%)", min_value=0.0, value=10.0)
+        submitted = st.form_submit_button("Calculate ROI")
+    if submitted:
+        roi_metrics = compute_roi(
+            initial_investment=initial_investment,
+            annual_savings=annual_savings,
+            payback_period_months=payback_period_months,
+            risk_level=risk_level,
+            productivity_gain_percent=productivity_gain_percent,
         )
-
-        sector = st.selectbox(
-            "Industry Sector",
-            [
-                "Technology",
-                "Financial Services",
-                "Healthcare",
-                "Manufacturing",
-                "Retail & E-commerce",
-                "Education",
-                "Energy & Utilities",
-                "Government",
-            ],
-        )
-
-        company_size = st.selectbox(
-            "Company Size",
-            [
-                "Small (<250 employees)",
-                "Medium (250-1000)",
-                "Large (1000-5000)",
-                "Enterprise (5000+)",
-            ],
-        )
-
-    with col2:
-        ai_maturity = st.slider(
-            "Current AI Maturity Level",
-            min_value=1,
-            max_value=5,
-            value=2,
-            help="1=No AI experience, 5=Advanced AI capabilities",
-        )
-
-        implementation_quality = st.slider(
-            "Implementation Quality Score",
-            min_value=1,
-            max_value=5,
-            value=3,
-            help="1=Basic implementation, 5=Best-in-class execution",
-        )
-
-        timeline = st.selectbox(
-            "Implementation Timeline",
-            ["3 months", "6 months", "12 months", "18 months", "24 months"],
-        )
-
-    # Additional factors
-    st.subheader("Additional Factors")
-
-    col3, col4 = st.columns(2)
-
-    with col3:
-        data_readiness = st.slider(
-            "Data Readiness",
-            min_value=1,
-            max_value=5,
-            value=3,
-            help="1=Poor data quality, 5=Excellent data infrastructure",
-        )
-
-        talent_availability = st.checkbox("Access to AI talent", value=True)
-        cloud_infrastructure = st.checkbox("Existing cloud infrastructure", value=True)
-
-    with col4:
-        use_case_clarity = st.slider(
-            "Use Case Clarity",
-            min_value=1,
-            max_value=5,
-            value=3,
-            help="1=Unclear objectives, 5=Well-defined use cases",
-        )
-
-        executive_support = st.checkbox("Strong executive sponsorship", value=True)
-        change_management = st.checkbox("Change management program", value=False)
-
-    # Calculate ROI
-    if st.button("Calculate ROI", type="primary"):
-        # Base ROI by sector
-        sector_roi = {
-            "Technology": 4.2,
-            "Financial Services": 3.8,
-            "Healthcare": 3.2,
-            "Manufacturing": 3.5,
-            "Retail & E-commerce": 3.0,
-            "Education": 2.5,
-            "Energy & Utilities": 2.8,
-            "Government": 2.2,
-        }
-
-        base_roi = sector_roi.get(sector, 3.0)
-
-        # Adjust for various factors
-        # Company size adjustment
-        size_multiplier = {
-            "Small (<250 employees)": 0.8,
-            "Medium (250-1000)": 0.9,
-            "Large (1000-5000)": 1.0,
-            "Enterprise (5000+)": 1.1,
-        }
-        base_roi *= size_multiplier.get(company_size, 1.0)
-
-        # Quality adjustments
-        base_roi *= 0.8 + (implementation_quality * 0.1)
-        base_roi *= 0.8 + (data_readiness * 0.08)
-        base_roi *= 0.8 + (use_case_clarity * 0.08)
-        base_roi *= 0.9 + (ai_maturity * 0.05)
-
-        # Boolean adjustments
-        if talent_availability:
-            base_roi *= 1.1
-        if cloud_infrastructure:
-            base_roi *= 1.05
-        if executive_support:
-            base_roi *= 1.15
-        if change_management:
-            base_roi *= 1.1
-
-        # Timeline adjustment
-        timeline_factor = {
-            "3 months": 0.7,
-            "6 months": 0.85,
-            "12 months": 1.0,
-            "18 months": 1.1,
-            "24 months": 1.2,
-        }
-        timeline_months = int(timeline.split()[0])
-        base_roi *= timeline_factor.get(timeline, 1.0)
-
-        # Add some randomness to simulate uncertainty
-        uncertainty = np.random.normal(1.0, 0.1)
-        final_roi = max(0.5, base_roi * uncertainty)
-
-        # Calculate returns
-        expected_return = investment * final_roi
-        net_benefit = expected_return - investment
-        annual_return = (final_roi - 1) * 100
-        payback_months = int(timeline_months / final_roi) if final_roi > 1 else 999
-
-        # Display results
-        st.success("**ROI Calculation Complete!**")
-
-        col5, col6, col7, col8 = st.columns(4)
-
-        with col5:
-            st.metric("Expected ROI", f"{final_roi:.1f}x", f"{annual_return:.0f}% return")
-        with col6:
-            st.metric("Total Return", f"${expected_return:,.0f}")
-        with col7:
-            st.metric("Net Benefit", f"${net_benefit:,.0f}")
-        with col8:
-            st.metric(
-                "Payback Period", f"{payback_months} months" if payback_months < 999 else "N/A"
-            )
-
-        # Risk assessment
-        risk_score = 5 - (implementation_quality + data_readiness + use_case_clarity) / 3
-        risk_level = "Low" if risk_score < 2 else "Medium" if risk_score < 3.5 else "High"
-
-        st.warning(
-            f"**Risk Assessment:** {risk_level} risk project based on implementation factors"
-        )
-
-        # Recommendations
-        st.subheader("📋 Recommendations")
-
-        recommendations = []
-        if data_readiness < 4:
-            recommendations.append("• Invest in data quality and infrastructure improvements")
-        if not talent_availability:
-            recommendations.append("• Develop AI talent acquisition or training programs")
-        if use_case_clarity < 4:
-            recommendations.append("• Conduct thorough use case discovery workshops")
-        if not change_management:
-            recommendations.append("• Implement comprehensive change management program")
-        if implementation_quality < 4:
-            recommendations.append("• Partner with experienced AI implementation vendors")
-
-        if recommendations:
-            st.markdown("**To improve ROI potential:**")
-            for rec in recommendations:
-                st.markdown(rec)
-        else:
-            st.markdown("**Strong foundation in place!** Focus on execution excellence.")
-
-        # Export analysis
-        analysis_text = f"""
-        AI ROI Analysis Report
-        Generated: {datetime.now().strftime('%Y-%m-%d %H:%M')}
-        
-        Investment Parameters:
-        - Initial Investment: ${investment:,.0f}
-        - Sector: {sector}
-        - Company Size: {company_size}
-        - Timeline: {timeline}
-        
-        Quality Metrics:
-        - Implementation Quality: {implementation_quality}/5
-        - Data Readiness: {data_readiness}/5
-        
-        Projected Results:
-        - Expected ROI: {final_roi:.1f}x
-        - Total Return: ${expected_return:,.0f}
-        - Net Benefit: ${net_benefit:,.0f}
-        - Payback Period: {payback_months} months
-        - Risk Level: {risk_level}
-        """
-
-        st.download_button(
-            label="Download Analysis",
-            data=analysis_text,
-            file_name=f"ai_roi_analysis_{datetime.now().strftime('%Y%m%d')}.txt",
-            mime="text/plain",
-        )
+        st.success(f"Total ROI: {roi_metrics.total_roi_percent:.2f}%")
+        st.info(f"Payback Period: {roi_metrics.payback_period_months} months\nBreakeven: {roi_metrics.breakeven_months} months\nRisk Level: {roi_metrics.risk_level}\nProductivity Gain: {roi_metrics.productivity_gain_percent}%")

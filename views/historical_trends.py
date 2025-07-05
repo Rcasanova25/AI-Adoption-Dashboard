@@ -7,6 +7,9 @@ import plotly.graph_objects as go
 import streamlit as st
 
 from components.accessibility import AccessibilityManager
+from business.economic_scenarios import project_adoption_scenarios, project_economic_impact_scenarios
+from data.models.adoption import AdoptionMetrics
+from data.models.economics import EconomicImpact
 
 
 def render(data: Dict[str, pd.DataFrame]) -> None:
@@ -285,6 +288,37 @@ def _render_standard_view(
     # Research methodology note
     with st.expander("📚 Research Methodology & Source Validation"):
         _show_methodology()
+
+    # Add scenario selection UI
+    st.subheader("Scenario Analysis")
+    scenario = st.selectbox("Select Scenario", ["baseline", "optimistic", "pessimistic"], index=0)
+    growth_rates = {"baseline": 0.05, "optimistic": 0.08, "pessimistic": 0.02}
+    years = list(filtered_data["year"])
+    # Use first row as base metrics
+    base_row = filtered_data.iloc[0]
+    base_metrics = AdoptionMetrics(
+        year=int(base_row["year"]),
+        overall_adoption=float(base_row["ai_use"]),
+        genai_adoption=float(base_row["genai_use"]),
+        predictive_adoption=0.0,
+        nlp_adoption=0.0,
+        computer_vision_adoption=0.0,
+        robotics_adoption=0.0,
+    )
+    projections = project_adoption_scenarios(base_metrics, years, growth_rates)
+    proj_df = pd.DataFrame([
+        {
+            "year": m.year,
+            "overall_adoption": m.overall_adoption,
+            "genai_adoption": m.genai_adoption,
+        }
+        for m in projections[scenario]
+    ])
+    fig_proj = go.Figure()
+    fig_proj.add_trace(go.Scatter(x=proj_df["year"], y=proj_df["overall_adoption"], mode="lines+markers", name="Projected Overall AI"))
+    fig_proj.add_trace(go.Scatter(x=proj_df["year"], y=proj_df["genai_adoption"], mode="lines+markers", name="Projected GenAI"))
+    fig_proj.update_layout(title=f"Projected AI Adoption ({scenario.title()} Scenario)", xaxis_title="Year", yaxis_title="Adoption Rate (%)")
+    st.plotly_chart(fig_proj, use_container_width=True)
 
 
 def _get_milestones() -> list:

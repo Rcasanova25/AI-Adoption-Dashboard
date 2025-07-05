@@ -8,6 +8,8 @@ from typing import Any, Dict
 
 import plotly.graph_objects as go
 import streamlit as st
+from business.policy_simulation import simulate_policy_impact
+from data.models.governance import PolicyFramework, GovernanceMetrics
 
 
 def render(data: Dict[str, Any]) -> None:
@@ -88,3 +90,27 @@ def render(data: Dict[str, Any]) -> None:
         st.write("• **Bias Detection:** Only 45% adoption, 2.5/5 maturity")
         st.write("• **Accountability Framework:** 48% adoption, 2.6/5 maturity")
         st.write("• **Transparency:** 52% adoption, 2.8/5 maturity")
+
+    # Example: Allow user to select policy scenarios
+    st.subheader("Policy Simulation")
+    # For demonstration, create a list of PolicyFrameworks (in real use, load from data)
+    policies = [
+        PolicyFramework(
+            country_or_region="US",
+            policy_name="AI Act",
+            policy_type="Regulation",
+            implementation_year=2025,
+            maturity_level=st.selectbox("Policy Maturity", ["Draft", "Proposed", "Adopted", "Implemented", "Enforced"], index=3),
+            scope=["Ethics", "Transparency"],
+        )
+    ]
+    base_metrics = GovernanceMetrics(
+        governance_area="Ethics",
+        implementation_rate_percent=62,
+        maturity_score=3.2,
+        compliance_status="Partial",
+        regulatory_requirements=["Transparency", "Fairness"],
+        best_practices_adopted=5,
+    )
+    simulated = simulate_policy_impact(base_metrics, policies)
+    st.info(f"Simulated Maturity Score: {simulated.maturity_score}, Compliance: {simulated.compliance_status}")
