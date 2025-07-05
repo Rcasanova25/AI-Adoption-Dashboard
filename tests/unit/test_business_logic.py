@@ -1,12 +1,16 @@
 import pytest
-from business.economic_scenarios import project_adoption_scenarios, project_economic_impact_scenarios
-from business.roi_analysis import compute_roi
+
+from business.economic_scenarios import (
+    project_adoption_scenarios,
+    project_economic_impact_scenarios,
+)
+from business.labor_impact import analyze_skill_gaps, compute_net_employment_change
 from business.policy_simulation import simulate_policy_impact
-from business.labor_impact import compute_net_employment_change, analyze_skill_gaps
+from business.roi_analysis import compute_roi
 from data.models.adoption import AdoptionMetrics
 from data.models.economics import EconomicImpact
 from data.models.governance import GovernanceMetrics, PolicyFramework
-from data.models.workforce import WorkforceImpact, SkillGaps
+from data.models.workforce import SkillGaps, WorkforceImpact
 
 
 def test_project_adoption_scenarios():
@@ -126,4 +130,4 @@ def test_analyze_skill_gaps():
         ),
     ]
     summary = analyze_skill_gaps(gaps)
-    assert summary in ("Medium", "High") 
+    assert summary in ("Medium", "High")

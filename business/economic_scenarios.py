@@ -1,6 +1,7 @@
 """Economic scenario analysis for AI adoption and impact."""
 
-from typing import List, Dict
+from typing import Dict, List
+
 from data.models.adoption import AdoptionMetrics
 from data.models.economics import EconomicImpact
 
@@ -72,4 +73,4 @@ def project_economic_impact_scenarios(
             projections.append(next_impact)
             last = next_impact
         scenarios[scenario] = projections
-    return scenarios 
+    return scenarios

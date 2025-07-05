@@ -1,12 +1,13 @@
 """Theme management for the AI Adoption Dashboard."""
 
 from typing import Dict, Optional
+
 import streamlit as st
 
 
 class ThemeManager:
     """Manages application themes and styling."""
-    
+
     def __init__(self):
         """Initialize the theme manager with predefined themes."""
         self.themes = {
@@ -71,22 +72,22 @@ class ThemeManager:
                 "gradient": "linear-gradient(135deg, #ffffff 0%, #f4f5f7 100%)",
             },
         }
-        
+
         # Default theme
         self.current_theme = "default"
-    
+
     def apply_theme(self, theme_name: str = "default") -> None:
         """Apply a theme to the application using CSS injection.
-        
+
         Args:
             theme_name: Name of the theme to apply
         """
         if theme_name not in self.themes:
             theme_name = "default"
-        
+
         theme = self.themes[theme_name]
         self.current_theme = theme_name
-        
+
         # Generate CSS based on theme
         css = f"""
         <style>
@@ -290,52 +291,61 @@ class ThemeManager:
         ''' if theme_name == 'dark' else ''}
         </style>
         """
-        
+
         # Apply the CSS
         st.markdown(css, unsafe_allow_html=True)
-    
+
     def get_current_theme(self) -> Dict[str, str]:
         """Get the current theme configuration.
-        
+
         Returns:
             Dictionary containing current theme settings
         """
         return self.themes[self.current_theme]
-    
+
     def get_theme_names(self) -> list:
         """Get list of available theme names.
-        
+
         Returns:
             List of theme names
         """
         return list(self.themes.keys())
-    
+
     def add_custom_theme(self, name: str, theme_config: Dict[str, str]) -> None:
         """Add a custom theme to the theme manager.
-        
+
         Args:
             name: Name of the custom theme
             theme_config: Dictionary containing theme configuration
         """
         required_keys = [
-            "primary_color", "background_color", "secondary_background",
-            "text_color", "secondary_text", "success_color", "warning_color",
-            "danger_color", "info_color", "border_color", "shadow", "gradient"
+            "primary_color",
+            "background_color",
+            "secondary_background",
+            "text_color",
+            "secondary_text",
+            "success_color",
+            "warning_color",
+            "danger_color",
+            "info_color",
+            "border_color",
+            "shadow",
+            "gradient",
         ]
-        
+
         # Validate theme config
         if all(key in theme_config for key in required_keys):
             theme_config["name"] = name
             self.themes[name] = theme_config
         else:
             raise ValueError(f"Theme config must contain all required keys: {required_keys}")
-    
+
     def create_theme_selector(self, key: str = "theme_selector") -> str:
         """Create a theme selector widget.
-        
+
         Args:
             key: Unique key for the selectbox widget
-            
+
         Returns:
             Selected theme name
         """
@@ -344,10 +354,10 @@ class ThemeManager:
             options=self.get_theme_names(),
             format_func=lambda x: self.themes[x]["name"],
             key=key,
-            help="Choose a visual theme for the dashboard"
+            help="Choose a visual theme for the dashboard",
         )
-        
+
         # Apply the selected theme
         self.apply_theme(selected_theme)
-        
+
         return selected_theme

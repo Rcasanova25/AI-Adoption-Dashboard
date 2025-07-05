@@ -213,13 +213,15 @@ def generate_governance_data() -> Dict[str, Any]:
 def generate_competitive_matrix() -> pd.DataFrame:
     """Generate mock competitive positioning matrix for sector analysis."""
     sectors = ["Finance", "Healthcare", "Retail", "Manufacturing", "Tech"]
-    return pd.DataFrame({
-        "sector": sectors,
-        "adoption_rate": [65, 72, 58, 49, 88],
-        "investment_millions": [120, 95, 60, 80, 200],
-        "genai_adoption": [40, 35, 25, 20, 60],
-        "avg_roi": [18, 22, 15, 12, 30],
-    })
+    return pd.DataFrame(
+        {
+            "sector": sectors,
+            "adoption_rate": [65, 72, 58, 49, 88],
+            "investment_millions": [120, 95, 60, 80, 200],
+            "genai_adoption": [40, 35, 25, 20, 60],
+            "avg_roi": [18, 22, 15, 12, 30],
+        }
+    )
 
 
 def generate_skill_gap_data() -> pd.DataFrame:

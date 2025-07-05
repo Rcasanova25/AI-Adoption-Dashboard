@@ -20,7 +20,9 @@ def render(data: Dict[str, pd.DataFrame]) -> None:
         # Get required data
         training_emissions = data.get("training_emissions")
         if training_emissions is None or training_emissions.empty:
-            st.error("Required environmental impact data is missing or empty. Please check data sources.")
+            st.error(
+                "Required environmental impact data is missing or empty. Please check data sources."
+            )
             st.stop()
 
         # Initialize accessibility manager

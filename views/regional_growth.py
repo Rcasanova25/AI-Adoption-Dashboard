@@ -131,9 +131,7 @@ def render(data: Dict[str, pd.DataFrame]) -> None:
 
     # Add quadrant lines
     fig2.add_hline(y=regional_growth["growth_2024"].mean(), line_dash="dash", line_color="gray")
-    fig2.add_vline(
-        x=regional_growth["adoption_rate"].mean(), line_dash="dash", line_color="gray"
-    )
+    fig2.add_vline(x=regional_growth["adoption_rate"].mean(), line_dash="dash", line_color="gray")
 
     # Add quadrant labels
     fig2.add_annotation(

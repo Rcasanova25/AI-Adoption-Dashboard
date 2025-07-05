@@ -23,8 +23,14 @@ class AdoptionMetrics(BaseModel):
     )
     robotics_adoption: float = Field(..., ge=0, le=100, description="Robotics adoption percentage")
 
-    @field_validator("overall_adoption", "genai_adoption", "predictive_adoption", 
-                     "nlp_adoption", "computer_vision_adoption", "robotics_adoption")
+    @field_validator(
+        "overall_adoption",
+        "genai_adoption",
+        "predictive_adoption",
+        "nlp_adoption",
+        "computer_vision_adoption",
+        "robotics_adoption",
+    )
     def validate_percentage(cls, v):
         """Ensure adoption rates are valid percentages."""
         if not 0 <= v <= 100:

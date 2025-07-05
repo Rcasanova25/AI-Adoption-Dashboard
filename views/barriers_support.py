@@ -28,14 +28,18 @@ def render(data: Dict[str, Any]) -> None:
 
     # Data presence checks
     missing = []
-    if barriers_data is None or (hasattr(barriers_data, 'empty') and barriers_data.empty):
-        missing.append('barriers_data')
-    if support_effectiveness is None or (hasattr(support_effectiveness, 'empty') and support_effectiveness.empty):
-        missing.append('support_effectiveness')
+    if barriers_data is None or (hasattr(barriers_data, "empty") and barriers_data.empty):
+        missing.append("barriers_data")
+    if support_effectiveness is None or (
+        hasattr(support_effectiveness, "empty") and support_effectiveness.empty
+    ):
+        missing.append("support_effectiveness")
     if a11y is None:
-        missing.append('a11y')
+        missing.append("a11y")
     if missing:
-        st.error(f"Missing or empty data for: {', '.join(missing)}. Please check your data sources or contact support.")
+        st.error(
+            f"Missing or empty data for: {', '.join(missing)}. Please check your data sources or contact support."
+        )
         return
 
     st.write("🚧 **AI Adoption Barriers & Support Effectiveness**")

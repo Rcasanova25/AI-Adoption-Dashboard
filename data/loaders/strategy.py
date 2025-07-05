@@ -7,6 +7,7 @@ from typing import Dict, Optional
 import pandas as pd
 
 from config.settings import settings
+
 from .base import BaseDataLoader, DataSource
 
 logger = logging.getLogger(__name__)
@@ -133,17 +134,42 @@ class AIUseCaseLoader(BaseDataLoader):
     def _load_use_case_catalog(self) -> pd.DataFrame:
         """Load comprehensive use case catalog."""
         logger.error("No real extraction implemented for use_case_catalog.")
-        return pd.DataFrame(columns=["use_case", "department", "ai_technology", "implementation_time_weeks", "expected_roi_percent", "adoption_rate"])
+        return pd.DataFrame(
+            columns=[
+                "use_case",
+                "department",
+                "ai_technology",
+                "implementation_time_weeks",
+                "expected_roi_percent",
+                "adoption_rate",
+            ]
+        )
 
     def _load_implementation_complexity(self) -> pd.DataFrame:
         """Load implementation complexity analysis."""
         logger.error("No real extraction implemented for implementation_complexity.")
-        return pd.DataFrame(columns=["complexity_factor", "low_complexity_percent", "medium_complexity_percent", "high_complexity_percent", "avg_impact_on_timeline"])
+        return pd.DataFrame(
+            columns=[
+                "complexity_factor",
+                "low_complexity_percent",
+                "medium_complexity_percent",
+                "high_complexity_percent",
+                "avg_impact_on_timeline",
+            ]
+        )
 
     def _load_value_impact_matrix(self) -> pd.DataFrame:
         """Load value impact assessment matrix."""
         logger.error("No real extraction implemented for value_impact_matrix.")
-        return pd.DataFrame(columns=["impact_dimension", "quick_wins", "strategic_bets", "transformational", "avg_time_to_value_months"])
+        return pd.DataFrame(
+            columns=[
+                "impact_dimension",
+                "quick_wins",
+                "strategic_bets",
+                "transformational",
+                "avg_time_to_value_months",
+            ]
+        )
 
     def validate(self, data: Dict[str, pd.DataFrame]) -> bool:
         """Validate use case data."""
@@ -158,7 +184,10 @@ class PublicSectorLoader(BaseDataLoader):
     def __init__(self, file_path: Optional[Path] = None):
         """Initialize with public sector study file path."""
         if file_path is None:
-            file_path = settings.get_resources_path() / "Exploring artificial intelligence adoption in public organizations  a comparative case study.pdf"
+            file_path = (
+                settings.get_resources_path()
+                / "Exploring artificial intelligence adoption in public organizations  a comparative case study.pdf"
+            )
 
         source = DataSource(
             name="Public Sector AI Adoption Study",
@@ -184,17 +213,40 @@ class PublicSectorLoader(BaseDataLoader):
     def _load_public_sector_adoption(self) -> pd.DataFrame:
         """Load public sector adoption patterns."""
         logger.error("No real extraction implemented for public_sector_adoption.")
-        return pd.DataFrame(columns=["government_level", "adoption_rate", "primary_use_cases", "budget_allocated_millions", "citizen_satisfaction_improvement", "efficiency_gain_percent"])
+        return pd.DataFrame(
+            columns=[
+                "government_level",
+                "adoption_rate",
+                "primary_use_cases",
+                "budget_allocated_millions",
+                "citizen_satisfaction_improvement",
+                "efficiency_gain_percent",
+            ]
+        )
 
     def _load_implementation_barriers(self) -> pd.DataFrame:
         """Load public sector implementation barriers."""
         logger.error("No real extraction implemented for implementation_barriers.")
-        return pd.DataFrame(columns=["barrier", "severity_score", "organizations_affected_percent", "mitigation_strategies_available"])
+        return pd.DataFrame(
+            columns=[
+                "barrier",
+                "severity_score",
+                "organizations_affected_percent",
+                "mitigation_strategies_available",
+            ]
+        )
 
     def _load_success_factors(self) -> pd.DataFrame:
         """Load public sector success factors."""
         logger.error("No real extraction implemented for success_factors.")
-        return pd.DataFrame(columns=["success_factor", "importance_score", "implementation_rate", "impact_on_success"])
+        return pd.DataFrame(
+            columns=[
+                "success_factor",
+                "importance_score",
+                "implementation_rate",
+                "impact_on_success",
+            ]
+        )
 
     def validate(self, data: Dict[str, pd.DataFrame]) -> bool:
         """Validate public sector data."""

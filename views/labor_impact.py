@@ -7,9 +7,9 @@ import plotly.express as px
 import plotly.graph_objects as go
 import streamlit as st
 
+from business.labor_impact import analyze_skill_gaps, compute_net_employment_change
 from components.accessibility import AccessibilityManager
-from business.labor_impact import compute_net_employment_change, analyze_skill_gaps
-from data.models.workforce import WorkforceImpact, SkillGaps
+from data.models.workforce import SkillGaps, WorkforceImpact
 
 
 def render(data: Dict[str, pd.DataFrame]) -> None:
@@ -92,14 +92,17 @@ def render(data: Dict[str, pd.DataFrame]) -> None:
         # Example: Use analyze_skill_gaps if skill gap data is available
         skill_gap_data = data.get("skill_gap_data")
         if skill_gap_data is not None and not skill_gap_data.empty:
-            gaps = [SkillGaps(
-                skill_category=row['skill'],
-                demand_index=row.get('demand_index', 0),
-                supply_index=row.get('supply_index', 0),
-                gap_severity=row['gap_severity'],
-                training_time_months=row.get('training_time_months'),
-                salary_premium_percent=row.get('salary_premium_percent'),
-            ) for _, row in skill_gap_data.iterrows()]
+            gaps = [
+                SkillGaps(
+                    skill_category=row["skill"],
+                    demand_index=row.get("demand_index", 0),
+                    supply_index=row.get("supply_index", 0),
+                    gap_severity=row["gap_severity"],
+                    training_time_months=row.get("training_time_months"),
+                    salary_premium_percent=row.get("salary_premium_percent"),
+                )
+                for _, row in skill_gap_data.iterrows()
+            ]
             summary = analyze_skill_gaps(gaps)
             st.info(f"Overall Skill Gap Severity: {summary}")
 

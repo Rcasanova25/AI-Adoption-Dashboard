@@ -6,8 +6,11 @@ import pandas as pd
 import plotly.graph_objects as go
 import streamlit as st
 
+from business.economic_scenarios import (
+    project_adoption_scenarios,
+    project_economic_impact_scenarios,
+)
 from components.accessibility import AccessibilityManager
-from business.economic_scenarios import project_adoption_scenarios, project_economic_impact_scenarios
 from data.models.adoption import AdoptionMetrics
 from data.models.economics import EconomicImpact
 
@@ -22,7 +25,9 @@ def render(data: Dict[str, pd.DataFrame]) -> None:
         # Get required data
         historical_data = data.get("historical_data")
         if historical_data is None or historical_data.empty:
-            st.error("Required historical trends data is missing or empty. Please check data sources.")
+            st.error(
+                "Required historical trends data is missing or empty. Please check data sources."
+            )
             st.stop()
 
         # Initialize accessibility manager
@@ -306,18 +311,38 @@ def _render_standard_view(
         robotics_adoption=0.0,
     )
     projections = project_adoption_scenarios(base_metrics, years, growth_rates)
-    proj_df = pd.DataFrame([
-        {
-            "year": m.year,
-            "overall_adoption": m.overall_adoption,
-            "genai_adoption": m.genai_adoption,
-        }
-        for m in projections[scenario]
-    ])
+    proj_df = pd.DataFrame(
+        [
+            {
+                "year": m.year,
+                "overall_adoption": m.overall_adoption,
+                "genai_adoption": m.genai_adoption,
+            }
+            for m in projections[scenario]
+        ]
+    )
     fig_proj = go.Figure()
-    fig_proj.add_trace(go.Scatter(x=proj_df["year"], y=proj_df["overall_adoption"], mode="lines+markers", name="Projected Overall AI"))
-    fig_proj.add_trace(go.Scatter(x=proj_df["year"], y=proj_df["genai_adoption"], mode="lines+markers", name="Projected GenAI"))
-    fig_proj.update_layout(title=f"Projected AI Adoption ({scenario.title()} Scenario)", xaxis_title="Year", yaxis_title="Adoption Rate (%)")
+    fig_proj.add_trace(
+        go.Scatter(
+            x=proj_df["year"],
+            y=proj_df["overall_adoption"],
+            mode="lines+markers",
+            name="Projected Overall AI",
+        )
+    )
+    fig_proj.add_trace(
+        go.Scatter(
+            x=proj_df["year"],
+            y=proj_df["genai_adoption"],
+            mode="lines+markers",
+            name="Projected GenAI",
+        )
+    )
+    fig_proj.update_layout(
+        title=f"Projected AI Adoption ({scenario.title()} Scenario)",
+        xaxis_title="Year",
+        yaxis_title="Adoption Rate (%)",
+    )
     st.plotly_chart(fig_proj, use_container_width=True)
 
 

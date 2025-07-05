@@ -12,11 +12,7 @@ import pytest
 # Add parent directory to path for imports
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from data.models import (
-    AdoptionMetrics,
-    ROIMetrics,
-    TokenEconomics,
-)
+from data.models import AdoptionMetrics, ROIMetrics, TokenEconomics
 
 
 @pytest.fixture

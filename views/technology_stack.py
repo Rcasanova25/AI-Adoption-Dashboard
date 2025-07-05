@@ -26,12 +26,14 @@ def render(data: Dict[str, Any]) -> None:
 
     # Data presence checks
     missing = []
-    if tech_stack is None or (hasattr(tech_stack, 'empty') and tech_stack.empty):
-        missing.append('tech_stack')
+    if tech_stack is None or (hasattr(tech_stack, "empty") and tech_stack.empty):
+        missing.append("tech_stack")
     if a11y is None:
-        missing.append('a11y')
+        missing.append("a11y")
     if missing:
-        st.error(f"Missing or empty data for: {', '.join(missing)}. Please check your data sources or contact support.")
+        st.error(
+            f"Missing or empty data for: {', '.join(missing)}. Please check your data sources or contact support."
+        )
         return
 
     st.write("🔧 **AI Technology Stack Analysis**")

@@ -19,7 +19,9 @@ def render(data: Dict[str, pd.DataFrame]) -> None:
         # Get required data
         financial_impact = data.get("financial_impact")
         if financial_impact is None or financial_impact.empty:
-            st.error("Required financial impact data is missing or empty. Please check data sources.")
+            st.error(
+                "Required financial impact data is missing or empty. Please check data sources."
+            )
             st.stop()
 
         # Initialize accessibility manager

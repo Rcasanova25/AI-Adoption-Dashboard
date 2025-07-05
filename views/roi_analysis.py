@@ -13,6 +13,7 @@ import pandas as pd
 import plotly.express as px
 import plotly.graph_objects as go
 import streamlit as st
+
 from business.roi_analysis import compute_roi
 
 
@@ -30,12 +31,14 @@ def render(data: Dict[str, Any]) -> None:
 
     # Data presence checks
     missing = []
-    if sector_2025 is None or (hasattr(sector_2025, 'empty') and sector_2025.empty):
-        missing.append('sector_2025')
+    if sector_2025 is None or (hasattr(sector_2025, "empty") and sector_2025.empty):
+        missing.append("sector_2025")
     if a11y is None:
-        missing.append('a11y')
+        missing.append("a11y")
     if missing:
-        st.error(f"Missing or empty data for: {', '.join(missing)}. Please check your data sources or contact support.")
+        st.error(
+            f"Missing or empty data for: {', '.join(missing)}. Please check your data sources or contact support."
+        )
         return
 
     st.write("💰 **ROI Analysis: Comprehensive Economic Impact**")
@@ -308,11 +311,15 @@ def _render_roi_calculator() -> None:
     """Render the ROI calculator tab."""
     st.subheader("ROI Calculator")
     with st.form("roi_form"):
-        initial_investment = st.number_input("Initial Investment ($)", min_value=0.0, value=100000.0)
+        initial_investment = st.number_input(
+            "Initial Investment ($)", min_value=0.0, value=100000.0
+        )
         annual_savings = st.number_input("Annual Savings ($)", min_value=0.0, value=25000.0)
         payback_period_months = st.number_input("Payback Period (months)", min_value=1, value=12)
         risk_level = st.selectbox("Risk Level", ["Low", "Medium", "High", "Very High"], index=1)
-        productivity_gain_percent = st.number_input("Productivity Gain (%)", min_value=0.0, value=10.0)
+        productivity_gain_percent = st.number_input(
+            "Productivity Gain (%)", min_value=0.0, value=10.0
+        )
         submitted = st.form_submit_button("Calculate ROI")
     if submitted:
         roi_metrics = compute_roi(
@@ -323,4 +330,6 @@ def _render_roi_calculator() -> None:
             productivity_gain_percent=productivity_gain_percent,
         )
         st.success(f"Total ROI: {roi_metrics.total_roi_percent:.2f}%")
-        st.info(f"Payback Period: {roi_metrics.payback_period_months} months\nBreakeven: {roi_metrics.breakeven_months} months\nRisk Level: {roi_metrics.risk_level}\nProductivity Gain: {roi_metrics.productivity_gain_percent}%")
+        st.info(
+            f"Payback Period: {roi_metrics.payback_period_months} months\nBreakeven: {roi_metrics.breakeven_months} months\nRisk Level: {roi_metrics.risk_level}\nProductivity Gain: {roi_metrics.productivity_gain_percent}%"
+        )

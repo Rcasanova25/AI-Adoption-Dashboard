@@ -1,6 +1,6 @@
 """Mobile responsive UI components and utilities."""
 
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any, Dict, List, Optional
 
 import pandas as pd
 import plotly.graph_objects as go

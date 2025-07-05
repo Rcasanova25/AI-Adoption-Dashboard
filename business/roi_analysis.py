@@ -1,7 +1,8 @@
 """ROI and investment case analysis for AI adoption."""
 
-from data.models.economics import ROIMetrics
 from typing import Optional
+
+from data.models.economics import ROIMetrics
 
 
 def compute_roi(
@@ -22,7 +23,11 @@ def compute_roi(
     Returns:
         ROIMetrics object
     """
-    total_roi_percent = (annual_savings * (12 / payback_period_months)) / initial_investment * 100 if payback_period_months > 0 else 0
+    total_roi_percent = (
+        (annual_savings * (12 / payback_period_months)) / initial_investment * 100
+        if payback_period_months > 0
+        else 0
+    )
     breakeven_months = payback_period_months if payback_period_months > 0 else None
     return ROIMetrics(
         implementation_type="AI",
@@ -33,4 +38,4 @@ def compute_roi(
         productivity_gain_percent=productivity_gain_percent,
         breakeven_months=breakeven_months,
         risk_level=risk_level,
-    ) 
+    )

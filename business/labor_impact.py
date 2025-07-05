@@ -1,7 +1,8 @@
 """Labor impact and skill gap analysis for AI adoption."""
 
-from data.models.workforce import WorkforceImpact, SkillGaps
 from typing import List
+
+from data.models.workforce import SkillGaps, WorkforceImpact
 
 
 def compute_net_employment_change(impacts: List[WorkforceImpact]) -> int:
@@ -39,4 +40,4 @@ def analyze_skill_gaps(gaps: List[SkillGaps]) -> str:
     elif avg_severity < 3.5:
         return "High"
     else:
-        return "Critical" 
+        return "Critical"

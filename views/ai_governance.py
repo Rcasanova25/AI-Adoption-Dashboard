@@ -8,8 +8,9 @@ from typing import Any, Dict
 
 import plotly.graph_objects as go
 import streamlit as st
+
 from business.policy_simulation import simulate_policy_impact
-from data.models.governance import PolicyFramework, GovernanceMetrics
+from data.models.governance import GovernanceMetrics, PolicyFramework
 
 
 def render(data: Dict[str, Any]) -> None:
@@ -26,12 +27,14 @@ def render(data: Dict[str, Any]) -> None:
 
     # Data presence checks
     missing = []
-    if ai_governance is None or (hasattr(ai_governance, 'empty') and ai_governance.empty):
-        missing.append('ai_governance')
+    if ai_governance is None or (hasattr(ai_governance, "empty") and ai_governance.empty):
+        missing.append("ai_governance")
     if a11y is None:
-        missing.append('a11y')
+        missing.append("a11y")
     if missing:
-        st.error(f"Missing or empty data for: {', '.join(missing)}. Please check your data sources or contact support.")
+        st.error(
+            f"Missing or empty data for: {', '.join(missing)}. Please check your data sources or contact support."
+        )
         return
 
     st.write("⚖️ **AI Governance & Ethics Implementation**")
@@ -100,7 +103,11 @@ def render(data: Dict[str, Any]) -> None:
             policy_name="AI Act",
             policy_type="Regulation",
             implementation_year=2025,
-            maturity_level=st.selectbox("Policy Maturity", ["Draft", "Proposed", "Adopted", "Implemented", "Enforced"], index=3),
+            maturity_level=st.selectbox(
+                "Policy Maturity",
+                ["Draft", "Proposed", "Adopted", "Implemented", "Enforced"],
+                index=3,
+            ),
             scope=["Ethics", "Transparency"],
         )
     ]
@@ -113,4 +120,6 @@ def render(data: Dict[str, Any]) -> None:
         best_practices_adopted=5,
     )
     simulated = simulate_policy_impact(base_metrics, policies)
-    st.info(f"Simulated Maturity Score: {simulated.maturity_score}, Compliance: {simulated.compliance_status}")
+    st.info(
+        f"Simulated Maturity Score: {simulated.maturity_score}, Compliance: {simulated.compliance_status}"
+    )

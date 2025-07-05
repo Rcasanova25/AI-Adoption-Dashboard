@@ -1,8 +1,7 @@
 """Key takeaways generator for dashboard views."""
 
 from dataclasses import dataclass
-from datetime import datetime
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any, Dict, List, Optional
 
 import pandas as pd
 import streamlit as st

@@ -1379,8 +1379,7 @@ class StLouisFedLoader(BaseDataLoader):
     def _determine_phase_status(self, phase: str, text: str) -> str:
         """Determine status of implementation phase."""
         context = text[
-            max(0, text.lower().find(phase.lower()) - 100) : text.lower().find(phase.lower())
-            + 100
+            max(0, text.lower().find(phase.lower()) - 100) : text.lower().find(phase.lower()) + 100
         ].lower()
 
         if any(term in context for term in ["completed", "achieved", "finished"]):

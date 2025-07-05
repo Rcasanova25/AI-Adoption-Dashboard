@@ -21,7 +21,9 @@ def render(data: Dict[str, pd.DataFrame]) -> None:
         # Get required data
         ai_investment_data = data.get("ai_investment_data")
         if ai_investment_data is None or ai_investment_data.empty:
-            st.error("Required investment trends data is missing or empty. Please check data sources.")
+            st.error(
+                "Required investment trends data is missing or empty. Please check data sources."
+            )
             st.stop()
 
         # Initialize accessibility manager

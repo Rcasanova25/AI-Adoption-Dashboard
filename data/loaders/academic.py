@@ -8,6 +8,7 @@ from typing import Dict, List, Optional
 import pandas as pd
 
 from config.settings import settings
+
 from ..extractors.pdf_extractor_impl import EnhancedPDFExtractor
 from .base import BaseDataLoader, DataSource
 

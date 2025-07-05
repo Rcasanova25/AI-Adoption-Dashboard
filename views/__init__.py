@@ -4,14 +4,14 @@ This module contains all the individual view components extracted from the main 
 Each view is a self-contained module with its own render function.
 """
 
-# Import base view components
-from .base import BaseView, ViewMetadata, ViewRegistry
-
 from .adoption_rates import render as render_adoption_rates
 from .ai_cost_trends import render as render_ai_cost_trends
 from .ai_governance import render as render_ai_governance
 from .ai_technology_maturity import render as render_ai_technology_maturity
 from .barriers_support import render as render_barriers_support
+
+# Import base view components
+from .base import BaseView, ViewMetadata, ViewRegistry
 from .bibliography_sources import render as render_bibliography_sources
 
 # Import all view modules

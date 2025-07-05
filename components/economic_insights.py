@@ -1,6 +1,6 @@
 """Economic insights and executive summary components for the Economics of AI Dashboard."""
 
-from typing import Dict, List, Optional, Tuple
+from typing import Dict, List, Optional
 
 import numpy as np
 import pandas as pd

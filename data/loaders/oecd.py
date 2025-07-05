@@ -8,6 +8,7 @@ from typing import Dict, List, Optional
 import pandas as pd
 
 from config.settings import settings
+
 from ..extractors.pdf_extractor_impl import EnhancedPDFExtractor
 from ..models.governance import GovernanceMetrics, PolicyFramework
 from .base import BaseDataLoader, DataSource
@@ -32,7 +33,9 @@ class OECDLoader(BaseDataLoader):
         )
         super().__init__(source)
 
-        self.adoption_file = adoption_file or (settings.get_resources_path() / "AI Adoption Resources 3/f9ef33c3-en.pdf")
+        self.adoption_file = adoption_file or (
+            settings.get_resources_path() / "AI Adoption Resources 3/f9ef33c3-en.pdf"
+        )
 
         # Initialize PDF extractors
         self.extractors = []

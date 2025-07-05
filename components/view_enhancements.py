@@ -1,6 +1,6 @@
 """View enhancement utilities for adding economic narratives to existing views."""
 
-from typing import Dict, List, Optional, Tuple
+from typing import Dict, List, Optional
 
 import pandas as pd
 import streamlit as st

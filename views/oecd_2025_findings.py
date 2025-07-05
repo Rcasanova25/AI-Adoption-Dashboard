@@ -30,16 +30,20 @@ def render(data: Dict[str, Any]) -> None:
 
     # Data presence checks
     missing = []
-    if oecd_g7_adoption is None or (hasattr(oecd_g7_adoption, 'empty') and oecd_g7_adoption.empty):
-        missing.append('oecd_g7_adoption')
-    if oecd_applications is None or (hasattr(oecd_applications, 'empty') and oecd_applications.empty):
-        missing.append('oecd_applications')
+    if oecd_g7_adoption is None or (hasattr(oecd_g7_adoption, "empty") and oecd_g7_adoption.empty):
+        missing.append("oecd_g7_adoption")
+    if oecd_applications is None or (
+        hasattr(oecd_applications, "empty") and oecd_applications.empty
+    ):
+        missing.append("oecd_applications")
     if a11y is None:
-        missing.append('a11y')
+        missing.append("a11y")
     if show_source_info is None:
-        missing.append('show_source_info')
+        missing.append("show_source_info")
     if missing:
-        st.error(f"Missing or empty data for: {', '.join(missing)}. Please check your data sources or contact support.")
+        st.error(
+            f"Missing or empty data for: {', '.join(missing)}. Please check your data sources or contact support."
+        )
         return
 
     st.write("📊 **OECD/BCG/INSEAD 2025 Report: Enterprise AI Adoption**")

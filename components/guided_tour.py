@@ -1,8 +1,7 @@
 """Interactive guided tour system for new users."""
 
-import json
 from enum import Enum
-from typing import Callable, Dict, List, Optional
+from typing import Callable, List, Optional
 
 import streamlit as st
 

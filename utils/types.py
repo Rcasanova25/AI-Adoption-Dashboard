@@ -7,30 +7,31 @@ import pandas as pd
 
 class DashboardData(TypedDict, total=False):
     """Type definition for dashboard data structure.
-    
+
     This matches the consolidated data structure used in app.py load_data function.
     """
+
     # Historical trends data
     historical_data: pd.DataFrame
-    
+
     # Sector adoption data
     sector_2018: pd.DataFrame
     sector_2025: pd.DataFrame
-    
+
     # Firm size analysis
     firm_size: pd.DataFrame
-    
+
     # AI maturity data
     ai_maturity: pd.DataFrame
-    
+
     # Geographic data
     geographic: pd.DataFrame
     state_data: pd.DataFrame
-    
+
     # Financial and investment data
     financial_impact: pd.DataFrame
     ai_investment_data: pd.DataFrame
-    
+
     # Additional data from various sources
     adoption_trends: pd.DataFrame
     use_cases: pd.DataFrame
@@ -38,37 +39,37 @@ class DashboardData(TypedDict, total=False):
     productivity_gains: pd.DataFrame
     cost_trends: pd.DataFrame
     token_economics: pd.DataFrame
-    
+
     # Economic impact data
     gdp_impact: pd.DataFrame
     labor_impact: pd.DataFrame
-    
+
     # Industry and technology data
     industry_adoption: pd.DataFrame
     technology_stack: pd.DataFrame
     barriers_support: pd.DataFrame
-    
+
     # Regional and governance data
     regional_growth: pd.DataFrame
     ai_governance: pd.DataFrame
     environmental_impact: pd.DataFrame
-    
+
     # Skills and workforce data
     skill_gap_analysis: pd.DataFrame
     workforce_impact: pd.DataFrame
-    
+
     # ROI and cost analysis
     roi_analysis: pd.DataFrame
     ai_cost_trends: pd.DataFrame
-    
+
     # Research and academic data
     academic_research: pd.DataFrame
     productivity_research: pd.DataFrame
-    
+
     # OECD specific findings
     oecd_findings: pd.DataFrame
     oecd_recommendations: pd.DataFrame
-    
+
     # Source metadata
     sources: Dict[str, Any]
     last_updated: str
@@ -76,6 +77,7 @@ class DashboardData(TypedDict, total=False):
 
 class MetricData(TypedDict):
     """Type definition for metric card data."""
+
     label: str
     value: str
     delta: Optional[str]
@@ -85,6 +87,7 @@ class MetricData(TypedDict):
 
 class ChartConfig(TypedDict, total=False):
     """Type definition for chart configuration."""
+
     title: str
     x_label: str
     y_label: str
@@ -98,6 +101,7 @@ class ChartConfig(TypedDict, total=False):
 
 class ViewConfig(TypedDict):
     """Type definition for view configuration."""
+
     name: str
     title: str
     description: str
@@ -108,6 +112,7 @@ class ViewConfig(TypedDict):
 
 class PersonaConfig(TypedDict):
     """Type definition for persona configuration."""
+
     name: str
     description: str
     priorities: List[str]
@@ -117,6 +122,7 @@ class PersonaConfig(TypedDict):
 
 class CacheConfig(TypedDict):
     """Type definition for cache configuration."""
+
     ttl: int  # Time to live in seconds
     max_size: int  # Maximum cache size in MB
     strategy: str  # Cache strategy: 'lru', 'fifo', etc.
@@ -124,6 +130,7 @@ class CacheConfig(TypedDict):
 
 class PerformanceMetrics(TypedDict):
     """Type definition for performance metrics."""
+
     load_time: float
     memory_mb: float
     cpu_percent: float
@@ -134,6 +141,7 @@ class PerformanceMetrics(TypedDict):
 
 class ErrorInfo(TypedDict):
     """Type definition for error information."""
+
     timestamp: str
     error_type: str
     error_message: str
@@ -145,6 +153,7 @@ class ErrorInfo(TypedDict):
 
 class DataSourceInfo(TypedDict):
     """Type definition for data source information."""
+
     name: str
     type: str
     path: str
@@ -156,6 +165,7 @@ class DataSourceInfo(TypedDict):
 
 class FilterConfig(TypedDict, total=False):
     """Type definition for data filter configuration."""
+
     years: Optional[List[int]]
     sectors: Optional[List[str]]
     regions: Optional[List[str]]
@@ -165,6 +175,7 @@ class FilterConfig(TypedDict, total=False):
 
 class ThemeConfig(TypedDict):
     """Type definition for theme configuration."""
+
     name: str
     primary_color: str
     secondary_color: str
@@ -176,6 +187,7 @@ class ThemeConfig(TypedDict):
 
 class AccessibilityConfig(TypedDict):
     """Type definition for accessibility configuration."""
+
     high_contrast: bool
     font_size_multiplier: float
     screen_reader_mode: bool

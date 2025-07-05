@@ -55,7 +55,9 @@ class TestDataFlowIntegration:
 
         # Pass to economic insights
         if not ai_data["adoption_trends"].empty:
-            adoption_rate_str = f"Adoption rate: {ai_data['adoption_trends']['overall_adoption'].iloc[-1]:.1f}%"
+            adoption_rate_str = (
+                f"Adoption rate: {ai_data['adoption_trends']['overall_adoption'].iloc[-1]:.1f}%"
+            )
         else:
             adoption_rate_str = "Adoption rate: N/A"
         summary = {
@@ -88,7 +90,9 @@ class TestDataFlowIntegration:
         adoption_df = data.get("adoption_trends", pd.DataFrame())
 
         # Calculate metrics
-        current_adoption = adoption_df["overall_adoption"].iloc[-1] if not adoption_df.empty else 87.3
+        current_adoption = (
+            adoption_df["overall_adoption"].iloc[-1] if not adoption_df.empty else 87.3
+        )
         growth_rate = 15.2  # From mock data
 
         # Generate takeaways
@@ -113,13 +117,11 @@ class TestDataFlowIntegration:
 
         # Process through insights
         fig = EconomicInsights.create_competitive_position_matrix(
-            your_adoption=50.0,
-            your_investment=10.0,
-            sector_data=competitive_data
+            your_adoption=50.0, your_investment=10.0, sector_data=competitive_data
         )
         # Verify visualization created
         assert fig is not None
-        assert hasattr(fig, 'data')
+        assert hasattr(fig, "data")
         assert len(fig.data) > 0
 
     def test_cache_integration(self, data_manager):

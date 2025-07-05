@@ -1,6 +1,7 @@
 """Metric card component for displaying key metrics with insights."""
 
 from typing import Optional, Union
+
 import streamlit as st
 
 
@@ -14,7 +15,7 @@ def render_metric_card(
     urgency: str = "medium",
 ) -> None:
     """Render an enhanced metric card with optional insights and styling.
-    
+
     Args:
         label: The metric label/title
         value: The main metric value
@@ -52,7 +53,7 @@ def render_metric_card(
             "text": "#721c24",
         },
     }
-    
+
     # Urgency colors (following patterns from key_takeaways.py)
     urgency_colors = {
         "low": "#28a745",
@@ -60,15 +61,15 @@ def render_metric_card(
         "high": "#fd7e14",
         "critical": "#dc3545",
     }
-    
+
     # Get colors based on mode
     colors = mode_colors.get(mode, mode_colors["default"])
     urgency_color = urgency_colors.get(urgency, urgency_colors["medium"])
-    
+
     # Apply urgency color to border if mode is default
     if mode == "default":
         colors["border"] = urgency_color
-    
+
     # Create the metric card container
     card_style = f"""
     <div style='
@@ -81,7 +82,7 @@ def render_metric_card(
         position: relative;
     '>
     """
-    
+
     # Add help icon if help text provided
     if help_text:
         card_style += f"""
@@ -96,7 +97,7 @@ def render_metric_card(
             ℹ️
         </div>
         """
-    
+
     # Add metric label
     card_style += f"""
         <div style='
@@ -108,7 +109,7 @@ def render_metric_card(
             {label}
         </div>
     """
-    
+
     # Add metric value and delta
     card_style += f"""
         <div style='
@@ -125,20 +126,20 @@ def render_metric_card(
                 {value}
             </span>
     """
-    
+
     if delta is not None:
         # Determine delta color
         delta_str = str(delta)
-        if delta_str.startswith('+') or (isinstance(delta, (int, float)) and delta > 0):
+        if delta_str.startswith("+") or (isinstance(delta, (int, float)) and delta > 0):
             delta_color = "#28a745"
             delta_arrow = "↑"
-        elif delta_str.startswith('-') or (isinstance(delta, (int, float)) and delta < 0):
+        elif delta_str.startswith("-") or (isinstance(delta, (int, float)) and delta < 0):
             delta_color = "#dc3545"
             delta_arrow = "↓"
         else:
             delta_color = "#6c757d"
             delta_arrow = "→"
-        
+
         card_style += f"""
             <span style='
                 font-size: 16px;
@@ -148,9 +149,9 @@ def render_metric_card(
                 {delta_arrow} {delta}
             </span>
         """
-    
+
     card_style += "</div>"
-    
+
     # Add insight if provided
     if insight:
         card_style += f"""
@@ -165,19 +166,14 @@ def render_metric_card(
             💡 {insight}
         </div>
         """
-    
+
     card_style += "</div>"
-    
+
     # Render the card
     st.markdown(card_style, unsafe_allow_html=True)
-    
+
     # Alternative: Use native st.metric when simple display is needed
     if not insight and not help_text and mode == "default":
         # Provide option to fall back to native streamlit metric
         with st.container():
-            st.metric(
-                label=label,
-                value=value,
-                delta=delta,
-                help=help_text
-            )
+            st.metric(label=label, value=value, delta=delta, help=help_text)

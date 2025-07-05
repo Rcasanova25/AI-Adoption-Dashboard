@@ -39,7 +39,7 @@ class DataManager:
         """Initialize data manager with path to resources directory."""
         if resources_path is None:
             resources_path = settings.get_resources_path()
-            
+
         # Ensure the path exists
         if not resources_path.exists():
             logger.warning(f"Resources path does not exist: {resources_path}")
@@ -298,7 +298,7 @@ class OptimizedDataManager(DataManager):
             cache_disk_size = settings.CACHE_DISK_SIZE
         if max_workers is None:
             max_workers = settings.MAX_WORKERS
-            
+
         super().__init__(resources_path)
 
         # Initialize enhanced cache

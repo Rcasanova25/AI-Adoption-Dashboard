@@ -1,7 +1,8 @@
 """Policy simulation for AI governance and regulation."""
 
-from data.models.governance import GovernanceMetrics, PolicyFramework
 from typing import List
+
+from data.models.governance import GovernanceMetrics, PolicyFramework
 
 
 def simulate_policy_impact(
@@ -32,4 +33,4 @@ def simulate_policy_impact(
         compliance_status=compliance,
         regulatory_requirements=base.regulatory_requirements,
         best_practices_adopted=base.best_practices_adopted,
-    ) 
+    )

@@ -20,7 +20,9 @@ def render(data: Dict[str, pd.DataFrame]) -> None:
         # Get required data
         sector_2025 = data.get("sector_2025")
         if sector_2025 is None or sector_2025.empty:
-            st.error("Required industry analysis data is missing or empty. Please check data sources.")
+            st.error(
+                "Required industry analysis data is missing or empty. Please check data sources."
+            )
             st.stop()
 
         # Initialize accessibility manager

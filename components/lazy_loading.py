@@ -1,9 +1,7 @@
 """Lazy loading components for improved UI performance."""
 
-import asyncio
-import time
 from concurrent.futures import ThreadPoolExecutor
-from typing import Any, Callable, Dict, List, Optional, Union
+from typing import Any, Callable, Dict, List, Optional
 
 import pandas as pd
 import plotly.graph_objects as go

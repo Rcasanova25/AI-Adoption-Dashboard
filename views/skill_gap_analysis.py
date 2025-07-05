@@ -8,6 +8,7 @@ from typing import Any, Dict
 
 import plotly.graph_objects as go
 import streamlit as st
+
 from business.labor_impact import analyze_skill_gaps, compute_net_employment_change
 
 
@@ -25,12 +26,14 @@ def render(data: Dict[str, Any]) -> None:
 
     # Data presence checks
     missing = []
-    if skill_gap_data is None or (hasattr(skill_gap_data, 'empty') and skill_gap_data.empty):
-        missing.append('skill_gap_data')
+    if skill_gap_data is None or (hasattr(skill_gap_data, "empty") and skill_gap_data.empty):
+        missing.append("skill_gap_data")
     if a11y is None:
-        missing.append('a11y')
+        missing.append("a11y")
     if missing:
-        st.error(f"Missing or empty data for: {', '.join(missing)}. Please check your data sources or contact support.")
+        st.error(
+            f"Missing or empty data for: {', '.join(missing)}. Please check your data sources or contact support."
+        )
         return
 
     st.write("🎓 **AI Skills Gap Analysis**")
@@ -94,18 +97,21 @@ def render(data: Dict[str, Any]) -> None:
     )
 
     # Skill gap summary
-    summary = analyze_skill_gaps([
-        # Convert each row to SkillGaps model if needed
-        # This assumes skill_gap_data is a DataFrame with columns matching SkillGaps fields
-        *[
-            SkillGaps(
-                skill_category=row['skill'],
-                demand_index=row.get('demand_index', 0),
-                supply_index=row.get('supply_index', 0),
-                gap_severity=row['gap_severity'],
-                training_time_months=row.get('training_time_months'),
-                salary_premium_percent=row.get('salary_premium_percent'),
-            ) for _, row in skill_gap_data.iterrows()
+    summary = analyze_skill_gaps(
+        [
+            # Convert each row to SkillGaps model if needed
+            # This assumes skill_gap_data is a DataFrame with columns matching SkillGaps fields
+            *[
+                SkillGaps(
+                    skill_category=row["skill"],
+                    demand_index=row.get("demand_index", 0),
+                    supply_index=row.get("supply_index", 0),
+                    gap_severity=row["gap_severity"],
+                    training_time_months=row.get("training_time_months"),
+                    salary_premium_percent=row.get("salary_premium_percent"),
+                )
+                for _, row in skill_gap_data.iterrows()
+            ]
         ]
-    ])
+    )
     st.info(f"Overall Skill Gap Severity: {summary}")

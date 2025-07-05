@@ -33,18 +33,20 @@ def render(data: Dict[str, Any]) -> None:
 
     # Data presence checks
     missing = []
-    if financial_impact is None or (hasattr(financial_impact, 'empty') and financial_impact.empty):
-        missing.append('financial_impact')
-    if sector_2018 is None or (hasattr(sector_2018, 'empty') and sector_2018.empty):
-        missing.append('sector_2018')
-    if genai_2025 is None or (hasattr(genai_2025, 'empty') and genai_2025.empty):
-        missing.append('genai_2025')
+    if financial_impact is None or (hasattr(financial_impact, "empty") and financial_impact.empty):
+        missing.append("financial_impact")
+    if sector_2018 is None or (hasattr(sector_2018, "empty") and sector_2018.empty):
+        missing.append("sector_2018")
+    if genai_2025 is None or (hasattr(genai_2025, "empty") and genai_2025.empty):
+        missing.append("genai_2025")
     if a11y is None:
-        missing.append('a11y')
+        missing.append("a11y")
     if show_source_info is None:
-        missing.append('show_source_info')
+        missing.append("show_source_info")
     if missing:
-        st.error(f"Missing or empty data for: {', '.join(missing)}. Please check your data sources or contact support.")
+        st.error(
+            f"Missing or empty data for: {', '.join(missing)}. Please check your data sources or contact support."
+        )
         return
 
     if "2025" in data_year:
