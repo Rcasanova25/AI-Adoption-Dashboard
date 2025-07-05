@@ -1,7 +1,7 @@
 """WCAG 2.1 AA compliant accessibility features for the dashboard."""
 
 from dataclasses import dataclass
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any, Dict, List, Optional
 
 import plotly.graph_objects as go
 import streamlit as st
@@ -473,7 +473,7 @@ def create_accessible_dashboard_layout():
     return a11y
 
 
-def ensure_color_contrast(foreground: str, background: str) -> Tuple[str, float]:
+def ensure_color_contrast(foreground: str, background: str):
     """Ensure color combination meets WCAG AA contrast requirements.
 
     Args:

@@ -10,6 +10,7 @@ import plotly.graph_objects as go
 import streamlit as st
 
 from business.labor_impact import analyze_skill_gaps, compute_net_employment_change
+from data.models.workforce import SkillGaps
 
 
 def render(data: Dict[str, Any]) -> None:

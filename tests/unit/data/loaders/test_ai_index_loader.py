@@ -8,6 +8,8 @@ import pandas as pd
 import pytest
 
 from data.loaders.ai_index import AIIndexLoader
+from data.loaders.base import DataSource
+from data.models.adoption import AdoptionMetrics
 from tests.fixtures.mock_data import generate_adoption_data, generate_mock_pdf_data
 
 
