@@ -14,59 +14,9 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from data.models import (
     AdoptionMetrics,
-    CompetitivePosition,
-    CostTrends,
-    DataSource,
-    GeographicData,
-    IndustryData,
-    LaborImpact,
     ROIMetrics,
     TokenEconomics,
 )
-
-
-@pytest.fixture
-def mock_data_source():
-    """Create a mock data source for testing."""
-    return DataSource(
-        name="Test Source", type="pdf", path="/test/path.pdf", year=2024, credibility_score=0.95
-    )
-
-
-@pytest.fixture
-def sample_adoption_metrics():
-    """Create sample adoption metrics for testing."""
-    return AdoptionMetrics(
-        overall_adoption_rate=87.3,
-        enterprise_adoption_rate=92.1,
-        sme_adoption_rate=78.5,
-        growth_rate_yoy=15.2,
-        adoption_by_function={
-            "Marketing": 89.5,
-            "Sales": 85.2,
-            "Operations": 78.9,
-            "HR": 72.3,
-            "Finance": 68.7,
-        },
-        adoption_by_size={"Large (>1000)": 92.1, "Medium (100-1000)": 82.3, "Small (<100)": 67.8},
-        timestamp=datetime.now(),
-    )
-
-
-@pytest.fixture
-def sample_competitive_data():
-    """Create sample competitive position data."""
-    return CompetitivePosition(
-        industry="Technology",
-        position="Leader",
-        score=8.5,
-        gap_to_leaders=0,
-        peers=["Microsoft", "Google", "Amazon"],
-        strengths=["Innovation", "Talent", "Infrastructure"],
-        weaknesses=["Cost", "Governance"],
-        opportunities=["Market expansion", "New use cases"],
-        threats=["Competition", "Regulation"],
-    )
 
 
 @pytest.fixture
