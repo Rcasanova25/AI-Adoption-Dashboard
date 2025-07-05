@@ -13,7 +13,7 @@ from components.competitive_assessor import CompetitivePositionAssessor as Compe
 from components.economic_insights import EconomicInsights
 from components.ui.metric_card import render_metric_card
 from components.ui.theme import ThemeManager
-from components.view_enhancements import ViewEnhancements
+from components.view_enhancements import ViewEnhancer as ViewEnhancements
 
 # Import data management
 from data.data_manager import DataManager, create_optimized_manager
