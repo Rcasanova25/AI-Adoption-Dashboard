@@ -9,8 +9,6 @@ import pandas as pd
 
 from ..extractors.pdf_extractor_impl import EnhancedPDFExtractor
 from ..models.economics import EconomicImpact, ProductivityMetrics
-from ..models.productivity import ProductivityMetrics as ProdMetrics
-from ..models.productivity import WorkforceTransformation
 from ..models.workforce import WorkforceImpact
 from .base import BaseDataLoader, DataSource
 
