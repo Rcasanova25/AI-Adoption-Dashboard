@@ -17,11 +17,25 @@ def render(data: Dict[str, pd.DataFrame]) -> None:
     """
     try:
         # Initialize competitive assessor
+        sector_data = data.get("sector_adoption")
+        firm_size_data = data.get("firm_size_adoption")
+        adoption_trends = data.get("adoption_metrics")
+        investment_data = data.get("investment_trends")
+
+        if (
+            sector_data is None or sector_data.empty or
+            firm_size_data is None or firm_size_data.empty or
+            adoption_trends is None or adoption_trends.empty or
+            investment_data is None or investment_data.empty
+        ):
+            st.error("Required competitive assessment data is missing or empty. Please check data sources.")
+            st.stop()
+
         assessor = CompetitivePositionAssessor(
-            sector_data=data.get("sector_adoption", pd.DataFrame()),
-            firm_size_data=data.get("firm_size_adoption", pd.DataFrame()),
-            adoption_trends=data.get("adoption_metrics", pd.DataFrame()),
-            investment_data=data.get("investment_trends", pd.DataFrame())
+            sector_data=sector_data,
+            firm_size_data=firm_size_data,
+            adoption_trends=adoption_trends,
+            investment_data=investment_data
         )
 
         # Display competitive assessment interface

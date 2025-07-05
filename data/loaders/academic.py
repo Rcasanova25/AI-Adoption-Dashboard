@@ -77,54 +77,47 @@ class AcademicPapersLoader(BaseDataLoader):
         logger.info(f"Loading data from {self.source.name}")
 
         if not self.extractors:
-            logger.warning("No PDF extractors available, returning fallback datasets")
-            return self._get_fallback_datasets()
+            logger.error("No PDF extractors available; cannot load data.")
+            raise RuntimeError("No PDF extractors available; cannot load data.")
 
         datasets = {}
 
         try:
             # Extract different research aspects
-
             # 1. Research consensus findings
             research_consensus = self._extract_research_consensus()
             if research_consensus is not None and not research_consensus.empty:
                 datasets["research_consensus"] = research_consensus
-
             # 2. Methodology comparison
             methodology_comparison = self._extract_methodology_comparison()
             if methodology_comparison is not None and not methodology_comparison.empty:
                 datasets["methodology_comparison"] = methodology_comparison
-
             # 3. Impact estimates across papers
             impact_estimates = self._extract_impact_estimates()
             if impact_estimates is not None and not impact_estimates.empty:
                 datasets["impact_estimates"] = impact_estimates
-
             # 4. Future research agenda
             research_agenda = self._extract_research_agenda()
             if research_agenda is not None and not research_agenda.empty:
                 datasets["future_research_agenda"] = research_agenda
-
             # 5. Citation and influence analysis
             citation_analysis = self._extract_citation_analysis()
             if citation_analysis is not None and not citation_analysis.empty:
                 datasets["citation_analysis"] = citation_analysis
-
             # 6. Regional research focus
             regional_focus = self._extract_regional_focus()
             if regional_focus is not None and not regional_focus.empty:
                 datasets["regional_research_focus"] = regional_focus
-
         except Exception as e:
             logger.error(f"Error during PDF extraction: {e}")
-            return self._get_fallback_datasets()
+            raise
 
         # Validate datasets
         if datasets:
             self.validate(datasets)
         else:
-            logger.warning("No data extracted from PDFs, using fallback data")
-            datasets = self._get_fallback_datasets()
+            logger.error("No data extracted from PDFs; cannot proceed.")
+            raise RuntimeError("No data extracted from PDFs.")
 
         return datasets
 
@@ -1003,17 +996,6 @@ class AcademicPapersLoader(BaseDataLoader):
         logger.info("Data validation passed")
         return True
 
-    def _get_fallback_datasets(self) -> Dict[str, pd.DataFrame]:
-        """Return fallback datasets when extraction fails."""
-        return {
-            "macroeconomic_impact": pd.DataFrame(),
-            "fiscal_implications": pd.DataFrame(),
-            "monetary_policy": pd.DataFrame(),
-            "financial_stability": pd.DataFrame(),
-            "emerging_markets": pd.DataFrame(),
-            "trade_implications": pd.DataFrame(),
-        }
-
 
 class IMFLoader(BaseDataLoader):
     """Loader for IMF AI economic analysis with real PDF extraction."""
@@ -1049,54 +1031,47 @@ class IMFLoader(BaseDataLoader):
         logger.info(f"Loading data from {self.source.name}")
 
         if not self.extractor:
-            logger.warning("PDF extractor not available, returning fallback datasets")
-            return self._get_fallback_datasets()
+            logger.error("PDF extractor not available; cannot load data.")
+            raise RuntimeError("PDF extractor not available; cannot load data.")
 
         datasets = {}
 
         try:
             # Extract different economic analysis aspects
-
             # 1. Macroeconomic impact projections
             macro_impact = self._extract_macroeconomic_impact()
             if macro_impact is not None and not macro_impact.empty:
                 datasets["macroeconomic_impact"] = macro_impact
-
             # 2. Fiscal policy implications
             fiscal_implications = self._extract_fiscal_implications()
             if fiscal_implications is not None and not fiscal_implications.empty:
                 datasets["fiscal_implications"] = fiscal_implications
-
             # 3. Monetary policy considerations
             monetary_policy = self._extract_monetary_policy()
             if monetary_policy is not None and not monetary_policy.empty:
                 datasets["monetary_policy"] = monetary_policy
-
             # 4. Financial stability risks
             financial_stability = self._extract_financial_stability()
             if financial_stability is not None and not financial_stability.empty:
                 datasets["financial_stability"] = financial_stability
-
             # 5. Emerging markets analysis
             emerging_markets = self._extract_emerging_markets()
             if emerging_markets is not None and not emerging_markets.empty:
                 datasets["emerging_markets"] = emerging_markets
-
             # 6. Global trade implications
             trade_implications = self._extract_trade_implications()
             if trade_implications is not None and not trade_implications.empty:
                 datasets["trade_implications"] = trade_implications
-
         except Exception as e:
             logger.error(f"Error during PDF extraction: {e}")
-            return self._get_fallback_datasets()
+            raise
 
         # Validate datasets
         if datasets:
             self.validate(datasets)
         else:
-            logger.warning("No data extracted from PDF, using fallback data")
-            datasets = self._get_fallback_datasets()
+            logger.error("No data extracted from PDF; cannot proceed.")
+            raise RuntimeError("No data extracted from PDF.")
 
         return datasets
 
@@ -2218,17 +2193,6 @@ class IMFLoader(BaseDataLoader):
 
         logger.info("Data validation passed")
         return True
-
-    def _get_fallback_datasets(self) -> Dict[str, pd.DataFrame]:
-        """Return fallback datasets when extraction fails."""
-        return {
-            "macroeconomic_impact": pd.DataFrame(),
-            "fiscal_implications": pd.DataFrame(),
-            "monetary_policy": pd.DataFrame(),
-            "financial_stability": pd.DataFrame(),
-            "emerging_markets": pd.DataFrame(),
-            "trade_implications": pd.DataFrame(),
-        }
 
 
 __all__ = ["IMFLoader", "AcademicPapersLoader"]

@@ -48,12 +48,12 @@ class NVIDIATokenLoader(BaseDataLoader):
             self.extractor = None
 
     def load(self) -> Dict[str, pd.DataFrame]:
-        """Load all datasets from NVIDIA report using actual PDF extraction."""
+        """Load all datasets from NVIDIA reports using actual PDF extraction."""
         logger.info(f"Loading data from {self.source.name}")
 
         if not self.extractor:
-            logger.warning("PDF extractor not available, returning fallback datasets")
-            return self._get_fallback_datasets()
+            logger.error("No PDF extractor available; cannot load data.")
+            raise RuntimeError("No PDF extractor available; cannot load data.")
 
         datasets = {}
 
@@ -92,14 +92,14 @@ class NVIDIATokenLoader(BaseDataLoader):
 
         except Exception as e:
             logger.error(f"Error during PDF extraction: {e}")
-            return self._get_fallback_datasets()
+            raise
 
         # Validate datasets
         if datasets:
             self.validate(datasets)
         else:
-            logger.warning("No data extracted from PDF, using fallback data")
-            datasets = self._get_fallback_datasets()
+            logger.error("No data extracted from PDF; cannot proceed.")
+            raise RuntimeError("No data extracted from PDF.")
 
         return datasets
 
@@ -960,17 +960,6 @@ class NVIDIATokenLoader(BaseDataLoader):
 
         logger.info("Data validation passed")
         return True
-
-    def _get_fallback_datasets(self) -> Dict[str, pd.DataFrame]:
-        """Return fallback datasets when extraction fails."""
-        return {
-            "token_pricing_evolution": pd.DataFrame(),
-            "model_efficiency_trends": pd.DataFrame(),
-            "infrastructure_costs": pd.DataFrame(),
-            "token_optimization": pd.DataFrame(),
-            "compute_requirements": pd.DataFrame(),
-            "economic_barriers": pd.DataFrame(),
-        }
 
 
 __all__ = ["NVIDIATokenLoader"]

@@ -18,10 +18,10 @@ def render(data: Dict[str, pd.DataFrame]) -> None:
         data: Dictionary of dataframes needed by this view
     """
     # Data presence check
-    regional_growth = data.get("regional_growth", pd.DataFrame())
+    regional_growth = data.get("regional_growth")
     if regional_growth is None or regional_growth.empty:
-        st.error("Regional growth data is unavailable or empty. Please check your data sources or contact support.")
-        return
+        st.error("Required regional growth data is missing or empty. Please check data sources.")
+        st.stop()
     # Initialize accessibility manager
     a11y = AccessibilityManager()
 

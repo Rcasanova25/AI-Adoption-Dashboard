@@ -18,10 +18,10 @@ def render(data: Dict[str, pd.DataFrame]) -> None:
     """
     try:
         # Get required data
-        token_economics = data.get("token_economics", pd.DataFrame())
-        token_usage_patterns = data.get("token_usage_patterns", pd.DataFrame())
-        token_optimization = data.get("token_optimization", pd.DataFrame())
-        token_pricing_evolution = data.get("token_pricing_evolution", pd.DataFrame())
+        token_economics = data.get("token_economics")
+        token_usage_patterns = data.get("token_usage_patterns")
+        token_optimization = data.get("token_optimization")
+        token_pricing_evolution = data.get("token_pricing_evolution")
 
         # Data presence checks
         missing = []
@@ -35,7 +35,7 @@ def render(data: Dict[str, pd.DataFrame]) -> None:
             missing.append('token_pricing_evolution')
         if missing:
             st.error(f"Missing or empty data for: {', '.join(missing)}. Please check your data sources or contact support.")
-            return
+            st.stop()
         # Initialize accessibility manager
         a11y = AccessibilityManager()
 

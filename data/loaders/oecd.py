@@ -60,8 +60,8 @@ class OECDLoader(BaseDataLoader):
         logger.info(f"Loading data from {self.source.name}")
 
         if not self.extractors:
-            logger.warning("No PDF extractors available, returning fallback datasets")
-            return self._get_fallback_datasets()
+            logger.error("No PDF extractors available; cannot load data.")
+            raise RuntimeError("No PDF extractors available; cannot load data.")
 
         datasets = {}
 
@@ -105,14 +105,14 @@ class OECDLoader(BaseDataLoader):
 
         except Exception as e:
             logger.error(f"Error during PDF extraction: {e}")
-            return self._get_fallback_datasets()
+            raise
 
         # Validate datasets
         if datasets:
             self.validate(datasets)
         else:
-            logger.warning("No data extracted from PDFs, using fallback data")
-            datasets = self._get_fallback_datasets()
+            logger.error("No data extracted from PDFs; cannot proceed.")
+            raise RuntimeError("No data extracted from PDFs.")
 
         return datasets
 
@@ -1227,18 +1227,6 @@ class OECDLoader(BaseDataLoader):
 
         logger.info("Data validation passed")
         return True
-
-    def _get_fallback_datasets(self) -> Dict[str, pd.DataFrame]:
-        """Return fallback datasets when extraction fails."""
-        return {
-            "national_ai_strategies": pd.DataFrame(),
-            "policy_instruments": pd.DataFrame(),
-            "ai_principles_adoption": pd.DataFrame(),
-            "regulatory_approaches": pd.DataFrame(),
-            "international_cooperation": pd.DataFrame(),
-            "skills_initiatives": pd.DataFrame(),
-            "public_investment": pd.DataFrame(),
-        }
 
 
 __all__ = ["OECDLoader"]

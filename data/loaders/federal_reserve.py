@@ -55,7 +55,7 @@ class RichmondFedLoader(BaseDataLoader):
 
         if not self.extractor:
             logger.warning("PDF extractor not available, returning fallback datasets")
-            return self._get_fallback_datasets()
+            raise RuntimeError("PDF extractor not available; cannot load data.")
 
         datasets = {}
 
@@ -94,14 +94,14 @@ class RichmondFedLoader(BaseDataLoader):
 
         except Exception as e:
             logger.error(f"Error during PDF extraction: {e}")
-            return self._get_fallback_datasets()
+            raise
 
         # Validate datasets
         if datasets:
             self.validate(datasets)
         else:
-            logger.warning("No data extracted from PDF, using fallback data")
-            datasets = self._get_fallback_datasets()
+            logger.error("No data extracted from PDF; cannot proceed.")
+            raise RuntimeError("No data extracted from PDF.")
 
         return datasets
 
@@ -807,17 +807,6 @@ class RichmondFedLoader(BaseDataLoader):
         logger.info("Data validation passed")
         return True
 
-    def _get_fallback_datasets(self) -> Dict[str, pd.DataFrame]:
-        """Return fallback datasets when extraction fails."""
-        return {
-            "genai_adoption_speed": pd.DataFrame(),
-            "productivity_impact": pd.DataFrame(),
-            "task_automation": pd.DataFrame(),
-            "worker_category_impacts": pd.DataFrame(),
-            "implementation_timeline": pd.DataFrame(),
-            "economic_implications": pd.DataFrame(),
-        }
-
 
 class StLouisFedLoader(BaseDataLoader):
     """Loader for St. Louis Fed GenAI rapid adoption reports with real PDF extraction."""
@@ -870,8 +859,8 @@ class StLouisFedLoader(BaseDataLoader):
         logger.info(f"Loading data from {self.source.name}")
 
         if not self.extractors:
-            logger.warning("No PDF extractors available, returning fallback datasets")
-            return self._get_fallback_datasets()
+            logger.error("No PDF extractors available; cannot load data.")
+            raise RuntimeError("No PDF extractors available; cannot load data.")
 
         datasets = {}
 
@@ -910,14 +899,14 @@ class StLouisFedLoader(BaseDataLoader):
 
         except Exception as e:
             logger.error(f"Error during PDF extraction: {e}")
-            return self._get_fallback_datasets()
+            raise
 
         # Validate datasets
         if datasets:
             self.validate(datasets)
         else:
-            logger.warning("No data extracted from PDFs, using fallback data")
-            datasets = self._get_fallback_datasets()
+            logger.error("No data extracted from PDFs; cannot proceed.")
+            raise RuntimeError("No data extracted from PDFs.")
 
         return datasets
 
@@ -1403,7 +1392,8 @@ class StLouisFedLoader(BaseDataLoader):
     def _determine_phase_status(self, phase: str, text: str) -> str:
         """Determine status of implementation phase."""
         context = text[
-            max(0, text.lower().find(phase.lower()) - 100) : text.lower().find(phase.lower()) + 100
+            max(0, text.lower().find(phase.lower()) - 100) : text.lower().find(phase.lower())
+            + 100
         ].lower()
 
         if any(term in context for term in ["completed", "achieved", "finished"]):
@@ -1525,17 +1515,6 @@ class StLouisFedLoader(BaseDataLoader):
 
         logger.info("Data validation passed")
         return True
-
-    def _get_fallback_datasets(self) -> Dict[str, pd.DataFrame]:
-        """Return fallback datasets when extraction fails."""
-        return {
-            "genai_adoption_speed": pd.DataFrame(),
-            "productivity_impact": pd.DataFrame(),
-            "task_automation": pd.DataFrame(),
-            "worker_category_impacts": pd.DataFrame(),
-            "implementation_timeline": pd.DataFrame(),
-            "economic_implications": pd.DataFrame(),
-        }
 
 
 __all__ = ["RichmondFedLoader", "StLouisFedLoader"]

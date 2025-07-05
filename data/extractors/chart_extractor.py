@@ -22,26 +22,21 @@ class ChartDataExtractor:
     def extract_charts(self, page_num: Optional[int] = None) -> List[Dict[str, Any]]:
         """Extract chart data from PDF pages.
         
+        CLAUDE.md COMPLIANCE: This method must not return sample or placeholder data. If not implemented, raise NotImplementedError.
+        
         Args:
             page_num: Optional specific page number
             
         Returns:
             List of chart data dictionaries
         """
-        charts = []
-        
-        # This is a placeholder implementation
-        # In a full implementation, this would use image processing
-        # to detect and extract chart data
-        
         logger.info(f"Extracting charts from page: {page_num if page_num else 'all'}")
-        
-        # Return empty list for now - actual implementation would
-        # detect charts and extract their data
-        return charts
+        raise NotImplementedError("Chart extraction is not yet implemented. No sample or placeholder data is returned.")
     
     def extract_chart_metadata(self, chart_data: Dict[str, Any]) -> Dict[str, Any]:
         """Extract metadata from a chart.
+        
+        CLAUDE.md COMPLIANCE: This method must not return sample or placeholder data. If not implemented, raise NotImplementedError.
         
         Args:
             chart_data: Raw chart data
@@ -49,13 +44,4 @@ class ChartDataExtractor:
         Returns:
             Chart metadata including type, axes, etc.
         """
-        metadata = {
-            "type": "unknown",
-            "title": "",
-            "x_axis": "",
-            "y_axis": "",
-            "data_points": 0
-        }
-        
-        # Placeholder - would analyze chart structure
-        return metadata
+        raise NotImplementedError("Chart metadata extraction is not yet implemented. No sample or placeholder data is returned.")

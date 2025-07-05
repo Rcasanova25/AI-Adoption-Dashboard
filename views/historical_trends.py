@@ -17,12 +17,10 @@ def render(data: Dict[str, pd.DataFrame]) -> None:
     """
     try:
         # Get required data
-        historical_data = data.get("historical_data", pd.DataFrame())
-
-        # Data presence check
+        historical_data = data.get("historical_data")
         if historical_data is None or historical_data.empty:
-            st.error("Historical trends data is unavailable or empty. Please check your data sources or contact support.")
-            return
+            st.error("Required historical trends data is missing or empty. Please check data sources.")
+            st.stop()
 
         # Initialize accessibility manager
         a11y = AccessibilityManager()

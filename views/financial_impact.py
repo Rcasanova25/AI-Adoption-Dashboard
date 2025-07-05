@@ -17,12 +17,10 @@ def render(data: Dict[str, pd.DataFrame]) -> None:
     """
     try:
         # Get required data
-        financial_impact = data.get("financial_impact", pd.DataFrame())
-
-        # Data presence check
+        financial_impact = data.get("financial_impact")
         if financial_impact is None or financial_impact.empty:
-            st.error("Financial impact data is unavailable or empty. Please check your data sources or contact support.")
-            return
+            st.error("Required financial impact data is missing or empty. Please check data sources.")
+            st.stop()
 
         # Initialize accessibility manager
         a11y = AccessibilityManager()
