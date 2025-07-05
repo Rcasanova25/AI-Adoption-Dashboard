@@ -162,12 +162,16 @@ def handle_errors(
 ) -> Callable:
     """Decorator for handling errors in functions.
     
+    CLAUDE.md COMPLIANCE: fallback_return must only be None. Returning sample, hardcoded, or placeholder data is strictly prohibited.
+    
     Args:
-        fallback_return: Value to return if an error occurs
+        fallback_return: Value to return if an error occurs (must be None for CLAUDE.md compliance)
         severity: Error severity level
         category: Error category for classification
         log_only: If True, only log the error without displaying to user
     """
+    if fallback_return is not None:
+        raise ValueError("CLAUDE.md compliance: fallback_return must be None. Returning sample/hardcoded data is not allowed.")
     def decorator(func: Callable[..., T]) -> Callable[..., Union[T, Any]]:
         @functools.wraps(func)
         def wrapper(*args, **kwargs) -> Union[T, Any]:
@@ -175,7 +179,6 @@ def handle_errors(
                 return func(*args, **kwargs)
             except Exception as e:
                 error_handler = ErrorHandler()
-                
                 # Log the error
                 error_handler.log_error(
                     e,
@@ -187,7 +190,6 @@ def handle_errors(
                     severity=severity,
                     category=category,
                 )
-                
                 # Display error if not log_only
                 if not log_only:
                     error_handler.display_error(
@@ -196,11 +198,8 @@ def handle_errors(
                         error=e,
                         recovery_action="reload",
                     )
-                
-                return fallback_return
-        
+                return None
         return wrapper
-    
     return decorator
 
 
@@ -287,13 +286,18 @@ class ErrorRecovery:
     
     @staticmethod
     def with_fallback(primary: Callable[..., T], fallback: Callable[..., T]) -> Callable[..., T]:
-        """Try primary function, fall back to secondary on error."""
+        """Try primary function, fall back to secondary on error.
+        
+        CLAUDE.md COMPLIANCE: The fallback function must NOT return sample, hardcoded, or placeholder data. It may only return None or raise/log errors. This is enforced by project policy and must be documented in all usages.
+        """
         def wrapper(*args, **kwargs) -> T:
             try:
                 return primary(*args, **kwargs)
             except Exception as e:
                 logger = logging.getLogger(__name__)
                 logger.warning(f"Primary function failed, using fallback: {e}")
-                return fallback(*args, **kwargs)
-        
+                result = fallback(*args, **kwargs)
+                if result not in (None,):
+                    raise ValueError("CLAUDE.md compliance: fallback must not return sample/hardcoded data. Only None is allowed.")
+                return result
         return wrapper
