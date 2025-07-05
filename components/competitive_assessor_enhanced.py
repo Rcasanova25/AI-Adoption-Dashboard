@@ -5,7 +5,7 @@ instead of hardcoded calculations.
 """
 
 from datetime import datetime
-from typing import Dict, List, Optional
+from typing import Dict, List
 
 import numpy as np
 import pandas as pd

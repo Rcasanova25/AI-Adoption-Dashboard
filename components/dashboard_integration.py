@@ -4,7 +4,7 @@ This module provides helper functions to integrate real economic models
 into the existing dashboard views.
 """
 
-from typing import Dict, Optional, Tuple
+from typing import Dict, Tuple
 
 import numpy as np
 import pandas as pd

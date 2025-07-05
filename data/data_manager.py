@@ -1,24 +1,21 @@
 """Optimized data manager with multi-layer caching and lazy loading."""
 
 import asyncio
-import concurrent.futures
 import logging
-from datetime import datetime
 from functools import lru_cache
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Union
+from typing import Any, Dict, List, Optional
 
 import pandas as pd
 
 from config.settings import settings
-from performance.cache_manager import CacheKeyGenerator, MultiLayerCache, cache_result, get_cache
-from performance.monitor import PerformanceContext, get_metrics, track_performance
+from performance.cache_manager import CacheKeyGenerator, MultiLayerCache, cache_result
+from performance.monitor import PerformanceContext
 
 from .loaders import (
     AcademicPapersLoader,
     AIIndexLoader,
     BaseDataLoader,
-    DataSource,
     GoldmanSachsLoader,
     IMFLoader,
     McKinseyLoader,

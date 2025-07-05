@@ -173,3 +173,12 @@ Would you like me to [specific improvement]?"
 - **REMINDER**: If this file hasn't been referenced in 30+ minutes, RE-READ IT!
 
 Avoid complex abstractions or "clever" code. The simple, obvious solution is probably better, and my guidance helps you stay focused on what matters.
+
+### Don't break the code with your "fixes"
+
+> Before you propose or apply any code fix, thoroughly check the entire project to ensure that your change will not introduce new errors, break dependencies, or cause issues in other parts of the codebase.
+> - Analyze all usages of the code you are modifying, including imports, type annotations, and references in other files, tests, and documentation.
+> - If a fix involves removing or altering an import, function, class, or variable, verify that it is not used anywhere else in the project.
+> - If the change could affect interfaces, APIs, or shared logic, check for all direct and indirect dependencies.
+> - Only proceed with the fix if you are confident it will not cause additional problems or increase the error count.
+> - If there is any uncertainty, explain the potential risks and suggest a safe, incremental approach.

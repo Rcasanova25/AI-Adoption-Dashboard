@@ -1,6 +1,6 @@
 """Theme management for the AI Adoption Dashboard."""
 
-from typing import Dict, Optional
+from typing import Dict
 
 import streamlit as st
 

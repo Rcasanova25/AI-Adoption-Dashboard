@@ -1,7 +1,6 @@
 """Optimized PDF extractor with lazy loading and caching."""
 
 import hashlib
-import io
 import logging
 from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path

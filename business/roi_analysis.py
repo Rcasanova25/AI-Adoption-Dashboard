@@ -1,7 +1,5 @@
 """ROI and investment case analysis for AI adoption."""
 
-from typing import Optional
-
 from data.models.economics import ROIMetrics
 
 
