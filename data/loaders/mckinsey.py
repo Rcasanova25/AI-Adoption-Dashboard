@@ -8,7 +8,7 @@ from typing import Dict, List, Optional
 import pandas as pd
 
 from ..extractors.pdf_extractor_impl import EnhancedPDFExtractor
-from ..models.financial import FinancialImpact, ROIMetrics
+from ..models.economics import EconomicImpact, ROIMetrics
 from .base import BaseDataLoader, DataSource
 
 logger = logging.getLogger(__name__)
