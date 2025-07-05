@@ -182,3 +182,27 @@ Avoid complex abstractions or "clever" code. The simple, obvious solution is pro
 > - If the change could affect interfaces, APIs, or shared logic, check for all direct and indirect dependencies.
 > - Only proceed with the fix if you are confident it will not cause additional problems or increase the error count.
 > - If there is any uncertainty, explain the potential risks and suggest a safe, incremental approach.
+
+### Expert Strategy for Linter and Codebase Cleanup
+
+1. NO Blind Batch Removals
+No more mass removal of imports without verifying their usage in type annotations, docstrings, and all code paths.
+Every change must be validated for downstream effects before being applied.
+
+2. Automated, Context-Aware Analysis
+For each flagged import or symbol:
+Search the entire file for all usages (including type hints, docstrings, and dynamic references).
+If in doubt, keep the import—removing a rarely-used type is less harmful than breaking type checking or runtime.
+
+3. Iterative, Test-Driven Fixes
+Fix one file or logical group at a time.
+After each change, run the linter and (if possible) the tests to confirm that the error count is going down, not up.
+If a fix introduces new errors, immediately revert or adjust.
+
+4. Address Root Causes, Not Just Symptoms
+If a linter rule is too aggressive or misconfigured, consider adjusting the rule (in line with CLAUDE.md) rather than fighting the tool.
+If type errors are due to missing or incorrect type hints, fix the type hints, not just the imports.
+
+5. Document and Communicate
+For every non-trivial change, add a comment or commit message explaining the rationale.
+If a change is risky or ambiguous, flag it for review rather than guessing.
