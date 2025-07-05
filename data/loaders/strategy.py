@@ -6,6 +6,7 @@ from typing import Dict, Optional
 
 import pandas as pd
 
+from config.settings import settings
 from .base import BaseDataLoader, DataSource
 
 logger = logging.getLogger(__name__)
@@ -17,10 +18,7 @@ class AIStrategyLoader(BaseDataLoader):
     def __init__(self, file_path: Optional[Path] = None):
         """Initialize with AI strategy file path."""
         if file_path is None:
-            file_path = Path(
-                "/mnt/c/Users/rcasa/OneDrive/Documents/AI-Adoption-Dashboard/"
-                "AI adoption resources/AI strategy.pdf"
-            )
+            file_path = settings.get_resources_path() / "AI strategy.pdf"
 
         source = DataSource(
             name="AI Strategy Framework",
@@ -109,10 +107,7 @@ class AIUseCaseLoader(BaseDataLoader):
     def __init__(self, file_path: Optional[Path] = None):
         """Initialize with use case file path."""
         if file_path is None:
-            file_path = Path(
-                "/mnt/c/Users/rcasa/OneDrive/Documents/AI-Adoption-Dashboard/"
-                "AI adoption resources/AI use case.pdf"
-            )
+            file_path = settings.get_resources_path() / "AI use case.pdf"
 
         source = DataSource(
             name="AI Use Case Catalog",
@@ -229,10 +224,7 @@ class PublicSectorLoader(BaseDataLoader):
     def __init__(self, file_path: Optional[Path] = None):
         """Initialize with public sector study file path."""
         if file_path is None:
-            file_path = Path(
-                "/mnt/c/Users/rcasa/OneDrive/Documents/AI-Adoption-Dashboard/"
-                "AI adoption resources/Exploring artificial intelligence adoption in public organizations  a comparative case study.pdf"
-            )
+            file_path = settings.get_resources_path() / "Exploring artificial intelligence adoption in public organizations  a comparative case study.pdf"
 
         source = DataSource(
             name="Public Sector AI Adoption Study",

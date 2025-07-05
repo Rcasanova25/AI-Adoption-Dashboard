@@ -1,0 +1,72 @@
+{
+  "timestamp": "/home/rcasa/AI-Adoption-Dashboard",
+  "issues": [],
+  "results": {
+    "structure": [
+      [
+        "components",
+        true
+      ],
+      [
+        "components/ui",
+        true
+      ],
+      [
+        "config",
+        true
+      ],
+      [
+        "data",
+        true
+      ],
+      [
+        "data/extractors",
+        true
+      ],
+      [
+        "data/loaders",
+        true
+      ],
+      [
+        "data/models",
+        true
+      ],
+      [
+        "performance",
+        true
+      ],
+      [
+        "tests",
+        true
+      ],
+      [
+        "tests/unit",
+        true
+      ],
+      [
+        "tests/integration",
+        true
+      ],
+      [
+        "tests/performance",
+        true
+      ],
+      [
+        "tests/security",
+        true
+      ],
+      [
+        "utils",
+        true
+      ],
+      [
+        "views",
+        true
+      ]
+    ],
+    "imports": [],
+    "functions": [],
+    "classes": [],
+    "tests": []
+  }
+}

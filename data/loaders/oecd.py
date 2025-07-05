@@ -7,6 +7,7 @@ from typing import Dict, List, Optional
 
 import pandas as pd
 
+from config.settings import settings
 from ..extractors.pdf_extractor_impl import EnhancedPDFExtractor
 from ..models.governance import GovernanceMetrics, PolicyFramework
 from .base import BaseDataLoader, DataSource
@@ -20,10 +21,7 @@ class OECDLoader(BaseDataLoader):
     def __init__(self, policy_file: Optional[Path] = None, adoption_file: Optional[Path] = None):
         """Initialize with OECD report file paths."""
         if policy_file is None:
-            policy_file = Path(
-                "/mnt/c/Users/rcasa/OneDrive/Documents/AI-Adoption-Dashboard/"
-                "AI adoption resources/AI Adoption Resources 3/f9ef33c3-en.pdf"
-            )
+            policy_file = settings.get_resources_path() / "AI dashboard resources 1/be745f04-en.pdf"
 
         source = DataSource(
             name="OECD AI Policy Observatory",
@@ -34,10 +32,7 @@ class OECDLoader(BaseDataLoader):
         )
         super().__init__(source)
 
-        self.adoption_file = adoption_file or Path(
-            "/mnt/c/Users/rcasa/OneDrive/Documents/AI-Adoption-Dashboard/"
-            "AI adoption resources/AI dashboard resources 1/be745f04-en.pdf"
-        )
+        self.adoption_file = adoption_file or (settings.get_resources_path() / "AI Adoption Resources 3/f9ef33c3-en.pdf")
 
         # Initialize PDF extractors
         self.extractors = []

@@ -4,6 +4,9 @@ This module contains all the individual view components extracted from the main 
 Each view is a self-contained module with its own render function.
 """
 
+# Import base view components
+from .base import BaseView, ViewMetadata, ViewRegistry
+
 from .adoption_rates import render as render_adoption_rates
 from .ai_cost_trends import render as render_ai_cost_trends
 from .ai_governance import render as render_ai_governance
@@ -55,5 +58,5 @@ VIEW_REGISTRY = {
     "Bibliography & Sources": render_bibliography_sources,
 }
 
-# Export the registry for use in app.py
-__all__ = ["VIEW_REGISTRY"]
+# Export the registry and base components for use in app.py
+__all__ = ["VIEW_REGISTRY", "ViewRegistry", "BaseView", "ViewMetadata"]

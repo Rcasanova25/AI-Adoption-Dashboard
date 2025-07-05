@@ -1,1 +1,311 @@
-"""AI Adoption Dashboard - Refactored Modular Version."""\n\nfrom typing import Any, Dict, Optional\n\nimport pandas as pd\nimport streamlit as st\n\n# Import components\nfrom components.accessibility import AccessibilityManager, create_accessible_dashboard_layout\nfrom components.competitive_assessor import CompetitiveAssessor\n\n# Import economic insights\nfrom components.economic_insights import EconomicInsights\nfrom components.ui.metric_card import render_metric_card\nfrom components.ui.theme import ThemeManager\nfrom components.view_enhancements import ViewEnhancements\n\n# Import data management\nfrom data.data_manager import DataManager, create_optimized_manager\nfrom performance.cache_manager import get_cache\nfrom performance.monitor import get_metrics, track_performance\n\n# Import utilities\nfrom utils.error_handler import ErrorHandler, handle_errors, setup_logging\nfrom utils.types import DashboardData\n\n# Import views\nfrom views import VIEW_REGISTRY\nfrom views.base import ViewRegistry\n\n# Setup logging\nsetup_logging()\n\n# Page config\nst.set_page_config(\n    page_title=\"AI Adoption Dashboard | 2018-2025 Analysis\",\n    page_icon=\"🤖\",\n    layout=\"wide\",\n    initial_sidebar_state=\"expanded\",\n    menu_items={\n        \"Get Help\": \"https://github.com/Rcasanova25/AI-Adoption-Dashboard/wiki\",\n        \"Report a bug\": \"https://github.com/Rcasanova25/AI-Adoption-Dashboard/issues\",\n        \"About\": \"# AI Adoption Dashboard\nVersion 2.2.0\n\nTrack AI adoption trends across industries and geographies.\",\n    },\n)\n\n# Initialize managers\na11y = create_accessible_dashboard_layout()\ntheme_manager = ThemeManager()\nerror_handler = ErrorHandler()\nview_registry = ViewRegistry()\n\n# Register all views\nfor view_name, view_func in VIEW_REGISTRY.items():\n    view_registry.register(view_name, view_func)\n\n\n# Initialize data manager\n@st.cache_resource\ndef init_data_manager():\n    \"\"\"Initialize the optimized data manager once per session.\"\"\"\n    return create_optimized_manager()\n\n\n# Data loading function\n@track_performance\n@st.cache_data\n@handle_errors(fallback_return={})\ndef load_data() -> DashboardData:\n    \"\"\"Load all dashboard data with caching and error handling.\"\"\"\n    data_manager = init_data_manager()\n\n    # Load data from various sources\n    data_sources = {\n        \"ai_index\": data_manager.get_data(\"ai_index\"),\n        \"mckinsey\": data_manager.get_data(\"mckinsey\"),\n        \"goldman_sachs\": data_manager.get_data(\"goldman_sachs\"),\n        \"nvidia\": data_manager.get_data(\"nvidia\"),\n        \"federal_reserve\": data_manager.get_data(\"federal_reserve\"),\n        \"oecd\": data_manager.get_data(\"oecd\"),\n        \"imf\": data_manager.get_data(\"imf\"),\n        \"academic\": data_manager.get_data(\"academic\"),\n    }\n\n    # Consolidate data for views\n    consolidated_data = {}\n\n    # Historical trends\n    consolidated_data[\"historical_data\"] = data_sources[\"ai_index\"] .get(\n        \"adoption_trends\", pd.DataFrame()\n    )\n\n    # Sector data\n    consolidated_data[\"sector_2018\"] = data_sources[\"ai_index\"] .get(\n        \"sector_adoption\", pd.DataFrame()\n    )\n    consolidated_data[\"sector_2025\"] = data_sources[\"mckinsey\"] .get(\"use_cases\", pd.DataFrame())\n\n    # Firm size\n    consolidated_data[\"firm_size\"] = data_sources[\"ai_index\"] .get(\"firm_size\", pd.DataFrame())\n\n    # AI maturity\n    consolidated_data[\"ai_maturity\"] = data_sources[\"ai_index\"] .get(\"ai_maturity\", pd.DataFrame())\n\n    # Geographic data\n    consolidated_data[\"geographic\"] = data_sources[\"ai_index\"] .get(\n        \"geographic_adoption\", pd.DataFrame()\n    )\n    consolidated_data[\"state_data\"] = data_sources[\"ai_index\"] .get(\"state_data\", pd.DataFrame())\n\n    # Financial data\n    consolidated_data[\"financial_impact\"] = data_sources[\"mckinsey\"] .get(\n        \"financial_impact\", pd.DataFrame()\n    )\n    consolidated_data[\"ai_investment_data\"] = data_sources[\"ai_index\"] .get(\n        \"investment_trends\", pd.DataFrame()\n    )\n\n    # Add all other data sources\n    for source_name, source_data in data_sources.items():\n        if isinstance(source_data, dict):\n            consolidated_data.update(source_data)\n\n    return consolidated_data\n\n\n# Initialize session state\ndef init_session_state():\n    \"\"\"Initialize session state variables.\"\"\"\n    defaults = {\n        \"first_visit\": True,\n        \"selected_persona\": \"General\",\n        \"show_changelog\": False,\n        \"selected_theme\": \"default\",\n        \"accessibility_mode\": False,\n    }\n\n    for key, default_value in defaults.items():\n        if key not in st.session_state:\n            st.session_state[key] = default_value\n\n\n# Main application\ndef main():\n    \"\"\"Main application entry point.\"\"\"\n    init_session_state()\n\n    # Apply theme\n    theme_manager.apply_theme(st.session_state.selected_theme)\n\n    # Load data\n    with st.spinner(\"Loading dashboard data...\"):\n        data = load_data()\n\n    if not data:\n        error_handler.display_error(\n            \"Unable to load dashboard data\",\n            \"Please check your internet connection and try again.\",\n            recovery_action=\"reload\",\n        )\n        return\n\n    # Title and description\n    st.title(\"🤖 AI Adoption Dashboard: 2018-2025\")\n    st.markdown(\n        \"**Comprehensive analysis from early AI adoption (2018) to current GenAI trends (2025)**\"\n    )\n\n    # Accessibility toolbar\n    a11y.render_accessibility_toolbar()\n\n    # Main navigation\n    st.markdown('<nav role=\"navigation\" aria-label=\"Dashboard navigation\">', unsafe_allow_html=True)\n\n    # Sidebar controls\n    with st.sidebar:\n        st.markdown(\n            '<aside role=\"complementary\" aria-label=\"Dashboard controls\">', unsafe_allow_html=True\n        )\n        st.header(\"📊 Dashboard Controls\")\n\n        # Persona selector\n        persona = a11y.create_accessible_form_field(\n            field_type=\"select\",\n            label=\"Select Your Role\",\n            field_id=\"persona-selector\",\n            options=[\"General\", \"Business Leader\", \""Policymaker\", \"Researcher\"],\n            index=[\"General\", \"Business Leader\", \"Policymaker\", \"Researcher\"].index(\n                st.session_state.selected_persona\n            ),\n            key=\"persona-selector\",\n        )\n        st.session_state.selected_persona = persona\n\n        # View selector\n        view_names = list(VIEW_REGISTRY.keys())\n        selected_view = a11y.create_accessible_form_field(\n            field_type=\"select\",\n            label=\"Analysis View\",\n            field_id=\"view-selector\",\n            options=view_names,\n            key=\"view-selector\",\n        )\n\n        # Theme selector\n        theme = st.selectbox(\n            \"Theme\",\n            options=[\"default\", \"executive\", \"dark\", \"accessible\"],\n            index=[\"default\", \"executive\", \"dark\", \"accessible\"].index(\n                st.session_state.selected_theme\n            ),\n        )\n        if theme != st.session_state.selected_theme:\n            st.session_state.selected_theme = theme\n            st.rerun()\n\n        # Performance metrics\n        with st.expander(\"⚡ Performance Metrics\"):\n            metrics = get_metrics()\n            if metrics:\n                col1, col2 = st.columns(2)\n                with col1:\n                    st.metric(\"Load Time\", f\"{metrics.get('load_time', 0):.2f}s\")\n                    st.metric(\"Memory\", f\"{metrics.get('memory_mb', 0):.1f} MB\")\n                with col2:\n                    st.metric(\"CPU\", f\"{metrics.get('cpu_percent', 0):.1f}%\")\n                    cache = get_cache()\n                    if cache:\n                        stats = cache.get_stats()\n                        st.metric(\"Cache Hit Rate\", f\"{stats.get('hit_rate', 0):.1%}\")\n\n        st.markdown(\"</aside>\", unsafe_allow_html=True)\n\n    # Key metrics\n    st.markdown('<section role=\"region\" aria-labelledby=\"key-metrics\">', unsafe_allow_html=True)\n    st.markdown('<h2 id=\"key-metrics\">📈 Key Metrics</h2>', unsafe_allow_html=True)\n\n    col1, col2, col3, col4 = st.columns(4)\n\n    with col1:\n        render_metric_card(\n            label=\"AI Adoption\",\n            value=\"78%\",\n            delta=\"+23pp from 2023\",\n            insight=\"Includes any AI use\",\n            mode=\"compact\",\n        )\n\n    with col2:\n        render_metric_card(\n            label=\"GenAI Adoption\",\n            value=\"71%\",\n            delta=\"+38pp from 2023\",\n            insight=\"More than doubled\",\n            mode=\"compact\",\n        )\n\n    with col3:\n        render_metric_card(\n            label=\"2024 Investment\",\n            value=\"$252.3B\",\n            delta=\"+44.5% YoY\",\n            insight=\"Record levels\",\n            mode=\"compact\",\n        )\n\n    with col4:\n        render_metric_card(\n            label=\"Cost Reduction\",\n            value=\"280x\",\n            delta=\"Since Nov 2022\",\n            insight=\"AI inference costs\",\n            mode=\"compact\",\n        )\n\n    st.markdown(\"</section>\", unsafe_allow_html=True)\n\n    # Main content area\n    st.markdown('<main role=\"main\">', unsafe_allow_html=True)\n    st.markdown(f\"<h2>📊 {selected_view}</h2>\", unsafe_allow_html=True)\n\n    # Render selected view with error boundary\n    try:\n        view_registry.render(selected_view, data)\n    except Exception as e:\n        error_handler.log_error(e, context={\"view\": selected_view})\n        error_handler.display_error(\n            f\"Error loading {selected_view}\",\n            \"We encountered an issue loading this view. Please try another view or refresh the page.\",\n            recovery_action=\"change_view\",\n        )\n\n    st.markdown(\"</main>\", unsafe_allow_html=True)\n\n    # Footer\n    st.markdown(\"---\")\n    st.markdown(\n        \"\"\"\n        <div style='text-align: center; color: #666; padding: 20px;'>\n            <p>🤖 AI Adoption Dashboard v2.2.0 | \n            Data sources: AI Index Report 2025, McKinsey, Goldman Sachs, OECD | \n            Created by Robert Casanova</p>\n        </div>\n        \"\"\",\n        unsafe_allow_html=True,\n    )\n\n\nif __name__ == \"__main__\":\n    main()\n
+"""AI Adoption Dashboard - Refactored Modular Version."""
+
+from typing import Any, Dict, Optional
+
+import pandas as pd
+import streamlit as st
+
+# Import components
+from components.accessibility import AccessibilityManager, create_accessible_dashboard_layout
+from components.competitive_assessor import CompetitiveAssessor
+
+# Import economic insights
+from components.economic_insights import EconomicInsights
+from components.ui.metric_card import render_metric_card
+from components.ui.theme import ThemeManager
+from components.view_enhancements import ViewEnhancements
+
+# Import data management
+from data.data_manager import DataManager, create_optimized_manager
+from performance.cache_manager import get_cache
+from performance.monitor import get_metrics, track_performance
+
+# Import utilities
+from utils.error_handler import ErrorHandler, handle_errors, setup_logging
+from utils.types import DashboardData
+
+# Import views
+from views import VIEW_REGISTRY
+from views.base import ViewRegistry
+
+# Setup logging
+setup_logging()
+
+# Page config
+st.set_page_config(
+    page_title="AI Adoption Dashboard | 2018-2025 Analysis",
+    page_icon="🤖",
+    layout="wide",
+    initial_sidebar_state="expanded",
+    menu_items={
+        "Get Help": "https://github.com/Rcasanova25/AI-Adoption-Dashboard/wiki",
+        "Report a bug": "https://github.com/Rcasanova25/AI-Adoption-Dashboard/issues",
+        "About": "# AI Adoption Dashboard\nVersion 2.2.0\n\nTrack AI adoption trends across industries and geographies.",
+    },
+)
+
+# Initialize managers
+a11y = create_accessible_dashboard_layout()
+theme_manager = ThemeManager()
+error_handler = ErrorHandler()
+view_registry = ViewRegistry()
+
+# Register all views
+for view_name, view_func in VIEW_REGISTRY.items():
+    view_registry.register(view_name, view_func)
+
+
+# Initialize data manager
+@st.cache_resource
+def init_data_manager():
+    """Initialize the optimized data manager once per session."""
+    return create_optimized_manager()
+
+
+# Data loading function
+@track_performance
+@st.cache_data
+@handle_errors(fallback_return={})
+def load_data() -> DashboardData:
+    """Load all dashboard data with caching and error handling."""
+    data_manager = init_data_manager()
+
+    # Load data from various sources
+    data_sources = {
+        "ai_index": data_manager.get_data("ai_index"),
+        "mckinsey": data_manager.get_data("mckinsey"),
+        "goldman_sachs": data_manager.get_data("goldman_sachs"),
+        "nvidia": data_manager.get_data("nvidia"),
+        "fed_richmond": data_manager.get_data("fed_richmond"),
+        "fed_stlouis": data_manager.get_data("fed_stlouis"),
+        "oecd": data_manager.get_data("oecd"),
+        "imf": data_manager.get_data("imf"),
+        "academic": data_manager.get_data("academic"),
+    }
+
+    # Consolidate data for views
+    consolidated_data = {}
+
+    # Historical trends
+    consolidated_data["historical_data"] = data_sources["ai_index"].get(
+        "adoption_trends", pd.DataFrame()
+    )
+
+    # Sector data
+    consolidated_data["sector_2018"] = data_sources["ai_index"].get(
+        "sector_adoption", pd.DataFrame()
+    )
+    consolidated_data["sector_2025"] = data_sources["mckinsey"].get("use_cases", pd.DataFrame())
+
+    # Firm size
+    consolidated_data["firm_size"] = data_sources["ai_index"].get("firm_size", pd.DataFrame())
+
+    # AI maturity
+    consolidated_data["ai_maturity"] = data_sources["ai_index"].get("ai_maturity", pd.DataFrame())
+
+    # Geographic data
+    consolidated_data["geographic"] = data_sources["ai_index"].get(
+        "geographic_adoption", pd.DataFrame()
+    )
+    consolidated_data["state_data"] = data_sources["ai_index"].get("state_data", pd.DataFrame())
+
+    # Financial data
+    consolidated_data["financial_impact"] = data_sources["mckinsey"].get(
+        "financial_impact", pd.DataFrame()
+    )
+    consolidated_data["ai_investment_data"] = data_sources["ai_index"].get(
+        "investment_trends", pd.DataFrame()
+    )
+
+    # Add all other data sources
+    for source_name, source_data in data_sources.items():
+        if isinstance(source_data, dict):
+            consolidated_data.update(source_data)
+
+    return consolidated_data
+
+
+# Initialize session state
+def init_session_state():
+    """Initialize session state variables."""
+    defaults = {
+        "first_visit": True,
+        "selected_persona": "General",
+        "show_changelog": False,
+        "selected_theme": "default",
+        "accessibility_mode": False,
+    }
+
+    for key, default_value in defaults.items():
+        if key not in st.session_state:
+            st.session_state[key] = default_value
+
+
+# Main application
+def main():
+    """Main application entry point."""
+    init_session_state()
+
+    # Apply theme
+    theme_manager.apply_theme(st.session_state.selected_theme)
+
+    # Load data
+    with st.spinner("Loading dashboard data..."):
+        data = load_data()
+
+    if not data:
+        error_handler.display_error(
+            "Unable to load dashboard data",
+            "Please check your internet connection and try again.",
+            recovery_action="reload",
+        )
+        return
+
+    # Title and description
+    st.title("🤖 AI Adoption Dashboard: 2018-2025")
+    st.markdown(
+        "**Comprehensive analysis from early AI adoption (2018) to current GenAI trends (2025)**"
+    )
+
+    # Accessibility toolbar
+    a11y.render_accessibility_toolbar()
+
+    # Main navigation
+    st.markdown('<nav role="navigation" aria-label="Dashboard navigation">', unsafe_allow_html=True)
+
+    # Sidebar controls
+    with st.sidebar:
+        st.markdown(
+            '<aside role="complementary" aria-label="Dashboard controls">', unsafe_allow_html=True
+        )
+        st.header("📊 Dashboard Controls")
+
+        # Persona selector
+        persona = a11y.create_accessible_form_field(
+            field_type="select",
+            label="Select Your Role",
+            field_id="persona-selector",
+            options=["General", "Business Leader", "Policymaker", "Researcher"],
+            index=["General", "Business Leader", "Policymaker", "Researcher"].index(
+                st.session_state.selected_persona
+            ),
+            key="persona-selector",
+        )
+        st.session_state.selected_persona = persona
+
+        # View selector
+        view_names = list(VIEW_REGISTRY.keys())
+        selected_view = a11y.create_accessible_form_field(
+            field_type="select",
+            label="Analysis View",
+            field_id="view-selector",
+            options=view_names,
+            key="view-selector",
+        )
+
+        # Theme selector
+        theme = st.selectbox(
+            "Theme",
+            options=["default", "executive", "dark", "accessible"],
+            index=["default", "executive", "dark", "accessible"].index(
+                st.session_state.selected_theme
+            ),
+        )
+        if theme != st.session_state.selected_theme:
+            st.session_state.selected_theme = theme
+            st.rerun()
+
+        # Performance metrics
+        with st.expander("⚡ Performance Metrics"):
+            metrics = get_metrics()
+            if metrics:
+                col1, col2 = st.columns(2)
+                with col1:
+                    st.metric("Load Time", f"{metrics.get('load_time', 0):.2f}s")
+                    st.metric("Memory", f"{metrics.get('memory_mb', 0):.1f} MB")
+                with col2:
+                    st.metric("CPU", f"{metrics.get('cpu_percent', 0):.1f}%")
+                    cache = get_cache()
+                    if cache:
+                        stats = cache.get_stats()
+                        st.metric("Cache Hit Rate", f"{stats.get('hit_rate', 0):.1%}")
+
+        st.markdown("</aside>", unsafe_allow_html=True)
+
+    # Key metrics
+    st.markdown('<section role="region" aria-labelledby="key-metrics">', unsafe_allow_html=True)
+    st.markdown('<h2 id="key-metrics">📈 Key Metrics</h2>', unsafe_allow_html=True)
+
+    col1, col2, col3, col4 = st.columns(4)
+
+    with col1:
+        render_metric_card(
+            label="AI Adoption",
+            value="78%",
+            delta="+23pp from 2023",
+            insight="Includes any AI use",
+            mode="compact",
+        )
+
+    with col2:
+        render_metric_card(
+            label="GenAI Adoption",
+            value="71%",
+            delta="+38pp from 2023",
+            insight="More than doubled",
+            mode="compact",
+        )
+
+    with col3:
+        render_metric_card(
+            label="2024 Investment",
+            value="$252.3B",
+            delta="+44.5% YoY",
+            insight="Record levels",
+            mode="compact",
+        )
+
+    with col4:
+        render_metric_card(
+            label="Cost Reduction",
+            value="280x",
+            delta="Since Nov 2022",
+            insight="AI inference costs",
+            mode="compact",
+        )
+
+    st.markdown("</section>", unsafe_allow_html=True)
+
+    # Main content area
+    st.markdown('<main role="main">', unsafe_allow_html=True)
+    st.markdown(f"<h2>📊 {selected_view}</h2>", unsafe_allow_html=True)
+
+    # Render selected view with error boundary
+    try:
+        view_registry.render(selected_view, data)
+    except Exception as e:
+        error_handler.log_error(e, context={"view": selected_view})
+        error_handler.display_error(
+            f"Error loading {selected_view}",
+            "We encountered an issue loading this view. Please try another view or refresh the page.",
+            recovery_action="change_view",
+        )
+
+    st.markdown("</main>", unsafe_allow_html=True)
+
+    # Footer
+    st.markdown("---")
+    st.markdown(
+        """
+        <div style='text-align: center; color: #666; padding: 20px;'>
+            <p>🤖 AI Adoption Dashboard v2.2.0 | 
+            Data sources: AI Index Report 2025, McKinsey, Goldman Sachs, OECD | 
+            Created by Robert Casanova</p>
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
+
+
+if __name__ == "__main__":
+    main()

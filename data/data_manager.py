@@ -10,6 +10,7 @@ from typing import Any, Dict, List, Optional, Union
 
 import pandas as pd
 
+from config.settings import settings
 from performance.cache_manager import CacheKeyGenerator, MultiLayerCache, cache_result, get_cache
 from performance.monitor import PerformanceContext, get_metrics, track_performance
 
@@ -17,6 +18,7 @@ from .loaders import (
     AcademicPapersLoader,
     AIIndexLoader,
     BaseDataLoader,
+    DataSource,
     GoldmanSachsLoader,
     IMFLoader,
     McKinseyLoader,
@@ -26,7 +28,6 @@ from .loaders import (
     StLouisFedLoader,
 )
 from .loaders.strategy import AIStrategyLoader, AIUseCaseLoader, PublicSectorLoader
-from .models import DataSource
 
 logger = logging.getLogger(__name__)
 
@@ -37,9 +38,13 @@ class DataManager:
     def __init__(self, resources_path: Optional[Path] = None):
         """Initialize data manager with path to resources directory."""
         if resources_path is None:
-            resources_path = Path(
-                "/mnt/c/Users/rcasa/OneDrive/Documents/AI-Adoption-Dashboard/AI adoption resources"
-            )
+            resources_path = settings.get_resources_path()
+            
+        # Ensure the path exists
+        if not resources_path.exists():
+            logger.warning(f"Resources path does not exist: {resources_path}")
+            logger.info(f"Creating resources directory at: {resources_path}")
+            resources_path.mkdir(parents=True, exist_ok=True)
 
         self.resources_path = resources_path
         self.loaders: Dict[str, BaseDataLoader] = {}
@@ -234,16 +239,46 @@ class DataManager:
 
         return all_data
 
+    def get_data(self, source: str) -> Dict[str, pd.DataFrame]:
+        """Get all data from a specific source.
+
+        Args:
+            source: Name of the data source (e.g., 'ai_index', 'mckinsey')
+
+        Returns:
+            Dictionary mapping dataset names to DataFrames from the specified source
+        """
+        if source not in self.loaders:
+            logger.error(f"Unknown data source: {source}")
+            return {}
+
+        loader = self.loaders[source]
+        try:
+            datasets = loader.list_datasets()
+            result = {}
+            for dataset in datasets:
+                try:
+                    data = loader.get_dataset(dataset)
+                    if data is not None:
+                        result[dataset] = data
+                except Exception as e:
+                    logger.warning(f"Error loading dataset '{dataset}' from '{source}': {e}")
+            return result
+        except Exception as e:
+            logger.error(f"Error accessing data from source '{source}': {e}")
+            return {}
+
 
 class OptimizedDataManager(DataManager):
     """Enhanced data manager with performance optimizations."""
 
     def __init__(
         self,
-        cache_memory_size: int = 200,
-        cache_memory_ttl: int = 600,
-        cache_disk_size: int = 2 * 1024**3,
-        max_workers: int = 4,
+        cache_memory_size: int = None,
+        cache_memory_ttl: int = None,
+        cache_disk_size: int = None,
+        max_workers: int = None,
+        resources_path: Optional[Path] = None,
     ):
         """Initialize optimized data manager.
 
@@ -252,8 +287,19 @@ class OptimizedDataManager(DataManager):
             cache_memory_ttl: Default TTL for memory cache (seconds)
             cache_disk_size: Max disk cache size in bytes
             max_workers: Max concurrent workers for parallel loading
+            resources_path: Optional path to resources directory
         """
-        super().__init__()
+        # Use settings defaults if not provided
+        if cache_memory_size is None:
+            cache_memory_size = settings.CACHE_MEMORY_SIZE
+        if cache_memory_ttl is None:
+            cache_memory_ttl = settings.CACHE_MEMORY_TTL
+        if cache_disk_size is None:
+            cache_disk_size = settings.CACHE_DISK_SIZE
+        if max_workers is None:
+            max_workers = settings.MAX_WORKERS
+            
+        super().__init__(resources_path)
 
         # Initialize enhanced cache
         self.cache = MultiLayerCache(

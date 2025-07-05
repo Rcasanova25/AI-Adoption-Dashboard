@@ -7,6 +7,7 @@ from typing import Dict, List, Optional
 
 import pandas as pd
 
+from config.settings import settings
 from ..extractors.pdf_extractor_impl import EnhancedPDFExtractor
 from .base import BaseDataLoader, DataSource
 
@@ -21,9 +22,7 @@ class AcademicPapersLoader(BaseDataLoader):
     ):
         """Initialize with directory containing academic papers or specific paper paths."""
         if papers_dir is None:
-            papers_dir = Path(
-                "/mnt/c/Users/rcasa/OneDrive/Documents/AI-Adoption-Dashboard/AI adoption resources/AI Adoption Resources 4"
-            )
+            papers_dir = settings.get_resources_path() / "AI Adoption Resources 4"
 
         # Specific papers to analyze
         if specific_papers is None:
@@ -1101,10 +1100,7 @@ class IMFLoader(BaseDataLoader):
     def __init__(self, file_path: Optional[Path] = None):
         """Initialize with IMF report file path."""
         if file_path is None:
-            file_path = Path(
-                "/mnt/c/Users/rcasa/OneDrive/Documents/AI-Adoption-Dashboard/"
-                "AI adoption resources/AI Adoption Resources 4/wpiea2024065-print-pdf (1).pdf"
-            )
+            file_path = settings.get_resources_path()
 
         source = DataSource(
             name="IMF AI Economic Analysis",

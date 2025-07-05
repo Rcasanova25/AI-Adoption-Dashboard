@@ -8,6 +8,7 @@ from typing import Dict, List, Optional, Tuple
 
 import pandas as pd
 
+from config.settings import settings
 from ..extractors.pdf_extractor_impl import EnhancedPDFExtractor
 from ..models.adoption import AdoptionMetrics, GeographicAdoption, SectorAdoption
 from .base import BaseDataLoader, DataSource
@@ -22,10 +23,7 @@ class AIIndexLoader(BaseDataLoader):
         """Initialize with AI Index report file path."""
         if file_path is None:
             # Default to AI Index 2025 report
-            file_path = Path(
-                "/mnt/c/Users/rcasa/OneDrive/Documents/AI-Adoption-Dashboard/"
-                "AI adoption resources/AI dashboard resources 1/hai_ai_index_report_2025.pdf"
-            )
+            file_path = settings.get_resources_path() / "AI dashboard resources 1/hai_ai_index_report_2025.pdf"
 
         source = DataSource(
             name="Stanford HAI AI Index Report",
