@@ -1006,91 +1006,12 @@ class AcademicPapersLoader(BaseDataLoader):
     def _get_fallback_datasets(self) -> Dict[str, pd.DataFrame]:
         """Return fallback datasets when extraction fails."""
         return {
-            "research_consensus": pd.DataFrame(
-                {
-                    "research_area": [
-                        "Productivity Impact",
-                        "Employment Effects",
-                        "Wage Inequality",
-                        "Innovation Spillovers",
-                        "Market Concentration",
-                    ],
-                    "consensus_level": ["High", "Medium", "High", "Medium", "Low"],
-                    "median_estimate": [1.5, -8.5, 15.2, 25.5, 35.0],
-                    "confidence_interval": [0.8, 12.5, 5.5, 15.0, 25.0],
-                    "papers_reviewed": [125, 98, 85, 72, 45],
-                }
-            ),
-            "methodology_comparison": pd.DataFrame(
-                {
-                    "methodology": [
-                        "Econometric Analysis",
-                        "Natural Experiments",
-                        "Simulation Models",
-                        "Survey-based Studies",
-                        "Case Studies",
-                    ],
-                    "papers_using": [285, 125, 185, 165, 95],
-                    "avg_impact_estimate": [6.5, 8.2, 7.8, 5.5, 6.8],
-                    "reliability_score": [7.5, 9.0, 7.0, 6.5, 6.0],
-                    "time_horizon_years": [5, 3, 10, 2, 3],
-                }
-            ),
-            "impact_estimates": pd.DataFrame(
-                {
-                    "impact_type": [
-                        "Productivity Growth",
-                        "Employment Rate",
-                        "Wage Level",
-                        "GDP Growth",
-                    ],
-                    "estimate": [12.5, -5.2, 8.7, 3.2],
-                    "confidence_interval_lower": [8.1, -8.5, 5.2, 1.8],
-                    "confidence_interval_upper": [16.9, -1.9, 12.2, 4.6],
-                    "paper_source": ["Paper_1.pdf", "Paper_2.pdf", "Paper_1.pdf", "Paper_3.pdf"],
-                    "methodology": [
-                        "Panel Data",
-                        "Difference-in-Differences",
-                        "Instrumental Variables",
-                        "Cross-sectional Analysis",
-                    ],
-                }
-            ),
-            "future_research_agenda": pd.DataFrame(
-                {
-                    "research_priority": [
-                        "Long-term Growth Effects",
-                        "Distributional Impacts",
-                        "Policy Interventions",
-                        "International Trade Effects",
-                    ],
-                    "importance_score": [9.5, 9.2, 8.8, 8.5],
-                    "current_research_gaps": ["High", "Medium", "High", "High"],
-                    "funding_availability": ["High", "High", "Medium", "Medium"],
-                    "expected_breakthroughs_years": [3, 2, 2, 4],
-                }
-            ),
-            "citation_analysis": pd.DataFrame(
-                {
-                    "paper_name": ["w30957.pdf", "Machines of mind.pdf"],
-                    "total_references": [145, 89],
-                    "ai_related_refs": [62, 45],
-                    "recent_refs_2020plus": [78, 52],
-                    "field_classification": ["AI Economics", "AI Economics"],
-                    "estimated_influence_score": [7.5, 6.8],
-                    "reference_recency_ratio": [0.54, 0.58],
-                }
-            ),
-            "regional_research_focus": pd.DataFrame(
-                {
-                    "paper_name": ["w30957.pdf", "Machines of mind.pdf"],
-                    "primary_region": ["United States", "Global"],
-                    "focus_intensity": [0.65, 0.45],
-                    "focus_type": ["Single Region", "Multi-Region"],
-                    "has_regional_data": [True, False],
-                    "total_regional_mentions": [23, 18],
-                }
-            ),
+            "macroeconomic_impact": pd.DataFrame(),
+            "fiscal_implications": pd.DataFrame(),
+            "monetary_policy": pd.DataFrame(),
+            "financial_stability": pd.DataFrame(),
+            "emerging_markets": pd.DataFrame(),
+            "trade_implications": pd.DataFrame(),
         }
 
 
@@ -2301,83 +2222,12 @@ class IMFLoader(BaseDataLoader):
     def _get_fallback_datasets(self) -> Dict[str, pd.DataFrame]:
         """Return fallback datasets when extraction fails."""
         return {
-            "macroeconomic_impact": pd.DataFrame(
-                {
-                    "scenario": ["Baseline", "Accelerated Adoption", "Disruption", "Stagnation"],
-                    "global_gdp_impact_2030": [4.5, 8.2, 12.5, 2.1],
-                    "developed_markets_impact": [5.2, 8.8, 11.5, 2.8],
-                    "emerging_markets_impact": [3.8, 7.5, 13.5, 1.5],
-                    "inflation_impact": [-0.8, -1.5, -2.2, -0.3],
-                    "unemployment_change": [2.5, -1.2, 5.8, 4.2],
-                    "inequality_gini_change": [0.02, -0.01, 0.05, 0.03],
-                }
-            ),
-            "fiscal_implications": pd.DataFrame(
-                {
-                    "impact_area": [
-                        "Tax Revenue",
-                        "Social Spending",
-                        "Education Budget",
-                        "Infrastructure",
-                        "R&D Subsidies",
-                    ],
-                    "revenue_impact_percent": [-12, 18, 25, 15, 35],
-                    "spending_change_percent": [5, 35, 45, 28, 85],
-                    "timeline_years": [3, 5, 2, 4, 1],
-                    "policy_readiness_score": [4.5, 3.2, 6.8, 7.2, 8.5],
-                }
-            ),
-            "monetary_policy": pd.DataFrame(
-                {
-                    "central_bank_concern": [
-                        "Productivity Measurement",
-                        "Inflation Forecasting",
-                        "Employment Targeting",
-                        "Financial Stability",
-                    ],
-                    "importance_score": [8.5, 9.2, 8.8, 9.0],
-                    "preparedness_level": [5.2, 6.8, 4.5, 5.5],
-                    "policy_adjustment_needed": ["Major", "Moderate", "Major", "Moderate"],
-                }
-            ),
-            "financial_stability": pd.DataFrame(
-                {
-                    "risk_category": [
-                        "Algorithmic Trading",
-                        "Credit Decisions",
-                        "Cyber Risk",
-                        "Market Concentration",
-                        "Systemic Bias",
-                    ],
-                    "severity_score": [7.8, 8.2, 9.0, 8.5, 7.5],
-                    "likelihood_score": [8.5, 9.0, 8.8, 7.5, 8.2],
-                    "mitigation_readiness": [6.5, 7.0, 5.8, 5.2, 4.5],
-                    "regulatory_priority": ["High", "Critical", "Critical", "High", "Medium"],
-                }
-            ),
-            "emerging_markets": pd.DataFrame(
-                {
-                    "country": ["India", "Brazil", "Mexico", "Indonesia", "South Africa"],
-                    "ai_readiness_score": [6.8, 5.5, 5.8, 5.2, 5.5],
-                    "infrastructure_gap": [35, 45, 42, 55, 48],
-                    "skills_gap": [42, 55, 52, 65, 58],
-                    "policy_framework_score": [7.2, 5.8, 6.0, 5.5, 6.2],
-                    "growth_potential": [9.2, 7.5, 7.8, 8.5, 7.2],
-                }
-            ),
-            "trade_implications": pd.DataFrame(
-                {
-                    "trade_aspect": [
-                        "Manufacturing Competitiveness",
-                        "Services Trade",
-                        "Digital Trade",
-                        "Supply Chain Resilience",
-                    ],
-                    "impact_magnitude_percent": [15.0, 25.0, 35.0, 20.0],
-                    "transformation_level": ["High", "High", "High", "Medium"],
-                    "implementation_timeline": ["5 years", "3 years", "2 years", "4 years"],
-                }
-            ),
+            "macroeconomic_impact": pd.DataFrame(),
+            "fiscal_implications": pd.DataFrame(),
+            "monetary_policy": pd.DataFrame(),
+            "financial_stability": pd.DataFrame(),
+            "emerging_markets": pd.DataFrame(),
+            "trade_implications": pd.DataFrame(),
         }
 
 

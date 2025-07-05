@@ -964,91 +964,12 @@ class NVIDIATokenLoader(BaseDataLoader):
     def _get_fallback_datasets(self) -> Dict[str, pd.DataFrame]:
         """Return fallback datasets when extraction fails."""
         return {
-            "token_pricing_evolution": pd.DataFrame(
-                {
-                    "metric": [
-                        "cost_reduction_factor",
-                        "price_per_1k_tokens",
-                        "price_per_1k_tokens",
-                        "tokens_per_dollar",
-                        "price_reduction_percentage",
-                    ],
-                    "value": [280.0, 0.0002, 0.06, 2000000, 99.7],
-                    "unit": ["multiplier", "usd", "usd", "tokens", "percentage"],
-                    "model": [
-                        "Overall",
-                        "GPT-4 (2025)",
-                        "GPT-3 (2022)",
-                        "GPT-4 (2025)",
-                        "GPT-3 to GPT-4",
-                    ],
-                    "date": ["2022-2025", "2025", "2022", "2025", "2022-2025"],
-                }
-            ),
-            "model_efficiency_trends": pd.DataFrame(
-                {
-                    "model_name": ["GPT-3", "GPT-4", "Claude 3", "Gemini 1.5", "Open Source LLMs"],
-                    "parameters": [175, 1760, 130, 540, 70],
-                    "tokens_per_second": [20, 40, 45, 50, 60],
-                    "quality_score": [7.5, 9.3, 9.0, 9.1, 7.8],
-                    "efficiency_ratio": [0.43, 0.53, 0.69, 0.56, 1.11],
-                }
-            ),
-            "infrastructure_costs": pd.DataFrame(
-                {
-                    "cost_category": ["GPU", "training", "inference", "cloud", "energy"],
-                    "cost_value": [22000, 150000, 95000, 1200, 48000],
-                    "year": [2025, 2025, 2025, 2025, 2025],
-                    "metric_type": [
-                        "hardware_cost",
-                        "training_cost",
-                        "inference_cost",
-                        "cloud_cost",
-                        "energy_cost",
-                    ],
-                }
-            ),
-            "token_optimization": pd.DataFrame(
-                {
-                    "optimization_technique": [
-                        "Prompt Engineering",
-                        "Context Caching",
-                        "RAG Implementation",
-                        "Batch Processing",
-                        "Model Quantization",
-                    ],
-                    "improvement_value": [35.0, 45.0, 70.0, 60.0, 25.0],
-                    "metric_type": ["percentage"] * 5,
-                    "implementation_complexity": ["Low", "Medium", "Medium", "Low", "Medium"],
-                }
-            ),
-            "compute_requirements": pd.DataFrame(
-                {
-                    "use_case": [
-                        "Chatbot",
-                        "Code Generation",
-                        "Content Writing",
-                        "Translation",
-                        "Data Analysis",
-                    ],
-                    "avg_tokens_per_request": [500, 1500, 2000, 800, 3000],
-                    "gpu_hours_required": [2500, 2700, 4250, 700, 1875],
-                    "cost_per_million_requests": [25, 75, 100, 40, 150],
-                    "latency_ms": [100, 500, 1000, 200, 2000],
-                }
-            ),
-            "economic_barriers": pd.DataFrame(
-                {
-                    "barrier_type": [
-                        "Initial Infrastructure Cost",
-                        "Talent Acquisition Cost",
-                        "Ongoing Operational Cost",
-                        "Integration Cost",
-                    ],
-                    "cost_value": [2500000, 1200000, 850000, 450000],
-                    "severity_score": [9.0, 8.8, 7.2, 6.0],
-                }
-            ),
+            "token_pricing_evolution": pd.DataFrame(),
+            "model_efficiency_trends": pd.DataFrame(),
+            "infrastructure_costs": pd.DataFrame(),
+            "token_optimization": pd.DataFrame(),
+            "compute_requirements": pd.DataFrame(),
+            "economic_barriers": pd.DataFrame(),
         }
 
 

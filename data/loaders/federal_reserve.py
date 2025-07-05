@@ -810,88 +810,12 @@ class RichmondFedLoader(BaseDataLoader):
     def _get_fallback_datasets(self) -> Dict[str, pd.DataFrame]:
         """Return fallback datasets when extraction fails."""
         return {
-            "productivity_trends": pd.DataFrame(
-                {
-                    "metric": [
-                        "productivity_growth_rate",
-                        "productivity_growth_rate",
-                        "total_factor_productivity",
-                    ],
-                    "value": [0.5, 1.2, 0.8],
-                    "period": ["2020-2024", "2010-2020", "2020-2024"],
-                    "unit": ["percentage", "percentage", "percentage"],
-                }
-            ),
-            "technology_adoption": pd.DataFrame(
-                {
-                    "technology": ["AI", "Cloud Computing", "Automation", "Analytics", "IoT"],
-                    "adoption_rate": [55.0, 78.0, 42.0, 65.0, 38.0],
-                    "year": [2024, 2024, 2024, 2024, 2024],
-                    "adoption_stage": [
-                        "Growing Adoption",
-                        "Mainstream",
-                        "Growing Adoption",
-                        "Mainstream",
-                        "Growing Adoption",
-                    ],
-                }
-            ),
-            "workforce_transformation": pd.DataFrame(
-                {
-                    "metric": ["workforce_change_percentage", "jobs_affected_millions"],
-                    "value": [25.0, 12.0],
-                    "unit": ["percentage", "millions"],
-                    "impact_type": ["transformation", "transformation"],
-                    "timeframe": ["Next 10 years", "By 2030"],
-                }
-            ),
-            "skill_requirements": pd.DataFrame(
-                {
-                    "skill_category": [
-                        "AI/ML Skills",
-                        "Data Analysis",
-                        "Digital Skills",
-                        "Critical Thinking",
-                        "Adaptability",
-                    ],
-                    "importance_score": [85.0, 78.0, 72.0, 68.0, 65.0],
-                    "skill_type": [
-                        "Technical",
-                        "Technical",
-                        "Digital Literacy",
-                        "Soft Skills",
-                        "Soft Skills",
-                    ],
-                    "demand_level": ["Critical", "Critical", "Critical", "High", "High"],
-                }
-            ),
-            "regional_variations": pd.DataFrame(
-                {
-                    "region": ["Urban", "Suburban", "Rural", "Northeast", "Southeast"],
-                    "metric_value": [65.0, 52.0, 28.0, 58.0, 48.0],
-                    "metric_type": ["technology_adoption_rate"] * 5,
-                    "unit": ["percentage"] * 5,
-                }
-            ),
-            "policy_implications": pd.DataFrame(
-                {
-                    "policy_area": [
-                        "Education and Training",
-                        "Infrastructure Investment",
-                        "Worker Protection",
-                        "Innovation Support",
-                    ],
-                    "priority_level": ["Critical", "High", "High", "Medium"],
-                    "impact_value": [25.0, 50.0, None, 3.0],
-                    "impact_unit": ["percentage", "billion", None, "multiplier"],
-                    "implementation_timeframe": [
-                        "Immediate",
-                        "Short-term (1-2 years)",
-                        "Short-term (1-2 years)",
-                        "Medium-term (3-5 years)",
-                    ],
-                }
-            ),
+            "genai_adoption_speed": pd.DataFrame(),
+            "productivity_impact": pd.DataFrame(),
+            "task_automation": pd.DataFrame(),
+            "worker_category_impacts": pd.DataFrame(),
+            "implementation_timeline": pd.DataFrame(),
+            "economic_implications": pd.DataFrame(),
         }
 
 
@@ -1605,75 +1529,12 @@ class StLouisFedLoader(BaseDataLoader):
     def _get_fallback_datasets(self) -> Dict[str, pd.DataFrame]:
         """Return fallback datasets when extraction fails."""
         return {
-            "genai_adoption_speed": pd.DataFrame(
-                {
-                    "metric": ["adoption_rate", "adoption_growth_rate"],
-                    "value": [65.0, 45.0],
-                    "technology": ["Generative AI", "Generative AI"],
-                    "time_period": ["2024", "2023-2024"],
-                    "unit": ["percentage", "percentage"],
-                }
-            ),
-            "productivity_impact": pd.DataFrame(
-                {
-                    "metric": [
-                        "productivity_improvement_percentage",
-                        "time_saved",
-                        "output_multiplier",
-                    ],
-                    "value": [30.0, 2.5, 1.8],
-                    "unit": ["percentage", "hours", "multiplier"],
-                    "context": ["general_tasks", "content_creation", "software_development"],
-                }
-            ),
-            "task_automation": pd.DataFrame(
-                {
-                    "task_category": [
-                        "Administrative",
-                        "Analytical",
-                        "Creative",
-                        "Technical",
-                        "Communication",
-                    ],
-                    "automation_potential": [75.0, 65.0, 45.0, 55.0, 60.0],
-                    "feasibility": ["High", "Medium", "Medium", "Medium", "Medium"],
-                    "timeframe": ["Immediate", "1-2 years", "1-2 years", "Ongoing", "Immediate"],
-                }
-            ),
-            "worker_category_impacts": pd.DataFrame(
-                {
-                    "worker_category": [
-                        "Knowledge workers",
-                        "Administrative staff",
-                        "Creative professionals",
-                        "Technical workers",
-                    ],
-                    "impact_value": [35.0, 45.0, 25.0, 30.0],
-                    "impact_type": [
-                        "productivity_gain",
-                        "augmentation",
-                        "augmentation",
-                        "productivity_gain",
-                    ],
-                    "skill_level": ["High", "Medium", "High", "High"],
-                }
-            ),
-            "implementation_timeline": pd.DataFrame(
-                {
-                    "phase": ["Pilot", "Early Adoption", "Scaling", "Full Deployment"],
-                    "duration": ["6 months", "12 months", "18 months", "24 months"],
-                    "target_date": ["Q2 2024", "Q4 2024", "Q2 2025", "Q4 2025"],
-                    "status": ["Completed", "In Progress", "Planned", "Planned"],
-                }
-            ),
-            "economic_implications": pd.DataFrame(
-                {
-                    "metric": ["Economic value", "GDP impact", "Productivity boost"],
-                    "value": [100.0, 0.5, 1.5],
-                    "unit": ["billions_usd", "percentage", "percentage"],
-                    "scope": ["Total impact", "Annual growth", "Annual"],
-                }
-            ),
+            "genai_adoption_speed": pd.DataFrame(),
+            "productivity_impact": pd.DataFrame(),
+            "task_automation": pd.DataFrame(),
+            "worker_category_impacts": pd.DataFrame(),
+            "implementation_timeline": pd.DataFrame(),
+            "economic_implications": pd.DataFrame(),
         }
 
 

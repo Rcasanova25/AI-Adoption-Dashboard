@@ -53,8 +53,8 @@ class McKinseyLoader(BaseDataLoader):
         logger.info(f"Loading data from {self.source.name} {self.source.version}")
 
         if not self.extractor:
-            logger.warning("PDF extractor not available, returning fallback datasets")
-            return self._get_fallback_datasets()
+            logger.warning("PDF extractor not available, returning empty datasets")
+            return self._get_empty_datasets()
 
         datasets = {}
 
@@ -93,14 +93,15 @@ class McKinseyLoader(BaseDataLoader):
 
         except Exception as e:
             logger.error(f"Error during PDF extraction: {e}")
-            return self._get_fallback_datasets()
+            # Return empty datasets on error
+            return self._get_empty_datasets()
 
         # Validate datasets
         if datasets:
             self.validate(datasets)
         else:
-            logger.warning("No data extracted from PDF, using fallback data")
-            datasets = self._get_fallback_datasets()
+            logger.warning("No data extracted from PDF, using empty datasets")
+            datasets = self._get_empty_datasets()
 
         return datasets
 
@@ -903,84 +904,13 @@ class McKinseyLoader(BaseDataLoader):
         logger.info("Data validation passed")
         return True
 
-    def _get_fallback_datasets(self) -> Dict[str, pd.DataFrame]:
-        """Return fallback datasets when extraction fails."""
+    def _get_empty_datasets(self) -> Dict[str, pd.DataFrame]:
+        """Return empty datasets when extraction fails."""
         return {
-            "financial_impact": pd.DataFrame(
-                {
-                    "metric": [
-                        "Cost reduction - Service Operations",
-                        "Revenue increase - Marketing & Sales",
-                        "Productivity gain - Software Engineering",
-                    ],
-                    "value": [20.0, 15.0, 35.0],
-                    "unit": ["percentage", "percentage", "percentage"],
-                    "category": ["cost_savings", "revenue_gains", "productivity"],
-                }
-            ),
-            "use_case_adoption": pd.DataFrame(
-                {
-                    "function": [
-                        "Marketing & Sales",
-                        "Service Operations",
-                        "Supply Chain",
-                        "Software Engineering",
-                        "Finance",
-                        "HR",
-                    ],
-                    "adoption_rate": [42.0, 28.0, 23.0, 22.0, 18.0, 13.0],
-                    "genai_adoption": [38.0, 23.0, 15.0, 45.0, 12.0, 8.0],
-                    "year": [2024] * 6,
-                }
-            ),
-            "implementation_barriers": pd.DataFrame(
-                {
-                    "barrier": [
-                        "Lack of skilled talent",
-                        "Data quality issues",
-                        "Integration complexity",
-                        "Unclear ROI",
-                        "Security concerns",
-                    ],
-                    "percentage": [68.0, 62.0, 58.0, 45.0, 48.0],
-                    "category": [
-                        "talent",
-                        "data",
-                        "technology",
-                        "financial",
-                        "security_compliance",
-                    ],
-                }
-            ),
-            "talent_metrics": pd.DataFrame(
-                {
-                    "metric": [
-                        "talent_gap_percentage",
-                        "hiring_increase_percentage",
-                        "employees_trained_percentage",
-                    ],
-                    "value": [65.0, 45.0, 28.0],
-                    "year": [2024, 2024, 2024],
-                }
-            ),
-            "productivity_gains": pd.DataFrame(
-                {
-                    "metric": ["productivity_improvement", "time_saved", "efficiency_multiplier"],
-                    "value": [30.0, 120.0, 2.5],
-                    "unit": ["percentage", "hours", "multiplier"],
-                    "category": ["general_productivity", "time_savings", "efficiency"],
-                }
-            ),
-            "risk_governance": pd.DataFrame(
-                {
-                    "governance_aspect": [
-                        "AI ethics guidelines",
-                        "Risk assessment framework",
-                        "Data privacy controls",
-                        "Bias detection and mitigation",
-                    ],
-                    "adoption_rate": [62.0, 55.0, 78.0, 45.0],
-                    "year": [2024, 2024, 2024, 2024],
-                }
-            ),
+            "financial_impact": pd.DataFrame(),
+            "use_case_adoption": pd.DataFrame(),
+            "implementation_barriers": pd.DataFrame(),
+            "talent_metrics": pd.DataFrame(),
+            "productivity_gains": pd.DataFrame(),
+            "risk_governance": pd.DataFrame(),
         }

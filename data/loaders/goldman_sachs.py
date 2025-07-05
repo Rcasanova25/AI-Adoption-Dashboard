@@ -857,75 +857,10 @@ class GoldmanSachsLoader(BaseDataLoader):
     def _get_fallback_datasets(self) -> Dict[str, pd.DataFrame]:
         """Return fallback datasets when extraction fails."""
         return {
-            "gdp_impact": pd.DataFrame(
-                {
-                    "metric": [
-                        "GDP growth rate",
-                        "GDP impact (trillions USD)",
-                        "Annual productivity growth",
-                    ],
-                    "value": [7.0, 7.0, 1.5],
-                    "unit": ["percentage", "trillions_usd", "percentage"],
-                    "region": ["Global", "Global", "Global"],
-                    "timeframe": ["by 2030-2040", "cumulative", "annual"],
-                }
-            ),
-            "labor_impact": pd.DataFrame(
-                {
-                    "metric": [
-                        "workforce_exposed_percentage",
-                        "tasks_automatable_percentage",
-                        "workers_affected_millions",
-                    ],
-                    "value": [25.0, 40.0, 300.0],
-                    "unit": ["percentage", "percentage", "millions"],
-                    "impact_type": ["automation", "automation", "transformation"],
-                }
-            ),
-            "productivity_gains": pd.DataFrame(
-                {
-                    "sector": [
-                        "Professional Services",
-                        "Manufacturing",
-                        "Healthcare",
-                        "Financial Services",
-                        "Retail",
-                    ],
-                    "productivity_gain": [40.0, 35.0, 30.0, 35.0, 25.0],
-                    "timeframe": ["projected", "projected", "projected", "projected", "projected"],
-                    "unit": ["percentage"] * 5,
-                }
-            ),
-            "automation_exposure": pd.DataFrame(
-                {
-                    "occupation": [
-                        "Administrative",
-                        "Legal",
-                        "Architecture and Engineering",
-                        "Sales",
-                        "Computer and Mathematical",
-                    ],
-                    "automation_exposure": [85.0, 75.0, 45.0, 65.0, 20.0],
-                    "risk_level": ["High", "High", "Medium", "Medium", "Low"],
-                }
-            ),
-            "growth_scenarios": pd.DataFrame(
-                {
-                    "scenario": ["Baseline", "Optimistic", "Conservative"],
-                    "gdp_growth_rate": [7.0, 10.0, 4.0],
-                    "probability": ["High (60-70%)", "Medium (20-30%)", "Low (10-20%)"],
-                }
-            ),
-            "investment_outlook": pd.DataFrame(
-                {
-                    "metric": [
-                        "Investment required",
-                        "Expected return",
-                        "Infrastructure investment",
-                    ],
-                    "value": [200.0, 25.0, 50.0],
-                    "unit": ["billions_usd", "percentage", "billions_usd"],
-                    "category": ["General", "ROI", "Infrastructure"],
-                }
-            ),
+            "gdp_impact": pd.DataFrame(),
+            "labor_impact": pd.DataFrame(),
+            "productivity_gains": pd.DataFrame(),
+            "automation_exposure": pd.DataFrame(),
+            "growth_scenarios": pd.DataFrame(),
+            "investment_outlook": pd.DataFrame(),
         }

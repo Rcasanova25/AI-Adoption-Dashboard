@@ -1231,101 +1231,13 @@ class OECDLoader(BaseDataLoader):
     def _get_fallback_datasets(self) -> Dict[str, pd.DataFrame]:
         """Return fallback datasets when extraction fails."""
         return {
-            "national_ai_strategies": pd.DataFrame(
-                {
-                    "country": ["United States", "China", "United Kingdom", "Germany", "France"],
-                    "strategy_launch_year": [2019, 2017, 2018, 2018, 2018],
-                    "strategy_maturity_score": [8.5, 9.2, 8.8, 8.2, 7.9],
-                    "public_funding_billions": [5.2, 15.8, 1.8, 3.2, 2.5],
-                    "ai_governance_framework": [True, True, True, True, True],
-                    "ethics_guidelines": [True, True, True, True, True],
-                }
-            ),
-            "policy_instruments": pd.DataFrame(
-                {
-                    "instrument_type": [
-                        "R&D Funding",
-                        "Tax Incentives",
-                        "Regulatory Sandboxes",
-                        "Public-Private Partnerships",
-                        "Skills Programs",
-                    ],
-                    "countries_implementing": [52, 38, 25, 45, 48],
-                    "effectiveness_score": [8.2, 7.5, 8.8, 8.0, 7.8],
-                    "implementation_complexity": ["Medium", "Low", "High", "Medium", "High"],
-                    "avg_budget_millions": [125, 85, 45, 95, 105],
-                }
-            ),
-            "ai_principles_adoption": pd.DataFrame(
-                {
-                    "principle": [
-                        "Inclusive growth and well-being",
-                        "Human-centered values",
-                        "Transparency and explainability",
-                        "Robustness and safety",
-                        "Accountability",
-                    ],
-                    "adoption_rate_percent": [72, 78, 65, 82, 68],
-                    "implementation_score": [6.5, 7.2, 5.8, 7.8, 6.2],
-                    "policy_coverage": ["High", "High", "Medium", "High", "Medium"],
-                    "enforcement_level": ["Medium", "Low", "Low", "High", "Medium"],
-                }
-            ),
-            "regulatory_approaches": pd.DataFrame(
-                {
-                    "region": ["European Union", "United States", "China", "United Kingdom"],
-                    "regulatory_approach": [
-                        "Comprehensive (AI Act)",
-                        "Sectoral/Risk-based",
-                        "Development-focused",
-                        "Principles-based",
-                    ],
-                    "implementation_stage": [
-                        "Adopted",
-                        "Developing",
-                        "Implemented",
-                        "Consultation",
-                    ],
-                    "industry_alignment": [6.5, 8.2, 7.8, 8.5],
-                    "innovation_impact": [-15, 5, 12, 8],
-                    "compliance_cost_index": [85, 45, 55, 40],
-                }
-            ),
-            "international_cooperation": pd.DataFrame(
-                {
-                    "initiative": ["GPAI", "OECD AI", "UNESCO AI Ethics", "EU-US TTC"],
-                    "member_countries": [29, 46, 193, 2],
-                    "focus_area": [
-                        "Responsible AI",
-                        "Policy coordination",
-                        "Ethics",
-                        "Tech cooperation",
-                    ],
-                    "effectiveness_score": [7.5, 8.2, 6.8, 7.8],
-                    "budget_millions": [15, 25, 8, 45],
-                }
-            ),
-            "skills_initiatives": pd.DataFrame(
-                {
-                    "country": ["Singapore", "Finland", "Canada", "South Korea", "Germany"],
-                    "ai_in_curriculum": [True, True, True, True, False],
-                    "reskilling_programs": [185, 95, 125, 165, 145],
-                    "public_training_budget_millions": [125, 45, 85, 105, 95],
-                    "citizens_trained_thousands": [450, 850, 325, 580, 285],
-                    "industry_partnership_score": [9.2, 8.5, 8.8, 9.0, 8.2],
-                }
-            ),
-            "public_investment": pd.DataFrame(
-                {
-                    "year": [2021, 2022, 2023, 2024, 2025],
-                    "global_public_investment_billions": [72, 95, 125, 165, 215],
-                    "us_share_percent": [30, 29, 28, 27, 26],
-                    "china_share_percent": [31, 32, 33, 34, 35],
-                    "eu_share_percent": [21, 20, 20, 19, 19],
-                    "other_share_percent": [18, 19, 19, 20, 20],
-                    "focus_on_safety_percent": [12, 18, 25, 32, 38],
-                }
-            ),
+            "national_ai_strategies": pd.DataFrame(),
+            "policy_instruments": pd.DataFrame(),
+            "ai_principles_adoption": pd.DataFrame(),
+            "regulatory_approaches": pd.DataFrame(),
+            "international_cooperation": pd.DataFrame(),
+            "skills_initiatives": pd.DataFrame(),
+            "public_investment": pd.DataFrame(),
         }
 
 

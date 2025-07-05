@@ -90,15 +90,15 @@ class AIIndexLoader(BaseDataLoader):
 
         except Exception as e:
             logger.error(f"Error during PDF extraction: {e}")
-            # Return minimal valid datasets on error
-            return self._get_fallback_datasets()
+            # Return empty datasets on error
+            return self._get_empty_datasets()
 
         # Validate all datasets
         if datasets:
             self.validate(datasets)
         else:
-            logger.warning("No data extracted from PDF, using fallback data")
-            datasets = self._get_fallback_datasets()
+            logger.warning("No data extracted from PDF, using empty datasets")
+            datasets = self._get_empty_datasets()
 
         return datasets
 
@@ -829,43 +829,4 @@ class AIIndexLoader(BaseDataLoader):
             "firm_size_adoption": pd.DataFrame(columns=["firm_size", "adoption_rate"]),
             "ai_maturity": pd.DataFrame(columns=["maturity_level", "percentage_of_firms"]),
             "investment_trends": pd.DataFrame(columns=["year", "global_investment_billions"]),
-        }
-
-    def _get_fallback_datasets(self) -> Dict[str, pd.DataFrame]:
-        """Return minimal valid datasets when extraction fails."""
-        # Provide minimal valid data to keep the dashboard functional
-        return {
-            "adoption_trends": pd.DataFrame(
-                {
-                    "year": [2023, 2024, 2025],
-                    "overall_adoption": [55.0, 71.0, 78.0],
-                    "genai_adoption": [33.0, 65.0, 71.0],
-                }
-            ),
-            "sector_adoption": pd.DataFrame(
-                {
-                    "sector": ["Technology", "Financial Services", "Healthcare"],
-                    "year": [2025, 2025, 2025],
-                    "adoption_rate": [89.0, 78.0, 67.0],
-                }
-            ),
-            "geographic_adoption": pd.DataFrame(
-                {
-                    "location": ["United States", "China", "Europe"],
-                    "year": [2025, 2025, 2025],
-                    "adoption_rate": [78.0, 72.0, 65.0],
-                }
-            ),
-            "firm_size_adoption": pd.DataFrame(
-                {"firm_size": ["<50", "50-249", "250+"], "adoption_rate": [14.8, 31.2, 65.0]}
-            ),
-            "ai_maturity": pd.DataFrame(
-                {
-                    "maturity_level": ["Exploring", "Scaling", "Transforming"],
-                    "percentage_of_firms": [40.0, 45.0, 15.0],
-                }
-            ),
-            "investment_trends": pd.DataFrame(
-                {"year": [2023, 2024, 2025], "global_investment_billions": [142.3, 189.5, 252.3]}
-            ),
         }
