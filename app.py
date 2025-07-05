@@ -7,7 +7,7 @@ import streamlit as st
 
 # Import components
 from components.accessibility import AccessibilityManager, create_accessible_dashboard_layout
-from components.competitive_assessor import CompetitiveAssessor
+from components.competitive_assessor import CompetitivePositionAssessor as CompetitiveAssessor
 
 # Import economic insights
 from components.economic_insights import EconomicInsights
