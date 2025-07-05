@@ -7,13 +7,8 @@ import streamlit as st
 
 # Import components
 from components.accessibility import AccessibilityManager, create_accessible_dashboard_layout
-from components.competitive_assessor import CompetitivePositionAssessor as CompetitiveAssessor
-
-# Import economic insights
-from components.economic_insights import EconomicInsights
 from components.ui.metric_card import render_metric_card
 from components.ui.theme import ThemeManager
-from components.view_enhancements import ViewEnhancer as ViewEnhancements
 
 # Import data management
 from data.data_manager import DataManager, create_optimized_manager
