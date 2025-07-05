@@ -27,6 +27,16 @@ def render(data: Dict[str, Any]) -> None:
     sector_2025 = data.get("sector_2025")
     a11y = data.get("a11y")
 
+    # Data presence checks
+    missing = []
+    if sector_2025 is None or (hasattr(sector_2025, 'empty') and sector_2025.empty):
+        missing.append('sector_2025')
+    if a11y is None:
+        missing.append('a11y')
+    if missing:
+        st.error(f"Missing or empty data for: {', '.join(missing)}. Please check your data sources or contact support.")
+        return
+
     st.write("💰 **ROI Analysis: Comprehensive Economic Impact**")
 
     # Create detailed ROI dashboard

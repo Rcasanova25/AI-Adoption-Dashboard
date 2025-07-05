@@ -22,6 +22,16 @@ def render(data: Dict[str, Any]) -> None:
     skill_gap_data = data.get("skill_gap_data")
     a11y = data.get("a11y")
 
+    # Data presence checks
+    missing = []
+    if skill_gap_data is None or (hasattr(skill_gap_data, 'empty') and skill_gap_data.empty):
+        missing.append('skill_gap_data')
+    if a11y is None:
+        missing.append('a11y')
+    if missing:
+        st.error(f"Missing or empty data for: {', '.join(missing)}. Please check your data sources or contact support.")
+        return
+
     st.write("🎓 **AI Skills Gap Analysis**")
 
     # Skills gap visualization

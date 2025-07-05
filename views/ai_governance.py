@@ -22,6 +22,16 @@ def render(data: Dict[str, Any]) -> None:
     ai_governance = data.get("ai_governance")
     a11y = data.get("a11y")
 
+    # Data presence checks
+    missing = []
+    if ai_governance is None or (hasattr(ai_governance, 'empty') and ai_governance.empty):
+        missing.append('ai_governance')
+    if a11y is None:
+        missing.append('a11y')
+    if missing:
+        st.error(f"Missing or empty data for: {', '.join(missing)}. Please check your data sources or contact support.")
+        return
+
     st.write("⚖️ **AI Governance & Ethics Implementation**")
 
     # Governance maturity visualization

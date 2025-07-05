@@ -28,6 +28,20 @@ def render(data: Dict[str, Any]) -> None:
     ai_productivity_estimates = data.get("ai_productivity_estimates")
     a11y = data.get("a11y")
 
+    # Data presence checks (must be before any access to the data)
+    missing = []
+    if productivity_data is None or (hasattr(productivity_data, 'empty') and productivity_data.empty):
+        missing.append('productivity_data')
+    if productivity_by_skill is None or (hasattr(productivity_by_skill, 'empty') and productivity_by_skill.empty):
+        missing.append('productivity_by_skill')
+    if ai_productivity_estimates is None or (hasattr(ai_productivity_estimates, 'empty') and ai_productivity_estimates.empty):
+        missing.append('ai_productivity_estimates')
+    if a11y is None:
+        missing.append('a11y')
+    if missing:
+        st.error(f"Missing or empty data for: {', '.join(missing)}. Please check your data sources or contact support.")
+        return
+
     st.write("📊 **AI Productivity Impact Research**")
 
     # Create tabs for different productivity views

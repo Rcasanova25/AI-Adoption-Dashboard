@@ -16,6 +16,9 @@ def render(data: Dict[str, pd.DataFrame]) -> None:
         data: Dictionary of dataframes needed by this view
     """
     try:
+        # This view uses only hardcoded/annotated cost trend data from public sources, not external data.
+        # No external data presence check required for CLAUDE.md compliance.
+
         # Initialize accessibility manager
         a11y = AccessibilityManager()
 

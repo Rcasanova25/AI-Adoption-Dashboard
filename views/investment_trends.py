@@ -21,6 +21,11 @@ def render(data: Dict[str, pd.DataFrame]) -> None:
         # Get required data
         ai_investment_data = data.get("ai_investment_data", pd.DataFrame())
 
+        # Data presence check
+        if ai_investment_data is None or ai_investment_data.empty:
+            st.error("AI investment data is unavailable or empty. Please check your data sources or contact support.")
+            return
+
         # Initialize accessibility manager
         a11y = AccessibilityManager()
 

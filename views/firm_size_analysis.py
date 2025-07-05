@@ -24,6 +24,16 @@ def render(data: Dict[str, Any]) -> None:
     firm_size = data.get("firm_size")
     a11y = data.get("a11y")
 
+    # Data presence checks
+    missing = []
+    if firm_size is None or (hasattr(firm_size, 'empty') and firm_size.empty):
+        missing.append('firm_size')
+    if a11y is None:
+        missing.append('a11y')
+    if missing:
+        st.error(f"Missing or empty data for: {', '.join(missing)}. Please check your data sources or contact support.")
+        return
+
     st.write("🏢 **AI Adoption by Firm Size**")
 
     # Enhanced visualization with annotations

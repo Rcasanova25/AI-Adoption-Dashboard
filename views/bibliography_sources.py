@@ -15,6 +15,7 @@ def render(data: Dict[str, Any]) -> None:
     Args:
         data: Dictionary containing required data (none needed for this view)
     """
+    # This view uses only hardcoded/public bibliography data, not external data. No data presence check required for CLAUDE.md compliance.
     st.write("📚 **Complete Bibliography & Source Citations**")
 
     st.markdown(

@@ -23,6 +23,19 @@ def render(data: Dict[str, pd.DataFrame]) -> None:
         token_optimization = data.get("token_optimization", pd.DataFrame())
         token_pricing_evolution = data.get("token_pricing_evolution", pd.DataFrame())
 
+        # Data presence checks
+        missing = []
+        if token_economics is None or token_economics.empty:
+            missing.append('token_economics')
+        if token_usage_patterns is None or token_usage_patterns.empty:
+            missing.append('token_usage_patterns')
+        if token_optimization is None or token_optimization.empty:
+            missing.append('token_optimization')
+        if token_pricing_evolution is None or token_pricing_evolution.empty:
+            missing.append('token_pricing_evolution')
+        if missing:
+            st.error(f"Missing or empty data for: {', '.join(missing)}. Please check your data sources or contact support.")
+            return
         # Initialize accessibility manager
         a11y = AccessibilityManager()
 

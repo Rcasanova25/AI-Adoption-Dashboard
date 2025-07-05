@@ -24,6 +24,16 @@ def render(data: Dict[str, Any]) -> None:
     tech_stack = data.get("tech_stack")
     a11y = data.get("a11y")
 
+    # Data presence checks
+    missing = []
+    if tech_stack is None or (hasattr(tech_stack, 'empty') and tech_stack.empty):
+        missing.append('tech_stack')
+    if a11y is None:
+        missing.append('a11y')
+    if missing:
+        st.error(f"Missing or empty data for: {', '.join(missing)}. Please check your data sources or contact support.")
+        return
+
     st.write("🔧 **AI Technology Stack Analysis**")
 
     # Enhanced pie chart with additional context
