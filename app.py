@@ -45,7 +45,7 @@ def show_source_info(source_key: str) -> str:
 class ThemeManager:
     def apply_theme(self) -> None:
         st.markdown(
-            """
+            '''
 <style>
     .metric-card {
         background-color: transparent; padding: 1rem; border-radius: 0.5rem;
@@ -62,7 +62,7 @@ class ThemeManager:
         #1f77b4; padding: 1rem; margin: 1rem 0; border-radius: 0.25rem;
     }
 </style>
-""",
+''',
             unsafe_allow_html=True,
         )
 
