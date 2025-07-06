@@ -1,0 +1,1 @@
+Fix: Pass a11y and show_source_info to views in app.py

@@ -1,9 +1,46 @@
 
 
 from data.data_manager import DataManager
+from components.accessibility import AccessibilityManager
 
 import streamlit as st
 from typing import Dict, Any, List
+
+def show_source_info(source_key: str) -> str:
+    sources = {
+        "ai_index": {
+            "title": "AI Index Report 2025",
+            "org": "Stanford HAI",
+            "url": "https://aiindex.stanford.edu/ai-index-report-2025/",
+            "methodology": "Comprehensive analysis of AI metrics globally",
+        },
+        "mckinsey": {
+            "title": "McKinsey Global Survey on AI",
+            "org": "McKinsey & Company",
+            "url": "https://www.mckinsey.com/capabilities/quantumblack/our-insights/the-state-of-ai",
+            "methodology": "1,491 participants across 101 nations, July 2024",
+        },
+        "oecd": {
+            "title": "OECD/BCG/INSEAD Report 2025",
+            "org": "OECD AI Policy Observatory",
+            "url": "https://oecd.ai",
+            "methodology": "840 enterprises across G7 countries + Brazil",
+        },
+        "census": {
+            "title": "US Census Bureau AI Use Supplement",
+            "org": "US Census Bureau",
+            "url": "https://www.census.gov",
+            "methodology": "850,000 U.S. firms surveyed",
+        },
+    }
+
+    if source_key in sources:
+        source = sources[source_key]
+        return f"""
+        **Source:** {source['title']} **Organization:** {source['org']}
+        **Methodology:** {source['methodology']} [View Report]({source['url']})
+        """
+    return """"
 
 class ThemeManager:
     def apply_theme(self) -> None:
@@ -117,6 +154,7 @@ class DashboardApp:
         self.theme_manager = ThemeManager()
         self.data_manager = DataManager()
         self.view_manager = ViewManager()
+        self.a11y = AccessibilityManager()
         self.setup_page()
 
     def setup_page(self) -> None:
@@ -139,6 +177,11 @@ class DashboardApp:
             "**Comprehensive analysis from early AI adoption (2018) to current GenAI trends (2025)**"
         )
         data = self.data_manager.get_all_datasets()
+        data["a11y"] = self.a11y
+        data["show_source_info"] = show_source_info
+
+        print(f"Loaded data keys: {data.keys()}") # Debugging print statement
+
         view_type = self.view_manager.render_sidebar()
         self.view_manager.render_view(view_type, data)
 
