@@ -40,7 +40,7 @@ def show_source_info(source_key: str) -> str:
         **Source:** {source['title']} **Organization:** {source['org']}
         **Methodology:** {source['methodology']} [View Report]({source['url']})
         """
-    return """"
+    return ""
 
 class ThemeManager:
     def apply_theme(self) -> None:
