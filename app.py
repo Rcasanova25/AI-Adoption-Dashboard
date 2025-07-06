@@ -8,6 +8,7 @@ import streamlit as st
 from plotly.subplots import make_subplots
 
 from data.data_manager import DataManager
+from data.services import get_data_service, show_data_error
 
 # Page config
 st.set_page_config(
@@ -28,6 +29,55 @@ st.set_page_config(
 def load_data():
     """Load all dashboard data with strict CLAUDE.md compliance: only real,
     validated data is allowed. No fallback/sample/hardcoded data."""
+    
+    # Initialize data service for validation
+    data_service = get_data_service()
+    
+    # Check overall data availability first
+    data_status = data_service.get_data_status_summary()
+    available_count = data_status["available"].sum()
+    total_count = len(data_status)
+    
+    # Show data status indicator
+    if available_count < total_count:
+        st.warning(f"⚠️ Data Status: {available_count}/{total_count} datasets available")
+        
+        # Show which sources are missing
+        missing_sources = data_status[~data_status["available"]]["source"].unique()
+        if len(missing_sources) > 0:
+            st.error(f"❌ Missing data sources: {', '.join(missing_sources)}")
+            
+            # Provide recovery suggestions
+            recovery_suggestions = [
+                "Check that all required data files are present in the data/ directory",
+                "Verify that data files are in the correct format (CSV, JSON, etc.)",
+                "Ensure data files have not been corrupted or deleted",
+                "Run data validation scripts to check data integrity",
+                "Contact the data team if the issue persists"
+            ]
+            
+            show_data_error(
+                "Critical data sources are missing. The dashboard cannot function properly without all required data.",
+                recovery_suggestions
+            )
+            
+            # Show detailed data status
+            with st.expander("📊 Detailed Data Status"):
+                # Color code the dataframe
+                def color_availability(row):
+                    if row["available"]:
+                        return ["background-color: #d4edda"] * len(row)
+                    else:
+                        return ["background-color: #f8d7da"] * len(row)
+                
+                st.dataframe(
+                    data_status.style.apply(color_availability, axis=1),
+                    use_container_width=True
+                )
+            
+            st.stop()
+    
+    # Load data using the original data manager for compatibility
     data_manager = init_data_manager()
     data_sources = {
         "ai_index": data_manager.get_data("ai_index"),
@@ -40,17 +90,33 @@ def load_data():
         "imf": data_manager.get_data("imf"),
         "academic": data_manager.get_data("academic"),
     }
-    # Validate all required data is present and non-empty
+    
+    # Validate all required data is present and non-empty with enhanced error reporting
+    validation_errors = []
     for key, ds in data_sources.items():
-        if (
-            not isinstance(ds, (pd.DataFrame, dict))
-            or (isinstance(ds, pd.DataFrame) and ds.empty)
-            or (isinstance(ds, dict) and not ds)
-        ):
-            st.error(
-                f"Required data source '{key}' is missing, empty, or not a DataFrame. Please check data sources."
-            )
-            st.stop()
+        if ds is None:
+            validation_errors.append(f"• {key}: Data source returned None")
+        elif isinstance(ds, pd.DataFrame) and ds.empty:
+            validation_errors.append(f"• {key}: DataFrame is empty")
+        elif isinstance(ds, dict) and not ds:
+            validation_errors.append(f"• {key}: Dictionary is empty")
+        elif not isinstance(ds, (pd.DataFrame, dict)):
+            validation_errors.append(f"• {key}: Invalid data type (expected DataFrame or dict, got {type(ds).__name__})")
+    
+    if validation_errors:
+        error_message = "❌ Data Validation Failed:\n\n" + "\n".join(validation_errors)
+        
+        recovery_suggestions = [
+            "Verify that all data source files exist in the expected locations",
+            "Check file permissions to ensure the application can read the data files",
+            "Validate the data format matches the expected schema",
+            "Review recent changes to data pipelines or ETL processes",
+            "Check system logs for any data loading errors"
+        ]
+        
+        show_data_error(error_message, recovery_suggestions)
+        st.stop()
+    
     return data_sources
 
 
@@ -65,6 +131,8 @@ if "year_filter" not in st.session_state:
     st.session_state.year_filter = None
 if "compare_years" not in st.session_state:
     st.session_state.compare_years = False
+if "show_data_status" not in st.session_state:
+    st.session_state.show_data_status = False
 
 
 # Helper function for source info
@@ -192,11 +260,38 @@ try:
     ) = loaded_data
 
 except Exception as e:
-    st.error(f"Error loading data: {str(e)}")
-    st.error(f"Please check the data loading function for issues.")
     import traceback
-
-    st.error(f"Full error: {traceback.format_exc()}")
+    
+    error_message = f"❌ Critical Error: Failed to load dashboard data\n\n**Error Details:**\n{str(e)}"
+    
+    recovery_suggestions = [
+        "Check that all required data files exist in the data/ directory",
+        "Verify file permissions and access rights", 
+        "Ensure data files are not corrupted or in an invalid format",
+        "Review the error traceback below for specific issues",
+        "Contact the development team if the issue persists"
+    ]
+    
+    show_data_error(error_message, recovery_suggestions)
+    
+    # Show detailed traceback in an expander
+    with st.expander("🔍 Full Error Traceback", expanded=True):
+        st.code(traceback.format_exc(), language="python")
+    
+    # Show data status to help diagnose the issue
+    with st.expander("📊 Data Source Status", expanded=True):
+        try:
+            data_service = get_data_service()
+            status_df = data_service.get_data_status_summary()
+            
+            # Show which sources are failing
+            failed_sources = status_df[~status_df["available"]]
+            if not failed_sources.empty:
+                st.error(f"❌ {len(failed_sources)} datasets are unavailable:")
+                st.dataframe(failed_sources, use_container_width=True)
+        except Exception as status_error:
+            st.error(f"Could not retrieve data status: {status_error}")
+    
     st.stop()
 
 # Custom CSS
@@ -228,6 +323,61 @@ st.markdown(
     "**Comprehensive analysis from early AI adoption (2018) to current GenAI trends (2025)**"
 )
 
+# Data Status Modal
+if st.session_state.show_data_status:
+    with st.container():
+        st.markdown("### 📊 Full Data Status Report")
+        
+        data_service = get_data_service()
+        full_status = data_service.get_data_status_summary()
+        
+        # Summary metrics
+        col1, col2, col3, col4 = st.columns(4)
+        with col1:
+            total = len(full_status)
+            st.metric("Total Datasets", total)
+        with col2:
+            available = full_status["available"].sum()
+            st.metric("Available", available, delta=f"{available/total*100:.0f}%")
+        with col3:
+            missing = total - available
+            st.metric("Missing", missing, delta=f"-{missing/total*100:.0f}%" if missing > 0 else "0%")
+        with col4:
+            sources = full_status["source"].nunique()
+            st.metric("Data Sources", sources)
+        
+        # Detailed status table
+        st.markdown("#### Detailed Dataset Status")
+        
+        # Prepare display dataframe
+        display_df = full_status.copy()
+        display_df["status"] = display_df["available"].map({True: "✅ Available", False: "❌ Missing"})
+        display_df = display_df[["view", "dataset", "source", "status", "records"]]
+        
+        # Color code the dataframe
+        def style_status(val):
+            if "✅" in str(val):
+                return "color: green"
+            elif "❌" in str(val):
+                return "color: red"
+            return ""
+        
+        styled_df = display_df.style.applymap(style_status, subset=["status"])
+        st.dataframe(styled_df, use_container_width=True, height=400)
+        
+        # Action buttons
+        col1, col2, col3 = st.columns([1, 1, 2])
+        with col1:
+            if st.button("🔄 Refresh Status", use_container_width=True):
+                data_service.clear_cache()
+                st.rerun()
+        with col2:
+            if st.button("❌ Close", use_container_width=True):
+                st.session_state.show_data_status = False
+                st.rerun()
+        
+        st.markdown("---")
+
 # What's New section
 with st.expander("🆕 What's New in Version 2.2.0", expanded=st.session_state.show_changelog):
     st.markdown(
@@ -254,6 +404,40 @@ Bureau AI Use Supplement.
 
 # Sidebar controls
 st.sidebar.header("📊 Dashboard Controls")
+
+# Data Status Indicator
+with st.sidebar:
+    data_service = get_data_service()
+    data_status = data_service.get_data_status_summary()
+    available_count = data_status["available"].sum()
+    total_count = len(data_status)
+    
+    if available_count == total_count:
+        st.success(f"✅ All data sources loaded ({available_count}/{total_count})")
+    elif available_count > 0:
+        st.warning(f"⚠️ Partial data: {available_count}/{total_count} sources")
+    else:
+        st.error(f"❌ No data sources available (0/{total_count})")
+    
+    # Add expandable data status details
+    with st.expander("📊 Data Source Details", expanded=False):
+        # Group by source and show availability
+        source_status = data_status.groupby("source")["available"].agg(["sum", "count"])
+        source_status["percentage"] = (source_status["sum"] / source_status["count"] * 100).round(0)
+        
+        for source, row in source_status.iterrows():
+            if row["sum"] == row["count"]:
+                st.write(f"✅ **{source}**: {int(row['sum'])}/{int(row['count'])} datasets")
+            elif row["sum"] > 0:
+                st.write(f"⚠️ **{source}**: {int(row['sum'])}/{int(row['count'])} datasets ({int(row['percentage'])}%)")
+            else:
+                st.write(f"❌ **{source}**: 0/{int(row['count'])} datasets")
+        
+        # Button to check full status
+        if st.button("🔍 View Full Status", use_container_width=True):
+            st.session_state.show_data_status = True
+
+st.sidebar.markdown("---")
 
 # Show persona selection
 persona = st.sidebar.selectbox(

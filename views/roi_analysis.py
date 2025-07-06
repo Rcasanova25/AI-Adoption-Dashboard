@@ -15,6 +15,7 @@ import plotly.graph_objects as go
 import streamlit as st
 
 from business.roi_analysis import compute_roi
+from data.services import get_data_service, show_data_error
 
 
 def render(data: Dict[str, Any]) -> None:
@@ -63,36 +64,58 @@ def render(data: Dict[str, Any]) -> None:
 
 def _render_investment_returns(a11y: Any) -> None:
     """Render the investment returns tab."""
-    # TODO: Load roi_data from actual data source
-    roi_data = pd.DataFrame()
+    # Load ROI data from actual data source
+    try:
+        data_service = get_data_service()
+        roi_data = data_service.get_required_data("roi_analysis", "roi_data")
+    except ValueError as e:
+        show_data_error(
+            str(e),
+            recovery_suggestions=[
+                "Ensure McKinsey data PDF is available",
+                "Check that ROI metrics were extracted successfully",
+                "Verify data mapping configuration"
+            ]
+        )
+        roi_data = pd.DataFrame()
 
     fig = go.Figure()
 
-    # ROI bars
-    fig.add_trace(
-        go.Bar(
-            name="Average ROI",
-            x=roi_data["investment_level"],
-            y=roi_data["avg_roi"],
-            yaxis="y",
-            marker_color="#2ECC71",
-            text=[f"{x}x" for x in roi_data["avg_roi"]],
-            textposition="outside",
+    if not roi_data.empty:
+        # ROI bars
+        fig.add_trace(
+            go.Bar(
+                name="Average ROI",
+                x=roi_data["investment_level"],
+                y=roi_data["avg_roi"],
+                yaxis="y",
+                marker_color="#2ECC71",
+                text=[f"{x}x" for x in roi_data["avg_roi"]],
+                textposition="outside",
+            )
         )
-    )
 
-    # Success rate line
-    fig.add_trace(
-        go.Scatter(
-            name="Success Rate",
-            x=roi_data["investment_level"],
-            y=roi_data["success_rate"],
-            yaxis="y2",
-            mode="lines+markers",
-            line=dict(width=3, color="#3498DB"),
-            marker=dict(size=10),
+        # Success rate line
+        fig.add_trace(
+            go.Scatter(
+                name="Success Rate",
+                x=roi_data["investment_level"],
+                y=roi_data["success_rate"],
+                yaxis="y2",
+                mode="lines+markers",
+                line=dict(width=3, color="#3498DB"),
+                marker=dict(size=10),
+            )
         )
-    )
+    else:
+        # Show placeholder when no data available
+        fig.add_annotation(
+            text="ROI data not available",
+            xref="paper", yref="paper",
+            x=0.5, y=0.5,
+            showarrow=False,
+            font=dict(size=16, color="gray")
+        )
 
     fig.update_layout(
         title="AI ROI by Investment Level",
@@ -122,8 +145,20 @@ def _render_investment_returns(a11y: Any) -> None:
 
 def _render_payback_analysis(a11y: Any) -> None:
     """Render the payback analysis tab."""
-    # TODO: Load payback_data from actual data source
-    payback_data = pd.DataFrame()
+    # Load payback data from actual data source
+    try:
+        data_service = get_data_service()
+        payback_data = data_service.get_required_data("roi_analysis", "payback_data")
+    except ValueError as e:
+        show_data_error(
+            str(e),
+            recovery_suggestions=[
+                "Ensure McKinsey data PDF is available",
+                "Check that payback scenarios were extracted",
+                "Verify data mapping configuration"
+            ]
+        )
+        payback_data = pd.DataFrame()
 
     fig = go.Figure()
 
@@ -154,8 +189,20 @@ def _render_payback_analysis(a11y: Any) -> None:
     # Time to value breakdown
     st.subheader("⏱️ Time to Value by AI Capability")
 
-    # TODO: Load time_to_value data from actual data source
-    time_to_value = pd.DataFrame()
+    # Load time to value data from actual data source
+    try:
+        data_service = get_data_service()
+        time_to_value = data_service.get_required_data("roi_analysis", "time_to_value")
+    except ValueError as e:
+        show_data_error(
+            str(e),
+            recovery_suggestions=[
+                "Ensure McKinsey data PDF is available",
+                "Check that time to value metrics were extracted",
+                "Verify data mapping configuration"
+            ]
+        )
+        time_to_value = pd.DataFrame()
 
     fig2 = px.bar(
         time_to_value,
@@ -236,8 +283,20 @@ def _render_sector_roi(sector_2025: pd.DataFrame, a11y: Any) -> None:
     # ROI components breakdown
     st.subheader("💡 ROI Components by Sector")
 
-    # TODO: Load roi_components data from actual data source
-    roi_components = pd.DataFrame()
+    # Load ROI components data from actual data source
+    try:
+        data_service = get_data_service()
+        roi_components = data_service.get_required_data("roi_analysis", "roi_components")
+    except ValueError as e:
+        show_data_error(
+            str(e),
+            recovery_suggestions=[
+                "Ensure McKinsey data PDF is available",
+                "Check that ROI components by sector were extracted",
+                "Verify data mapping configuration"
+            ]
+        )
+        roi_components = pd.DataFrame()
 
     fig2 = go.Figure()
 

@@ -17,6 +17,7 @@ from business.economic_scenarios import (
 from components.accessibility import AccessibilityManager
 from data.models.adoption import AdoptionMetrics
 from data.models.economics import EconomicImpact
+from data.services import get_data_service, show_data_error
 
 
 def render(data: Dict[str, pd.DataFrame]) -> None:
@@ -353,8 +354,25 @@ def _render_standard_view(
 
 def _get_milestones() -> list:
     """Get authoritative milestones data."""
-    # TODO: Load milestones data from actual data source
-    return []
+    try:
+        data_service = get_data_service()
+        milestones_df = data_service.get_required_data("historical_trends", "milestones")
+        
+        # Convert DataFrame to list of dicts if needed
+        if isinstance(milestones_df, pd.DataFrame) and not milestones_df.empty:
+            return milestones_df.to_dict('records')
+        return []
+    except ValueError as e:
+        show_data_error(
+            str(e),
+            recovery_suggestions=[
+                "Ensure AI Index PDF file is available in resources directory",
+                "Check that PDF extraction completed successfully",
+                "Verify data mapping configuration is correct",
+                "Try restarting the application"
+            ]
+        )
+        return []
 
 
 def _add_annotations(fig: go.Figure, filtered_data: pd.DataFrame) -> None:
@@ -482,22 +500,44 @@ def _show_insights() -> None:
     # Convergence factors analysis
     st.subheader("🎯 Convergence Factors: Why 2021-2022 Was the Tipping Point")
 
-    # TODO: Load convergence factors data from actual data source
-    convergence_factors = pd.DataFrame()
+    # Load convergence factors data
+    try:
+        data_service = get_data_service()
+        convergence_factors = data_service.get_required_data("historical_trends", "convergence_factors")
+    except ValueError as e:
+        show_data_error(
+            str(e),
+            recovery_suggestions=[
+                "Ensure academic data sources are available",
+                "Check that convergence analysis data was extracted",
+                "Verify the academic PDF loader is configured correctly"
+            ]
+        )
+        convergence_factors = pd.DataFrame()
 
     # Create horizontal bar chart for convergence factors
     fig2 = go.Figure()
 
-    fig2.add_trace(
-        go.Bar(
-            y=convergence_factors["factor"],
-            x=convergence_factors["impact_score"],
-            orientation="h",
-            marker_color=["#3498DB", "#2ECC71", "#E74C3C", "#F39C12"],
-            text=[f"{x}%" for x in convergence_factors["impact_score"]],
-            textposition="outside",
+    if not convergence_factors.empty:
+        fig2.add_trace(
+            go.Bar(
+                y=convergence_factors["factor"],
+                x=convergence_factors["impact_score"],
+                orientation="h",
+                marker_color=["#3498DB", "#2ECC71", "#E74C3C", "#F39C12"],
+                text=[f"{x}%" for x in convergence_factors["impact_score"]],
+                textposition="outside",
+            )
         )
-    )
+    else:
+        # Show placeholder when no data available
+        fig2.add_annotation(
+            text="Convergence factors data not available",
+            xref="paper", yref="paper",
+            x=0.5, y=0.5,
+            showarrow=False,
+            font=dict(size=16, color="gray")
+        )
 
     fig2.update_layout(
         title="Convergence Factors: Multi-Source Analysis of 2021-2022 Acceleration",

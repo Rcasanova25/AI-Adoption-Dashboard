@@ -12,6 +12,7 @@ import plotly.graph_objects as go
 import streamlit as st
 
 from components.accessibility import AccessibilityManager
+from data.services import get_data_service, show_data_error
 
 
 def render(data: Dict[str, pd.DataFrame]) -> None:
@@ -138,36 +139,49 @@ def _render_energy_trends(a11y: AccessibilityManager) -> None:
     """Render energy trends tab."""
     st.write("**⚡ Energy Consumption and Nuclear Renaissance**")
 
-    # TODO: Load energy_data from actual data source
-    energy_data = pd.DataFrame()
+    # Load energy_data from actual data source
+    try:
+        data_service = get_data_service()
+        energy_data = data_service.get_required_data("academic", "ai_energy_consumption")
+    except ValueError as e:
+        show_data_error(
+            str(e),
+            recovery_suggestions=[
+                "Ensure academic data PDF is available",
+                "Check that energy consumption data was extracted successfully",
+                "Verify data mapping configuration"
+            ]
+        )
+        energy_data = pd.DataFrame()
 
     fig = go.Figure()
 
-    # Energy consumption
-    fig.add_trace(
-        go.Bar(
-            x=energy_data["year"],
-            y=energy_data["ai_energy_twh"],
-            name="AI Energy Use (TWh)",
-            marker_color="#3498DB",
-            yaxis="y",
-            text=[f"{x:.1f} TWh" for x in energy_data["ai_energy_twh"]],
-            textposition="outside",
+    if not energy_data.empty:
+        # Energy consumption
+        fig.add_trace(
+            go.Bar(
+                x=energy_data["year"],
+                y=energy_data["ai_energy_twh"],
+                name="AI Energy Use (TWh)",
+                marker_color="#3498DB",
+                yaxis="y",
+                text=[f"{x:.1f} TWh" for x in energy_data["ai_energy_twh"]],
+                textposition="outside",
+            )
         )
-    )
 
-    # Nuclear deals
-    fig.add_trace(
-        go.Scatter(
-            x=energy_data["year"],
-            y=energy_data["nuclear_deals"],
-            name="Nuclear Energy Deals",
-            mode="lines+markers",
-            line=dict(width=3, color="#2ECC71"),
-            marker=dict(size=10),
-            yaxis="y2",
+        # Nuclear deals
+        fig.add_trace(
+            go.Scatter(
+                x=energy_data["year"],
+                y=energy_data["nuclear_deals"],
+                name="Nuclear Energy Deals",
+                mode="lines+markers",
+                line=dict(width=3, color="#2ECC71"),
+                marker=dict(size=10),
+                yaxis="y2",
+            )
         )
-    )
 
     fig.update_layout(
         title="AI Energy Consumption Driving Nuclear Energy Revival",
@@ -204,45 +218,60 @@ def _render_energy_trends(a11y: AccessibilityManager) -> None:
 
 def _render_mitigation_strategies(a11y: AccessibilityManager) -> None:
     """Render mitigation strategies tab."""
-    # TODO: Load mitigation data from actual data source
-    mitigation = pd.DataFrame()
+    # Load mitigation data from actual data source
+    try:
+        data_service = get_data_service()
+        mitigation = data_service.get_required_data("oecd", "mitigation_strategies")
+    except ValueError as e:
+        show_data_error(
+            str(e),
+            recovery_suggestions=[
+                "Ensure OECD data PDF is available",
+                "Check that mitigation strategies data was extracted successfully",
+                "Verify data mapping configuration"
+            ]
+        )
+        mitigation = pd.DataFrame()
 
-    fig = px.scatter(
-        mitigation,
-        x="adoption_rate",
-        y="potential_reduction",
-        size="timeframe",
-        color="strategy",
-        title="AI Sustainability Strategies: Impact vs Adoption",
-        labels={
-            "adoption_rate": "Current Adoption Rate (%)",
-            "potential_reduction": "Potential Emission Reduction (%)",
-            "timeframe": "Implementation Time (years)",
-        },
-        height=400,
-    )
+    if not mitigation.empty:
+        fig = px.scatter(
+            mitigation,
+            x="adoption_rate",
+            y="potential_reduction",
+            size="timeframe",
+            color="strategy",
+            title="AI Sustainability Strategies: Impact vs Adoption",
+            labels={
+                "adoption_rate": "Current Adoption Rate (%)",
+                "potential_reduction": "Potential Emission Reduction (%)",
+                "timeframe": "Implementation Time (years)",
+            },
+            height=400,
+        )
 
-    # Add target zone
-    fig.add_shape(
-        type="rect", x0=70, x1=100, y0=70, y1=100, fillcolor="lightgreen", opacity=0.2, line_width=0
-    )
-    fig.add_annotation(x=85, y=85, text="Target Zone", showarrow=False, font=dict(color="green"))
+        # Add target zone
+        fig.add_shape(
+            type="rect", x0=70, x1=100, y0=70, y1=100, fillcolor="lightgreen", opacity=0.2, line_width=0
+        )
+        fig.add_annotation(x=85, y=85, text="Target Zone", showarrow=False, font=dict(color="green"))
 
-    fig.update_traces(textposition="top center")
+        fig.update_traces(textposition="top center")
 
-    fig = a11y.make_chart_accessible(
-        fig,
-        title="AI Sustainability Strategies: Impact vs Adoption",
-        description=(
-            "A scatter plot analyzing AI sustainability strategies by their potential emission reduction (y-axis, 0-100%) versus current adoption rate (x-axis, 0-100%). "
-            "Point sizes represent implementation timeframe in years. Six strategies are shown: Model Reuse (95% reduction potential, 35% adoption, 1 year), "
-            "Renewable Energy (85% reduction, 45% adoption, 3 years), Carbon Offsets (100% reduction, 30% adoption, 1 year), "
-            "Edge Computing (60% reduction, 25% adoption, 2 years), Efficient Architectures (40% reduction, 65% adoption, 1 year), "
-            "and Quantum Computing (90% reduction, 5% adoption, 7 years). A green 'Target Zone' is highlighted in the upper right (70-100% adoption, 70-100% reduction), "
-            "representing the ideal high-impact, high-adoption area. Most strategies fall outside this zone, indicating significant opportunity for improvement."
-        ),
-    )
-    st.plotly_chart(fig, use_container_width=True)
+        fig = a11y.make_chart_accessible(
+            fig,
+            title="AI Sustainability Strategies: Impact vs Adoption",
+            description=(
+                "A scatter plot analyzing AI sustainability strategies by their potential emission reduction (y-axis, 0-100%) versus current adoption rate (x-axis, 0-100%). "
+                "Point sizes represent implementation timeframe in years. Six strategies are shown: Model Reuse (95% reduction potential, 35% adoption, 1 year), "
+                "Renewable Energy (85% reduction, 45% adoption, 3 years), Carbon Offsets (100% reduction, 30% adoption, 1 year), "
+                "Edge Computing (60% reduction, 25% adoption, 2 years), Efficient Architectures (40% reduction, 65% adoption, 1 year), "
+                "and Quantum Computing (90% reduction, 5% adoption, 7 years). A green 'Target Zone' is highlighted in the upper right (70-100% adoption, 70-100% reduction), "
+                "representing the ideal high-impact, high-adoption area. Most strategies fall outside this zone, indicating significant opportunity for improvement."
+            ),
+        )
+        st.plotly_chart(fig, use_container_width=True)
+    else:
+        st.warning("Mitigation strategies data is not available.")
 
     st.success(
         """
@@ -258,43 +287,58 @@ def _render_sustainability_metrics(a11y: AccessibilityManager) -> None:
     """Render sustainability metrics tab."""
     st.write("**Sustainability Performance Metrics**")
 
-    # TODO: Load metrics data from actual data source
-    metrics = pd.DataFrame()
+    # Load metrics data from actual data source
+    try:
+        data_service = get_data_service()
+        metrics = data_service.get_required_data("oecd", "sustainability_metrics")
+    except ValueError as e:
+        show_data_error(
+            str(e),
+            recovery_suggestions=[
+                "Ensure OECD data PDF is available",
+                "Check that sustainability metrics data was extracted successfully",
+                "Verify data mapping configuration"
+            ]
+        )
+        metrics = pd.DataFrame()
 
     fig = go.Figure()
 
     categories = ["Renewable %", "Efficiency", "Transparency"]
 
-    for _, company in metrics.iterrows():
-        values = [
-            company["renewable_pct"] / 10,  # Scale to 10
-            company["efficiency_score"],
-            company["transparency_score"],
-        ]
-        fig.add_trace(
-            go.Scatterpolar(r=values, theta=categories, fill="toself", name=company["company"])
+    if not metrics.empty:
+        for _, company in metrics.iterrows():
+            values = [
+                company["renewable_pct"] / 10,  # Scale to 10
+                company["efficiency_score"],
+                company["transparency_score"],
+            ]
+            fig.add_trace(
+                go.Scatterpolar(r=values, theta=categories, fill="toself", name=company["company"])
+            )
+
+        fig.update_layout(
+            polar=dict(radialaxis=dict(visible=True, range=[0, 10])),
+            showlegend=True,
+            title="AI Company Sustainability Scores",
+            height=400,
         )
 
-    fig.update_layout(
-        polar=dict(radialaxis=dict(visible=True, range=[0, 10])),
-        showlegend=True,
-        title="AI Company Sustainability Scores",
-        height=400,
-    )
-
-    fig = a11y.make_chart_accessible(
-        fig,
-        title="AI Company Sustainability Scores",
-        description=(
-            "A radar chart comparing sustainability performance across five major AI companies: OpenAI, Google, Microsoft, Meta, and Amazon. "
-            "Three metrics are displayed on a 0-10 scale: Renewable Energy Percentage (scaled), Efficiency Score, and Transparency Score. "
-            "Google leads with the highest scores across all metrics (7.8 renewable, 8.5 efficiency, 8.2 transparency). "
-            "Microsoft follows closely (6.5 renewable, 7.8 efficiency, 7.9 transparency). Amazon shows strength in efficiency (7.5) but lags in renewable energy (4.0). "
-            "Meta and OpenAI show lower transparency scores (6.2 and 6.5 respectively). The overlapping polygons reveal that while companies are making progress, "
-            "significant improvements are needed across all dimensions to achieve sustainability goals."
-        ),
-    )
-    st.plotly_chart(fig, use_container_width=True)
+        fig = a11y.make_chart_accessible(
+            fig,
+            title="AI Company Sustainability Scores",
+            description=(
+                "A radar chart comparing sustainability performance across five major AI companies: OpenAI, Google, Microsoft, Meta, and Amazon. "
+                "Three metrics are displayed on a 0-10 scale: Renewable Energy Percentage (scaled), Efficiency Score, and Transparency Score. "
+                "Google leads with the highest scores across all metrics (7.8 renewable, 8.5 efficiency, 8.2 transparency). "
+                "Microsoft follows closely (6.5 renewable, 7.8 efficiency, 7.9 transparency). Amazon shows strength in efficiency (7.5) but lags in renewable energy (4.0). "
+                "Meta and OpenAI show lower transparency scores (6.2 and 6.5 respectively). The overlapping polygons reveal that while companies are making progress, "
+                "significant improvements are needed across all dimensions to achieve sustainability goals."
+            ),
+        )
+        st.plotly_chart(fig, use_container_width=True)
+    else:
+        st.warning("Sustainability metrics data is not available.")
 
     st.info(
         """
