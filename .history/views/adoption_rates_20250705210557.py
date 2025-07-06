@@ -153,15 +153,7 @@ def render(data: Dict[str, Any]) -> None:
         fig = a11y.make_chart_accessible(
             fig,
             title=f"AI Adoption by Sector (2018) - {weighting}",
-            description=(
-                f"A bar chart showing AI adoption rates across different sectors in 2018 using "
-                f"{weighting.lower()} data. The chart uses a blue color gradient where darker colors "
-                f"indicate higher adoption rates. Manufacturing and Information sectors lead with 12% "
-                f"adoption each, followed by Wholesale (8%), Finance & Insurance (7%), and Retail Trade (6%). "
-                f"Lower adoption is seen in sectors like Educational Services (4%), Health Care (4%), and "
-                f"Construction (3%). The data represents early AI adoption patterns before the widespread "
-                f"deployment of generative AI technologies."
-            ),
+            description=f"A bar chart showing AI adoption rates across different sectors in 2018 using {weighting.lower()} data. The chart uses a blue color gradient where darker colors indicate higher adoption rates. Manufacturing and Information sectors lead with 12% adoption each, followed by Wholesale (8%), Finance & Insurance (7%), and Retail Trade (6%). Lower adoption is seen in sectors like Educational Services (4%), Health Care (4%), and Construction (3%). The data represents early AI adoption patterns before the widespread deployment of generative AI technologies.",
         )
         st.plotly_chart(fig, use_container_width=True)
 
