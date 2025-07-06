@@ -1,1 +1,0 @@
-Fix: Update test file to use new PDFExtractor import
