@@ -63,20 +63,8 @@ def render(data: Dict[str, Any]) -> None:
 
 def _render_investment_returns(a11y: Any) -> None:
     """Render the investment returns tab."""
-    roi_data = pd.DataFrame(
-        {
-            "investment_level": [
-                "Pilot (<$100K)",
-                "Small ($100K-$500K)",
-                "Medium ($500K-$2M)",
-                "Large ($2M-$10M)",
-                "Enterprise ($10M+)",
-            ],
-            "avg_roi": [1.8, 2.5, 3.2, 3.8, 4.5],
-            "time_to_roi": [6, 9, 12, 18, 24],  # months
-            "success_rate": [45, 58, 72, 81, 87],  # % of projects achieving positive ROI
-        }
-    )
+    # TODO: Load roi_data from actual data source
+    roi_data = pd.DataFrame()
 
     fig = go.Figure()
 
@@ -134,13 +122,8 @@ def _render_investment_returns(a11y: Any) -> None:
 
 def _render_payback_analysis(a11y: Any) -> None:
     """Render the payback analysis tab."""
-    payback_data = pd.DataFrame(
-        {
-            "scenario": ["Best Case", "Typical", "Conservative"],
-            "months": [8, 15, 24],
-            "probability": [20, 60, 20],
-        }
-    )
+    # TODO: Load payback_data from actual data source
+    payback_data = pd.DataFrame()
 
     fig = go.Figure()
 
@@ -171,20 +154,8 @@ def _render_payback_analysis(a11y: Any) -> None:
     # Time to value breakdown
     st.subheader("⏱️ Time to Value by AI Capability")
 
-    time_to_value = pd.DataFrame(
-        {
-            "capability": [
-                "Process Automation",
-                "Predictive Analytics",
-                "Natural Language Processing",
-                "Computer Vision",
-                "Recommendation Systems",
-                "GenAI Applications",
-            ],
-            "months_to_value": [3, 6, 9, 12, 6, 4],
-            "complexity": [2, 3, 4, 5, 3, 2],  # 1-5 scale
-        }
-    )
+    # TODO: Load time_to_value data from actual data source
+    time_to_value = pd.DataFrame()
 
     fig2 = px.bar(
         time_to_value,
@@ -265,20 +236,8 @@ def _render_sector_roi(sector_2025: pd.DataFrame, a11y: Any) -> None:
     # ROI components breakdown
     st.subheader("💡 ROI Components by Sector")
 
-    roi_components = pd.DataFrame(
-        {
-            "component": [
-                "Cost Reduction",
-                "Revenue Growth",
-                "Productivity Gains",
-                "Quality Improvement",
-            ],
-            "Technology": [25, 40, 20, 15],
-            "Financial Services": [30, 35, 25, 10],
-            "Healthcare": [20, 25, 30, 25],
-            "Manufacturing": [35, 20, 25, 20],
-        }
-    )
+    # TODO: Load roi_components data from actual data source
+    roi_components = pd.DataFrame()
 
     fig2 = go.Figure()
 

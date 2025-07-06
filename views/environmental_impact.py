@@ -138,13 +138,8 @@ def _render_energy_trends(a11y: AccessibilityManager) -> None:
     """Render energy trends tab."""
     st.write("**⚡ Energy Consumption and Nuclear Renaissance**")
 
-    energy_data = pd.DataFrame(
-        {
-            "year": [2020, 2021, 2022, 2023, 2024, 2025],
-            "ai_energy_twh": [2.1, 3.5, 5.8, 9.6, 16.2, 27.3],
-            "nuclear_deals": [0, 0, 1, 3, 8, 15],
-        }
-    )
+    # TODO: Load energy_data from actual data source
+    energy_data = pd.DataFrame()
 
     fig = go.Figure()
 
@@ -209,21 +204,8 @@ def _render_energy_trends(a11y: AccessibilityManager) -> None:
 
 def _render_mitigation_strategies(a11y: AccessibilityManager) -> None:
     """Render mitigation strategies tab."""
-    mitigation = pd.DataFrame(
-        {
-            "strategy": [
-                "Efficient Architectures",
-                "Renewable Energy",
-                "Model Reuse",
-                "Edge Computing",
-                "Quantum Computing",
-                "Carbon Offsets",
-            ],
-            "potential_reduction": [40, 85, 95, 60, 90, 100],
-            "adoption_rate": [65, 45, 35, 25, 5, 30],
-            "timeframe": [1, 3, 1, 2, 7, 1],
-        }
-    )
+    # TODO: Load mitigation data from actual data source
+    mitigation = pd.DataFrame()
 
     fig = px.scatter(
         mitigation,
@@ -276,15 +258,8 @@ def _render_sustainability_metrics(a11y: AccessibilityManager) -> None:
     """Render sustainability metrics tab."""
     st.write("**Sustainability Performance Metrics**")
 
-    metrics = pd.DataFrame(
-        {
-            "company": ["OpenAI", "Google", "Microsoft", "Meta", "Amazon"],
-            "renewable_pct": [45, 78, 65, 52, 40],
-            "efficiency_score": [7.2, 8.5, 7.8, 6.9, 7.5],
-            "transparency_score": [6.5, 8.2, 7.9, 6.2, 7.0],
-            "carbon_neutral_target": [2030, 2028, 2029, 2030, 2032],
-        }
-    )
+    # TODO: Load metrics data from actual data source
+    metrics = pd.DataFrame()
 
     fig = go.Figure()
 

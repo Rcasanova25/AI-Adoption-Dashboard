@@ -353,73 +353,8 @@ def _render_standard_view(
 
 def _get_milestones() -> list:
     """Get authoritative milestones data."""
-    return [
-        {
-            "year": 2020,
-            "quarter": "Q4",
-            "date": "December 2020",
-            "title": "NSF AI Research Institutes Launch",
-            "description": "NSF announced the first seven National AI Research Institutes with $220M initial investment, establishing foundational research infrastructure.",
-            "impact": "Created institutional framework for sustained AI research",
-            "category": "government",
-            "source": "NSF Press Release 2020",
-            "source_url": "https://www.nsf.gov/news/nsf-partnerships-expand-national-ai-research",
-            "source_type": "Government",
-            "verification": "Primary source - official NSF announcement",
-        },
-        {
-            "year": 2021,
-            "quarter": "Q1",
-            "date": "January 5, 2021",
-            "title": "DALL-E 1 Launch",
-            "description": "OpenAI revealed DALL-E, the first mainstream text-to-image AI using a modified GPT-3 to generate images from natural language descriptions.",
-            "impact": "Demonstrated AI could create, not just analyze content",
-            "category": "breakthrough",
-            "source": "OpenAI Blog Post",
-            "source_url": "https://openai.com/blog/dall-e/",
-            "source_type": "Industry",
-            "verification": "Primary source - original OpenAI announcement",
-        },
-        {
-            "year": 2021,
-            "quarter": "Q2",
-            "date": "June 29, 2021",
-            "title": "GitHub Copilot Technical Preview",
-            "description": "GitHub announced Copilot for technical preview in Visual Studio Code, marking the first AI coding assistant to gain widespread developer adoption.",
-            "impact": "Proved AI could assist complex professional programming tasks",
-            "category": "product",
-            "source": "GitHub Official Announcement",
-            "source_url": "https://github.blog/2021-06-29-introducing-github-copilot-ai-pair-programmer/",
-            "source_type": "Industry",
-            "verification": "Primary source - GitHub official blog",
-        },
-        {
-            "year": 2021,
-            "quarter": "Q3",
-            "date": "July 22, 2021",
-            "title": "AlphaFold Database Launch",
-            "description": "DeepMind launched the AlphaFold Protein Structure Database with 365,000+ protein structures, solving a 50-year-old scientific challenge.",
-            "impact": "Demonstrated AI breakthrough in fundamental science",
-            "category": "scientific",
-            "source": "Nature Journal Publication",
-            "source_url": "https://www.nature.com/articles/s41586-021-03819-2",
-            "source_type": "Academic",
-            "verification": "Peer-reviewed publication in Nature",
-        },
-        {
-            "year": 2022,
-            "quarter": "Q4",
-            "date": "November 30, 2022",
-            "title": "ChatGPT Launch",
-            "description": "OpenAI launched ChatGPT, achieving 1 million users in 5 days and becoming the fastest-adopted online tool in history.",
-            "impact": "Triggered mainstream AI adoption and massive investment surge",
-            "category": "tipping-point",
-            "source": "Stanford AI Index 2023",
-            "source_url": "https://aiindex.stanford.edu/ai-index-report-2023/",
-            "source_type": "Academic",
-            "verification": "Stanford HAI comprehensive analysis",
-        },
-    ]
+    # TODO: Load milestones data from actual data source
+    return []
 
 
 def _add_annotations(fig: go.Figure, filtered_data: pd.DataFrame) -> None:
@@ -547,23 +482,8 @@ def _show_insights() -> None:
     # Convergence factors analysis
     st.subheader("🎯 Convergence Factors: Why 2021-2022 Was the Tipping Point")
 
-    convergence_factors = pd.DataFrame(
-        {
-            "factor": [
-                "Technical Maturation",
-                "Institutional Support",
-                "Market Validation",
-                "Policy Framework",
-            ],
-            "evidence": [
-                "Foundation models (GPT-3) + specialized applications (DALL-E, Copilot) proved real-world utility",
-                "Federal research infrastructure ($220M NSF) + international coordination created stability",
-                "Commercial success (Copilot GA) + scientific breakthroughs (AlphaFold) attracted investment",
-                "NIST framework + regulatory clarity provided governance foundation for enterprise adoption",
-            ],
-            "impact_score": [95, 85, 90, 75],
-        }
-    )
+    # TODO: Load convergence factors data from actual data source
+    convergence_factors = pd.DataFrame()
 
     # Create horizontal bar chart for convergence factors
     fig2 = go.Figure()
