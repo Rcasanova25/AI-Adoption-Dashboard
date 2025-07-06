@@ -138,7 +138,7 @@ class DashboardApp:
         st.markdown(
             "**Comprehensive analysis from early AI adoption (2018) to current GenAI trends (2025)**"
         )
-        data = self.data_manager.get_data()
+        data = self.data_manager.get_all_datasets()
         view_type = self.view_manager.render_sidebar()
         self.view_manager.render_view(view_type, data)
 
