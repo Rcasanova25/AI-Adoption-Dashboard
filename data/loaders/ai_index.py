@@ -10,7 +10,7 @@ import pandas as pd
 
 from config.settings import settings
 
-from ..extractors.pdf_extractor_impl import EnhancedPDFExtractor
+from ..extractors.pdf_extractor import PDFExtractor
 from ..models.adoption import AdoptionMetrics, GeographicAdoption, SectorAdoption
 from .base import BaseDataLoader, DataSource
 
@@ -36,7 +36,7 @@ class AIIndexLoader(BaseDataLoader):
         super().__init__(source)
         if self.source.file_path and self.source.file_path.exists():
             try:
-                self.extractor = EnhancedPDFExtractor(self.source.file_path)
+                self.extractor = PDFExtractor(self.source.file_path)
                 logger.info(f"Initialized PDF extractor for {self.source.file_path.name}")
             except Exception as e:
                 logger.error(f"Failed to initialize PDF extractor: {e}")

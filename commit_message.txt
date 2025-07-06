@@ -1,1 +1,1 @@
-Refactor: Implement low priority changes from executive summary
+Fix: Resolve ModuleNotFoundError by updating import paths for PDFExtractor

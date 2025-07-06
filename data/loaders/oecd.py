@@ -9,7 +9,7 @@ import pandas as pd
 
 from config.settings import settings
 
-from ..extractors.pdf_extractor_impl import EnhancedPDFExtractor
+from ..extractors.pdf_extractor import PDFExtractor
 from ..models.governance import GovernanceMetrics, PolicyFramework
 from .base import BaseDataLoader, DataSource
 
@@ -43,7 +43,7 @@ class OECDLoader(BaseDataLoader):
         # Primary policy file
         if self.source.file_path and self.source.file_path.exists():
             try:
-                extractor = EnhancedPDFExtractor(self.source.file_path)
+                extractor = PDFExtractor(self.source.file_path)
                 self.extractors.append(extractor)
                 logger.info(f"Initialized PDF extractor for {self.source.file_path.name}")
             except Exception as e:

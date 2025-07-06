@@ -9,7 +9,7 @@ import pandas as pd
 
 from config.settings import settings
 
-from ..extractors.pdf_extractor_impl import EnhancedPDFExtractor
+from ..extractors.pdf_extractor import PDFExtractor
 from .base import BaseDataLoader, DataSource
 
 logger = logging.getLogger(__name__)
@@ -67,7 +67,7 @@ class AcademicPapersLoader(BaseDataLoader):
         # Initialize extractors
         for paper_path in papers_to_process[:5]:  # Limit to 5 papers for performance
             try:
-                extractor = EnhancedPDFExtractor(paper_path)
+                extractor = PDFExtractor(paper_path)
                 self.extractors.append((extractor, paper_path.name))
                 logger.info(f"Initialized PDF extractor for {paper_path.name}")
             except Exception as e:
