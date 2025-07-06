@@ -1,0 +1,1 @@
+Fix: Recreate data_manager.py to resolve SyntaxError
