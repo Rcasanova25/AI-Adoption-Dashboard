@@ -18,6 +18,8 @@ def render(data: Dict[str, pd.DataFrame]) -> None:
         data: Dictionary of dataframes needed by this view
     """
     # Data presence check
+    if not data or "regional_growth" not in data:
+        raise ValueError("Missing required real, validated data for regional growth.")
     regional_growth = data.get("regional_growth")
     if regional_growth is None or regional_growth.empty:
         st.error("Required regional growth data is missing or empty. Please check data sources.")

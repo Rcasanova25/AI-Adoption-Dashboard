@@ -36,6 +36,9 @@ def render(data: Dict[str, Any]) -> None:
         )
         return
 
+    if not data or "firm_size_analysis" not in data:
+        raise ValueError("Missing required real, validated data for firm size analysis.")
+
     st.write("🏢 **AI Adoption by Firm Size**")
 
     # Enhanced visualization with annotations

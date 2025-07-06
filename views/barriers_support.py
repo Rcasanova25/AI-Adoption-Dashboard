@@ -42,6 +42,9 @@ def render(data: Dict[str, Any]) -> None:
         )
         return
 
+    if not data or "barriers_support" not in data:
+        raise ValueError("Missing required real, validated data for barriers and support.")
+
     st.write("🚧 **AI Adoption Barriers & Support Effectiveness**")
 
     # Enhanced barriers visualization

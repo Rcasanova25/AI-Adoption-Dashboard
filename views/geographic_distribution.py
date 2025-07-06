@@ -21,6 +21,9 @@ def render(data: Dict[str, Any]) -> None:
             - state_data: State-level aggregated data
             - a11y: Accessibility helper module
     """
+    if not data or "geographic_distribution" not in data:
+        raise ValueError("Missing required real, validated data for geographic distribution.")
+
     # Extract required data
     geographic = data.get("geographic")
     state_data = data.get("state_data")

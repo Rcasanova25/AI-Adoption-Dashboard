@@ -59,6 +59,9 @@ def render(data: Dict[str, pd.DataFrame]) -> None:
     except Exception as e:
         st.error(f"Error rendering environmental impact view: {str(e)}")
 
+    if not data or "environmental_impact" not in data:
+        raise ValueError("Missing required real, validated data for environmental impact.")
+
 
 def _render_training_emissions(
     training_emissions: pd.DataFrame, a11y: AccessibilityManager

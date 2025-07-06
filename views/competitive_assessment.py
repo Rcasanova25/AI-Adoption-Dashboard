@@ -45,6 +45,9 @@ def render(data: Dict[str, pd.DataFrame]) -> None:
         )
         return
 
+    if not data or "competitive_assessment" not in data:
+        raise ValueError("Missing required real, validated data for competitive assessment.")
+
     try:
         # Initialize competitive assessor
         assessor = CompetitivePositionAssessor(

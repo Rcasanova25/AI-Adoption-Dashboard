@@ -37,6 +37,9 @@ def render(data: Dict[str, Any]) -> None:
         )
         return
 
+    if not data or "skill_gap_analysis" not in data:
+        raise ValueError("Missing required real, validated data for skill gap analysis.")
+
     st.write("🎓 **AI Skills Gap Analysis**")
 
     # Skills gap visualization

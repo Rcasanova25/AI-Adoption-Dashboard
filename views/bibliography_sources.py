@@ -164,6 +164,9 @@ def render(data: Dict[str, Any]) -> None:
     st.markdown("---")
     st.subheader("📝 How to Cite This Dashboard")
 
+    if not data or "bibliography_sources" not in data:
+        raise ValueError("Missing required real, validated data for bibliography sources.")
+
     st.code(
         """
         AI Adoption Dashboard. 2025. "Comprehensive AI Adoption Analysis." 

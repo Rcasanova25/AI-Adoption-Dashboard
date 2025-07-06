@@ -120,23 +120,8 @@ def _render_what_are_tokens(token_economics: pd.DataFrame, a11y: AccessibilityMa
             """
         )
     with col2:
-        st.info(
-            """
-            **💡 Token Examples:**
-
-            **Simple word**: "cat" = 1 token
-
-            **Complex word**: "artificial" = 2 tokens
-            - "artific" + "ial"
-
-            **Sentence**: "Hello world!" = 3 tokens
-            - "Hello" + "world" + "!"
-
-            **Context matters**: "lie"
-            - Resting = Token #123
-            - Untruth = Token #456
-            """
-        )
+        if not data or "token_economics" not in data:
+            raise ValueError("Missing required real, validated data for token economics.")
 
     st.subheader("Context Window Capabilities")
     context_data = token_economics[["model", "context_window"]].sort_values("context_window")

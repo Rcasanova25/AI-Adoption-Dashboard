@@ -40,7 +40,6 @@ def render(data: Dict[str, pd.DataFrame]) -> None:
             - Among companies that see benefits, the **actual magnitude** is typically:  
               - Cost savings: **Less than 10%** (average 5-10%)  
               - Revenue gains: **Less than 5%** (average 2-4%)  
-            - Example: 71% of companies using AI in Marketing report revenue gains, but these gains average only 4%
             """
         )
 

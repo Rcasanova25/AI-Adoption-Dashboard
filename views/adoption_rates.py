@@ -50,6 +50,9 @@ def render(data: Dict[str, Any]) -> None:
         )
         return
 
+    if not data or "adoption_rates" not in data:
+        raise ValueError("Missing required real, validated data for adoption rates.")
+
     if "2025" in data_year:
         st.write("📊 **GenAI Adoption by Business Function (2025)**")
 

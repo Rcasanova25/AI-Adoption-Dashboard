@@ -230,3 +230,5 @@ class ViewRegistry:
             self._views.keys(),
             key=lambda name: self._metadata.get(name, ViewMetadata(name=name)).order,
         )
+
+    # Enforce CLAUDE.md compliance: no demo/sample logic, only real, validated data.

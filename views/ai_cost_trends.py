@@ -20,6 +20,9 @@ def render(data: Dict[str, Any]) -> None:
         data: Dictionary of dataframes or context needed by this view.
     """
     try:
+        if not data or "ai_cost_trends" not in data:
+            raise ValueError("Missing required real, validated data for AI cost trends.")
+
         a11y = AccessibilityManager()
 
         st.write("💰 **AI Cost Reduction: Dramatic Improvements (AI Index Report 2025)**")
