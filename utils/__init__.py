@@ -32,6 +32,15 @@ from .types import (
     ViewConfig,
     ViewData,
 )
+from .cache_manager import (
+    CacheManager,
+    CalculationCache,
+    cached,
+    cache_financial_calculation,
+    cache_monte_carlo,
+    cache_sensitivity_analysis,
+    calculation_cache,
+)
 
 __all__ = [
     # Error handling
@@ -64,4 +73,12 @@ __all__ = [
     "OptionalDataFrame",
     "OptionalDict",
     "OptionalList",
+    # Cache management
+    "CacheManager",
+    "CalculationCache",
+    "cached",
+    "cache_financial_calculation",
+    "cache_monte_carlo",
+    "cache_sensitivity_analysis",
+    "calculation_cache",
 ]

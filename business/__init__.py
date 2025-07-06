@@ -6,11 +6,13 @@ financial calculations, and industry-specific models.
 
 from .economic_scenarios import *
 from .financial_calculations import *
+from .financial_calculations_cached import *
 from .industry_models import *
 from .labor_impact import *
 from .policy_simulation import *
 from .roi_analysis import *
 from .scenario_engine import *
+from .scenario_engine_parallel import *
 
 __all__ = [
     # Economic scenarios
