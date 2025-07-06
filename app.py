@@ -3,9 +3,10 @@
 from data.data_manager import DataManager
 
 import streamlit as st
+from typing import Dict, Any, List
 
 class ThemeManager:
-    def apply_theme(self):
+    def apply_theme(self) -> None:
         st.markdown(
             """
 <style>
@@ -31,7 +32,7 @@ class ThemeManager:
 import importlib
 
 class ViewManager:
-    def __init__(self):
+    def __init__(self) -> None:
         self.all_views = {
             "Adoption Rates": "views.adoption.adoption_rates",
             "Historical Trends": "views.adoption.historical_trends",
@@ -77,7 +78,7 @@ class ViewManager:
             "General": ["Adoption Rates", "Historical Trends", "Investment Trends", "Labor Impact"],
         }
 
-    def render_sidebar(self):
+    def render_sidebar(self) -> str:
         st.sidebar.header("📊 Dashboard Controls")
         persona = st.sidebar.selectbox(
             "Select Your Role",
@@ -101,7 +102,7 @@ class ViewManager:
         )
         return view_type
 
-    def render_view(self, view_type, data):
+    def render_view(self, view_type: str, data: Dict[str, Any]) -> None:
         st.subheader(f"📊 {view_type}")
         try:
             module_path = self.all_views[view_type]
@@ -112,13 +113,13 @@ class ViewManager:
 
 
 class DashboardApp:
-    def __init__(self):
+    def __init__(self) -> None:
         self.theme_manager = ThemeManager()
         self.data_manager = DataManager()
         self.view_manager = ViewManager()
         self.setup_page()
 
-    def setup_page(self):
+    def setup_page(self) -> None:
         st.set_page_config(
             page_title="AI Adoption Dashboard | 2018-2025 Analysis",
             page_icon="🤖",
@@ -131,7 +132,7 @@ class DashboardApp:
             },
         )
 
-    def render(self):
+    def render(self) -> None:
         self.theme_manager.apply_theme()
         st.title("🤖 AI Adoption Dashboard: 2018-2025")
         st.markdown(

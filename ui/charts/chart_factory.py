@@ -2,8 +2,17 @@ import plotly.graph_objects as go
 
 class ChartFactory:
     @staticmethod
-    def create_bar_chart(data, title, **kwargs):
-        """Standardized bar chart creation"""
+    def create_bar_chart(data: dict, title: str, **kwargs) -> go.Figure:
+        """Creates a standardized bar chart.
+
+        Args:
+            data (dict): A dictionary containing 'x' and 'y' keys for chart data.
+            title (str): The title of the chart.
+            **kwargs: Additional keyword arguments to pass to `go.Bar`.
+
+        Returns:
+            go.Figure: A Plotly Graph Object figure representing the bar chart.
+        """
         fig = go.Figure()
         fig.add_trace(
             go.Bar(
@@ -16,8 +25,17 @@ class ChartFactory:
         return fig
 
     @staticmethod
-    def create_dual_axis_chart(data, title, **kwargs):
-        """Standardized dual-axis chart"""
+    def create_dual_axis_chart(data: dict, title: str, **kwargs) -> go.Figure:
+        """Creates a standardized dual-axis chart.
+
+        Args:
+            data (dict): A dictionary containing 'x', 'y1', 'y1_name', 'y2', and 'y2_name' keys for chart data.
+            title (str): The title of the chart.
+            **kwargs: Additional keyword arguments to pass to `go.Bar` and `go.Scatter`.
+
+        Returns:
+            go.Figure: A Plotly Graph Object figure representing the dual-axis chart.
+        """
         fig = go.Figure()
         fig.add_trace(
             go.Bar(
