@@ -1,6 +1,7 @@
 """Optimized data manager with multi-layer caching and lazy loading."""
 
 import asyncio
+import concurrent.futures
 import logging
 from functools import lru_cache
 from pathlib import Path
@@ -10,7 +11,7 @@ import pandas as pd
 
 from config.settings import settings
 from performance.cache_manager import CacheKeyGenerator, MultiLayerCache, cache_result
-from performance.monitor import PerformanceContext
+from performance.monitor import PerformanceContext, track_performance
 
 from .loaders import (
     AcademicPapersLoader,
