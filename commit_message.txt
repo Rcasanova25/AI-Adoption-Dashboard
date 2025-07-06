@@ -1,1 +1,0 @@
-Fix: Resolve SyntaxError in app.py by correcting CSS string literal
