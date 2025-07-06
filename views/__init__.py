@@ -27,7 +27,9 @@ from .labor_impact import render as render_labor_impact
 from .oecd_2025_findings import render as render_oecd_2025_findings
 from .productivity_research import render as render_productivity_research
 from .regional_growth import render as render_regional_growth
+from .risk_dashboard import render as render_risk_dashboard
 from .roi_analysis import render as render_roi_analysis
+from .scenario_analysis import render as render_scenario_analysis
 from .skill_gap_analysis import render as render_skill_gap_analysis
 from .technology_stack import render as render_technology_stack
 from .token_economics import render as render_token_economics
@@ -55,6 +57,8 @@ VIEW_REGISTRY = {
     "OECD 2025 Findings": render_oecd_2025_findings,
     "Barriers & Support": render_barriers_support,
     "ROI Analysis": render_roi_analysis,
+    "Risk Dashboard": render_risk_dashboard,
+    "Scenario Analysis": render_scenario_analysis,
     "Bibliography & Sources": render_bibliography_sources,
 }
 

@@ -47,6 +47,17 @@ DATA_MAPPING = {
         "financial_impact": ("mckinsey", "financial_impact"),
         "ai_investment_data": ("ai_index", "investment_trends"),
     },
+    "scenario_analysis": {
+        "base_scenarios": ("mckinsey", "investment_scenarios"),
+        "technology_adoption": ("ai_index", "technology_adoption_curves"),
+        "correlation_data": ("academic", "technology_correlations"),
+    },
+    "risk_assessment": {
+        "implementation_risks": ("mckinsey", "implementation_risks"),
+        "category_risks": ("mckinsey", "risk_by_category"),
+        "mitigation_strategies": ("mckinsey", "risk_mitigation"),
+        "success_factors": ("academic", "success_factors"),
+    },
 }
 
 
