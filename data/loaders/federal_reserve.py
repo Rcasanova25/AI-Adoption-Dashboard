@@ -284,9 +284,9 @@ class RichmondFedLoader(BaseDataLoader):
                 for tech in technologies:
                     # Patterns for adoption rates
                     patterns = [
-                        f"{tech}.*?adoption.*?(\d+(?:\.\d+)?)\s*%",
-                        f"(\d+(?:\.\d+)?)\s*%.*?(?:firms|companies).*?{tech}",
-                        f"{tech}.*?implemented.*?(\d+(?:\.\d+)?)\s*%",
+                        rf"{tech}.*?adoption.*?(\d+(?:\.\d+)?)\s*%",
+                        rf"(\d+(?:\.\d+)?)\s*%.*?(?:firms|companies).*?{tech}",
+                        rf"{tech}.*?implemented.*?(\d+(?:\.\d+)?)\s*%",
                     ]
 
                     for pattern in patterns:
