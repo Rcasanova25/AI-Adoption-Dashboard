@@ -269,36 +269,7 @@ class DataManager:
             return {}
 
 
-    @st.cache_data(ttl=settings.CACHE_TTL)
-    def get_dataset(self, dataset_name: str, source: Optional[str] = None) -> pd.DataFrame:
-        """Get a specific dataset by name using Streamlit's caching."""
-        # If specific source requested
-        if source:
-            if source not in self.loaders:
-                raise ValueError(f"Unknown source: {source}")
-
-            loader = self.loaders[source]
-            data = loader.get_dataset(dataset_name)
-            if data is not None:
-                return data
-            else:
-                raise ValueError(f"Dataset '{dataset_name}' not found in source '{source}'")
-
-        # Otherwise, search all sources
-        for source_name, loader in self.loaders.items():
-            data = loader.get_dataset(dataset_name)
-            if data is not None:
-                logger.info(f"Found dataset '{dataset_name}' in source '{source_name}'")
-                return data
-
-        raise ValueError(f"Dataset '{dataset_name}' not found in any source")
-
-    def refresh_cache(self):
-        """Clear and refresh all cached data."""
-        logger.info("Refreshing data cache...")
-        self.get_dataset.clear()
-
-    """Optimized data manager with multi-layer caching and lazy loading."""
+    """Optimized data manager with multi-layer caching and lazy loading.""""
 
 import asyncio
 import concurrent.futures
@@ -330,10 +301,10 @@ logger = logging.getLogger(__name__)
 
 
 class DataManager:
-    """Manages all data sources and provides unified access to dashboard data."""
+    """Manages all data sources and provides unified access to dashboard data.""""
 
     def __init__(self, resources_path: Optional[Path] = None):
-        """Initialize data manager with path to resources directory."""
+        """Initialize data manager with path to resources directory.""""
         if resources_path is None:
             resources_path = settings.get_resources_path()
 
@@ -350,7 +321,7 @@ class DataManager:
         self._initialize_loaders()
 
     def _initialize_loaders(self) -> None:
-        """Initialize all data loaders."""
+        """Initialize all data loaders.""""
         logger.info("Initializing data loaders...")
 
         # AI Index loader - Stanford HAI
@@ -412,6 +383,122 @@ class DataManager:
         self.loaders["public_sector"] = PublicSectorLoader(self.resources_path)
 
         logger.info(f"Initialized {len(self.loaders)} data loaders")
+
+    @st.cache_data(ttl=settings.CACHE_MEMORY_TTL)
+    def get_dataset(self, dataset_name: str, source: Optional[str] = None) -> pd.DataFrame:
+        """Get a specific dataset by name using Streamlit's caching.""""
+        # If specific source requested
+        if source:
+            if source not in self.loaders:
+                raise ValueError(f"Unknown source: {source}")
+
+            loader = self.loaders[source]
+            data = loader.get_dataset(dataset_name)
+            if data is not None:
+                return data
+            else:
+                raise ValueError(f"Dataset '{dataset_name}' not found in source '{source}'")
+
+        # Otherwise, search all sources
+        for source_name, loader in self.loaders.items():
+            data = loader.get_dataset(dataset_name)
+            if data is not None:
+                logger.info(f"Found dataset '{dataset_name}' in source '{source_name}'")
+                return data
+
+        raise ValueError(f"Dataset '{dataset_name}' not found in any source")
+
+    def get_combined_dataset(self, dataset_name: str) -> pd.DataFrame:
+        """Get combined dataset from all sources.""""
+
+        combined_data = []
+
+        for source_name, loader in self.loaders.items():
+            try:
+                data = loader.get_dataset(dataset_name)
+                if data is not None:
+                    # Add source column for tracking
+                    data["data_source"] = source_name
+                    combined_data.append(data)
+            except Exception as e:
+                logger.warning(f"Error loading {dataset_name} from {source_name}: {e}")
+
+        if not combined_data:
+            raise ValueError(f"Dataset '{dataset_name}' not found in any source")
+
+        # Combine and return
+        return pd.concat(combined_data, ignore_index=True)
+
+    def list_all_datasets(self) -> Dict[str, List[str]]:
+        """List all available datasets from all sources.""""
+        all_datasets = {}
+
+        for source_name, loader in self.loaders.items():
+            try:
+                datasets = loader.list_datasets()
+                all_datasets[source_name] = datasets
+            except Exception as e:
+                logger.error(f"Error listing datasets from {source_name}: {e}")
+                all_datasets[source_name] = []
+
+        return all_datasets
+
+    def get_metadata(self) -> Dict[str, Dict]:
+        """Get metadata for all data sources.""""
+        metadata = {}
+
+        for source_name, loader in self.loaders.items():
+            metadata[source_name] = loader.get_metadata()
+
+        return metadata
+
+    def refresh_cache(self) -> None:
+        """Clear and refresh all cached data.""""
+        logger.info("Refreshing data cache...")
+        self.get_dataset.clear()
+
+    def get_all_datasets(self) -> Dict[str, pd.DataFrame]:
+        """Get all available datasets.""""
+        all_data = {}
+        datasets_by_source = self.list_all_datasets()
+
+        for source, datasets in datasets_by_source.items():
+            for dataset in datasets:
+                if dataset not in all_data:
+                    try:
+                        all_data[dataset] = self.get_dataset(dataset, source)
+                    except Exception as e:
+                        logger.warning(f"Error loading {dataset} from {source}: {e}")
+
+        return all_data
+
+    def get_data(self, source: str) -> Dict[str, pd.DataFrame]:
+        """Get all data from a specific source.""""
+
+        if source not in self.loaders:
+            logger.error(f"Unknown data source: {source}")
+            return {}
+
+        loader = self.loaders[source]
+        try:
+            datasets = loader.list_datasets()
+            result = {}
+            for dataset in datasets:
+                try:
+                    data = loader.get_dataset(dataset)
+                    if data is not None:
+                        result[dataset] = data
+                except Exception as e:
+                    logger.warning(f"Error loading dataset '{dataset}' from '{source}': {e}")
+            return result
+        except Exception as e:
+            logger.error(f"Error accessing data from source '{source}': {e}")
+            return {}
+
+
+def init_data_manager(resources_path: Optional[Path] = None) -> DataManager:
+    """Factory function to create DataManager instance.""""
+    return DataManager(resources_path)
 
     @st.cache_data(ttl=settings.CACHE_TTL)
     def get_dataset(self, dataset_name: str, source: Optional[str] = None) -> pd.DataFrame:
