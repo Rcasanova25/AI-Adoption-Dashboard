@@ -52,7 +52,7 @@ class OECDLoader(BaseDataLoader):
         # Adoption file
         if self.adoption_file and self.adoption_file.exists():
             try:
-                extractor = EnhancedPDFExtractor(self.adoption_file)
+                extractor = PDFExtractor(self.source.file_path)
                 self.extractors.append(extractor)
                 logger.info(f"Initialized PDF extractor for {self.adoption_file.name}")
             except Exception as e:
