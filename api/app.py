@@ -38,6 +38,7 @@ from .auth_endpoints import (
     TokenData
 )
 from .audit_endpoints import audit_api
+from .customization_endpoints import customization_api
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -510,6 +511,21 @@ async def api_info():
                 "/api/audit/export",
                 "/api/audit/calculation-history",
                 "/api/audit/security-events"
+            ],
+            "customization": [
+                "/api/customization/themes",
+                "/api/customization/themes/create",
+                "/api/customization/layouts",
+                "/api/customization/layouts/create",
+                "/api/customization/views",
+                "/api/customization/views/save",
+                "/api/customization/views/apply",
+                "/api/customization/views/delete",
+                "/api/customization/preferences",
+                "/api/customization/preferences/update",
+                "/api/customization/export",
+                "/api/customization/import",
+                "/api/customization/widgets/types"
             ]
         }
     })
@@ -591,6 +607,145 @@ async def get_security_events(
 ):
     """Get security events (admin only)."""
     result = audit_api.get_security_events(current_user=current_user)
+    if result["status"] == "error":
+        raise HTTPException(status_code=result["code"], detail=result["message"])
+    return result
+
+
+# Customization endpoints (protected)
+@app.get("/api/customization/themes")
+async def get_themes(current_user: TokenData = Depends(get_current_user)):
+    """Get available themes."""
+    result = customization_api.get_themes(current_user=current_user)
+    if result["status"] == "error":
+        raise HTTPException(status_code=result["code"], detail=result["message"])
+    return result
+
+
+@app.post("/api/customization/themes/create")
+async def create_theme(
+    request: Dict[str, Any],
+    current_user: TokenData = Depends(get_current_user)
+):
+    """Create custom theme."""
+    result = customization_api.create_theme(request, current_user)
+    if result["status"] == "error":
+        raise HTTPException(status_code=result["code"], detail=result["message"])
+    return result
+
+
+@app.get("/api/customization/layouts")
+async def get_layouts(current_user: TokenData = Depends(get_current_user)):
+    """Get available layouts."""
+    result = customization_api.get_layouts(current_user=current_user)
+    if result["status"] == "error":
+        raise HTTPException(status_code=result["code"], detail=result["message"])
+    return result
+
+
+@app.post("/api/customization/layouts/create")
+async def create_layout(
+    request: Dict[str, Any],
+    current_user: TokenData = Depends(get_current_user)
+):
+    """Create custom layout."""
+    result = customization_api.create_layout(request, current_user)
+    if result["status"] == "error":
+        raise HTTPException(status_code=result["code"], detail=result["message"])
+    return result
+
+
+@app.get("/api/customization/views")
+async def get_saved_views(current_user: TokenData = Depends(get_current_user)):
+    """Get saved views."""
+    result = customization_api.get_saved_views(current_user=current_user)
+    if result["status"] == "error":
+        raise HTTPException(status_code=result["code"], detail=result["message"])
+    return result
+
+
+@app.post("/api/customization/views/save")
+async def save_view(
+    request: Dict[str, Any],
+    current_user: TokenData = Depends(get_current_user)
+):
+    """Save dashboard view."""
+    result = customization_api.save_view(request, current_user)
+    if result["status"] == "error":
+        raise HTTPException(status_code=result["code"], detail=result["message"])
+    return result
+
+
+@app.post("/api/customization/views/apply")
+async def apply_view(
+    request: Dict[str, Any],
+    current_user: TokenData = Depends(get_current_user)
+):
+    """Apply saved view."""
+    result = customization_api.apply_view(request, current_user)
+    if result["status"] == "error":
+        raise HTTPException(status_code=result["code"], detail=result["message"])
+    return result
+
+
+@app.delete("/api/customization/views/delete")
+async def delete_view(
+    request: Dict[str, Any],
+    current_user: TokenData = Depends(get_current_user)
+):
+    """Delete saved view."""
+    result = customization_api.delete_view(request, current_user)
+    if result["status"] == "error":
+        raise HTTPException(status_code=result["code"], detail=result["message"])
+    return result
+
+
+@app.get("/api/customization/preferences")
+async def get_preferences(current_user: TokenData = Depends(get_current_user)):
+    """Get user preferences."""
+    result = customization_api.get_preferences(current_user=current_user)
+    if result["status"] == "error":
+        raise HTTPException(status_code=result["code"], detail=result["message"])
+    return result
+
+
+@app.put("/api/customization/preferences/update")
+async def update_preferences(
+    request: Dict[str, Any],
+    current_user: TokenData = Depends(get_current_user)
+):
+    """Update user preferences."""
+    result = customization_api.update_preferences(request, current_user)
+    if result["status"] == "error":
+        raise HTTPException(status_code=result["code"], detail=result["message"])
+    return result
+
+
+@app.get("/api/customization/export")
+async def export_configuration(current_user: TokenData = Depends(get_current_user)):
+    """Export customization configuration."""
+    result = customization_api.export_configuration(current_user=current_user)
+    if result["status"] == "error":
+        raise HTTPException(status_code=result["code"], detail=result["message"])
+    return result
+
+
+@app.post("/api/customization/import")
+async def import_configuration(
+    request: Dict[str, Any],
+    current_user: TokenData = Depends(get_current_user)
+):
+    """Import customization configuration."""
+    result = customization_api.import_configuration(request, current_user)
+    if result["status"] == "error":
+        raise HTTPException(status_code=result["code"], detail=result["message"])
+    return result
+
+
+@app.get("/api/customization/widgets/types")
+async def get_widget_types(current_user: TokenData = Depends(get_current_user)):
+    """Get available widget types."""
+    result = customization_api.get_widget_types(current_user=current_user)
     if result["status"] == "error":
         raise HTTPException(status_code=result["code"], detail=result["message"])
     return result

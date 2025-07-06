@@ -49,6 +49,19 @@ from .audit_logger import (
     audit_logger,
     audit_calculation,
 )
+from .dashboard_customization import (
+    ThemeType,
+    LayoutType,
+    WidgetType,
+    ColorScheme,
+    Theme,
+    Widget,
+    Layout,
+    SavedView,
+    UserPreferences,
+    DashboardCustomizer,
+    dashboard_customizer,
+)
 
 __all__ = [
     # Error handling
@@ -96,4 +109,16 @@ __all__ = [
     "AuditLogger",
     "audit_logger",
     "audit_calculation",
+    # Dashboard customization
+    "ThemeType",
+    "LayoutType",
+    "WidgetType",
+    "ColorScheme",
+    "Theme",
+    "Widget",
+    "Layout",
+    "SavedView",
+    "UserPreferences",
+    "DashboardCustomizer",
+    "dashboard_customizer",
 ]
