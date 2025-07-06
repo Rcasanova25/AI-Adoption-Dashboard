@@ -1,1 +1,1 @@
-Fix: Resolve SyntaxError in app.py by correcting unterminated string literal
+Fix: Correct import path for AccessibilityManager in app.py

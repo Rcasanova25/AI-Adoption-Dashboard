@@ -1,7 +1,7 @@
 
 
 from data.data_manager import DataManager
-from components.accessibility import AccessibilityManager
+from ui.components.accessibility import AccessibilityManager
 
 import streamlit as st
 from typing import Dict, Any, List
