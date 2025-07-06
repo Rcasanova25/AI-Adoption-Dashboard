@@ -5150,8 +5150,7 @@ elif view_type == "ROI Analysis":
         # Export calculation
         if st.button("📥 Export ROI Analysis"):
             analysis_text = f"""
-            AI ROI Analysis Report Generated: {datetime.now().strftime('%Y-%m-%d
-            %H:%M')}
+            AI ROI Analysis Report Generated: {datetime.now().strftime('%Y-%m-%d %H:%M')}
             
             Investment Details: - Amount: ${investment_amount:,} - Project Type:
             {project_type} - Company Size: {company_size} - Timeline: {timeline}
