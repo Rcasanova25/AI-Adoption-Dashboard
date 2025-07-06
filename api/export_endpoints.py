@@ -11,6 +11,7 @@ from fastapi import HTTPException
 from fastapi.responses import StreamingResponse, FileResponse
 
 from utils.export_manager import export_manager
+from utils.audit_logger import audit_logger
 from .endpoints import APIResponse, log_api_call, validate_request
 
 
@@ -48,6 +49,18 @@ class ExportAPI:
                 results=results,
                 format=format,
                 filename=filename
+            )
+            
+            # Get user from request
+            user = request_data.get("_user", "anonymous")
+            
+            # Audit log export
+            record_count = len(results.get("financial_metrics", {}))
+            audit_logger.log_data_export(
+                export_type="financial_results",
+                format=format,
+                user=user,
+                record_count=record_count
             )
             
             if filename:

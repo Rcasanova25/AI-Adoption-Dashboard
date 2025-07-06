@@ -41,6 +41,14 @@ from .cache_manager import (
     cache_sensitivity_analysis,
     calculation_cache,
 )
+from .audit_logger import (
+    AuditEventType,
+    AuditSeverity,
+    AuditEntry,
+    AuditLogger,
+    audit_logger,
+    audit_calculation,
+)
 
 __all__ = [
     # Error handling
@@ -81,4 +89,11 @@ __all__ = [
     "cache_monte_carlo",
     "cache_sensitivity_analysis",
     "calculation_cache",
+    # Audit logging
+    "AuditEventType",
+    "AuditSeverity",
+    "AuditEntry",
+    "AuditLogger",
+    "audit_logger",
+    "audit_calculation",
 ]

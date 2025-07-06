@@ -4,7 +4,7 @@ This module creates a FastAPI application that exposes the dashboard's
 financial calculations and analysis capabilities as RESTful endpoints.
 """
 
-from fastapi import FastAPI, HTTPException, Request, WebSocket
+from fastapi import FastAPI, HTTPException, Request, WebSocket, Depends
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel, Field
@@ -28,6 +28,16 @@ from .websocket_server import (
     start_background_tasks,
     stop_background_tasks
 )
+from .auth_endpoints import (
+    auth_api,
+    get_current_user,
+    require_permission,
+    LoginRequest,
+    UserCreate,
+    PasswordReset,
+    TokenData
+)
+from .audit_endpoints import audit_api
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -36,8 +46,8 @@ logger = logging.getLogger(__name__)
 # Create FastAPI app
 app = FastAPI(
     title="AI Adoption Dashboard API",
-    description="RESTful API for AI investment analysis and financial calculations",
-    version="1.0.0",
+    description="RESTful API for AI investment analysis and financial calculations with authentication",
+    version="1.1.0",
     docs_url="/api/docs",
     redoc_url="/api/redoc"
 )
@@ -143,10 +153,129 @@ async def health_check():
     return APIResponse.success({"status": "healthy"}, "API is running")
 
 
-# Financial calculation endpoints
+# Authentication endpoints
+@app.post("/api/auth/login")
+async def login(request: LoginRequest):
+    """User login endpoint."""
+    result = auth_api.login(request)
+    if result["status"] == "error":
+        raise HTTPException(status_code=result["code"], detail=result["message"])
+    return result
+
+
+@app.post("/api/auth/register")
+async def register(request: UserCreate):
+    """User registration endpoint."""
+    result = auth_api.register(request)
+    if result["status"] == "error":
+        raise HTTPException(status_code=result["code"], detail=result["message"])
+    return result
+
+
+@app.post("/api/auth/refresh")
+async def refresh_token(request: Dict[str, str]):
+    """Refresh access token."""
+    result = auth_api.refresh_token(request)
+    if result["status"] == "error":
+        raise HTTPException(status_code=result["code"], detail=result["message"])
+    return result
+
+
+@app.get("/api/auth/profile")
+async def get_profile(current_user: TokenData = Depends(get_current_user)):
+    """Get current user profile."""
+    result = auth_api.get_profile(current_user.username)
+    if result["status"] == "error":
+        raise HTTPException(status_code=result["code"], detail=result["message"])
+    return result
+
+
+@app.post("/api/auth/change-password")
+async def change_password(
+    request: PasswordReset,
+    current_user: TokenData = Depends(get_current_user)
+):
+    """Change user password."""
+    result = auth_api.change_password(current_user.username, request)
+    if result["status"] == "error":
+        raise HTTPException(status_code=result["code"], detail=result["message"])
+    return result
+
+
+@app.get("/api/auth/users")
+async def list_users(current_user: TokenData = Depends(require_permission("admin:users"))):
+    """List all users (admin only)."""
+    result = auth_api.list_users()
+    if result["status"] == "error":
+        raise HTTPException(status_code=result["code"], detail=result["message"])
+    return result
+
+
+@app.post("/api/auth/users")
+async def create_user_admin(
+    request: UserCreate,
+    current_user: TokenData = Depends(require_permission("admin:users"))
+):
+    """Create new user (admin only)."""
+    result = auth_api.create_user_admin(request)
+    if result["status"] == "error":
+        raise HTTPException(status_code=result["code"], detail=result["message"])
+    return result
+
+
+@app.put("/api/auth/users/{username}")
+async def update_user(
+    username: str,
+    request: Dict[str, Any],
+    current_user: TokenData = Depends(require_permission("admin:users"))
+):
+    """Update user information (admin only)."""
+    result = auth_api.update_user(username, request)
+    if result["status"] == "error":
+        raise HTTPException(status_code=result["code"], detail=result["message"])
+    return result
+
+
+@app.delete("/api/auth/users/{username}")
+async def delete_user(
+    username: str,
+    current_user: TokenData = Depends(require_permission("admin:users"))
+):
+    """Delete user (admin only)."""
+    result = auth_api.delete_user(username)
+    if result["status"] == "error":
+        raise HTTPException(status_code=result["code"], detail=result["message"])
+    return result
+
+
+@app.post("/api/auth/generate-api-key")
+async def generate_api_key(
+    request: Dict[str, Any],
+    current_user: TokenData = Depends(get_current_user)
+):
+    """Generate API key for programmatic access."""
+    result = auth_api.create_api_key(current_user.username, request)
+    if result["status"] == "error":
+        raise HTTPException(status_code=result["code"], detail=result["message"])
+    return result
+
+
+@app.get("/api/auth/permissions")
+async def get_permissions(current_user: TokenData = Depends(get_current_user)):
+    """Get current user permissions."""
+    result = auth_api.get_permissions(current_user.username)
+    if result["status"] == "error":
+        raise HTTPException(status_code=result["code"], detail=result["message"])
+    return result
+
+
+# Financial calculation endpoints (protected)
 @app.post("/api/financial/npv")
-async def calculate_npv(request: NPVRequest):
-    """Calculate Net Present Value."""
+async def calculate_npv(
+    request: NPVRequest,
+    current_user: TokenData = Depends(require_permission("read:calculations"))
+):
+    """Calculate Net Present Value (requires authentication)."""
     result = financial_api.calculate_npv(request.dict())
     if result["status"] == "error":
         raise HTTPException(status_code=result["code"], detail=result["message"])
@@ -372,9 +501,99 @@ async def api_info():
             ],
             "websocket": [
                 "/ws"
+            ],
+            "audit": [
+                "/api/audit/search",
+                "/api/audit/stats",
+                "/api/audit/recent",
+                "/api/audit/user-activity/{username}",
+                "/api/audit/export",
+                "/api/audit/calculation-history",
+                "/api/audit/security-events"
             ]
         }
     })
+
+
+# Audit endpoints (protected)
+@app.post("/api/audit/search")
+async def search_audit_logs(
+    request: Dict[str, Any],
+    current_user: TokenData = Depends(require_permission("read:all"))
+):
+    """Search audit logs (admin only)."""
+    result = audit_api.search_logs(request, current_user)
+    if result["status"] == "error":
+        raise HTTPException(status_code=result["code"], detail=result["message"])
+    return result
+
+
+@app.get("/api/audit/stats")
+async def get_audit_stats(
+    current_user: TokenData = Depends(require_permission("read:all"))
+):
+    """Get audit statistics (admin only)."""
+    result = audit_api.get_statistics(current_user=current_user)
+    if result["status"] == "error":
+        raise HTTPException(status_code=result["code"], detail=result["message"])
+    return result
+
+
+@app.get("/api/audit/recent")
+async def get_recent_activity(
+    current_user: TokenData = Depends(get_current_user)
+):
+    """Get recent activity."""
+    result = audit_api.get_recent_activity(current_user=current_user)
+    if result["status"] == "error":
+        raise HTTPException(status_code=result["code"], detail=result["message"])
+    return result
+
+
+@app.get("/api/audit/user-activity/{username}")
+async def get_user_activity(
+    username: str,
+    current_user: TokenData = Depends(get_current_user)
+):
+    """Get user activity (own activity or admin only)."""
+    result = audit_api.get_user_activity(username, current_user=current_user)
+    if result["status"] == "error":
+        raise HTTPException(status_code=result["code"], detail=result["message"])
+    return result
+
+
+@app.post("/api/audit/export")
+async def export_audit_logs(
+    request: Dict[str, Any],
+    current_user: TokenData = Depends(require_permission("admin:users"))
+):
+    """Export audit logs (admin only)."""
+    result = audit_api.export_logs(request, current_user)
+    if result["status"] == "error":
+        raise HTTPException(status_code=result["code"], detail=result["message"])
+    return result
+
+
+@app.get("/api/audit/calculation-history")
+async def get_calculation_history(
+    current_user: TokenData = Depends(get_current_user)
+):
+    """Get calculation history with performance metrics."""
+    result = audit_api.get_calculation_history(current_user=current_user)
+    if result["status"] == "error":
+        raise HTTPException(status_code=result["code"], detail=result["message"])
+    return result
+
+
+@app.get("/api/audit/security-events")
+async def get_security_events(
+    current_user: TokenData = Depends(require_permission("admin:users"))
+):
+    """Get security events (admin only)."""
+    result = audit_api.get_security_events(current_user=current_user)
+    if result["status"] == "error":
+        raise HTTPException(status_code=result["code"], detail=result["message"])
+    return result
 
 
 # WebSocket endpoint

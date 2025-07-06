@@ -10,7 +10,50 @@ The AI Adoption Dashboard provides a comprehensive RESTful API for accessing fin
 - ReDoc: `http://localhost:8000/api/redoc`
 
 ## Authentication
-Currently, the API is open access. Authentication will be added in a future release.
+
+The API uses JWT-based authentication for secure access. Most endpoints require authentication.
+
+### Getting Started
+
+1. **Login** to receive access and refresh tokens:
+```http
+POST /api/auth/login
+Content-Type: application/json
+
+{
+    "username": "your_username",
+    "password": "your_password"
+}
+```
+
+2. **Include the token** in subsequent requests:
+```http
+GET /api/financial/npv
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGc...
+```
+
+3. **Refresh tokens** when they expire (30 minutes):
+```http
+POST /api/auth/refresh
+Content-Type: application/json
+
+{
+    "refresh_token": "your_refresh_token"
+}
+```
+
+### Default Account
+- Username: `admin`
+- Password: `admin123`
+- ⚠️ Change immediately in production!
+
+### User Roles
+- **Admin**: Full system access
+- **Analyst**: Read/write calculations and reports
+- **Viewer**: Read-only access
+- **API User**: Optimized for programmatic access
+
+See [AUTHENTICATION.md](./AUTHENTICATION.md) for complete authentication documentation.
 
 ## Response Format
 All API responses follow a consistent format:
@@ -463,20 +506,28 @@ Currently no rate limiting. In production:
 
 ## Examples
 
-### Python Example
+### Python Example (with Authentication)
 ```python
 import requests
 import json
 
-# Calculate NPV
+# First, login to get access token
+auth_response = requests.post("http://localhost:8000/api/auth/login", json={
+    "username": "your_username",
+    "password": "your_password"
+})
+tokens = auth_response.json()["data"]
+
+# Calculate NPV with authentication
 url = "http://localhost:8000/api/financial/npv"
+headers = {"Authorization": f"Bearer {tokens['access_token']}"}
 data = {
     "cash_flows": [100000, 120000, 140000],
     "discount_rate": 0.10,
     "initial_investment": 300000
 }
 
-response = requests.post(url, json=data)
+response = requests.post(url, json=data, headers=headers)
 result = response.json()
 
 if result["status"] == "success":

@@ -11,6 +11,7 @@ from datetime import datetime
 from functools import wraps
 import pandas as pd
 import streamlit as st
+import time
 
 # Import business logic
 from business.financial_calculations_cached import (
@@ -22,6 +23,7 @@ from business.financial_calculations_cached import (
     calculate_ai_productivity_roi,
     get_cache_statistics
 )
+from utils.audit_logger import audit_logger, AuditEventType, AuditSeverity
 from business.scenario_engine_parallel import (
     monte_carlo_simulation_parallel,
     sensitivity_analysis_parallel,
@@ -87,18 +89,55 @@ def validate_request(required_fields: List[str]):
     return decorator
 
 
-# Logging decorator
+# Logging decorator with audit
 def log_api_call(endpoint: str):
-    """Decorator to log API calls."""
+    """Decorator to log API calls with audit logging."""
     def decorator(func):
         @wraps(func)
         def wrapper(*args, **kwargs):
+            start_time = time.time()
+            user = "anonymous"  # Default user
+            
+            # Extract user from request if available
+            if args and isinstance(args[0], dict):
+                user = args[0].get("_user", "anonymous")
+            
             logger.info(f"API call to {endpoint}")
             try:
                 result = func(*args, **kwargs)
+                duration_ms = (time.time() - start_time) * 1000
+                
+                # Audit log successful call
+                audit_logger.log_api_call(
+                    endpoint=endpoint,
+                    method="POST",  # Most of our endpoints are POST
+                    user=user,
+                    status_code=200,
+                    duration_ms=duration_ms
+                )
+                
                 logger.info(f"API call to {endpoint} successful")
                 return result
             except Exception as e:
+                duration_ms = (time.time() - start_time) * 1000
+                
+                # Audit log failed call
+                audit_logger.log_api_call(
+                    endpoint=endpoint,
+                    method="POST",
+                    user=user,
+                    status_code=500,
+                    duration_ms=duration_ms
+                )
+                
+                # Log error
+                audit_logger.log_error(
+                    error_type=type(e).__name__,
+                    error_message=str(e),
+                    user=user,
+                    context={"endpoint": endpoint}
+                )
+                
                 logger.error(f"API call to {endpoint} failed: {str(e)}")
                 raise
         return wrapper
@@ -123,10 +162,29 @@ class FinancialAPI:
             }
         """
         try:
+            start_time = time.time()
+            user = request_data.get("_user", "anonymous")
+            
             npv = calculate_npv(
                 request_data["cash_flows"],
                 request_data["discount_rate"],
                 request_data["initial_investment"]
+            )
+            
+            duration_ms = (time.time() - start_time) * 1000
+            
+            # Audit log the calculation
+            audit_logger.log_calculation(
+                calculation_type="npv",
+                parameters={
+                    "cash_flows_count": len(request_data["cash_flows"]),
+                    "discount_rate": request_data["discount_rate"],
+                    "initial_investment": request_data["initial_investment"]
+                },
+                result={"npv": npv, "profitable": npv > 0},
+                user=user,
+                duration_ms=duration_ms,
+                cache_hit=False  # Would need to check cache status
             )
             
             return APIResponse.success({
