@@ -120,12 +120,7 @@ class PersonaConfig(TypedDict):
     key_metrics: List[str]
 
 
-class CacheConfig(TypedDict):
-    """Type definition for cache configuration."""
 
-    ttl: int  # Time to live in seconds
-    max_size: int  # Maximum cache size in MB
-    strategy: str  # Cache strategy: 'lru', 'fifo', etc.
 
 
 class PerformanceMetrics(TypedDict):
@@ -134,7 +129,7 @@ class PerformanceMetrics(TypedDict):
     load_time: float
     memory_mb: float
     cpu_percent: float
-    cache_hit_rate: float
+    
     response_time: float
     active_users: int
 

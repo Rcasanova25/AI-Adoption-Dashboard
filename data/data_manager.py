@@ -3,15 +3,17 @@
 import asyncio
 import concurrent.futures
 import logging
+import asyncio
+import concurrent.futures
+import logging
 from functools import lru_cache
 from pathlib import Path
 from typing import Any, Dict, List, Optional
 
 import pandas as pd
+import streamlit as st
 
 from config.settings import settings
-from performance.cache_manager import CacheKeyGenerator, MultiLayerCache, cache_result
-from performance.monitor import PerformanceContext, track_performance
 
 from .loaders import (
     AcademicPapersLoader,
@@ -267,143 +269,73 @@ class DataManager:
             return {}
 
 
-class OptimizedDataManager(DataManager):
-    """Enhanced data manager with performance optimizations."""
-
-    def __init__(
-        self,
-        cache_memory_size: int = None,
-        cache_memory_ttl: int = None,
-        cache_disk_size: int = None,
-        max_workers: int = None,
-        resources_path: Optional[Path] = None,
-    ):
-        """Initialize optimized data manager.
-
-        Args:
-            cache_memory_size: Max items in memory cache
-            cache_memory_ttl: Default TTL for memory cache (seconds)
-            cache_disk_size: Max disk cache size in bytes
-            max_workers: Max concurrent workers for parallel loading
-            resources_path: Optional path to resources directory
-        """
-        # Use settings defaults if not provided
-        if cache_memory_size is None:
-            cache_memory_size = settings.CACHE_MEMORY_SIZE
-        if cache_memory_ttl is None:
-            cache_memory_ttl = settings.CACHE_MEMORY_TTL
-        if cache_disk_size is None:
-            cache_disk_size = settings.CACHE_DISK_SIZE
-        if max_workers is None:
-            max_workers = settings.MAX_WORKERS
-
-        super().__init__(resources_path)
-
-        # Initialize enhanced cache
-        self.cache = MultiLayerCache(
-            memory_size=cache_memory_size, memory_ttl=cache_memory_ttl, disk_size=cache_disk_size
-        )
-
-        # Thread pool for parallel operations
-        self.executor = concurrent.futures.ThreadPoolExecutor(max_workers=max_workers)
-
-        # Lazy loading state
-        self._lazy_loaded: Dict[str, bool] = {}
-
-        # Performance tracking
-        self.load_times: Dict[str, float] = {}
-
-    @track_performance
-    @cache_result(ttl=600)
+    @st.cache_data(ttl=settings.CACHE_TTL)
     def get_dataset(self, dataset_name: str, source: Optional[str] = None) -> pd.DataFrame:
-        """Get dataset with caching and performance tracking."""
-        with PerformanceContext(f"load_dataset_{dataset_name}"):
-            return super().get_dataset(dataset_name, source)
+        """Get a specific dataset by name using Streamlit's caching."""
+        # If specific source requested
+        if source:
+            if source not in self.loaders:
+                raise ValueError(f"Unknown source: {source}")
 
-    def get_dataset_async(self, dataset_name: str, source: Optional[str] = None) -> asyncio.Future:
-        """Asynchronously load dataset."""
-        future = self.executor.submit(self.get_dataset, dataset_name, source)
-        return future
+            loader = self.loaders[source]
+            data = loader.get_dataset(dataset_name)
+            if data is not None:
+                return data
+            else:
+                raise ValueError(f"Dataset '{dataset_name}' not found in source '{source}'")
 
-    def preload_critical_datasets(self, datasets: List[str]):
-        """Preload critical datasets in parallel."""
-        logger.info(f"Preloading {len(datasets)} critical datasets...")
+        # Otherwise, search all sources
+        for source_name, loader in self.loaders.items():
+            data = loader.get_dataset(dataset_name)
+            if data is not None:
+                logger.info(f"Found dataset '{dataset_name}' in source '{source_name}'")
+                return data
 
-        futures = []
-        for dataset in datasets:
-            future = self.get_dataset_async(dataset)
-            futures.append((dataset, future))
+        raise ValueError(f"Dataset '{dataset_name}' not found in any source")
 
-        # Wait for all to complete
-        for dataset, future in futures:
-            try:
-                future.result(timeout=30)
-                logger.info(f"Successfully preloaded: {dataset}")
-            except Exception as e:
-                logger.error(f"Failed to preload {dataset}: {e}")
+    def refresh_cache(self):
+        """Clear and refresh all cached data."""
+        logger.info("Refreshing data cache...")
+        self.get_dataset.clear()
 
-    def get_lazy_dataset(self, dataset_name: str, source: Optional[str] = None) -> pd.DataFrame:
-        """Get dataset with lazy loading."""
-        cache_key = f"{source or 'all'}:{dataset_name}"
+    def get_all_datasets(self) -> Dict[str, pd.DataFrame]:
+        """Get all available datasets."""
+        all_data = {}
+        datasets_by_source = self.list_all_datasets()
 
-        # Check if already loaded
-        if cache_key in self._lazy_loaded and self._lazy_loaded[cache_key]:
-            return self._cache.get(cache_key)
+        for source, datasets in datasets_by_source.items():
+            for dataset in datasets:
+                if dataset not in all_data:
+                    try:
+                        all_data[dataset] = self.get_dataset(dataset, source)
+                    except Exception as e:
+                        logger.warning(f"Error loading {dataset} from {source}: {e}")
 
-        # Load on demand
-        data = self.get_dataset(dataset_name, source)
-        self._lazy_loaded[cache_key] = True
+        return all_data
 
-        return data
+    def get_data(self, source: str) -> Dict[str, pd.DataFrame]:
+        """Get all data from a specific source."""
+        if source not in self.loaders:
+            logger.error(f"Unknown data source: {source}")
+            return {}
 
-    def get_optimized_combined_dataset(self, dataset_name: str) -> pd.DataFrame:
-        """Get combined dataset with parallel loading."""
-        futures = []
-
-        for source_name in self.loaders:
-            future = self.executor.submit(self._load_from_source, dataset_name, source_name)
-            futures.append((source_name, future))
-
-        combined_data = []
-        for source_name, future in futures:
-            try:
-                data = future.result(timeout=10)
-                if data is not None:
-                    data["data_source"] = source_name
-                    combined_data.append(data)
-            except Exception as e:
-                logger.warning(f"Error loading {dataset_name} from {source_name}: {e}")
-
-        if not combined_data:
-            raise ValueError(f"Dataset '{dataset_name}' not found in any source")
-
-        return pd.concat(combined_data, ignore_index=True)
-
-    def _load_from_source(self, dataset_name: str, source_name: str) -> Optional[pd.DataFrame]:
-        """Helper to load dataset from specific source."""
+        loader = self.loaders[source]
         try:
-            loader = self.loaders[source_name]
-            return loader.get_dataset(dataset_name)
-        except Exception:
-            return None
+            datasets = loader.list_datasets()
+            result = {}
+            for dataset in datasets:
+                try:
+                    data = loader.get_dataset(dataset)
+                    if data is not None:
+                        result[dataset] = data
+                except Exception as e:
+                    logger.warning(f"Error loading dataset '{dataset}' from '{source}': {e}")
+            return result
+        except Exception as e:
+            logger.error(f"Error accessing data from source '{source}': {e}")
+            return {}
 
-    def get_performance_stats(self) -> Dict[str, Any]:
-        """Get performance statistics."""
-        cache_stats = self.cache.get_stats()
+def init_data_manager(resources_path: Optional[Path] = None) -> DataManager:
+    """Factory function to create DataManager instance."""
+    return DataManager(resources_path)
 
-        return {
-            "cache_stats": cache_stats,
-            "load_times": self.load_times,
-            "lazy_loaded": len(self._lazy_loaded),
-            "total_datasets": sum(len(datasets) for datasets in self.list_all_datasets().values()),
-        }
-
-    def cleanup(self):
-        """Clean up resources."""
-        self.executor.shutdown(wait=True)
-        self.cache.cleanup()
-
-
-def create_optimized_manager(**kwargs) -> OptimizedDataManager:
-    """Factory function to create optimized data manager."""
-    return OptimizedDataManager(**kwargs)

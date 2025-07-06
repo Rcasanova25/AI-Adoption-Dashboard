@@ -15,10 +15,9 @@ import random
 from fastapi import WebSocket, WebSocketDisconnect, HTTPException
 from fastapi.websockets import WebSocketState
 
-from business.financial_calculations_cached import (
+from business.financial_calculations import (
     calculate_npv,
-    calculate_irr,
-    calculation_cache
+    calculate_irr
 )
 from business.roi_analysis import compute_comprehensive_roi
 
@@ -311,30 +310,7 @@ class NotificationService:
         
     async def send_cache_update(self):
         """Send cache statistics update."""
-        cache_stats = calculation_cache.get_all_stats()
         
-        notification = {
-            "type": "cache_update",
-            "timestamp": datetime.now().isoformat(),
-            "stats": cache_stats
-        }
-        
-        await self.manager.broadcast_to_channel(notification, "system")
-        
-    async def send_system_health(self):
-        """Send system health update."""
-        health = {
-            "type": "system_health",
-            "timestamp": datetime.now().isoformat(),
-            "status": "healthy",
-            "metrics": {
-                "active_connections": sum(len(conns) for conns in self.manager.active_connections.values()),
-                "cache_hit_rate": calculation_cache.get_overall_hit_rate(),
-                "uptime_seconds": 0  # Would track actual uptime in production
-            }
-        }
-        
-        await self.manager.broadcast_to_channel(health, "system")
 
 
 # Global instances
@@ -416,19 +392,11 @@ async def start_background_tasks():
         market_simulator.start_streaming(connection_manager, interval=10)
     )
     
-    # Start periodic cache updates
-    async def cache_update_loop():
-        while True:
-            await asyncio.sleep(30)  # Every 30 seconds
-            await notification_service.send_cache_update()
-            
-    asyncio.create_task(cache_update_loop())
-    
     # Start periodic health checks
     async def health_check_loop():
         while True:
             await asyncio.sleep(60)  # Every minute
-            await notification_service.send_system_health()
+            # await notification_service.send_system_health() # Removed as per refactoring
             
     asyncio.create_task(health_check_loop())
     

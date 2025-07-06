@@ -14,14 +14,13 @@ import streamlit as st
 import time
 
 # Import business logic
-from business.financial_calculations_cached import (
+from business.financial_calculations import (
     calculate_npv,
     calculate_irr,
     calculate_tco,
     calculate_payback_period,
     calculate_risk_adjusted_return,
-    calculate_ai_productivity_roi,
-    get_cache_statistics
+    calculate_ai_productivity_roi
 )
 from utils.audit_logger import audit_logger, AuditEventType, AuditSeverity
 from business.scenario_engine_parallel import (
@@ -269,15 +268,7 @@ class FinancialAPI:
         except Exception as e:
             return APIResponse.error(f"Comprehensive ROI calculation failed: {str(e)}", 500)
     
-    @staticmethod
-    @log_api_call("financial/cache_stats")
-    def get_cache_stats(request_data: Dict = None) -> Dict:
-        """Get cache statistics for performance monitoring."""
-        try:
-            stats = get_cache_statistics()
-            return APIResponse.success(stats, "Cache statistics retrieved")
-        except Exception as e:
-            return APIResponse.error(f"Failed to get cache stats: {str(e)}", 500)
+    
 
 
 # Scenario Analysis API
