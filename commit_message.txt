@@ -1,1 +1,1 @@
-Fix: Resolve ModuleNotFoundError by updating import paths for PDFExtractor
+Fix: Update test file to use new PDFExtractor import
