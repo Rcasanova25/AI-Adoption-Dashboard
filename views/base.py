@@ -7,7 +7,10 @@ from abc import ABC, abstractmethod
 from dataclasses import dataclass, field
 from typing import Any, Callable, Dict, List, Optional, Set
 
+import pandas as pd
 import streamlit as st
+
+from data.services import get_data_service, show_data_error
 
 
 @dataclass
@@ -44,20 +47,49 @@ class BaseView(ABC):
         pass
 
     def validate_data(self, data: Dict[str, Any]) -> bool:
-        """Validate that required data is present.
+        """Validate that required data is present and valid.
 
         Args:
             data: Dictionary containing dashboard data
 
         Returns:
-            True if all required data is present, False otherwise
+            True if all required data is present and valid, False otherwise
         """
         if not self.metadata.required_data:
             return True
 
+        missing_data = []
+        invalid_data = []
+        
         for required_key in self.metadata.required_data:
             if required_key not in data or data[required_key] is None:
-                return False
+                missing_data.append(required_key)
+            elif isinstance(data[required_key], pd.DataFrame) and data[required_key].empty:
+                invalid_data.append(f"{required_key} (empty DataFrame)")
+            elif isinstance(data[required_key], dict) and not data[required_key]:
+                invalid_data.append(f"{required_key} (empty dict)")
+            elif isinstance(data[required_key], list) and not data[required_key]:
+                invalid_data.append(f"{required_key} (empty list)")
+        
+        if missing_data or invalid_data:
+            error_msg = f"❌ Data Validation Failed for view '{self.metadata.name}'\n\n"
+            
+            if missing_data:
+                error_msg += f"**Missing data**: {', '.join(missing_data)}\n"
+            if invalid_data:
+                error_msg += f"**Invalid data**: {', '.join(invalid_data)}\n"
+            
+            show_data_error(
+                error_msg,
+                recovery_suggestions=[
+                    "Ensure all required PDF files are in the resources directory",
+                    "Check that PDF extraction completed successfully",
+                    "Verify data source configuration in data_service.py",
+                    "Run data availability diagnostic: Settings → Data Status"
+                ]
+            )
+            return False
+            
         return True
 
     def show_source_info(self, sources: List[str]) -> None:
@@ -173,7 +205,7 @@ class ViewRegistry:
         return list(self._categories.keys())
 
     def render(self, name: str, data: Dict[str, Any]) -> None:
-        """Render a view by name.
+        """Render a view by name with strict validation.
 
         Args:
             name: Name of the view to render
@@ -181,29 +213,67 @@ class ViewRegistry:
         """
         view = self._views.get(name)
         if not view:
-            st.error(f"View '{name}' not found")
+            show_data_error(
+                f"❌ View Configuration Error: View '{name}' not found",
+                recovery_suggestions=[
+                    f"Available views: {', '.join(self.list_views())}",
+                    "Check view registration in views/__init__.py",
+                    "Verify view name spelling"
+                ]
+            )
             return
 
-        # Check if it's a class-based view
-        if isinstance(view, BaseView):
-            # Validate data
-            if not view.validate_data(data):
-                st.warning(
-                    f"Missing required data for view '{name}'. "
-                    f"Required: {', '.join(view.metadata.required_data)}"
+        try:
+            # Check if it's a class-based view
+            if isinstance(view, BaseView):
+                # Validate data - this will show error and stop if validation fails
+                if not view.validate_data(data):
+                    return
+
+                # Render the view
+                view.render(data)
+
+            # Check if it's a callable (function-based view)
+            elif callable(view):
+                # For function-based views, perform basic validation
+                if hasattr(view, '__module__'):
+                    # Check if any data is completely empty
+                    empty_datasets = []
+                    for key, value in data.items():
+                        if isinstance(value, pd.DataFrame) and value.empty:
+                            empty_datasets.append(key)
+                        elif isinstance(value, (dict, list)) and not value:
+                            empty_datasets.append(key)
+                    
+                    if empty_datasets:
+                        st.warning(
+                            f"⚠️ Warning: The following datasets are empty: {', '.join(empty_datasets)}. "
+                            "Some visualizations may not display correctly."
+                        )
+                
+                # Render the view
+                view(data)
+
+            else:
+                show_data_error(
+                    f"❌ View Type Error: View '{name}' is not a valid view type",
+                    recovery_suggestions=[
+                        "View must be either a BaseView instance or a callable function",
+                        "Check view implementation"
+                    ]
                 )
-                return
-
-            # Render the view
-            view.render(data)
-
-        # Check if it's a callable (function-based view)
-        elif callable(view):
-            # For backward compatibility with function-based views
-            view(data)
-
-        else:
-            st.error(f"View '{name}' is not a valid view type")
+                
+        except Exception as e:
+            # Catch any rendering errors and display them clearly
+            show_data_error(
+                f"❌ View Rendering Error in '{name}': {str(e)}",
+                recovery_suggestions=[
+                    "Check that all required data columns exist",
+                    "Verify data types match expected formats",
+                    "Review view implementation for errors",
+                    "Check application logs for detailed error trace"
+                ]
+            )
 
     def get_views_by_tag(self, tag: str) -> List[str]:
         """Get all views with a specific tag.
@@ -231,4 +301,40 @@ class ViewRegistry:
             key=lambda name: self._metadata.get(name, ViewMetadata(name=name)).order,
         )
 
+    def validate_all_views_data(self, data: Dict[str, Any]) -> Dict[str, bool]:
+        """Validate data availability for all registered views.
+        
+        Args:
+            data: Dictionary containing dashboard data
+            
+        Returns:
+            Dictionary mapping view names to validation status
+        """
+        validation_results = {}
+        
+        for view_name in self._views:
+            view = self._views[view_name]
+            
+            if isinstance(view, BaseView):
+                # Don't show errors during bulk validation, just collect status
+                try:
+                    # Temporarily suppress error display
+                    is_valid = True
+                    if view.metadata.required_data:
+                        for required_key in view.metadata.required_data:
+                            if required_key not in data or data[required_key] is None:
+                                is_valid = False
+                                break
+                            elif isinstance(data[required_key], pd.DataFrame) and data[required_key].empty:
+                                is_valid = False
+                                break
+                    validation_results[view_name] = is_valid
+                except Exception:
+                    validation_results[view_name] = False
+            else:
+                # Function-based views - assume valid if callable
+                validation_results[view_name] = callable(view)
+                
+        return validation_results
+    
     # Enforce CLAUDE.md compliance: no demo/sample logic, only real, validated data.

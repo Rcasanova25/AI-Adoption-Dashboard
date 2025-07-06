@@ -44,12 +44,3 @@ class TokenEconomics(BaseModel):
     market_share_percent: Optional[float] = Field(None, ge=0, le=100)
 
 
-class ProductivityMetrics(BaseModel):
-    """Productivity impact metrics."""
-
-    category: str = Field(..., description="Worker or task category")
-    productivity_gain_percent: float = Field(..., ge=-100, le=500)
-    time_saved_hours_per_week: float = Field(..., ge=0, le=40)
-    quality_improvement_percent: Optional[float] = Field(None, ge=-100, le=500)
-    adoption_difficulty: str = Field(..., pattern="^(Low|Medium|High)$")
-    implementation_time_weeks: Optional[int] = Field(None, ge=0)

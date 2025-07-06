@@ -8,7 +8,8 @@ from typing import Dict, List, Optional, Tuple
 import pandas as pd
 
 from ..extractors.pdf_extractor_impl import EnhancedPDFExtractor
-from ..models.economics import EconomicImpact, ProductivityMetrics
+from ..models.economics import EconomicImpact
+from ..models.workforce import ProductivityMetrics
 from .base import BaseDataLoader, DataSource
 
 logger = logging.getLogger(__name__)
