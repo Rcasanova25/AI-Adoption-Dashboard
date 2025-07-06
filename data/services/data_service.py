@@ -238,12 +238,13 @@ def get_data_service() -> DataService:
     return _data_service_instance
 
 
-def show_data_error(error_message: str, recovery_suggestions: Optional[list] = None):
+def show_data_error(error_message: str, recovery_suggestions: Optional[list] = None, show_interactive_elements: bool = True):
     """Display a data error in the Streamlit UI with recovery suggestions.
     
     Args:
         error_message: The error message to display
         recovery_suggestions: Optional list of recovery suggestions
+        show_interactive_elements: Whether to show interactive elements like buttons (set to False when called from cached functions)
     """
     st.error(error_message)
     
@@ -251,8 +252,12 @@ def show_data_error(error_message: str, recovery_suggestions: Optional[list] = N
         with st.expander("🔧 Troubleshooting Steps"):
             for i, suggestion in enumerate(recovery_suggestions, 1):
                 st.write(f"{i}. {suggestion}")
+    
+    if not show_interactive_elements:
+        st.info("💡 **Tip**: Restart the application or refresh the page to retry data loading.")
+        return
                 
-    # Add data status check button
+    # Add data status check button (only when not in cached context)
     if st.button("🔍 Check Data Status"):
         with st.spinner("Checking data availability..."):
             service = get_data_service()

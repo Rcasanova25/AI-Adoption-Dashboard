@@ -58,7 +58,8 @@ def load_data():
             
             show_data_error(
                 "Critical data sources are missing. The dashboard cannot function properly without all required data.",
-                recovery_suggestions
+                recovery_suggestions,
+                show_interactive_elements=False  # Disable widgets in cached function
             )
             
             # Show detailed data status
@@ -114,7 +115,7 @@ def load_data():
             "Check system logs for any data loading errors"
         ]
         
-        show_data_error(error_message, recovery_suggestions)
+        show_data_error(error_message, recovery_suggestions, show_interactive_elements=False)
         st.stop()
     
     return data_sources
