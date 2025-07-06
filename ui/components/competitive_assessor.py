@@ -13,13 +13,12 @@ import plotly.graph_objects as go
 import streamlit as st
 from plotly.subplots import make_subplots
 
-from .competitive_assessor import CompetitivePositionAssessor
-from .economic_insights import EconomicInsights
+from .economic_insights import EconomicInsights, CompetitiveIntelligence
 from .economic_models import AIEconomicModels, EconomicParameters
 from .economic_validation import EconomicValidator, ValidationConstraints
 
 
-class EnhancedCompetitiveAssessor(CompetitivePositionAssessor):
+class CompetitiveAssessor:
     """Enhanced competitive assessor with real economic calculations."""
 
     def __init__(
@@ -30,7 +29,12 @@ class EnhancedCompetitiveAssessor(CompetitivePositionAssessor):
         investment_data: pd.DataFrame,
     ):
         """Initialize with required data and economic models."""
-        super().__init__(sector_data, firm_size_data, adoption_trends, investment_data)
+        self.sector_data = sector_data
+        self.firm_size_data = firm_size_data
+        self.adoption_trends = adoption_trends
+        self.investment_data = investment_data
+        self.insights = EconomicInsights()
+        self.intelligence = CompetitiveIntelligence()
         self.economic_models = AIEconomicModels()
         self.validator = EconomicValidator()
 

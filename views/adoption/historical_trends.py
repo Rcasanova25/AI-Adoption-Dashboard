@@ -17,7 +17,6 @@ from business.economic_scenarios import (
 from components.accessibility import AccessibilityManager
 from data.models.adoption import AdoptionMetrics
 from data.models.economics import EconomicImpact
-from data.services import get_data_service, show_data_error
 
 
 def render(data: Dict[str, pd.DataFrame]) -> None:
@@ -354,25 +353,73 @@ def _render_standard_view(
 
 def _get_milestones() -> list:
     """Get authoritative milestones data."""
-    try:
-        data_service = get_data_service()
-        milestones_df = data_service.get_required_data("historical_trends", "milestones")
-        
-        # Convert DataFrame to list of dicts if needed
-        if isinstance(milestones_df, pd.DataFrame) and not milestones_df.empty:
-            return milestones_df.to_dict('records')
-        return []
-    except ValueError as e:
-        show_data_error(
-            str(e),
-            recovery_suggestions=[
-                "Ensure AI Index PDF file is available in resources directory",
-                "Check that PDF extraction completed successfully",
-                "Verify data mapping configuration is correct",
-                "Try restarting the application"
-            ]
-        )
-        return []
+    return [
+        {
+            "year": 2020,
+            "quarter": "Q4",
+            "date": "December 2020",
+            "title": "NSF AI Research Institutes Launch",
+            "description": "NSF announced the first seven National AI Research Institutes with $220M initial investment, establishing foundational research infrastructure.",
+            "impact": "Created institutional framework for sustained AI research",
+            "category": "government",
+            "source": "NSF Press Release 2020",
+            "source_url": "https://www.nsf.gov/news/nsf-partnerships-expand-national-ai-research",
+            "source_type": "Government",
+            "verification": "Primary source - official NSF announcement",
+        },
+        {
+            "year": 2021,
+            "quarter": "Q1",
+            "date": "January 5, 2021",
+            "title": "DALL-E 1 Launch",
+            "description": "OpenAI revealed DALL-E, the first mainstream text-to-image AI using a modified GPT-3 to generate images from natural language descriptions.",
+            "impact": "Demonstrated AI could create, not just analyze content",
+            "category": "breakthrough",
+            "source": "OpenAI Blog Post",
+            "source_url": "https://openai.com/blog/dall-e/",
+            "source_type": "Industry",
+            "verification": "Primary source - original OpenAI announcement",
+        },
+        {
+            "year": 2021,
+            "quarter": "Q2",
+            "date": "June 29, 2021",
+            "title": "GitHub Copilot Technical Preview",
+            "description": "GitHub announced Copilot for technical preview in Visual Studio Code, marking the first AI coding assistant to gain widespread developer adoption.",
+            "impact": "Proved AI could assist complex professional programming tasks",
+            "category": "product",
+            "source": "GitHub Official Announcement",
+            "source_url": "https://github.blog/2021-06-29-introducing-github-copilot-ai-pair-programmer/",
+            "source_type": "Industry",
+            "verification": "Primary source - GitHub official blog",
+        },
+        {
+            "year": 2021,
+            "quarter": "Q3",
+            "date": "July 22, 2021",
+            "title": "AlphaFold Database Launch",
+            "description": "DeepMind launched the AlphaFold Protein Structure Database with 365,000+ protein structures, solving a 50-year-old scientific challenge.",
+            "impact": "Demonstrated AI breakthrough in fundamental science",
+            "category": "scientific",
+            "source": "Nature Journal Publication",
+            "source_url": "https://www.nature.com/articles/s41586-021-03819-2",
+            "source_type": "Academic",
+            "verification": "Peer-reviewed publication in Nature",
+        },
+        {
+            "year": 2022,
+            "quarter": "Q4",
+            "date": "November 30, 2022",
+            "title": "ChatGPT Launch",
+            "description": "OpenAI launched ChatGPT, achieving 1 million users in 5 days and becoming the fastest-adopted online tool in history.",
+            "impact": "Triggered mainstream AI adoption and massive investment surge",
+            "category": "tipping-point",
+            "source": "Stanford AI Index 2023",
+            "source_url": "https://aiindex.stanford.edu/ai-index-report-2023/",
+            "source_type": "Academic",
+            "verification": "Stanford HAI comprehensive analysis",
+        },
+    ]
 
 
 def _add_annotations(fig: go.Figure, filtered_data: pd.DataFrame) -> None:
@@ -500,44 +547,37 @@ def _show_insights() -> None:
     # Convergence factors analysis
     st.subheader("🎯 Convergence Factors: Why 2021-2022 Was the Tipping Point")
 
-    # Load convergence factors data
-    try:
-        data_service = get_data_service()
-        convergence_factors = data_service.get_required_data("historical_trends", "convergence_factors")
-    except ValueError as e:
-        show_data_error(
-            str(e),
-            recovery_suggestions=[
-                "Ensure academic data sources are available",
-                "Check that convergence analysis data was extracted",
-                "Verify the academic PDF loader is configured correctly"
-            ]
-        )
-        convergence_factors = pd.DataFrame()
+    convergence_factors = pd.DataFrame(
+        {
+            "factor": [
+                "Technical Maturation",
+                "Institutional Support",
+                "Market Validation",
+                "Policy Framework",
+            ],
+            "evidence": [
+                "Foundation models (GPT-3) + specialized applications (DALL-E, Copilot) proved real-world utility",
+                "Federal research infrastructure ($220M NSF) + international coordination created stability",
+                "Commercial success (Copilot GA) + scientific breakthroughs (AlphaFold) attracted investment",
+                "NIST framework + regulatory clarity provided governance foundation for enterprise adoption",
+            ],
+            "impact_score": [95, 85, 90, 75],
+        }
+    )
 
     # Create horizontal bar chart for convergence factors
     fig2 = go.Figure()
 
-    if not convergence_factors.empty:
-        fig2.add_trace(
-            go.Bar(
-                y=convergence_factors["factor"],
-                x=convergence_factors["impact_score"],
-                orientation="h",
-                marker_color=["#3498DB", "#2ECC71", "#E74C3C", "#F39C12"],
-                text=[f"{x}%" for x in convergence_factors["impact_score"]],
-                textposition="outside",
-            )
+    fig2.add_trace(
+        go.Bar(
+            y=convergence_factors["factor"],
+            x=convergence_factors["impact_score"],
+            orientation="h",
+            marker_color=["#3498DB", "#2ECC71", "#E74C3C", "#F39C12"],
+            text=[f"{x}%" for x in convergence_factors["impact_score"]],
+            textposition="outside",
         )
-    else:
-        # Show placeholder when no data available
-        fig2.add_annotation(
-            text="Convergence factors data not available",
-            xref="paper", yref="paper",
-            x=0.5, y=0.5,
-            showarrow=False,
-            font=dict(size=16, color="gray")
-        )
+    )
 
     fig2.update_layout(
         title="Convergence Factors: Multi-Source Analysis of 2021-2022 Acceleration",

@@ -24,12 +24,12 @@ except ImportError as e:
 logger = logging.getLogger(__name__)
 
 
-class EnhancedPDFExtractor(PDFExtractor):
+class PDFExtractor:
     """Enhanced PDF extractor with advanced table and data extraction."""
 
     def __init__(self, file_path: Union[str, Path]):
-        """Initialize enhanced PDF extractor."""
-        super().__init__(file_path)
+        """Initialize PDF extractor."""
+        self.file_path = Path(file_path)
         self._metadata = None
         self._cached_text = {}
         self._cached_tables = {}
