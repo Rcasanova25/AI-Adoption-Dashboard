@@ -481,8 +481,8 @@ class RichmondFedLoader(BaseDataLoader):
                     # Look for skill mentions with percentages or importance
                     patterns = [
                         f"{skill}.*?(\d+(?:\.\d+)?)\s*%\s*(?:of\s+)?(?:workers|employees|firms)\s*(?:need|require|lack)",
-                        f"(\d+(?:\.\d+)?)\s*%.*?{skill}",
-                        f"{skill}.*?(?:critical|essential|important).*?(\d+(?:\.\d+)?)\s*%",
+                        f"(\d+(?:\.\d+)?)\s*%\s*%.*?{skill}",
+                        f"{skill}.*?(?:critical|essential|important).*?(\d+(?:\.\d+)?)\s*%"
                     ]
 
                     for pattern in patterns:

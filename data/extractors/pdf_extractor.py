@@ -34,6 +34,19 @@ class PDFExtractor:
         self._cached_text = {}
         self._cached_tables = {}
 
+    def find_pages_with_keyword(self, keyword: str) -> List[int]:
+        """Finds page numbers containing a specific keyword."""
+        pages_found = []
+        try:
+            with pdfplumber.open(self.file_path) as pdf:
+                for i, page in enumerate(pdf.pages):
+                    text = page.extract_text()
+                    if text and keyword.lower() in text.lower():
+                        pages_found.append(i)
+        except Exception as e:
+            logger.error(f"Error finding pages with keyword '{keyword}': {e}")
+        return pages_found
+
     def extract(self) -> Dict[str, Any]:
         """Extract all data from PDF."""
         return {
