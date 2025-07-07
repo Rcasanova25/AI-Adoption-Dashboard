@@ -370,8 +370,7 @@ class DashViewManager:
                     dbc.Badge(
                         f"For: {persona}", 
                         color="secondary", 
-                        className="me-1",
-                        size="sm"
+                        className="me-1 small"
                     )
                     for persona in view["personas"]
                 ])

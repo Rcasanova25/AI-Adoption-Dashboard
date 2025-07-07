@@ -12,7 +12,10 @@ import logging
 from typing import Dict, Any, Tuple
 import traceback
 
-from data.data_manager import DataManager
+try:
+    from data.data_manager_dash import DataManagerDash as DataManager
+except ImportError:
+    from data.data_manager import DataManager
 
 logger = logging.getLogger(__name__)
 
@@ -66,7 +69,10 @@ def register_data_callbacks(app):
             
             # Try to use real DataManager, fall back to mock if not available
             try:
-                from data.data_manager import DataManager
+                try:
+    from data.data_manager_dash import DataManagerDash as DataManager
+except ImportError:
+    from data.data_manager import DataManager
                 
                 # Check if resources path exists
                 from pathlib import Path
