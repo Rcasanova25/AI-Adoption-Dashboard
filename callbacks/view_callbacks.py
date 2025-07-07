@@ -186,7 +186,7 @@ def register_view_callbacks(app):
         """Update persona in browser storage."""
         return persona
     
-    @callback(
+    @app.callback(
         Output("export-data-btn", "disabled"),
         [Input("view-store", "data"),
          Input("data-store", "data")]
@@ -195,7 +195,7 @@ def register_view_callbacks(app):
         """Enable/disable export button based on data availability."""
         return not (current_view and data and "_metadata" in data)
     
-    @callback(
+    @app.callback(
         Output("data-status", "children"),
         Input("data-store", "data"),
         prevent_initial_call=True

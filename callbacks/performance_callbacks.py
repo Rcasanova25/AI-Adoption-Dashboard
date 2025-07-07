@@ -15,7 +15,7 @@ logger = logging.getLogger(__name__)
 def register_performance_callbacks(app):
     """Register all performance-related callbacks."""
     
-    @callback(
+    @app.callback(
         Output("performance-monitor", "children"),
         Input("performance-interval", "n_intervals"),
         prevent_initial_call=False
@@ -24,7 +24,7 @@ def register_performance_callbacks(app):
         """Render performance monitoring widget."""
         return create_performance_monitor()
     
-    @callback(
+    @app.callback(
         [Output("memory-usage-bar", "children"),
          Output("memory-usage-text", "children"),
          Output("cache-status", "children"),

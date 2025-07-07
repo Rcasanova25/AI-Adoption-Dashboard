@@ -19,7 +19,7 @@ logger = logging.getLogger(__name__)
 def register_data_callbacks(app):
     """Register all data-related callbacks."""
     
-    @callback(
+    @app.callback(
         [Output("data-store", "data"),
          Output("data-loading-progress", "children"),
          Output("error-modal", "is_open"),
@@ -161,6 +161,7 @@ def register_data_callbacks(app):
                         datasets[dataset_name] = {"error": str(e), "status": "failed"}
             
             # Add metadata
+            total_datasets = len(dataset_names) if 'dataset_names' in locals() else len(datasets) - 1
             datasets["_metadata"] = {
                 "loaded_at": pd.Timestamp.now().isoformat(),
                 "total_datasets": total_datasets,
