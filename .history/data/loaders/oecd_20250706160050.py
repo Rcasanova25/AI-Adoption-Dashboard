@@ -223,16 +223,16 @@ class OECDLoader(BaseDataLoader):
 
         # Extract launch year
         year_match = re.search(
-            r"(20[1-2]\\d)\s*(?:launch|establish|introduce|adopt)", context, re.IGNORECASE
+            r"(20[1-2]\d)\s*(?:launch|establish|introduce|adopt)", context, re.IGNORECASE
         )
         if year_match:
             result["strategy_launch_year"] = int(year_match.group(1))
 
         # Extract funding
         funding_patterns = [
-            r"\$(\\d+(?:\\.\\d+)?)\s*(billion|million)",
-            r"(\\d+(?:\\.\\d+)?)\s*(billion|million)\s*(?:USD|dollars?)",
-            r"invest(?:ment|ing)?\s*(?:of\s*)?\$?(\\d+(?:\\.\\d+)?)\s*(billion|million)",
+            r"\$(\d+(?:\.\d+)?)\s*(billion|million)",
+            r"(\d+(?:\.\d+)?)\s*(billion|million)\s*(?:USD|dollars?)",
+            r"invest(?:ment|ing)?\s*(?:of\s*)?\$?(\d+(?:\.\d+)?)\s*(billion|million)",
         ]
 
         for pattern in funding_patterns:
@@ -313,7 +313,7 @@ class OECDLoader(BaseDataLoader):
                         result["strategy_launch_year"] = int(float(value_str))
                     elif "fund" in col_lower or "invest" in col_lower:
                         # Extract numeric value
-                        numeric_match = re.search(r"(\\d+(?:\\.\\d+)?)", value_str)
+                        numeric_match = re.search(r"(\d+(?:\.\d+)?)", value_str)
                         if numeric_match:
                             result["public_funding_billions"] = float(numeric_match.group(1))
                     elif "score" in col_lower or "maturity" in col_lower:
@@ -408,9 +408,9 @@ class OECDLoader(BaseDataLoader):
 
         # Extract number of countries implementing
         country_patterns = [
-            r"(\\d+)\s*countr(?:ies|y)\s*(?:implement|adopt|use)",
-            r"implement(?:ed|ing)?\s*(?:in|by)\s*(\\d+)\s*countr",
-            r"(\\d+)\s*(?:nations?|states?|governments?)\s*(?:have|has)",
+            r"(\d+)\s*countr(?:ies|y)\s*(?:implement|adopt|use)",
+            r"implement(?:ed|ing)?\s*(?:in|by)\s*(\d+)\s*countr",
+            r"(\d+)\s*(?:nations?|states?|governments?)\s*(?:have|has)",
         ]
 
         for pattern in country_patterns:
@@ -421,9 +421,9 @@ class OECDLoader(BaseDataLoader):
 
         # Extract effectiveness or impact scores
         score_patterns = [
-            r"effectiveness\s*(?:score|rating)?\s*(?:of\s*)?(\\d+(?:\\.\\d+)?)",
-            r"(\\d+(?:\\.\\d+)?)\s*(?:out of 10|/10)\s*effectiveness",
-            r"impact\s*(?:score|rating)?\s*(?:of\s*)?(\\d+(?:\\.\\d+)?)",
+            r"effectiveness\s*(?:score|rating)?\s*(?:of\s*)?(\d+(?:\.\d+)?)",
+            r"(\d+(?:\.\d+)?)\s*(?:out of 10|/10)\s*effectiveness",
+            r"impact\s*(?:score|rating)?\s*(?:of\s*)?(\d+(?:\.\d+)?)",
         ]
 
         for pattern in score_patterns:
@@ -441,7 +441,7 @@ class OECDLoader(BaseDataLoader):
             result["implementation_complexity"] = "Low"
 
         # Extract budget if available
-        budget_match = re.search(r"\$(\\d+(?:\\.\\d+)?)\s*(million|billion)", context, re.IGNORECASE)
+        budget_match = re.search(r"\$(\d+(?:\.\d+)?)\s*(million|billion)", context, re.IGNORECASE)
         if budget_match:
             amount = float(budget_match.group(1))
             if budget_match.group(2).lower() == "billion":
@@ -531,9 +531,9 @@ class OECDLoader(BaseDataLoader):
 
         # Extract adoption rate
         adoption_patterns = [
-            r"(\\d+(?:\\.\\d+)?)\s*%\s*(?:of\s*)?(?:countries|organizations|firms)\s*(?:adopt|implement)",
-            r"adopt(?:ed|ion)\s*(?:rate|by)\s*(\\d+(?:\\.\\d+)?)\s*%",
-            r"(\\d+(?:\\.\\d+)?)\s*%\s*implementation",
+            r"(\d+(?:\.\d+)?)\s*%\s*(?:of\s*)?(?:countries|organizations|firms)\s*(?:adopt|implement)",
+            r"adopt(?:ed|ion)\s*(?:rate|by)\s*(\d+(?:\.\d+)?)\s*%",
+            r"(\d+(?:\.\d+)?)\s*%\s*implementation",
         ]
 
         for pattern in adoption_patterns:
@@ -544,8 +544,8 @@ class OECDLoader(BaseDataLoader):
 
         # Extract implementation score
         impl_patterns = [
-            r"implementation\s*(?:score|rating)\s*(?:of\s*)?(\\d+(?:\\.\\d+)?)",
-            r"(\\d+(?:\\.\\d+)?)\s*(?:out of 10|/10)\s*implementation",
+            r"implementation\s*(?:score|rating)\s*(?:of\s*)?(\d+(?:\.\d+)?)",
+            r"(\d+(?:\.\d+)?)\s*(?:out of 10|/10)\s*implementation",
         ]
 
         for pattern in impl_patterns:
@@ -671,7 +671,7 @@ class OECDLoader(BaseDataLoader):
         # Extract numeric metrics
         # Industry alignment score
         alignment_match = re.search(
-            r"industry\s*alignment\s*(?:score|rating)?\s*(?:of\s*)?(\\d+(?:\\.\\d+)?)",
+            r"industry\s*alignment\s*(?:score|rating)?\s*(?:of\s*)?(\d+(?:\.\d+)?)",
             text,
             re.IGNORECASE,
         )
@@ -680,8 +680,8 @@ class OECDLoader(BaseDataLoader):
 
         # Innovation impact
         innovation_patterns = [
-            r"(\\d+(?:\\.\\d+)?)\s*%\s*(?:impact on|effect on)\s*innovation",
-            r"innovation\s*(?:impact|effect)\s*(?:of\s*)?([+-]?\\d+(?:\\.\\d+)?)\s*%",
+            r"(\d+(?:\.\d+)?)\s*%\s*(?:impact on|effect on)\s*innovation",
+            r"innovation\s*(?:impact|effect)\s*(?:of\s*)?([+-]?\d+(?:\.\d+)?)\s*%",
         ]
 
         for pattern in innovation_patterns:
@@ -692,7 +692,7 @@ class OECDLoader(BaseDataLoader):
 
         # Compliance cost
         cost_match = re.search(
-            r"compliance\s*cost\s*(?:index|score)?\s*(?:of\s*)?(\\d+(?:\\.\\d+)?)", text, re.IGNORECASE
+            r"compliance\s*cost\s*(?:index|score)?\s*(?:of\s*)?(\d+(?:\.\d+)?)", text, re.IGNORECASE
         )
         if cost_match:
             result["compliance_cost_index"] = float(cost_match.group(1))
@@ -790,9 +790,9 @@ class OECDLoader(BaseDataLoader):
 
         # Extract member countries
         member_patterns = [
-            r"(\\d+)\s*(?:member|participating)\s*country",
-            r"(\\d+)\s*country(?:ies|y)\s*(?:participate|involved)",
-            r"membership\s*of\s*(\\d+)",
+            r"(\d+)\s*(?:member|participating)\s*countr",
+            r"(\d+)\s*countr(?:ies|y)\s*(?:participate|involved)",
+            r"membership\s*of\s*(\d+)",
         ]
 
         for pattern in member_patterns:
@@ -805,9 +805,7 @@ class OECDLoader(BaseDataLoader):
         focus_areas = {
             "Responsible AI": ["responsible", "ethical", "trustworthy"],
             "Policy coordination": ["policy", "coordination", "harmonization"],
-            "Technical standards": [
-                "standards", "technical", "interoperability"
-            ],
+            "Technical standards": ["standards", "technical", "interoperability"],
             "Security": ["security", "safety", "defense"],
             "Human rights": ["rights", "fundamental", "protection"],
             "Global governance": ["governance", "oversight", "regulation"],
@@ -820,13 +818,13 @@ class OECDLoader(BaseDataLoader):
 
         # Extract effectiveness score if available
         eff_match = re.search(
-            r"effectiveness\s*(?:score|rating)?\s*(?:of\s*)?(\\d+(?:\\.\\d+)?)", context, re.IGNORECASE
+            r"effectiveness\s*(?:score|rating)?\s*(?:of\s*)?(\d+(?:\.\d+)?)", context, re.IGNORECASE
         )
         if eff_match:
             result["effectiveness_score"] = float(eff_match.group(1))
 
         # Extract budget
-        budget_match = re.search(r"\$(\\d+(?:\\.\\d+)?)\s*(million|billion)", context, re.IGNORECASE)
+        budget_match = re.search(r"\$(\d+(?:\.\d+)?)\s*(million|billion)", context, re.IGNORECASE)
         if budget_match:
             amount = float(budget_match.group(1))
             if budget_match.group(2).lower() == "billion":
@@ -972,8 +970,8 @@ class OECDLoader(BaseDataLoader):
 
         # Extract number of reskilling programs
         program_patterns = [
-            r"(\\d+)\s*(?:reskilling|upskilling|training)\s*programs?",
-            r"(\\d+)\s*programs?\s*(?:for|to)\s*(?:reskill|upskill|train)",
+            r"(\d+)\s*(?:reskilling|upskilling|training)\s*programs?",
+            r"(\d+)\s*programs?\s*(?:for|to)\s*(?:reskill|upskill|train)",
         ]
 
         for pattern in program_patterns:
@@ -984,7 +982,7 @@ class OECDLoader(BaseDataLoader):
 
         # Extract training budget
         budget_match = re.search(
-            r"\$(\\d+(?:\\.\\d+)?)\s*(million|billion)\s*(?:for\s*)?training", context, re.IGNORECASE
+            r"\$(\d+(?:\.\d+)?)\s*(million|billion)\s*(?:for\s*)?training", context, re.IGNORECASE
         )
         if budget_match:
             amount = float(budget_match.group(1))
@@ -994,8 +992,8 @@ class OECDLoader(BaseDataLoader):
 
         # Extract citizens trained
         trained_patterns = [
-            r"(\\d+(?:,\\d+)?)\s*(?:thousand|K)\s*(?:citizens?|people|workers?)\s*trained",
-            r"trained\s*(\\d+(?:,\\d+)?)\s*(?:thousand|K)\s*(?:citizens?|people|workers?)",
+            r"(\d+(?:,\d+)?)\s*(?:thousand|K)\s*(?:citizens?|people|workers?)\s*trained",
+            r"trained\s*(\d+(?:,\d+)?)\s*(?:thousand|K)\s*(?:citizens?|people|workers?)",
         ]
 
         for pattern in trained_patterns:
@@ -1058,12 +1056,8 @@ class OECDLoader(BaseDataLoader):
 
                         # Check if table contains year and investment data
                         table_str = table.to_string().lower()
-                        if (
-                            "20" in table_str
-                            and any(
-                                term in table_str
-                                for term in ["billion", "investment", "funding"]
-                            )
+                        if "20" in table_str and any(
+                            term in table_str for term in ["billion", "investment", "funding"]
                         ):
                             processed = self._process_investment_table(table)
                             if processed:
@@ -1075,8 +1069,8 @@ class OECDLoader(BaseDataLoader):
 
                     # Extract year-wise investment data
                     year_patterns = [
-                        r"(20[1-3]\\d)\s*[:]\s*\$?(\\d+(?:\\.\\d+)?)\s*(billion|million)",
-                        r"in\s*(20[1-3]\\d)\s*.*?\$?(\\d+(?:\\.\\d+)?)\s*(billion|million)\s*(?:in\s*)?(?:AI\s*)?investment",
+                        r"(20[1-3]\d)\s*[:]\s*\$?(\d+(?:\.\d+)?)\s*(billion|million)",
+                        r"in\s*(20[1-3]\d)\s*.*?\$?(\d+(?:\.\d+)?)\s*(billion|million)\s*(?:in\s*)?(?:AI\s*)?investment",
                     ]
 
                     for pattern in year_patterns:
@@ -1189,7 +1183,7 @@ class OECDLoader(BaseDataLoader):
 
         for key, keywords in regions.items():
             for keyword in keywords:
-                pattern = f"{keyword}.*?(\\d+(?:\\.\\d+)?)\s*%"
+                pattern = f"{keyword}.*?(\d+(?:\.\d+)?)\s*%"
                 match = re.search(pattern, context, re.IGNORECASE)
                 if match:
                     result[key] = float(match.group(1))

@@ -21,7 +21,8 @@ class NVIDIATokenLoader(BaseDataLoader):
         """Initialize with NVIDIA report file path."""
         if file_path is None:
             file_path = Path(
-                "C:/Users/rcasa/OneDrive/Documents/AI-Adoption-Dashboard/data/loaders/nvidia.py"
+                "/mnt/c/Users/rcasa/OneDrive/Documents/AI-Adoption-Dashboard/"
+                "AI adoption resources/AI Adoption Resources 3/"
                 "Explaining Tokens — the Language and Currency of AI _ NVIDIA Blog.pdf"
             )
 
@@ -139,12 +140,12 @@ class NVIDIATokenLoader(BaseDataLoader):
 
                 # Patterns for token pricing and cost reduction
                 patterns = [
-                    r"(\\d+(?:\\.\\d+)?)\s*x\s*(?:cost\s*)?reduction",  # 280x reduction
-                    r"\$(\\d+(?:\\.\\d+)?)\s*per\s*(?:thousand|1k|1,000)\s*tokens",
-                    r"(\\d+(?:\\.\\d+)?)\s*(?:cents?|¢)\s*per\s*(?:thousand|1k|1,000)\s*tokens",
-                    r"token\s*(?:price|cost)\s*(?:dropped|reduced|decreased)\s*(?:by\s*)?(\\d+(?:\.\\d+)?)\s*%",
-                    r"from\s*\$(\\d+(?:\\.\\d+)?)\s*to\s*\$(\\d+(?:\\.\\d+)?)\s*per\s*(?:thousand|1k)",
-                    r"(\\d+(?:\\.\\d+)?)\s*tokens?\s*per\s*dollar",
+                    r"(\d+(?:\.\d+)?)\s*x\s*(?:cost\s*)?reduction",  # 280x reduction
+                    r"\$(\d+(?:\.\d+)?)\s*per\s*(?:thousand|1k|1,000)\s*tokens",
+                    r"(\d+(?:\.\d+)?)\s*(?:cents?|¢)\s*per\s*(?:thousand|1k|1,000)\s*tokens",
+                    r"token\s*(?:price|cost)\s*(?:dropped|reduced|decreased)\s*(?:by\s*)?(\d+(?:\.\d+)?)\s*%",
+                    r"from\s*\$(\d+(?:\.\d+)?)\s*to\s*\$(\d+(?:\.\d+)?)\s*per\s*(?:thousand|1k)",
+                    r"(\d+(?:\.\d+)?)\s*tokens?\s*per\s*dollar",
                 ]
 
                 for pattern in patterns:
@@ -238,7 +239,7 @@ class NVIDIATokenLoader(BaseDataLoader):
     def _extract_date_from_context(self, text: str) -> str:
         """Extract date from context."""
         # Look for year or quarter mentions
-        year_match = re.search(r"20[2-3]\\d", text)
+        year_match = re.search(r"20[2-3]\d", text)
         if year_match:
             year = year_match.group()
 
@@ -287,7 +288,7 @@ class NVIDIATokenLoader(BaseDataLoader):
                     try:
                         value_str = str(row[price_col])
                         # Extract numeric value
-                        numeric_match = re.search(r"(\\d+(?:\\.\\d+)?)", value_str)
+                        numeric_match = re.search(r"(\d+(?:\.\d+)?)", value_str)
                         if numeric_match:
                             value = float(numeric_match.group(1))
 
@@ -401,11 +402,11 @@ class NVIDIATokenLoader(BaseDataLoader):
 
         # Extract various metrics
         patterns = {
-            "parameters": r"(\\d+(?:\\.\\d+)?)\s*(?:billion|B)\s*parameters",
-            "tokens_per_second": r"(\\d+(?:\\.\\d+)?)\s*tokens?\s*(?:per|/)\s*second",
-            "latency_ms": r"(\\d+(?:\\.\\d+)?)\s*(?:ms|milliseconds)\s*latency",
-            "quality_score": r"(?:quality|performance)\s*(?:score|rating)\s*(?:of\s*)?(\\d+(?:\\.\\d+)?)",
-            "efficiency_ratio": r"efficiency\s*(?:ratio|score)\s*(?:of\s*)?(\\d+(?:\\.\\d+)?)",
+            "parameters": r"(\d+(?:\.\d+)?)\s*(?:billion|B)\s*parameters",
+            "tokens_per_second": r"(\d+(?:\.\d+)?)\s*tokens?\s*(?:per|/)\s*second",
+            "latency_ms": r"(\d+(?:\.\d+)?)\s*(?:ms|milliseconds)\s*latency",
+            "quality_score": r"(?:quality|performance)\s*(?:score|rating)\s*(?:of\s*)?(\d+(?:\.\d+)?)",
+            "efficiency_ratio": r"efficiency\s*(?:ratio|score)\s*(?:of\s*)?(\d+(?:\.\d+)?)",
         }
 
         found_metrics = False
@@ -458,7 +459,7 @@ class NVIDIATokenLoader(BaseDataLoader):
                     if any(keyword in col_lower for keyword in keywords):
                         try:
                             value_str = str(row[col])
-                            value = float(re.search(r"(\\d+(?:\\.\\d+)?)", value_str).group(1))
+                            value = float(re.search(r"(\d+(?:\.\d+)?)", value_str).group(1))
                             result[metric] = value
                         except:
                             continue
@@ -505,7 +506,7 @@ class NVIDIATokenLoader(BaseDataLoader):
                 # Extract numeric cost data
                 numeric_data = self.extractor.extract_numeric_data(
                     keywords=["GPU", "training", "inference", "compute", "cloud", "energy"],
-                    value_pattern=r"\$(\\d+(?:,\\d+)*(?:\\.\\d+)?)\s*(thousand|million|billion|K|M|B)?",
+                    value_pattern=r"\$(\d+(?:,\d+)*(?:\.\d+)?)\s*(thousand|million|billion|K|M|B)?",
                 )
 
                 for keyword, values in numeric_data.items():
@@ -544,7 +545,7 @@ class NVIDIATokenLoader(BaseDataLoader):
 
     def _extract_year_from_cost_context(self, text: str) -> int:
         """Extract year from cost context."""
-        year_matches = re.findall(r"20[2-3]\\d", text)
+        year_matches = re.findall(r"20[2-3]\d", text)
         if year_matches:
             return max(int(year) for year in year_matches)
         return 2024
@@ -618,10 +619,10 @@ class NVIDIATokenLoader(BaseDataLoader):
                     if technique.lower() in text.lower():
                         # Extract metrics for this technique
                         patterns = [
-                            rf"{technique}.*?(\d+(?:\.\d+)?)\s*%\s*(?:token\s*)?reduction",
-                            rf"{technique}.*?(?:reduce|save).*?(\d+(?:\.\d+)?)\s*%",
-                            rf"(\d+(?:\.\d+)?)\s*%.*?{technique}",
-                            rf"{technique}.*?(\d+(?:\.\d+)?)\s*x\s*(?:faster|improvement)",
+                            f"{technique}.*?(\d+(?:\.\d+)?)\s*%\s*(?:token\s*)?reduction",
+                            f"{technique}.*?(?:reduce|save).*?(\d+(?:\.\d+)?)\s*%",
+                            f"(\d+(?:\.\d+)?)\s*%.*?{technique}",
+                            f"{technique}.*?(\d+(?:\.\d+)?)\s*x\s*(?:faster|improvement)",
                         ]
 
                         for pattern in patterns:
@@ -723,9 +724,7 @@ class NVIDIATokenLoader(BaseDataLoader):
         return None
 
     def _process_compute_table(self, table: pd.DataFrame) -> Optional[pd.DataFrame]:
-        """
-        Process table containing compute requirements.
-        """
+        """Process table containing compute requirements."""
         # Identify use case column
         use_case_col = None
         for col in table.columns:
@@ -756,9 +755,7 @@ class NVIDIATokenLoader(BaseDataLoader):
 
                 try:
                     # Extract numeric value
-                    numeric_match = re.search(
-                        r"(\\d+(?:,\\d+)*(?:\\.\\d+)?)", value_str
-                    )
+                    numeric_match = re.search(r"(\d+(?:,\d+)*(?:\.\d+)?)", value_str)
                     if numeric_match:
                         value = float(numeric_match.group(1).replace(",", ""))
 
@@ -805,7 +802,7 @@ class NVIDIATokenLoader(BaseDataLoader):
 
                     # Extract token requirements
                     token_match = re.search(
-                        r"(\\d+(?:,\\d+)?)\s*tokens?\s*(?:per|average)", context, re.IGNORECASE
+                        r"(\d+(?:,\d+)?)\s*tokens?\s*(?:per|average)", context, re.IGNORECASE
                     )
                     if token_match:
                         metrics["avg_tokens_per_request"] = float(
@@ -813,7 +810,7 @@ class NVIDIATokenLoader(BaseDataLoader):
                         )
 
                     # Extract GPU hours
-                    gpu_match = re.search(r"(\\d+(?:,\\d+)?)\s*GPU\s*hours?", context, re.IGNORECASE)
+                    gpu_match = re.search(r"(\d+(?:,\d+)?)\s*GPU\s*hours?", context, re.IGNORECASE)
                     if gpu_match:
                         metrics["gpu_hours_required"] = float(gpu_match.group(1).replace(",", ""))
 
@@ -872,9 +869,9 @@ class NVIDIATokenLoader(BaseDataLoader):
                     if barrier.lower() in text.lower():
                         # Extract cost data for this barrier
                         patterns = [
-                            f"{barrier}.*?\\$(\\d+(?:,\\d+)*(?:\.\\d+)?)\s*(thousand|million|K|M)?",
-                            f"\\$(\\d+(?:,\\d+)*(?:\\.\\d+)?)\s*(thousand|million|K|M)?.*?{barrier}",
-                            f"{barrier}.*?(\\d+(?:\\.\\d+)?)\s*%\s*of\s*(?:total\s*)?(?:IT\s*)?budget",
+                            f"{barrier}.*?\\$(\d+(?:,\d+)*(?:\.\d+)?)\s*(thousand|million|K|M)?",
+                            f"\\$(\d+(?:,\d+)*(?:\.\d+)?)\s*(thousand|million|K|M)?.*?{barrier}",
+                            f"{barrier}.*?(\d+(?:\.\d+)?)\s*%\s*of\s*(?:total\s*)?(?:IT\s*)?budget",
                         ]
 
                         for pattern in patterns:

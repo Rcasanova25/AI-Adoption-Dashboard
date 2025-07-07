@@ -618,10 +618,10 @@ class NVIDIATokenLoader(BaseDataLoader):
                     if technique.lower() in text.lower():
                         # Extract metrics for this technique
                         patterns = [
-                            rf"{technique}.*?(\d+(?:\.\d+)?)\s*%\s*(?:token\s*)?reduction",
-                            rf"{technique}.*?(?:reduce|save).*?(\d+(?:\.\d+)?)\s*%",
-                            rf"(\d+(?:\.\d+)?)\s*%.*?{technique}",
-                            rf"{technique}.*?(\d+(?:\.\d+)?)\s*x\s*(?:faster|improvement)",
+                            f"{technique}.*?(\\d+(?:\\.\\d+)?)\s*%\s*(?:token\s*)?reduction",
+                            f"{technique}.*?(?:reduce|save).*?(\\d+(?:\\.\\d+)?)\s*%",
+                            f"(\\d+(?:\\.\\d+)?)\s*%.*?{technique}",
+                            f"{technique}.*?(\\d+(?:\\.\\d+)?)\s*x\s*(?:faster|improvement)",
                         ]
 
                         for pattern in patterns:

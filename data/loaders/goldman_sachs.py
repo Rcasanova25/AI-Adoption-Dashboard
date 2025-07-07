@@ -509,9 +509,9 @@ class GoldmanSachsLoader(BaseDataLoader):
             for sector in sectors:
                 # Look for sector mentions with productivity gains
                 patterns = [
-                    f"{sector}.*?(\\d+(?:\\.\\d+)?)\s*%\s*productivity",
-                    f"(\\d+(?:\\.\\d+)?)\s*%\s*productivity.*?{sector}",
-                    f"{sector}.*?productivity.*?(\\d+(?:\\.\\d+)?)\s*%",
+                    rf"{sector}.*?(\d+(?:\.\d+)?)\s*%\s*productivity",
+                    rf"(\d+(?:\.\d+)?)\s*%\s*productivity.*?{sector}",
+                    rf"{sector}.*?productivity.*?(\d+(?:\.\d+)?)\s*%",
                 ]
 
                 for pattern in patterns:
@@ -587,9 +587,9 @@ class GoldmanSachsLoader(BaseDataLoader):
                 for occupation in occupations:
                     # Look for occupation mentions with exposure percentages
                     patterns = [
-                        f"{occupation}.*?(\\d+(?:\\.\\d+)?)\s*%\s*(?:exposure|risk|automation)",
-                        f"(\\d+(?:\\.\\d+)?)\s*%\s*(?:of\s+)?{occupation}.*?(?:exposed|automated)",
-                        f"{occupation}.*?(?:exposure|risk).*?(\\d+(?:\\.\\d+)?)\s*%",
+                        rf"{occupation}.*?(\d+(?:\.\d+)?)\s*%\s*(?:exposure|risk|automation)",
+                        rf"(\d+(?:\.\d+)?)\s*%\s*(?:of\s+)?{occupation}.*?(?:exposed|automated)",
+                        rf"{occupation}.*?(?:exposure|risk).*?(\d+(?:\.\d+)?)\s*%",
                     ]
 
                     for pattern in patterns:
