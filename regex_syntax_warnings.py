@@ -29,9 +29,9 @@ def fix_regex_patterns():
         (r'\\\\(\d+)', r'\\\\\1'),  # Don't change octal sequences
         
         # Fix f-strings that should be raw f-strings (rf"...")
-        # Match f"..." containing regex-like patterns
-        (r'f"([^"]*(?:\\[dswDSW\[\](){}+*?.|])+[^"]*)"', r'rf"\1"'),
-        (r"f'([^']*(?:\\[dswDSW\[\](){}+*?.|])+[^']*)'", r"rf'\1'"),
+        # Only add 'r' if not already present
+        (r'(?<!r)f"([^"]*(?:\\[dswDSW\[\](){}+*?.|])+[^"]*)"', r'rf"\1"'),
+        (r"(?<!r)f'([^']*(?:\\[dswDSW\[\](){}+*?.|])+[^']*)'", r"rf'\1'"),
     ]
     
     fixed_files = []
