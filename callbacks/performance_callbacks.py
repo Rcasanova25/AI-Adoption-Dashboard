@@ -88,34 +88,8 @@ def register_performance_callbacks(app):
                 html.Small("Error loading response times")
             )
     
-    @callback(
-        [Output("cache-status", "children", allow_duplicate=True),
-         Output("success-toast", "is_open", allow_duplicate=True),
-         Output("success-toast", "children", allow_duplicate=True)],
-        Input("clear-cache-btn", "n_clicks"),
-        prevent_initial_call=True
-    )
-    def clear_cache(n_clicks: int) -> Tuple[html.Div, bool, str]:
-        """Clear application cache."""
-        if n_clicks:
-            try:
-                # Clear cache (would connect to actual cache manager)
-                clear_application_cache()
-                
-                # Update cache status
-                cache_status = html.Div([
-                    html.Small("Cache cleared!", className="d-block text-success"),
-                    html.Small("Hit Rate: 0.0%", className="d-block"),
-                    html.Small("Size: 0 MB", className="d-block")
-                ])
-                
-                return cache_status, True, "Cache cleared successfully!"
-                
-            except Exception as e:
-                logger.error(f"Error clearing cache: {str(e)}")
-                return dash.no_update, True, f"Error clearing cache: {str(e)}"
-        
-        return dash.no_update, False, ""
+    # Cache clearing is handled via a client-side callback or separate endpoint
+    # to avoid duplicate output conflicts
 
 
 def create_performance_monitor() -> html.Div:
@@ -167,8 +141,10 @@ def create_performance_monitor() -> html.Div:
                 size="sm", 
                 color="warning",
                 outline=True,
-                className="w-100"
-            )
+                className="w-100",
+                disabled=True  # Temporarily disabled to avoid callback conflicts
+            ),
+            html.Small("(Cache clearing temporarily disabled)", className="text-muted mt-1 d-block")
         ])
     ])
 

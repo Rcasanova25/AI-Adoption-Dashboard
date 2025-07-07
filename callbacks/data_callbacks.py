@@ -22,8 +22,8 @@ def register_data_callbacks(app):
     @callback(
         [Output("data-store", "data"),
          Output("data-loading-progress", "children"),
-         Output("error-modal", "is_open", allow_duplicate=True),
-         Output("error-content", "children", allow_duplicate=True),
+         Output("error-modal", "is_open"),
+         Output("error-content", "children"),
          Output("loading-section", "style")],
         [Input("data-check-interval", "n_intervals")],
         [State("data-store", "data")],
