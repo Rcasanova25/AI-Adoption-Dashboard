@@ -172,16 +172,8 @@ class DashboardApp:
                 ])
             ], id="error-modal", is_open=False, size="lg"),
             
-            # Success toast
-            dbc.Toast(
-                id="success-toast",
-                header="Success",
-                is_open=False,
-                dismissable=True,
-                duration=4000,
-                icon="success",
-                style={"position": "fixed", "top": 20, "right": 20, "width": 350}
-            )
+            # Success notification area
+            html.Div(id="notification-area", style={"position": "fixed", "top": 20, "right": 20, "width": 350})
             
         ], fluid=True, className="dashboard-container")
         

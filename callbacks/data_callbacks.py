@@ -183,20 +183,7 @@ def register_data_callbacks(app):
             
             return {}, progress, True, error_content, {}
     
-    @callback(
-        Output("success-toast", "is_open"),
-        Output("success-toast", "children"),
-        Input("data-store", "data"),
-        prevent_initial_call=True
-    )
-    def show_data_loaded_toast(data: Dict[str, Any]) -> Tuple[bool, str]:
-        """Show success toast when data is loaded."""
-        if data and "_metadata" in data:
-            metadata = data["_metadata"]
-            if metadata.get("successful_loads", 0) > 0:
-                message = f"Loaded {metadata['successful_loads']} datasets successfully!"
-                return True, message
-        return False, ""
+    # Success toast is now handled in the main layout to avoid conflicts
 
 
 def create_mock_dataset(dataset_name: str) -> Dict[str, Any]:
