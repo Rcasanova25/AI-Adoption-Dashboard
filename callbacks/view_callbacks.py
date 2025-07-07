@@ -80,6 +80,12 @@ def register_view_callbacks(app):
     def render_main_view(view_id: str, data: Dict[str, Any], persona: str) -> Tuple[html.Div, str, bool, Any]:
         """Render the selected view with loaded data."""
         try:
+            # Check for data loading error
+            if data and data.get("_error"):
+                error_message = data.get("_error_message", "Unknown error")
+                error_details = data.get("_error_details", "")
+                return create_error_view("Data Loading", error_message), view_id, True, error_details
+            
             # Check if we have data
             if not data or "_metadata" not in data:
                 loading_content = dbc.Container([

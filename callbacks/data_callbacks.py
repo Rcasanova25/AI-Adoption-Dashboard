@@ -22,14 +22,12 @@ def register_data_callbacks(app):
     @app.callback(
         [Output("data-store", "data"),
          Output("data-loading-progress", "children"),
-         Output("error-modal", "is_open"),
-         Output("error-content", "children"),
          Output("loading-section", "style")],
         [Input("data-check-interval", "n_intervals")],
         [State("data-store", "data")],
         prevent_initial_call=False
     )
-    def load_data_async(n_intervals: int, existing_data: Dict[str, Any]) -> Tuple[Dict, Any, bool, Any, Dict]:
+    def load_data_async(n_intervals: int, existing_data: Dict[str, Any]) -> Tuple[Dict, Any, Dict]:
         """
         Load data asynchronously with progress tracking.
         This runs on initial load and every 30 seconds to check for updates.
@@ -39,7 +37,7 @@ def register_data_callbacks(app):
             if existing_data and n_intervals > 0:
                 metadata = existing_data.get("_metadata", {})
                 if metadata.get("successful_loads", 0) > 20:
-                    return existing_data, dash.no_update, False, "", {"display": "none"}
+                    return existing_data, dash.no_update, {"display": "none"}
             
             # Show progress container
             progress_container = dbc.Card([
@@ -209,7 +207,7 @@ def register_data_callbacks(app):
             # Hide loading section after initial load
             loading_style = {"display": "none"} if successful_loads > 0 else {}
             
-            return datasets, final_progress, False, "", loading_style
+            return datasets, final_progress, loading_style
             
         except Exception as e:
             logger.error(f"Critical error in data loading: {str(e)}")
@@ -234,7 +232,13 @@ def register_data_callbacks(app):
             
             progress = dbc.Alert("❌ Data loading failed", color="danger")
             
-            return {}, progress, True, error_content, {}
+            # Store error in data for view callbacks to handle
+            error_data = {
+                "_error": True,
+                "_error_message": str(e),
+                "_error_details": error_content
+            }
+            return error_data, progress, {}
     
     # Success toast is now handled in the main layout to avoid conflicts
 
