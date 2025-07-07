@@ -102,10 +102,10 @@ class RichmondFedLoader(BaseDataLoader):
 
                 # Patterns for productivity data
                 patterns = [
-                    rr"productivity\s+growth\s+(?:of\s+)?(\d+(?:\.\d+)?)\s*%",
-                    rr"(\d+(?:\.\d+)?)\s*%\s*(?:annual\s+)?productivity",
-                    rr"productivity\s+(?:increased|decreased|grew)\s+(?:by\s+)?(\d+(?:\.\d+)?)\s*%",
-                    rr"(\d+(?:\.\d+)?)\s*%\s*(?:decline|increase)\s+in\s+productivity",
+                    r"productivity\s+growth\s+(?:of\s+)?(\d+(?:\.\d+)?)\s*%",
+                    r"(\d+(?:\.\d+)?)\s*%\s*(?:annual\s+)?productivity",
+                    r"productivity\s+(?:increased|decreased|grew)\s+(?:by\s+)?(\d+(?:\.\d+)?)\s*%",
+                    r"(\d+(?:\.\d+)?)\s*%\s*(?:decline|increase)\s+in\s+productivity",
                 ]
 
                 for pattern in patterns:
@@ -154,10 +154,10 @@ class RichmondFedLoader(BaseDataLoader):
         """Extract time period from context."""
         # Look for year ranges or decades near the match
         year_patterns = [
-            rr"(\\d{4})-(\\d{4})",
-            rr"(\\d{4})s",
-            rr"since\s+(\\d{4})",
-            rr"between\s+(\\d{4})\s+and\s+(\\d{4})",
+            r"(\\d{4})-(\\d{4})",
+            r"(\\d{4})s",
+            r"since\s+(\\d{4})",
+            r"between\s+(\\d{4})\s+and\s+(\\d{4})",
         ]
 
         for year_pattern in year_patterns:
@@ -198,7 +198,7 @@ class RichmondFedLoader(BaseDataLoader):
             # Check for percentage or numeric values
             if (
                 col_vals.str.contains("%").sum() > 0
-                or col_vals.str.match(rr"^-?\d+(?:\.\d+)?$").sum() > len(table) * 0.3
+                or col_vals.str.match(r"^-?\d+(?:\.\d+)?$").sum() > len(table) * 0.3
             ):
                 value_cols.append(col)
 
@@ -319,7 +319,7 @@ class RichmondFedLoader(BaseDataLoader):
     def _extract_year_from_context(self, text: str) -> int:
         """Extract year from text context."""
         # Look for recent years
-        year_matches = re.findall(rr"20[1-2]\\d", text)
+        year_matches = re.findall(r"20[1-2]\\d", text)
         if year_matches:
             # Return most recent year found
             return max(int(year) for year in year_matches)
@@ -370,10 +370,10 @@ class RichmondFedLoader(BaseDataLoader):
 
                 # Patterns for workforce impact
                 patterns = [
-                    rr"(\d+(?:\.\d+)?)\s*%\s*of\s*(?:workers|jobs|employment)\s*(?:affected|impacted|transformed)",
-                    rr"(\d+(?:\.\d+)?)\s*%\s*(?:job|employment)\s*(?:growth|decline|change)",
-                    rr"workforce.*?(\d+(?:\.\d+)?)\s*%\s*(?:increase|decrease|change)",
-                    rr"(\d+(?:\.\d+)?)\s*million\s*(?:jobs|workers)\s*(?:created|displaced|affected)",
+                    r"(\d+(?:\.\d+)?)\s*%\s*of\s*(?:workers|jobs|employment)\s*(?:affected|impacted|transformed)",
+                    r"(\d+(?:\.\d+)?)\s*%\s*(?:job|employment)\s*(?:growth|decline|change)",
+                    r"workforce.*?(\d+(?:\.\d+)?)\s*%\s*(?:increase|decrease|change)",
+                    r"(\d+(?:\.\d+)?)\s*million\s*(?:jobs|workers)\s*(?:created|displaced|affected)",
                 ]
 
                 for pattern in patterns:
@@ -576,7 +576,7 @@ class RichmondFedLoader(BaseDataLoader):
                 # Extract numeric data by region
                 numeric_data = self.extractor.extract_numeric_data(
                     keywords=regions,
-                    value_pattern=rr"(\d+(?:\.\d+)?)\s*(%|percent|percentage points)",
+                    value_pattern=r"(\d+(?:\.\d+)?)\s*(%|percent|percentage points)",
                 )
 
                 for region, values in numeric_data.items():
@@ -664,9 +664,9 @@ class RichmondFedLoader(BaseDataLoader):
                     if policy.lower() in text.lower():
                         # Extract any associated metrics
                         patterns = [
-                            rr"(\d+(?:\.\d+)?)\s*%\s*(?:increase|improvement|reduction)",
-                            rr"\$(\d+(?:\.\d+)?)\s*(billion|million)\s*(?:investment|funding)",
-                            rr"(\d+(?:\.\d+)?)\s*(?:fold|x)\s*(?:increase|improvement)",
+                            r"(\d+(?:\.\d+)?)\s*%\s*(?:increase|improvement|reduction)",
+                            r"\$(\d+(?:\.\d+)?)\s*(billion|million)\s*(?:investment|funding)",
+                            r"(\d+(?:\.\d+)?)\s*(?:fold|x)\s*(?:increase|improvement)",
                         ]
 
                         impact_value = None
@@ -870,10 +870,10 @@ class StLouisFedLoader(BaseDataLoader):
 
                     # Patterns for adoption data
                     patterns = [
-                        rr"(\d+(?:\.\d+)?)\s*%\s*of\s*(?:firms|companies|organizations)\s*(?:using|adopted|implementing)\s*(?:generative\s*)?AI",
-                        rr"(?:generative\s*)?AI\s*adoption\s*(?:rate\s*)?(?:reached|at|is)\s*(\d+(?:\.\d+)?)\s*%",
-                        rr"(\d+(?:\.\d+)?)\s*%\s*(?:increase|growth)\s*in\s*(?:generative\s*)?AI\s*adoption",
-                        rr"adoption\s*(?:rate\s*)?(?:increased|grew)\s*(?:by\s*)?(\d+(?:\.\d+)?)\s*%",
+                        r"(\d+(?:\.\d+)?)\s*%\s*of\s*(?:firms|companies|organizations)\s*(?:using|adopted|implementing)\s*(?:generative\s*)?AI",
+                        r"(?:generative\s*)?AI\s*adoption\s*(?:rate\s*)?(?:reached|at|is)\s*(\d+(?:\.\d+)?)\s*%",
+                        r"(\d+(?:\.\d+)?)\s*%\s*(?:increase|growth)\s*in\s*(?:generative\s*)?AI\s*adoption",
+                        r"adoption\s*(?:rate\s*)?(?:increased|grew)\s*(?:by\s*)?(\d+(?:\.\d+)?)\s*%",
                     ]
 
                     for pattern in patterns:
@@ -954,7 +954,7 @@ class StLouisFedLoader(BaseDataLoader):
                     # Extract numeric productivity data
                     numeric_data = extractor.extract_numeric_data(
                         keywords=["productivity", "efficiency", "output", "time"],
-                        value_pattern=rr"(\d+(?:\.\d+)?)\s*(%|percent|x|times|hours)",
+                        value_pattern=r"(\d+(?:\.\d+)?)\s*(%|percent|x|times|hours)",
                     )
 
                     for keyword, values in numeric_data.items():
@@ -1040,9 +1040,9 @@ class StLouisFedLoader(BaseDataLoader):
 
                     # Patterns for task automation
                     patterns = [
-                        rr"(\d+(?:\.\d+)?)\s*%\s*of\s*(?:tasks|activities|work)\s*(?:can be|could be|are)\s*automated",
-                        rr"automate\s*(\d+(?:\.\d+)?)\s*%\s*of\s*(?:tasks|activities)",
-                        rr"(\d+(?:\.\d+)?)\s*%\s*(?:task|activity)\s*automation\s*potential",
+                        r"(\d+(?:\.\d+)?)\s*%\s*of\s*(?:tasks|activities|work)\s*(?:can be|could be|are)\s*automated",
+                        r"automate\s*(\d+(?:\.\d+)?)\s*%\s*of\s*(?:tasks|activities)",
+                        r"(\d+(?:\.\d+)?)\s*%\s*(?:task|activity)\s*automation\s*potential",
                     ]
 
                     for pattern in patterns:
@@ -1357,10 +1357,10 @@ class StLouisFedLoader(BaseDataLoader):
 
                     # Patterns for economic data
                     patterns = [
-                        rr"\$(\d+(?:\.\d+)?)\s*(trillion|billion)\s*(?:in\s+)?(?:economic\s+)?(?:value|impact|benefit)",
-                        rr"(\d+(?:\.\d+)?)\s*%\s*GDP\s*(?:growth|increase|impact)",
-                        rr"economic\s*(?:impact|benefit|value)\s*of\s*\$(\d+(?:\.\d+)?)\s*(trillion|billion)",
-                        rr"add\s*(\d+(?:\.\d+)?)\s*%\s*to\s*(?:economic\s+)?growth",
+                        r"\$(\d+(?:\.\d+)?)\s*(trillion|billion)\s*(?:in\s+)?(?:economic\s+)?(?:value|impact|benefit)",
+                        r"(\d+(?:\.\d+)?)\s*%\s*GDP\s*(?:growth|increase|impact)",
+                        r"economic\s*(?:impact|benefit|value)\s*of\s*\$(\d+(?:\.\d+)?)\s*(trillion|billion)",
+                        r"add\s*(\d+(?:\.\d+)?)\s*%\s*to\s*(?:economic\s+)?growth",
                     ]
 
                     for pattern in patterns:

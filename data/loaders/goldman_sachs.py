@@ -133,11 +133,11 @@ class GoldmanSachsLoader(BaseDataLoader):
                 # Patterns for GDP impact
                 # Examples: "7% increase in GDP", "$7 trillion", "boost GDP by 7%"
                 patterns = [
-                    rr"(\d+(?:\.\d+)?)\s*%\s*(?:increase|boost|growth|rise)\s*in\s*(?:global\s+)?GDP",
-                    rr"GDP\s*(?:could|may|will)?\s*(?:increase|grow|rise)\s*(?:by\s+)?(\d+(?:\.\d+)?)\s*%",
-                    rr"\$(\d+(?:\.\d+)?)\s*(trillion|billion)\s*(?:in\s+)?(?:GDP|economic)\s*(?:impact|growth)",
-                    rr"add\s*(\d+(?:\.\d+)?)\s*%\s*to\s*(?:global\s+)?(?:GDP|output)",
-                    rr"(\d+(?:\.\d+)?)\s*%\s*of\s*(?:global\s+)?GDP",
+                    r"(\d+(?:\.\d+)?)\s*%\s*(?:increase|boost|growth|rise)\s*in\s*(?:global\s+)?GDP",
+                    r"GDP\s*(?:could|may|will)?\s*(?:increase|grow|rise)\s*(?:by\s+)?(\d+(?:\.\d+)?)\s*%",
+                    r"\$(\d+(?:\.\d+)?)\s*(trillion|billion)\s*(?:in\s+)?(?:GDP|economic)\s*(?:impact|growth)",
+                    r"add\s*(\d+(?:\.\d+)?)\s*%\s*to\s*(?:global\s+)?(?:GDP|output)",
+                    r"(\d+(?:\.\d+)?)\s*%\s*of\s*(?:global\s+)?GDP",
                 ]
 
                 for pattern in patterns:
@@ -245,7 +245,7 @@ class GoldmanSachsLoader(BaseDataLoader):
             col_vals = table[col].astype(str)
             if (
                 col_vals.str.contains("%").sum() > 0
-                or col_vals.str.match(rr"^\d+(?:\.\d+)?$").sum() > len(table) * 0.3
+                or col_vals.str.match(r"^\d+(?:\.\d+)?$").sum() > len(table) * 0.3
             ):
                 value_cols.append(col)
 
@@ -308,10 +308,10 @@ class GoldmanSachsLoader(BaseDataLoader):
 
                 # Patterns for labor impact
                 patterns = [
-                    rr"(\d+(?:\.\d+)?)\s*(?:million|billion)\s*(?:jobs|workers|employees)\s*(?:affected|impacted|displaced)",
-                    rr"(\d+(?:\.\d+)?)\s*%\s*of\s*(?:jobs|workforce|workers)\s*(?:could be|at risk|exposed)",
-                    rr"affect\s*(\d+(?:\.\d+)?)\s*%\s*of\s*(?:the\s+)?(?:global\s+)?workforce",
-                    rr"(\d+(?:\.\d+)?)\s*%\s*of\s*(?:work\s+)?tasks\s*(?:could be|can be)\s*automated",
+                    r"(\d+(?:\.\d+)?)\s*(?:million|billion)\s*(?:jobs|workers|employees)\s*(?:affected|impacted|displaced)",
+                    r"(\d+(?:\.\d+)?)\s*%\s*of\s*(?:jobs|workforce|workers)\s*(?:could be|at risk|exposed)",
+                    r"affect\s*(\d+(?:\.\d+)?)\s*%\s*of\s*(?:the\s+)?(?:global\s+)?workforce",
+                    r"(\d+(?:\.\d+)?)\s*%\s*of\s*(?:work\s+)?tasks\s*(?:could be|can be)\s*automated",
                 ]
 
                 for pattern in patterns:
@@ -759,9 +759,9 @@ class GoldmanSachsLoader(BaseDataLoader):
 
                 # Extract investment amounts and returns
                 patterns = [
-                    rr"\$(\d+(?:\.\d+)?)\s*(billion|trillion)\s*(?:in\s+)?investment\s*(?:in\s+)?([^.]+)",
-                    rr"(\d+(?:\.\d+)?)\s*%\s*(?:expected\s+)?(?:return|ROI|growth)",
-                    rr"investment\s*(?:of\s+)?\$(\d+(?:\.\d+)?)\s*(billion|trillion)",
+                    r"\$(\d+(?:\.\d+)?)\s*(billion|trillion)\s*(?:in\s+)?investment\s*(?:in\s+)?([^.]+)",
+                    r"(\d+(?:\.\d+)?)\s*%\s*(?:expected\s+)?(?:return|ROI|growth)",
+                    r"investment\s*(?:of\s+)?\$(\d+(?:\.\d+)?)\s*(billion|trillion)",
                 ]
 
                 for pattern in patterns:

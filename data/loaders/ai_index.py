@@ -87,7 +87,7 @@ class AIIndexLoader(BaseDataLoader):
                 if table.empty:
                     continue
                 has_year = any(
-                    "year" in str(col).lower() or bool(re.search(rr"20\d{2}", str(col)))
+                    "year" in str(col).lower() or bool(re.search(r"20\d{2}", str(col)))
                     for col in table.columns
                 )
                 has_percentage = any(
@@ -114,16 +114,16 @@ class AIIndexLoader(BaseDataLoader):
         for page in pages[:5]:
             text = self.extractor.extract_text_from_page(page)
             patterns = [
-                rr"(\d{4}):\s*(\d+(?:\.\d+)?)\s*%",
-                rr"(\d+(?:\.\d+)?)\s*%\s*in\s*(\d{4})",
-                rr"(\d{4})\s*\((\d+(?:\.\d+)?)\s*%\)",
-                rr"(\d{4})\s*-\s*(\d+(?:\.\d+)?)\s*%",
+                r"(\d{4}):\s*(\d+(?:\.\d+)?)\s*%",
+                r"(\d+(?:\.\d+)?)\s*%\s*in\s*(\d{4})",
+                r"(\d{4})\s*\((\d+(?:\.\d+)?)\s*%\)",
+                r"(\d{4})\s*-\s*(\d+(?:\.\d+)?)\s*%",
             ]
             for pattern in patterns:
                 matches = re.findall(pattern, text)
                 for match in matches:
                     try:
-                        if pattern.startswith(rr"(\d+(?:\.\d+)?)\s*%"):
+                        if pattern.startswith(r"(\d+(?:\.\d+)?)\s*%"):
                             percentage, year = match
                         else:
                             year, percentage = match
@@ -146,7 +146,7 @@ class AIIndexLoader(BaseDataLoader):
         df.columns = [col.lower().strip() for col in df.columns]
         year_col = None
         for col in df.columns:
-            if "year" in col or bool(re.search(rr"20\d{2}", str(df[col].iloc[0]))):
+            if "year" in col or bool(re.search(r"20\d{2}", str(df[col].iloc[0]))):
                 year_col = col
                 break
         rate_col = None
@@ -497,9 +497,9 @@ class AIIndexLoader(BaseDataLoader):
             for page in investment_pages[:5]:
                 text = self.extractor.extract_text_from_page(page)
                 patterns = [
-                    rr"(\d{4}):\s*\$(\d+(?:\.\d+)?)\s*(billion|million|B|M)",
-                    rr"\$(\d+(?:\.\d+)?)\s*(billion|million|B|M)\s*in\s*(\d{4})",
-                    rr"(\d{4})\s*.*?\$(\d+(?:\.\d+)?)\s*(billion|million|B|M)",
+                    r"(\d{4}):\s*\$(\d+(?:\.\d+)?)\s*(billion|million|B|M)",
+                    r"\$(\d+(?:\.\d+)?)\s*(billion|million|B|M)\s*in\s*(\d{4})",
+                    r"(\d{4})\s*.*?\$(\d+(?:\.\d+)?)\s*(billion|million|B|M)",
                 ]
                 for pattern in patterns:
                     matches = re.findall(pattern, text, re.IGNORECASE)

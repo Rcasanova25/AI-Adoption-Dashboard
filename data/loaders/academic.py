@@ -242,11 +242,11 @@ class AcademicPapersLoader(BaseDataLoader):
 
         # Extract quantitative estimates
         estimate_patterns = [
-            rr"([+-]?\d+(?:\.\d+)?)\s*%\s*(?:increase|decrease|change|impact|effect)",
-            rr"(?:increase|decrease|change|impact|effect)\s*(?:of\s*)?([+-]?\d+(?:\.\d+)?)\s*%",
-            rr"coefficient\s*(?:of\s*)?([+-]?\d+(?:\.\d+)?)",
-            rr"elasticity\s*(?:of\s*)?([+-]?\d+(?:\.\d+)?)",
-            rr"([+-]?\d+(?:\.\d+)?)\s*(?:percentage\s*)?(?:point|pp)\s*(?:increase|decrease)",
+            r"([+-]?\d+(?:\.\d+)?)\s*%\s*(?:increase|decrease|change|impact|effect)",
+            r"(?:increase|decrease|change|impact|effect)\s*(?:of\s*)?([+-]?\d+(?:\.\d+)?)\s*%",
+            r"coefficient\s*(?:of\s*)?([+-]?\d+(?:\.\d+)?)",
+            r"elasticity\s*(?:of\s*)?([+-]?\d+(?:\.\d+)?)",
+            r"([+-]?\d+(?:\.\d+)?)\s*(?:percentage\s*)?(?:point|pp)\s*(?:increase|decrease)",
         ]
 
         for pattern in estimate_patterns:
@@ -403,9 +403,9 @@ class AcademicPapersLoader(BaseDataLoader):
 
         # Extract impact estimate if available
         impact_patterns = [
-            rr"(?:effect|impact|coefficient)\s*(?:of\s*)?([+-]?\d+(?:\.\d+)?)",
-            rr"([+-]?\d+(?:\.\d+)?)\s*%\s*(?:increase|decrease|change)",
-            rr"elasticity\s*(?:of\s*)?([+-]?\d+(?:\.\d+)?)",
+            r"(?:effect|impact|coefficient)\s*(?:of\s*)?([+-]?\d+(?:\.\d+)?)",
+            r"([+-]?\d+(?:\.\d+)?)\s*%\s*(?:increase|decrease|change)",
+            r"elasticity\s*(?:of\s*)?([+-]?\d+(?:\.\d+)?)",
         ]
 
         for pattern in impact_patterns:
@@ -521,10 +521,10 @@ class AcademicPapersLoader(BaseDataLoader):
 
         # Extract quantitative impact
         impact_patterns = [
-            rr"([+-]?\d+(?:\.\d+)?)\s*%\s*(?:increase|decrease|change|impact|effect)",
-            rr"(?:increase|decrease|change|impact|effect)\s*(?:of\s*)?([+-]?\d+(?:\.\d+)?)\s*%",
-            rr"coefficient\s*(?:of\s*)?([+-]?\d+(?:\.\d+)?)",
-            rr"([+-]?\d+(?:\.\d+)?)\s*(?:percentage\s*)?(?:point|pp)",
+            r"([+-]?\d+(?:\.\d+)?)\s*%\s*(?:increase|decrease|change|impact|effect)",
+            r"(?:increase|decrease|change|impact|effect)\s*(?:of\s*)?([+-]?\d+(?:\.\d+)?)\s*%",
+            r"coefficient\s*(?:of\s*)?([+-]?\d+(?:\.\d+)?)",
+            r"([+-]?\d+(?:\.\d+)?)\s*(?:percentage\s*)?(?:point|pp)",
         ]
 
         for pattern in impact_patterns:
@@ -534,7 +534,7 @@ class AcademicPapersLoader(BaseDataLoader):
                     estimate = float(matches[0])
 
                     # Extract confidence interval if available
-                    ci_pattern = rr"(?:95%\s*)?(?:confidence\s*interval|CI)\s*(?:of\s*)?\[?([+-]?\d+(?:\.\d+)?),?\s*([+-]?\d+(?:\.\d+)?)\]?"
+                    ci_pattern = r"(?:95%\s*)?(?:confidence\s*interval|CI)\s*(?:of\s*)?\[?([+-]?\d+(?:\.\d+)?),?\s*([+-]?\d+(?:\.\d+)?)\]?"
                     ci_match = re.search(ci_pattern, context, re.IGNORECASE)
 
                     ci_lower, ci_upper = None, None
@@ -542,7 +542,7 @@ class AcademicPapersLoader(BaseDataLoader):
                         ci_lower, ci_upper = float(ci_match.group(1)), float(ci_match.group(2))
 
                     # Extract standard error if available
-                    se_pattern = rr"(?:standard\s*error|SE)\s*(?:of\s*)?([+-]?\d+(?:\.\d+)?)"
+                    se_pattern = r"(?:standard\s*error|SE)\s*(?:of\s*)?([+-]?\d+(?:\.\d+)?)"
                     se_match = re.search(se_pattern, context, re.IGNORECASE)
                     standard_error = float(se_match.group(1)) if se_match else None
 
@@ -608,7 +608,7 @@ class AcademicPapersLoader(BaseDataLoader):
                     try:
                         value_str = str(row[est_col])
                         # Extract numeric value
-                        numeric_match = re.search(rr"([+-]?\d+(?:\.\d+)?)", value_str)
+                        numeric_match = re.search(r"([+-]?\d+(?:\.\d+)?)", value_str)
                         if numeric_match:
                             estimate = float(numeric_match.group(1))
 
@@ -805,7 +805,7 @@ class AcademicPapersLoader(BaseDataLoader):
                     text = extractor.extract_text_from_page(page)
 
                     # Count total references (rough estimate)
-                    ref_patterns = [rr"\(\d{4}\)", rr"\[\d+\]", rr"^\d+\."]
+                    ref_patterns = [r"\(\d{4}\)", r"\[\d+\]", r"^\d+\."]
                     for pattern in ref_patterns:
                         matches = re.findall(pattern, text, re.MULTILINE)
                         total_refs += len(matches)
@@ -1168,9 +1168,9 @@ class IMFLoader(BaseDataLoader):
 
         # Extract GDP impact
         gdp_patterns = [
-            rr"GDP\s*(?:growth|impact)?\s*(?:of\s*)?([+-]?\d+(?:\.\d+)?)\s*%",
-            rr"([+-]?\d+(?:\.\d+)?)\s*%\s*(?:GDP|economic)\s*(?:growth|impact)",
-            rr"(?:increase|decrease|impact)\s*(?:of\s*)?([+-]?\d+(?:\.\d+)?)\s*%\s*(?:in\s*)?GDP",
+            r"GDP\s*(?:growth|impact)?\s*(?:of\s*)?([+-]?\d+(?:\.\d+)?)\s*%",
+            r"([+-]?\d+(?:\.\d+)?)\s*%\s*(?:GDP|economic)\s*(?:growth|impact)",
+            r"(?:increase|decrease|impact)\s*(?:of\s*)?([+-]?\d+(?:\.\d+)?)\s*%\s*(?:in\s*)?GDP",
         ]
 
         for pattern in gdp_patterns:
@@ -1181,9 +1181,9 @@ class IMFLoader(BaseDataLoader):
 
         # Extract inflation impact
         inflation_patterns = [
-            rr"inflation\s*(?:impact|change)?\s*(?:of\s*)?([+-]?\d+(?:\.\d+)?)\s*%",
-            rr"([+-]?\d+(?:\.\d+)?)\s*%\s*inflation",
-            rr"price\s*(?:level|increase)\s*(?:of\s*)?([+-]?\d+(?:\.\d+)?)\s*%",
+            r"inflation\s*(?:impact|change)?\s*(?:of\s*)?([+-]?\d+(?:\.\d+)?)\s*%",
+            r"([+-]?\d+(?:\.\d+)?)\s*%\s*inflation",
+            r"price\s*(?:level|increase)\s*(?:of\s*)?([+-]?\d+(?:\.\d+)?)\s*%",
         ]
 
         for pattern in inflation_patterns:
@@ -1194,9 +1194,9 @@ class IMFLoader(BaseDataLoader):
 
         # Extract unemployment change
         unemployment_patterns = [
-            rr"unemployment\s*(?:rate|change)?\s*(?:of\s*)?([+-]?\d+(?:\.\d+)?)\s*%",
-            rr"([+-]?\d+(?:\.\d+)?)\s*%\s*unemployment",
-            rr"jobless\s*rate\s*(?:of\s*)?([+-]?\d+(?:\.\d+)?)\s*%",
+            r"unemployment\s*(?:rate|change)?\s*(?:of\s*)?([+-]?\d+(?:\.\d+)?)\s*%",
+            r"([+-]?\d+(?:\.\d+)?)\s*%\s*unemployment",
+            r"jobless\s*rate\s*(?:of\s*)?([+-]?\d+(?:\.\d+)?)\s*%",
         ]
 
         for pattern in unemployment_patterns:
@@ -1218,16 +1218,16 @@ class IMFLoader(BaseDataLoader):
                     keyword_pos = context.lower().find(keyword)
                     region_context = context[max(0, keyword_pos - 100) : keyword_pos + 200]
 
-                    gdp_match = re.search(rr"([+-]?\d+(?:\.\d+)?)\s*%", region_context)
+                    gdp_match = re.search(r"([+-]?\d+(?:\.\d+)?)\s*%", region_context)
                     if gdp_match:
                         result[impact_key] = float(gdp_match.group(1))
                         break
 
         # Extract inequality impact (Gini coefficient change)
         inequality_patterns = [
-            rr"Gini\s*(?:coefficient|index)?\s*(?:change|impact)?\s*(?:of\s*)?([+-]?\d+(?:\.\d+)?)",
-            rr"inequality\s*(?:measure|index)?\s*(?:change|impact)?\s*(?:of\s*)?([+-]?\d+(?:\.\d+)?)",
-            rr"([+-]?\d+(?:\.\d+)?)\s*(?:point|%)\s*(?:increase|decrease)\s*in\s*(?:Gini|inequality)",
+            r"Gini\s*(?:coefficient|index)?\s*(?:change|impact)?\s*(?:of\s*)?([+-]?\d+(?:\.\d+)?)",
+            r"inequality\s*(?:measure|index)?\s*(?:change|impact)?\s*(?:of\s*)?([+-]?\d+(?:\.\d+)?)",
+            r"([+-]?\d+(?:\.\d+)?)\s*(?:point|%)\s*(?:increase|decrease)\s*in\s*(?:Gini|inequality)",
         ]
 
         for pattern in inequality_patterns:
@@ -1274,7 +1274,7 @@ class IMFLoader(BaseDataLoader):
 
                 try:
                     # Extract numeric value
-                    numeric_match = re.search(rr"([+-]?\d+(?:\.\d+)?)", value_str)
+                    numeric_match = re.search(r"([+-]?\d+(?:\.\d+)?)", value_str)
                     if numeric_match:
                         value = float(numeric_match.group(1))
 
@@ -1399,9 +1399,9 @@ class IMFLoader(BaseDataLoader):
 
         # Extract revenue impact
         revenue_patterns = [
-            rr"revenue\s*(?:impact|change|decrease|increase)\s*(?:of\s*)?([+-]?\d+(?:\.\d+)?)\s*%",
-            rr"([+-]?\d+(?:\.\d+)?)\s*%\s*(?:revenue|tax)\s*(?:impact|change|decrease|increase)",
-            rr"(?:decrease|increase|drop|rise)\s*(?:in\s*)?revenue\s*(?:by\s*)?([+-]?\d+(?:\.\d+)?)\s*%",
+            r"revenue\s*(?:impact|change|decrease|increase)\s*(?:of\s*)?([+-]?\d+(?:\.\d+)?)\s*%",
+            r"([+-]?\d+(?:\.\d+)?)\s*%\s*(?:revenue|tax)\s*(?:impact|change|decrease|increase)",
+            r"(?:decrease|increase|drop|rise)\s*(?:in\s*)?revenue\s*(?:by\s*)?([+-]?\d+(?:\.\d+)?)\s*%",
         ]
 
         for pattern in revenue_patterns:
@@ -1412,9 +1412,9 @@ class IMFLoader(BaseDataLoader):
 
         # Extract spending change
         spending_patterns = [
-            rr"spending\s*(?:increase|change|adjustment)\s*(?:of\s*)?([+-]?\d+(?:\.\d+)?)\s*%",
-            rr"([+-]?\d+(?:\.\d+)?)\s*%\s*(?:spending|expenditure)\s*(?:increase|change)",
-            rr"budget\s*(?:allocation|increase)\s*(?:of\s*)?([+-]?\d+(?:\.\d+)?)\s*%",
+            r"spending\s*(?:increase|change|adjustment)\s*(?:of\s*)?([+-]?\d+(?:\.\d+)?)\s*%",
+            r"([+-]?\d+(?:\.\d+)?)\s*%\s*(?:spending|expenditure)\s*(?:increase|change)",
+            r"budget\s*(?:allocation|increase)\s*(?:of\s*)?([+-]?\d+(?:\.\d+)?)\s*%",
         ]
 
         for pattern in spending_patterns:
@@ -1425,9 +1425,9 @@ class IMFLoader(BaseDataLoader):
 
         # Extract timeline
         timeline_patterns = [
-            rr"(?:within|over|in)\s*(\d+)\s*years?",
-            rr"(\d+)-year\s*(?:period|timeline|timeframe)",
-            rr"by\s*(\d{4})",  # By specific year
+            r"(?:within|over|in)\s*(\d+)\s*years?",
+            r"(\d+)-year\s*(?:period|timeline|timeframe)",
+            r"by\s*(\d{4})",  # By specific year
         ]
 
         for pattern in timeline_patterns:
@@ -1498,7 +1498,7 @@ class IMFLoader(BaseDataLoader):
 
                 try:
                     # Extract numeric value
-                    numeric_match = re.search(rr"([+-]?\d+(?:\.\d+)?)", value_str)
+                    numeric_match = re.search(r"([+-]?\d+(?:\.\d+)?)", value_str)
                     if numeric_match:
                         value = float(numeric_match.group(1))
 
@@ -1723,9 +1723,9 @@ class IMFLoader(BaseDataLoader):
 
         # Extract severity score
         severity_patterns = [
-            rr"severity\s*(?:score|rating|level)?\s*(?:of\s*)?(\d+(?:\.\d+)?)",
-            rr"(\d+(?:\.\d+)?)\s*(?:out of 10|/10)\s*severity",
-            rr"risk\s*level\s*(?:of\s*)?(\d+(?:\.\d+)?)",
+            r"severity\s*(?:score|rating|level)?\s*(?:of\s*)?(\d+(?:\.\d+)?)",
+            r"(\d+(?:\.\d+)?)\s*(?:out of 10|/10)\s*severity",
+            r"risk\s*level\s*(?:of\s*)?(\d+(?:\.\d+)?)",
         ]
 
         for pattern in severity_patterns:
@@ -1750,9 +1750,9 @@ class IMFLoader(BaseDataLoader):
 
         # Extract likelihood score
         likelihood_patterns = [
-            rr"likelihood\s*(?:score|rating)?\s*(?:of\s*)?(\d+(?:\.\d+)?)",
-            rr"probability\s*(?:of\s*)?(\d+(?:\.\d+)?)\s*%",
-            rr"(\d+(?:\.\d+)?)\s*(?:out of 10|/10)\s*likelihood",
+            r"likelihood\s*(?:score|rating)?\s*(?:of\s*)?(\d+(?:\.\d+)?)",
+            r"probability\s*(?:of\s*)?(\d+(?:\.\d+)?)\s*%",
+            r"(\d+(?:\.\d+)?)\s*(?:out of 10|/10)\s*likelihood",
         ]
 
         for pattern in likelihood_patterns:
@@ -1897,8 +1897,8 @@ class IMFLoader(BaseDataLoader):
 
         # Extract AI readiness score
         readiness_patterns = [
-            rr"(?:AI\s*)?readiness\s*(?:score|index|rating)?\s*(?:of\s*)?(\d+(?:\.\d+)?)",
-            rr"(\d+(?:\.\d+)?)\s*(?:out of 10|/10)\s*(?:AI\s*)?readiness",
+            r"(?:AI\s*)?readiness\s*(?:score|index|rating)?\s*(?:of\s*)?(\d+(?:\.\d+)?)",
+            r"(\d+(?:\.\d+)?)\s*(?:out of 10|/10)\s*(?:AI\s*)?readiness",
         ]
 
         for pattern in readiness_patterns:
@@ -1921,9 +1921,9 @@ class IMFLoader(BaseDataLoader):
 
         # Extract infrastructure gap
         infra_patterns = [
-            rr"infrastructure\s*gap\s*(?:of\s*)?(\d+(?:\.\d+)?)\s*%",
-            rr"(\d+(?:\.\d+)?)\s*%\s*infrastructure\s*(?:gap|deficit)",
-            rr"digital\s*divide\s*(?:of\s*)?(\d+(?:\.\d+)?)\s*%",
+            r"infrastructure\s*gap\s*(?:of\s*)?(\d+(?:\.\d+)?)\s*%",
+            r"(\d+(?:\.\d+)?)\s*%\s*infrastructure\s*(?:gap|deficit)",
+            r"digital\s*divide\s*(?:of\s*)?(\d+(?:\.\d+)?)\s*%",
         ]
 
         for pattern in infra_patterns:
@@ -1934,9 +1934,9 @@ class IMFLoader(BaseDataLoader):
 
         # Extract skills gap
         skills_patterns = [
-            rr"skills?\s*gap\s*(?:of\s*)?(\d+(?:\.\d+)?)\s*%",
-            rr"(\d+(?:\.\d+)?)\s*%\s*skills?\s*(?:gap|shortage)",
-            rr"talent\s*shortage\s*(?:of\s*)?(\d+(?:\.\d+)?)\s*%",
+            r"skills?\s*gap\s*(?:of\s*)?(\d+(?:\.\d+)?)\s*%",
+            r"(\d+(?:\.\d+)?)\s*%\s*skills?\s*(?:gap|shortage)",
+            r"talent\s*shortage\s*(?:of\s*)?(\d+(?:\.\d+)?)\s*%",
         ]
 
         for pattern in skills_patterns:
@@ -2017,7 +2017,7 @@ class IMFLoader(BaseDataLoader):
 
                 try:
                     # Extract numeric value
-                    numeric_match = re.search(rr"(\d+(?:\.\d+)?)", value_str)
+                    numeric_match = re.search(r"(\d+(?:\.\d+)?)", value_str)
                     if numeric_match:
                         value = float(numeric_match.group(1))
 
@@ -2121,9 +2121,9 @@ class IMFLoader(BaseDataLoader):
 
         # Extract impact magnitude
         impact_patterns = [
-            rr"impact\s*(?:of\s*)?([+-]?\d+(?:\.\d+)?)\s*%",
-            rr"([+-]?\d+(?:\.\d+)?)\s*%\s*(?:impact|change|effect)",
-            rr"(?:increase|decrease|growth|decline)\s*(?:of\s*)?([+-]?\d+(?:\.\d+)?)\s*%",
+            r"impact\s*(?:of\s*)?([+-]?\d+(?:\.\d+)?)\s*%",
+            r"([+-]?\d+(?:\.\d+)?)\s*%\s*(?:impact|change|effect)",
+            r"(?:increase|decrease|growth|decline)\s*(?:of\s*)?([+-]?\d+(?:\.\d+)?)\s*%",
         ]
 
         for pattern in impact_patterns:
@@ -2146,9 +2146,9 @@ class IMFLoader(BaseDataLoader):
 
         # Extract timeline
         timeline_patterns = [
-            rr"(?:within|over|in)\s*(\d+)\s*years?",
-            rr"by\s*(\d{4})",
-            rr"(\d+)-year\s*(?:period|timeframe)",
+            r"(?:within|over|in)\s*(\d+)\s*years?",
+            r"by\s*(\d{4})",
+            r"(\d+)-year\s*(?:period|timeframe)",
         ]
 
         for pattern in timeline_patterns:

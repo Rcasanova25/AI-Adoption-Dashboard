@@ -160,10 +160,10 @@ class McKinseyLoader(BaseDataLoader):
                 # Patterns for financial metrics
                 # Examples: "20% cost reduction", "15% revenue increase", "$2.5 million savings"
                 patterns = [
-                    rr"(\\d+(?:\.\\d+)?)\s*%\s*(cost reduction|revenue increase|productivity gain|EBITDA improvement)",
-                    rr"(cost reduction|revenue increase|productivity gain|savings)\s*of\s*(\\d+(?:\.\\d+)?)\s*%",
-                    rr"\$(\\d+(?:\.\\d+)?)\s*(million|billion)\s*(savings|value|impact)",
-                    rr"(\\d+(?:\.\\d+)?)\s*%\s*(improvement|increase|decrease|reduction)\s*in\s*(\w+)",
+                    r"(\d+(?:\.\d+)?)\s*%\s*(cost reduction|revenue increase|productivity gain|EBITDA improvement)",
+                    r"(cost reduction|revenue increase|productivity gain|savings)\s*of\s*(\d+(?:\.\d+)?)\s*%",
+                    r"\$(\d+(?:\.\d+)?)\s*(million|billion)\s*(savings|value|impact)",
+                    r"(\d+(?:\.\d+)?)\s*%\s*(improvement|increase|decrease|reduction)\s*in\s*(\w+)",
                 ]
 
                 for pattern in patterns:
@@ -217,7 +217,7 @@ class McKinseyLoader(BaseDataLoader):
             col_str = table[col].astype(str)
             if col_str.str.contains("%").sum() > len(table) * 0.3:
                 value_cols.append(col)
-            elif col_str.str.match(rr"^\d+(?:\.\d+)?$").sum() > len(table) * 0.3:
+            elif col_str.str.match(r"^\d+(?:\.\d+)?$").sum() > len(table) * 0.3:
                 value_cols.append(col)
 
         # Extract data
@@ -526,9 +526,9 @@ class McKinseyLoader(BaseDataLoader):
 
             # Also extract from text
             barrier_patterns = [
-                rr"(\d+(?:\.\d+)?)\s*%\s*(?:of\s+)?(?:companies|organizations|firms)\s+(?:cite|report|identify)\s+([^.]+)\s+as\s+(?:a\s+)?(?:barrier|challenge)",
-                rr"([^.]+)\s+(?:is|are)\s+(?:a\s+)?(?:barrier|challenge)\s+for\s+(\d+(?:\.\d+)?)\s*%",
-                rr"(?:barrier|challenge):\s*([^.]+)\s+\((\d+(?:\.\d+)?)\s*%\)",
+                r"(\d+(?:\.\d+)?)\s*%\s*(?:of\s+)?(?:companies|organizations|firms)\s+(?:cite|report|identify)\s+([^.]+)\s+as\s+(?:a\s+)?(?:barrier|challenge)",
+                r"([^.]+)\s+(?:is|are)\s+(?:a\s+)?(?:barrier|challenge)\s+for\s+(\d+(?:\.\d+)?)\s*%",
+                r"(?:barrier|challenge):\s*([^.]+)\s+\((\d+(?:\.\d+)?)\s*%\)",
             ]
 
             for page in barrier_pages[:5]:
@@ -563,7 +563,7 @@ class McKinseyLoader(BaseDataLoader):
         barrier_col = None
         for col in table.columns:
             # Look for text-heavy columns
-            non_numeric = table[col].astype(str).str.match(rr"^\d+(?:\.\d+)?%?$").sum()
+            non_numeric = table[col].astype(str).str.match(r"^\d+(?:\.\d+)?%?$").sum()
             if non_numeric < len(table) * 0.5:
                 barrier_col = col
                 break
@@ -607,7 +607,7 @@ class McKinseyLoader(BaseDataLoader):
         result = {"barrier": "", "percentage": 0, "category": ""}
 
         try:
-            if pattern.startswith(rr"(\d+"):
+            if pattern.startswith(r"(\d+"):
                 # Percentage first
                 result["percentage"] = float(match[0])
                 result["barrier"] = match[1].strip()
@@ -670,10 +670,10 @@ class McKinseyLoader(BaseDataLoader):
 
                 # Patterns for talent metrics
                 patterns = [
-                    rr"(\d+(?:\.\d+)?)\s*%\s*(?:of\s+)?(?:companies|organizations)\s+(?:report|face|have)\s+(?:talent|skill)\s+(?:gap|shortage)",
-                    rr"(\d+(?:\.\d+)?)\s*%\s*increase\s+in\s+(?:AI|ML|data)\s+(?:talent|hiring|roles)",
-                    rr"average\s+of\s+(\d+(?:\.\d+)?)\s+(?:AI|ML|data)\s+(?:professionals|engineers|scientists)\s+per\s+(?:company|organization)",
-                    rr"(\d+(?:\.\d+)?)\s*%\s*(?:of\s+)?employees\s+(?:trained|upskilled|reskilled)\s+(?:in|on)\s+AI",
+                    r"(\d+(?:\.\d+)?)\s*%\s*(?:of\s+)?(?:companies|organizations)\s+(?:report|face|have)\s+(?:talent|skill)\s+(?:gap|shortage)",
+                    r"(\d+(?:\.\d+)?)\s*%\s*increase\s+in\s+(?:AI|ML|data)\s+(?:talent|hiring|roles)",
+                    r"average\s+of\s+(\d+(?:\.\d+)?)\s+(?:AI|ML|data)\s+(?:professionals|engineers|scientists)\s+per\s+(?:company|organization)",
+                    r"(\d+(?:\.\d+)?)\s*%\s*(?:of\s+)?employees\s+(?:trained|upskilled|reskilled)\s+(?:in|on)\s+AI",
                 ]
 
                 for pattern in patterns:
@@ -739,7 +739,7 @@ class McKinseyLoader(BaseDataLoader):
                 # Extract numeric productivity data
                 numeric_data = self.extractor.extract_numeric_data(
                     keywords=["productivity", "efficiency", "time", "output"],
-                    value_pattern=rr"(\d+(?:\.\d+)?)\s*(%|percent|hours|x)",
+                    value_pattern=r"(\d+(?:\.\d+)?)\s*(%|percent|hours|x)",
                 )
 
                 for keyword, values in numeric_data.items():
