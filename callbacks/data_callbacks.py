@@ -65,65 +65,100 @@ def register_data_callbacks(app):
             
             # Initialize data manager
             logger.info("Initializing DataManager...")
-            data_manager = DataManager()
             
-            # Get list of datasets to load
-            dataset_names = [
-                "ai_index_adoption_rates",
-                "ai_index_historical_trends", 
-                "ai_index_industry_adoption",
-                "mckinsey_financial_impact",
-                "mckinsey_use_cases",
-                "oecd_2025_findings",
-                "federal_reserve_productivity",
-                "federal_reserve_economic_impact",
-                "stanford_investment_trends",
-                "goldman_sachs_gdp_impact",
-                "nvidia_cost_trends",
-                "imf_global_impact",
-                "nber_research",
-                "ai_strategy_recommendations",
-                "ai_governance_insights",
-                "environmental_impact_data",
-                "labor_market_analysis",
-                "regional_growth_patterns",
-                "skill_gap_assessment",
-                "technology_maturity_curve",
-                "firm_size_distribution",
-                "barriers_and_support",
-                "token_economics_data",
-                "bibliography_sources",
-                "competitive_landscape"
-            ]
-            
-            # Load datasets with progress tracking
-            datasets = {}
-            total_datasets = len(dataset_names)
-            successful_loads = 0
-            failed_loads = []
-            
-            for i, dataset_name in enumerate(dataset_names):
-                try:
-                    # Update progress
-                    progress = int((i / total_datasets) * 100)
+            # Try to use real DataManager, fall back to mock if not available
+            try:
+                from data.data_manager import DataManager
+                
+                # Check if resources path exists
+                from pathlib import Path
+                resources_path = Path("AI adoption resources")
+                
+                if not resources_path.exists():
+                    logger.warning(f"Resources directory not found at: {resources_path}")
+                    logger.info("Creating resources directory structure...")
+                    pdf_dir = resources_path / "AI dashboard resources 1"
+                    pdf_dir.mkdir(parents=True, exist_ok=True)
                     
-                    # Simulate loading (in real implementation, this would load actual data)
-                    logger.info(f"Loading {dataset_name}...")
+                    # Create a README for PDF location
+                    readme_path = pdf_dir / "README.txt"
+                    readme_path.write_text(
+                        "Place your PDF files here:\n\n" +
+                        "\n".join([
+                            "- hai_ai_index_report_2025.pdf",
+                            "- the-state-of-ai-how-organizations-are-rewiring-to-capture-value_final.pdf",
+                            "- oecd-artificial-intelligence-review-2025.pdf",
+                            "- cost-benefit-analysis-artificial-intelligence-evidence-from-a-field-experiment-on-gpt-4o-1.pdf",
+                            "- the-economic-impact-of-large-language-models.pdf",
+                            "- gs-new-decade-begins.pdf",
+                            "- nvidia-cost-trends-ai-inference-at-scale.pdf",
+                            "- wpiea2024231-print-pdf.pdf",
+                            "- w30957.pdf",
+                            "- Machines of mind_ The case for an AI-powered productivity boom.pdf"
+                        ])
+                    )
+                
+                data_manager = DataManager(resources_path)
+                
+                # Try to load real data
+                logger.info("Attempting to load data from PDFs...")
+                all_data = data_manager.load_all_data()
+                
+                if all_data and len(all_data) > 0:
+                    logger.info(f"Successfully loaded {len(all_data)} datasets from PDFs")
+                    datasets = all_data
+                    successful_loads = len(all_data)
+                    failed_loads = []
+                else:
+                    raise Exception("No data loaded from PDFs")
                     
-                    # Try to get dataset from data manager
-                    if hasattr(data_manager, 'data') and dataset_name in data_manager.data:
-                        dataset = data_manager.data[dataset_name]
-                    else:
-                        # Create mock data for now
+            except Exception as e:
+                logger.warning(f"Could not load real data: {str(e)}")
+                logger.info("Using mock data for demonstration...")
+                
+                # Get list of datasets to load
+                dataset_names = [
+                    "ai_index_adoption_rates",
+                    "ai_index_historical_trends", 
+                    "ai_index_industry_adoption",
+                    "mckinsey_financial_impact",
+                    "mckinsey_use_cases",
+                    "oecd_2025_findings",
+                    "federal_reserve_productivity",
+                    "federal_reserve_economic_impact",
+                    "stanford_investment_trends",
+                    "goldman_sachs_gdp_impact",
+                    "nvidia_cost_trends",
+                    "imf_global_impact",
+                    "nber_research",
+                    "ai_strategy_recommendations",
+                    "ai_governance_insights",
+                    "environmental_impact_data",
+                    "labor_market_analysis",
+                    "regional_growth_patterns",
+                    "skill_gap_assessment",
+                    "technology_maturity_curve",
+                    "firm_size_distribution",
+                    "barriers_and_support",
+                    "token_economics_data",
+                    "bibliography_sources",
+                    "competitive_landscape"
+                ]
+                
+                # Load mock datasets
+                datasets = {}
+                successful_loads = 0
+                failed_loads = []
+                
+                for dataset_name in dataset_names:
+                    try:
                         dataset = create_mock_dataset(dataset_name)
-                    
-                    datasets[dataset_name] = dataset
-                    successful_loads += 1
-                    
-                except Exception as e:
-                    logger.error(f"Failed to load {dataset_name}: {str(e)}")
-                    failed_loads.append(dataset_name)
-                    datasets[dataset_name] = {"error": str(e), "status": "failed"}
+                        datasets[dataset_name] = dataset
+                        successful_loads += 1
+                    except Exception as e:
+                        logger.error(f"Failed to create mock data for {dataset_name}: {str(e)}")
+                        failed_loads.append(dataset_name)
+                        datasets[dataset_name] = {"error": str(e), "status": "failed"}
             
             # Add metadata
             datasets["_metadata"] = {
@@ -134,16 +169,33 @@ def register_data_callbacks(app):
                 "version": "4.0.0"
             }
             
+            # Check if using mock data
+            using_mock_data = "_mock" in str(type(datasets.get("ai_index_adoption_rates", {}))) or len(failed_loads) > 20
+            
             # Create success message
-            if successful_loads == total_datasets:
+            if using_mock_data:
+                final_progress = dbc.Alert([
+                    html.I(className="fas fa-info-circle me-2"),
+                    html.Strong("Using Demo Data"),
+                    html.Br(),
+                    html.P([
+                        "To use real data, place PDF files in: ",
+                        html.Code("AI adoption resources/AI dashboard resources 1/")
+                    ], className="mb-2"),
+                    html.P([
+                        "The app created this directory for you. ",
+                        html.A("See required PDFs list", href="#", id="show-pdf-list")
+                    ], className="mb-0 small")
+                ], color="info", dismissable=True)
+            elif successful_loads == len(datasets) - 1:  # -1 for metadata
                 final_progress = dbc.Alert([
                     html.I(className="fas fa-check-circle me-2"),
-                    f"✅ Successfully loaded all {total_datasets} datasets!"
+                    f"✅ Successfully loaded {successful_loads} datasets from PDFs!"
                 ], color="success", dismissable=True)
             elif successful_loads > 0:
                 final_progress = dbc.Alert([
                     html.I(className="fas fa-exclamation-triangle me-2"),
-                    f"⚠️ Loaded {successful_loads}/{total_datasets} datasets. ",
+                    f"⚠️ Loaded {successful_loads} datasets. ",
                     html.Br(),
                     html.Small(f"Failed: {', '.join(failed_loads[:3])}")
                 ], color="warning", dismissable=True)
