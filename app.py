@@ -3,6 +3,7 @@ from ui.components.accessibility import AccessibilityManager
 
 import streamlit as st
 from typing import Dict, Any, List
+import traceback
 
 def show_source_info(source_key: str) -> str:
     sources = {
@@ -146,11 +147,27 @@ class ViewManager:
         except (ImportError, AttributeError) as e:
             st.error(f"Could not load view: {view_type}\nError: {e}")
 
+@st.cache_data(show_spinner=True)
+def load_data_cached():
+    """Load data with caching and error handling."""
+    try:
+        with st.spinner("🔄 Loading AI adoption data..."):
+            st.info("⏳ This may take a few moments while we process the data sources...")
+            data_manager = DataManager()
+            data = data_manager.get_all_datasets()
+            st.success("✅ Data loaded successfully!")
+            return data, None
+    except Exception as e:
+        error_msg = f"❌ Error loading data: {str(e)}"
+        st.error(error_msg)
+        st.error("**Technical Details:**")
+        st.code(traceback.format_exc())
+        return None, str(e)
 
 class DashboardApp:
     def __init__(self) -> None:
         self.theme_manager = ThemeManager()
-        self.data_manager = DataManager()
+        # Don't create DataManager here - it will hang!
         self.view_manager = ViewManager()
         self.a11y = AccessibilityManager()
         self.setup_page()
@@ -174,18 +191,83 @@ class DashboardApp:
         st.markdown(
             "**Comprehensive analysis from early AI adoption (2018) to current GenAI trends (2025)**"
         )
-        data = self.data_manager.get_all_datasets()
+
+        # Load data with progress indicator and error handling
+        data, error = load_data_cached()
+        
+        if error:
+            st.error("**Data Loading Failed**")
+            st.markdown("""
+            The dashboard cannot load data due to the following issue:
+            - PDF processing errors (likely missing Java dependencies)
+            - Network connectivity issues
+            - File access problems
+            
+            **Quick fixes to try:**
+            1. Install Java: Download from [OpenJDK](https://adoptium.net/)
+            2. Install missing dependencies: `pip install jpype1 tabula-py`
+            3. Check your internet connection
+            4. Restart the application
+            """)
+            
+            # Show a basic version with sample data
+            if st.button("🔄 Retry Loading Data"):
+                st.cache_data.clear()
+                st.rerun()
+                
+            if st.button("📋 Show Debug Info"):
+                st.subheader("Debug Information")
+                st.write("**Error Details:**")
+                st.code(error)
+                
+            # Stop execution here if data failed to load
+            return
+        
+        if data is None:
+            st.error("No data available. Please check your data sources.")
+            return
+
+        # Add accessibility and source info functions to data
         data["a11y"] = self.a11y
         data["show_source_info"] = show_source_info
 
-        print(f"Loaded data keys: {data.keys()}") # Debugging print statement
+        print(f"Loaded data keys: {data.keys()}")  # Debugging print statement
 
+        # Render sidebar and main view
         view_type = self.view_manager.render_sidebar()
-        self.view_manager.render_view(view_type, data)
+        
+        # Add a data refresh button in sidebar
+        st.sidebar.markdown("---")
+        if st.sidebar.button("🔄 Refresh Data"):
+            st.cache_data.clear()
+            st.rerun()
+            
+        # Show data loading status
+        st.sidebar.success(f"✅ Data loaded: {len(data)} datasets")
+        
+        # Render the selected view
+        try:
+            self.view_manager.render_view(view_type, data)
+        except Exception as e:
+            st.error(f"Error rendering view: {view_type}")
+            st.error(f"Details: {str(e)}")
+            st.code(traceback.format_exc())
 
 if __name__ == "__main__":
     if 'selected_persona' not in st.session_state:
         st.session_state.selected_persona = 'General'
-    app = DashboardApp()
-    app.render()
-
+    
+    try:
+        app = DashboardApp()
+        app.render()
+    except Exception as e:
+        st.error("**Critical Error - App Failed to Start**")
+        st.error(f"Error: {str(e)}")
+        st.code(traceback.format_exc())
+        st.markdown("""
+        **Possible solutions:**
+        1. Check that all required packages are installed
+        2. Verify file permissions
+        3. Check Python environment setup
+        4. Review error details above
+        """)
