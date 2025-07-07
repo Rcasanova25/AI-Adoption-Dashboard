@@ -1,0 +1,39 @@
+# Core Dash
+dash==2.17.1
+dash-bootstrap-components==1.5.0
+dash-ag-grid==31.0.1
+plotly==5.17.0
+dash-mantine-components==0.14.1
+
+# Data Processing (keep existing)
+pandas>=2.0.0
+numpy>=1.24.0
+pydantic>=2.0.0
+
+# Performance (keep existing)
+redis>=4.5.0
+diskcache>=5.6.0
+
+# Business Logic (keep existing)
+scikit-learn>=1.3.0
+scipy>=1.11.0
+
+# PDF Processing
+PyMuPDF>=1.23.0
+tabula-py>=2.8.0
+pypdf>=3.16.0
+pillow>=10.0.0
+
+# API and Web
+requests>=2.31.0
+aiohttp>=3.8.0
+
+# Development
+pytest>=7.4.0
+black>=23.0.0
+flake8>=6.0.0
+selenium>=4.0.0  # For testing Dash apps
+
+# Additional for Dash
+dash-loading-spinners==1.0.0
+dash-cytoscape==0.3.0  # For network visualizations if needed
