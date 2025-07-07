@@ -69,10 +69,7 @@ def register_data_callbacks(app):
             
             # Try to use real DataManager, fall back to mock if not available
             try:
-                try:
-    from data.data_manager_dash import DataManagerDash as DataManager
-except ImportError:
-    from data.data_manager import DataManager
+                # DataManager is already imported at the top of the file
                 
                 # Check if resources path exists
                 from pathlib import Path

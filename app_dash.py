@@ -18,10 +18,14 @@ logger = logging.getLogger(__name__)
 
 # Import existing systems with error handling
 try:
-    from data.data_manager import DataManager
+    from data.data_manager_dash import DataManagerDash as DataManager
 except ImportError:
-    logger.warning("DataManager not available, using mock data")
-    DataManager = None
+    try:
+        from data.data_manager import DataManager
+        logger.warning("Using Streamlit DataManager - may see cache warnings")
+    except ImportError:
+        logger.warning("DataManager not available, using mock data")
+        DataManager = None
 
 try:
     from core.business import roi_analysis
