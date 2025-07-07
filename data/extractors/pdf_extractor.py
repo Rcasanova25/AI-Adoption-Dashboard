@@ -127,6 +127,43 @@ class PDFExtractor:
         self._cached_text[cache_key] = result
         return result
 
+    def extract_text_from_page(self, page_number: int) -> str:
+        """Extract text from a specific page.
+        
+        Args:
+            page_number: Page number to extract (0-indexed)
+            
+        Returns:
+            Extracted text from the page
+        """
+        cache_key = f"page_{page_number}"
+        if cache_key in self._cached_text:
+            return self._cached_text[cache_key]
+        
+        text = ""
+        
+        try:
+            # Use pdfplumber first for better text extraction
+            with pdfplumber.open(self.file_path) as pdf:
+                if page_number < len(pdf.pages):
+                    page = pdf.pages[page_number]
+                    text = page.extract_text() or ""
+        except Exception as e:
+            logger.warning(f"pdfplumber extraction failed for page {page_number}, falling back to PyPDF2: {e}")
+            
+            # Fallback to PyPDF2
+            try:
+                with open(self.file_path, "rb") as file:
+                    pdf = PyPDF2.PdfReader(file)
+                    if page_number < len(pdf.pages):
+                        page = pdf.pages[page_number]
+                        text = page.extract_text() or ""
+            except Exception as e2:
+                logger.error(f"Both PDF extraction methods failed for page {page_number}: {e2}")
+        
+        self._cached_text[cache_key] = text
+        return text
+
     def extract_tables(
         self, page_range: Optional[Tuple[int, int]] = None, table_settings: Optional[Dict] = None
     ) -> List[pd.DataFrame]:

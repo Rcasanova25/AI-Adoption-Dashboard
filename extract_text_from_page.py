@@ -6,7 +6,7 @@ import re
 def patch_pdf_extractor():
     """Add missing method to PDFExtractor class."""
     
-    file_path = "C:\Users\rcasa\OneDrive\Documents\ai-adoption-dashboard\data\extractors\pdf_extractor.py"
+    file_path = "pdf_extractor.py"
     
     # The method to add
     new_method = '''    def extract_text_from_page(self, page_number: int) -> str:
