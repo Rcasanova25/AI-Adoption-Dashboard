@@ -1,5 +1,3 @@
-
-
 from data.data_manager import DataManager
 from ui.components.accessibility import AccessibilityManager
 
