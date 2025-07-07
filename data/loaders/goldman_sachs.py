@@ -23,7 +23,7 @@ class GoldmanSachsLoader(BaseDataLoader):
         if file_path is None:
             # Default to Goldman Sachs AI report
             file_path = Path(
-                "/mnt/c/Users/rcasa/OneDrive/Documents/AI-Adoption-Dashboard/"
+                "C:/Users/rcasa/OneDrive/Documents/AI-Adoption-Dashboard/data/loaders/goldman_sachs.py"
                 "AI adoption resources/AI Adoption Resources 3/"
                 "Generative AI could raise global GDP by 7_ _ Goldman Sachs.pdf"
             )
@@ -133,11 +133,11 @@ class GoldmanSachsLoader(BaseDataLoader):
                 # Patterns for GDP impact
                 # Examples: "7% increase in GDP", "$7 trillion", "boost GDP by 7%"
                 patterns = [
-                    r"(\d+(?:\.\d+)?)\s*%\s*(?:increase|boost|growth|rise)\s*in\s*(?:global\s+)?GDP",
-                    r"GDP\s*(?:could|may|will)?\s*(?:increase|grow|rise)\s*(?:by\s+)?(\d+(?:\.\d+)?)\s*%",
-                    r"\$(\d+(?:\.\d+)?)\s*(trillion|billion)\s*(?:in\s+)?(?:GDP|economic)\s*(?:impact|growth)",
-                    r"add\s*(\d+(?:\.\d+)?)\s*%\s*to\s*(?:global\s+)?(?:GDP|output)",
-                    r"(\d+(?:\.\d+)?)\s*%\s*of\s*(?:global\s+)?GDP",
+                    r"(\\d+(?:\\.\\d+)?)\s*%\s*(?:increase|boost|growth|rise)\s*in\s*(?:global\s+)?GDP",
+                    r"GDP\s*(?:could|may|will)?\s*(?:increase|grow|rise)\s*(?:by\s+)?(\\d+(?:\\.\\d+)?)\s*%",
+                    r"\$(\\d+(?:\\.\\d+)?)\s*(trillion|billion)\s*(?:in\s+)?(?:GDP|economic)\s*(?:impact|growth)",
+                    r"add\s*(\\d+(?:\\.\\d+)?)\s*%\s*to\s*(?:global\s+)?(?:GDP|output)",
+                    r"(\\d+(?:\\.\\d+)?)\s*%\s*of\s*(?:global\s+)?GDP",
                 ]
 
                 for pattern in patterns:
@@ -245,7 +245,7 @@ class GoldmanSachsLoader(BaseDataLoader):
             col_vals = table[col].astype(str)
             if (
                 col_vals.str.contains("%").sum() > 0
-                or col_vals.str.match(r"^\d+(?:\.\d+)?$").sum() > len(table) * 0.3
+                or col_vals.str.match(r"^\\d+(?:\\.\\d+)?$").sum() > len(table) * 0.3
             ):
                 value_cols.append(col)
 
@@ -308,10 +308,10 @@ class GoldmanSachsLoader(BaseDataLoader):
 
                 # Patterns for labor impact
                 patterns = [
-                    r"(\d+(?:\.\d+)?)\s*(?:million|billion)\s*(?:jobs|workers|employees)\s*(?:affected|impacted|displaced)",
-                    r"(\d+(?:\.\d+)?)\s*%\s*of\s*(?:jobs|workforce|workers)\s*(?:could be|at risk|exposed)",
-                    r"affect\s*(\d+(?:\.\d+)?)\s*%\s*of\s*(?:the\s+)?(?:global\s+)?workforce",
-                    r"(\d+(?:\.\d+)?)\s*%\s*of\s*(?:work\s+)?tasks\s*(?:could be|can be)\s*automated",
+                    r"(\\d+(?:\\.\\d+)?)\s*(?:million|billion)\s*(?:jobs|workers|employees)\s*(?:affected|impacted|displaced)",
+                    r"(\\d+(?:\\.\\d+)?)\s*%\s*of\s*(?:jobs|workforce|workers)\s*(?:could be|at risk|exposed)",
+                    r"affect\s*(\\d+(?:\\.\\d+)?)\s*%\s*of\s*(?:the\s+)?(?:global\s+)?workforce",
+                    r"(\\d+(?:\\.\\d+)?)\s*%\s*of\s*(?:work\s+)?tasks\s*(?:could be|can be)\s*automated",
                 ]
 
                 for pattern in patterns:
@@ -509,9 +509,9 @@ class GoldmanSachsLoader(BaseDataLoader):
             for sector in sectors:
                 # Look for sector mentions with productivity gains
                 patterns = [
-                    f"{sector}.*?(\d+(?:\.\d+)?)\s*%\s*productivity",
-                    f"(\d+(?:\.\d+)?)\s*%\s*productivity.*?{sector}",
-                    f"{sector}.*?productivity.*?(\d+(?:\.\d+)?)\s*%",
+                    f"{sector}.*?(\\d+(?:\\.\\d+)?)\s*%\s*productivity",
+                    f"(\\d+(?:\\.\\d+)?)\s*%\s*productivity.*?{sector}",
+                    f"{sector}.*?productivity.*?(\\d+(?:\\.\\d+)?)\s*%",
                 ]
 
                 for pattern in patterns:
@@ -587,9 +587,9 @@ class GoldmanSachsLoader(BaseDataLoader):
                 for occupation in occupations:
                     # Look for occupation mentions with exposure percentages
                     patterns = [
-                        f"{occupation}.*?(\d+(?:\.\d+)?)\s*%\s*(?:exposure|risk|automation)",
-                        f"(\d+(?:\.\d+)?)\s*%\s*(?:of\s+)?{occupation}.*?(?:exposed|automated)",
-                        f"{occupation}.*?(?:exposure|risk).*?(\d+(?:\.\d+)?)\s*%",
+                        f"{occupation}.*?(\\d+(?:\\.\\d+)?)\s*%\s*(?:exposure|risk|automation)",
+                        f"(\\d+(?:\\.\\d+)?)\s*%\s*(?:of\s+)?{occupation}.*?(?:exposed|automated)",
+                        f"{occupation}.*?(?:exposure|risk).*?(\\d+(?:\\.\\d+)?)\s*%",
                     ]
 
                     for pattern in patterns:
@@ -673,9 +673,9 @@ class GoldmanSachsLoader(BaseDataLoader):
                 for scenario in scenarios:
                     # Look for scenario mentions with growth rates
                     patterns = [
-                        f"{scenario}.*?(\d+(?:\.\d+)?)\s*%\s*(?:GDP\s+)?growth",
-                        f"{scenario}.*?growth.*?(\d+(?:\.\d+)?)\s*%",
-                        f"(\d+(?:\.\d+)?)\s*%.*?{scenario}\s+scenario",
+                        f"{scenario}.*?(\\d+(?:\\.\\d+)?)\s*%\s*(?:GDP\s+)?growth",
+                        f"{scenario}.*?growth.*?(\\d+(?:\\.\\d+)?)\s*%",
+                        f"(\\d+(?:\\.\\d+)?)\s*%.*?{scenario}\s+scenario",
                     ]
 
                     for pattern in patterns:
@@ -759,9 +759,9 @@ class GoldmanSachsLoader(BaseDataLoader):
 
                 # Extract investment amounts and returns
                 patterns = [
-                    r"\$(\d+(?:\.\d+)?)\s*(billion|trillion)\s*(?:in\s+)?investment\s*(?:in\s+)?([^.]+)",
-                    r"(\d+(?:\.\d+)?)\s*%\s*(?:expected\s+)?(?:return|ROI|growth)",
-                    r"investment\s*(?:of\s+)?\$(\d+(?:\.\d+)?)\s*(billion|trillion)",
+                    r"\$(\\d+(?:\\.\\d+)?)\s*(billion|trillion)\s*(?:in\s+)?investment\s*(?:in\s+)?([^.]+)",
+                    r"(\\d+(?:\\.\\d+)?)\s*%\s*(?:expected\s+)?(?:return|ROI|growth)",
+                    r"investment\s*(?:of\s+)?\$(\\d+(?:\\.\\d+)?)\s*(billion|trillion)",
                 ]
 
                 for pattern in patterns:

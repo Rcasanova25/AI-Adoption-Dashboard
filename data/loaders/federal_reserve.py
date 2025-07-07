@@ -21,11 +21,7 @@ class RichmondFedLoader(BaseDataLoader):
 
     def __init__(self, file_path: Optional[Path] = None):
         if file_path is None:
-            file_path = Path(
-                "/mnt/c/Users/rcasa/OneDrive/Documents/AI-Adoption-Dashboard/"
-                "AI adoption resources/AI dashboard resources 1/"
-                "The Productivity Puzzle_ AI, Technology Adoption and the Workforce _ Richmond Fed.pdf"
-            )
+            file_path = Path("C:/Users/rcasa/OneDrive/Documents/AI-Adoption-Dashboard/data/loaders/federal_reserve.py")
         source = DataSource(
             name="Richmond Fed Productivity Analysis",
             version="2024",
@@ -106,10 +102,10 @@ class RichmondFedLoader(BaseDataLoader):
 
                 # Patterns for productivity data
                 patterns = [
-                    r"productivity\s+growth\s+(?:of\s+)?(\d+(?:\.\d+)?)\s*%",
-                    r"(\d+(?:\.\d+)?)\s*%\s*(?:annual\s+)?productivity",
-                    r"productivity\s+(?:increased|decreased|grew)\s+(?:by\s+)?(\d+(?:\.\d+)?)\s*%",
-                    r"(\d+(?:\.\d+)?)\s*%\s*(?:decline|increase)\s+in\s+productivity",
+                    r"productivity\s+growth\s+(?:of\s+)?(\\d+(?:\\.\\d+)?)\s*%",
+                    r"(\\d+(?:\\.\\d+)?)\s*%\s*(?:annual\s+)?productivity",
+                    r"productivity\s+(?:increased|decreased|grew)\s+(?:by\s+)?(\\d+(?:\\.\\d+)?)\s*%",
+                    r"(\\d+(?:\\.\\d+)?)\s*%\s*(?:decline|increase)\s+in\s+productivity",
                 ]
 
                 for pattern in patterns:
@@ -158,10 +154,10 @@ class RichmondFedLoader(BaseDataLoader):
         """Extract time period from context."""
         # Look for year ranges or decades near the match
         year_patterns = [
-            r"(\d{4})-(\d{4})",
-            r"(\d{4})s",
-            r"since\s+(\d{4})",
-            r"between\s+(\d{4})\s+and\s+(\d{4})",
+            r"(\\d{4})-(\\d{4})",
+            r"(\\d{4})s",
+            r"since\s+(\\d{4})",
+            r"between\s+(\\d{4})\s+and\s+(\\d{4})",
         ]
 
         for year_pattern in year_patterns:
@@ -202,7 +198,7 @@ class RichmondFedLoader(BaseDataLoader):
             # Check for percentage or numeric values
             if (
                 col_vals.str.contains("%").sum() > 0
-                or col_vals.str.match(r"^-?\d+(?:\.\d+)?$").sum() > len(table) * 0.3
+                or col_vals.str.match(r"^-?\\d+(?:\\.\\d+)?$").sum() > len(table) * 0.3
             ):
                 value_cols.append(col)
 
@@ -284,9 +280,9 @@ class RichmondFedLoader(BaseDataLoader):
                 for tech in technologies:
                     # Patterns for adoption rates
                     patterns = [
-                        rf"{tech}.*?adoption.*?(\d+(?:\.\d+)?)\s*%",
-                        rf"(\d+(?:\.\d+)?)\s*%.*?(?:firms|companies).*?{tech}",
-                        rf"{tech}.*?implemented.*?(\d+(?:\.\d+)?)\s*%",
+                        rf"{tech}.*?adoption.*?(\\d+(?:\\.\\d+)?)\s*%",
+                        rf"(\\d+(?:\\.\\d+)?)\s*%.*?(?:firms|companies).*?{tech}",
+                        rf"{tech}.*?implemented.*?(\\d+(?:\\.\\d+)?)\s*%",
                     ]
 
                     for pattern in patterns:
@@ -323,7 +319,7 @@ class RichmondFedLoader(BaseDataLoader):
     def _extract_year_from_context(self, text: str) -> int:
         """Extract year from text context."""
         # Look for recent years
-        year_matches = re.findall(r"20[1-2]\d", text)
+        year_matches = re.findall(r"20[1-2]\\d", text)
         if year_matches:
             # Return most recent year found
             return max(int(year) for year in year_matches)
@@ -374,10 +370,10 @@ class RichmondFedLoader(BaseDataLoader):
 
                 # Patterns for workforce impact
                 patterns = [
-                    r"(\d+(?:\.\d+)?)\s*%\s*of\s*(?:workers|jobs|employment)\s*(?:affected|impacted|transformed)",
-                    r"(\d+(?:\.\d+)?)\s*%\s*(?:job|employment)\s*(?:growth|decline|change)",
-                    r"workforce.*?(\d+(?:\.\d+)?)\s*%\s*(?:increase|decrease|change)",
-                    r"(\d+(?:\.\d+)?)\s*million\s*(?:jobs|workers)\s*(?:created|displaced|affected)",
+                    r"(\\d+(?:\\.\\d+)?)\s*%\s*of\s*(?:workers|jobs|employment)\s*(?:affected|impacted|transformed)",
+                    r"(\\d+(?:\\.\\d+)?)\s*%\s*(?:job|employment)\s*(?:growth|decline|change)",
+                    r"workforce.*?(\\d+(?:\\.\\d+)?)\s*%\s*(?:increase|decrease|change)",
+                    r"(\\d+(?:\\.\\d+)?)\s*million\s*(?:jobs|workers)\s*(?:created|displaced|affected)",
                 ]
 
                 for pattern in patterns:
@@ -480,9 +476,9 @@ class RichmondFedLoader(BaseDataLoader):
                 for skill in skill_categories:
                     # Look for skill mentions with percentages or importance
                     patterns = [
-                        f"{skill}.*?(\d+(?:\.\d+)?)\s*%\s*(?:of\s+)?(?:workers|employees|firms)\s*(?:need|require|lack)",
-                        f"(\d+(?:\.\d+)?)\s*%\s*%.*?{skill}",
-                        f"{skill}.*?(?:critical|essential|important).*?(\d+(?:\.\d+)?)\s*%"
+                        f"{skill}.*?(\\d+(?:\\.\\d+)?)\s*%\s*(?:of\s+)?(?:workers|employees|firms)\s*(?:need|require|lack)",
+                        f"(\\d+(?:\\.\\d+)?)\s*%\s*%.*?{skill}",
+                        f"{skill}.*?(?:critical|essential|important).*?(\\d+(?:\\.\\d+)?)\s*%"
                     ]
 
                     for pattern in patterns:
@@ -580,7 +576,7 @@ class RichmondFedLoader(BaseDataLoader):
                 # Extract numeric data by region
                 numeric_data = self.extractor.extract_numeric_data(
                     keywords=regions,
-                    value_pattern=r"(\d+(?:\.\d+)?)\s*(%|percent|percentage points)",
+                    value_pattern=r"(\\d+(?:\\.\\d+)?)\s*(%|percent|percentage points)",
                 )
 
                 for region, values in numeric_data.items():
@@ -668,9 +664,9 @@ class RichmondFedLoader(BaseDataLoader):
                     if policy.lower() in text.lower():
                         # Extract any associated metrics
                         patterns = [
-                            r"(\d+(?:\.\d+)?)\s*%\s*(?:increase|improvement|reduction)",
-                            r"\$(\d+(?:\.\d+)?)\s*(billion|million)\s*(?:investment|funding)",
-                            r"(\d+(?:\.\d+)?)\s*(?:fold|x)\s*(?:increase|improvement)",
+                            r"(\\d+(?:\\.\\d+)?)\s*%\s*(?:increase|improvement|reduction)",
+                            r"\$(\\d+(?:\\.\\d+)?)\s*(billion|million)\s*(?:investment|funding)",
+                            r"(\\d+(?:\\.\\d+)?)\s*(?:fold|x)\s*(?:increase|improvement)",
                         ]
 
                         impact_value = None
@@ -874,10 +870,10 @@ class StLouisFedLoader(BaseDataLoader):
 
                     # Patterns for adoption data
                     patterns = [
-                        r"(\d+(?:\.\d+)?)\s*%\s*of\s*(?:firms|companies|organizations)\s*(?:using|adopted|implementing)\s*(?:generative\s*)?AI",
-                        r"(?:generative\s*)?AI\s*adoption\s*(?:rate\s*)?(?:reached|at|is)\s*(\d+(?:\.\d+)?)\s*%",
-                        r"(\d+(?:\.\d+)?)\s*%\s*(?:increase|growth)\s*in\s*(?:generative\s*)?AI\s*adoption",
-                        r"adoption\s*(?:rate\s*)?(?:increased|grew)\s*(?:by\s*)?(\d+(?:\.\d+)?)\s*%",
+                        r"(\\d+(?:\\.\\d+)?)\s*%\s*of\s*(?:firms|companies|organizations)\s*(?:using|adopted|implementing)\s*(?:generative\s*)?AI",
+                        r"(?:generative\s*)?AI\s*adoption\s*(?:rate\s*)?(?:reached|at|is)\s*(\\d+(?:\\.\\d+)?)\s*%",
+                        r"(\\d+(?:\\.\\d+)?)\s*%\s*(?:increase|growth)\s*in\s*(?:generative\s*)?AI\s*adoption",
+                        r"adoption\s*(?:rate\s*)?(?:increased|grew)\s*(?:by\s*)?(\\d+(?:\\.\\d+)?)\s*%",
                     ]
 
                     for pattern in patterns:
@@ -958,7 +954,7 @@ class StLouisFedLoader(BaseDataLoader):
                     # Extract numeric productivity data
                     numeric_data = extractor.extract_numeric_data(
                         keywords=["productivity", "efficiency", "output", "time"],
-                        value_pattern=r"(\d+(?:\.\d+)?)\s*(%|percent|x|times|hours)",
+                        value_pattern=r"(\\d+(?:\\.\\d+)?)\s*(%|percent|x|times|hours)",
                     )
 
                     for keyword, values in numeric_data.items():
@@ -1044,9 +1040,9 @@ class StLouisFedLoader(BaseDataLoader):
 
                     # Patterns for task automation
                     patterns = [
-                        r"(\d+(?:\.\d+)?)\s*%\s*of\s*(?:tasks|activities|work)\s*(?:can be|could be|are)\s*automated",
-                        r"automate\s*(\d+(?:\.\d+)?)\s*%\s*of\s*(?:tasks|activities)",
-                        r"(\d+(?:\.\d+)?)\s*%\s*(?:task|activity)\s*automation\s*potential",
+                        r"(\\d+(?:\\.\\d+)?)\s*%\s*of\s*(?:tasks|activities|work)\s*(?:can be|could be|are)\s*automated",
+                        r"automate\s*(\\d+(?:\\.\\d+)?)\s*%\s*of\s*(?:tasks|activities)",
+                        r"(\\d+(?:\\.\\d+)?)\s*%\s*(?:task|activity)\s*automation\s*potential",
                     ]
 
                     for pattern in patterns:
@@ -1163,9 +1159,9 @@ class StLouisFedLoader(BaseDataLoader):
                     for category in categories:
                         # Look for impact metrics for each category
                         patterns = [
-                            f"{category}.*?(\d+(?:\.\d+)?)\s*%\s*(?:productivity|efficiency|impact)",
-                            f"(\d+(?:\.\d+)?)\s*%.*?{category}",
-                            f"{category}.*?(?:gain|improvement|benefit).*?(\d+(?:\.\d+)?)\s*%",
+                            f"{category}.*?(\\d+(?:\\.\\d+)?)\s*%\s*(?:productivity|efficiency|impact)",
+                            f"(\\d+(?:\\.\\d+)?)\s*%.*?{category}",
+                            f"{category}.*?(?:gain|improvement|benefit).*?(\\d+(?:\\.\\d+)?)\s*%",
                         ]
 
                         for pattern in patterns:
@@ -1266,9 +1262,9 @@ class StLouisFedLoader(BaseDataLoader):
                         if phase.lower() in text.lower():
                             # Extract timing and metrics
                             patterns = [
-                                f"{phase}.*?(\d+(?:\.\d+)?)\s*(?:months|quarters|years)",
-                                f"{phase}.*?(\d{{4}})",  # Year
-                                f"{phase}.*?Q(\d)\s*(\d{{4}})",  # Quarter and year
+                                f"{phase}.*?(\\d+(?:\\.\\d+)?)\s*(?:months|quarters|years)",
+                                f"{phase}.*?(\\d{{4}})",  # Year
+                                f"{phase}.*?Q(\\d)\s*(\\d{{4}})",  # Quarter and year
                             ]
 
                             duration = None
@@ -1361,10 +1357,10 @@ class StLouisFedLoader(BaseDataLoader):
 
                     # Patterns for economic data
                     patterns = [
-                        r"\$(\d+(?:\.\d+)?)\s*(trillion|billion)\s*(?:in\s+)?(?:economic\s+)?(?:value|impact|benefit)",
-                        r"(\d+(?:\.\d+)?)\s*%\s*GDP\s*(?:growth|increase|impact)",
-                        r"economic\s*(?:impact|benefit|value)\s*of\s*\$(\d+(?:\.\d+)?)\s*(trillion|billion)",
-                        r"add\s*(\d+(?:\.\d+)?)\s*%\s*to\s*(?:economic\s+)?growth",
+                        r"\$(\\d+(?:\\.\\d+)?)\s*(trillion|billion)\s*(?:in\s+)?(?:economic\s+)?(?:value|impact|benefit)",
+                        r"(\\d+(?:\\.\\d+)?)\s*%\s*GDP\s*(?:growth|increase|impact)",
+                        r"economic\s*(?:impact|benefit|value)\s*of\s*\$(\\d+(?:\\.\\d+)?)\s*(trillion|billion)",
+                        r"add\s*(\\d+(?:\\.\\d+)?)\s*%\s*to\s*(?:economic\s+)?growth",
                     ]
 
                     for pattern in patterns:

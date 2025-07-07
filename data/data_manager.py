@@ -115,7 +115,7 @@ class DataManager:
         logger.info(f"Initialized {len(self.loaders)} data loaders")
 
     @st.cache_data(ttl=settings.CACHE_MEMORY_TTL)
-    def get_dataset(self, dataset_name: str, source: Optional[str] = None) -> pd.DataFrame:
+    def get_dataset(_self, dataset_name: str, source: Optional[str] = None) -> pd.DataFrame:
         """Get a specific dataset by name using Streamlit's caching."""
         # If specific source requested
         if source:
