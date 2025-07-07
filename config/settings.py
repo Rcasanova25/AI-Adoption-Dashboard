@@ -1,8 +1,4 @@
-"""Configuration settings for AI Adoption Dashboard.
-
-This module provides environment variable management and default settings
-for the application, supporting both Windows (WSL) and Linux systems.
-"""
+"""Configuration settings for AI Adoption Dashboard - FIXED for GitHub deployment."""
 
 import os
 from pathlib import Path
@@ -11,7 +7,6 @@ from typing import Optional
 # Load environment variables from .env file if it exists
 try:
     from dotenv import load_dotenv
-
     load_dotenv()
 except ImportError:
     # dotenv not installed, skip loading
@@ -24,9 +19,11 @@ class Settings:
     # Base paths
     BASE_DIR = Path(__file__).resolve().parent.parent
 
-    # Resources path - supports environment variable override
+    # Resources path - FIXED to match GitHub repository case
+    # GitHub has: "AI Adoption Resources" (capital A in Adoption)
     RESOURCES_PATH = os.getenv(
-        "AI_ADOPTION_RESOURCES_PATH", str(BASE_DIR / "AI adoption resources")
+        "AI_ADOPTION_RESOURCES_PATH", 
+        str(BASE_DIR / "AI Adoption Resources")  # FIXED: Capital "A" in "Adoption"
     )
 
     # Data directories
@@ -53,11 +50,7 @@ class Settings:
 
     @classmethod
     def get_resources_path(cls) -> Path:
-        """Get the resources path as a Path object.
-
-        Returns:
-            Path object for the resources directory
-        """
+        """Get the resources path as a Path object."""
         return Path(cls.RESOURCES_PATH)
 
     @classmethod
@@ -70,34 +63,19 @@ class Settings:
 
     @classmethod
     def validate_resources_path(cls) -> bool:
-        """Validate that the resources path exists and is accessible.
-
-        Returns:
-            True if resources path is valid, False otherwise
-        """
+        """Validate that the resources path exists and is accessible."""
         resources_path = cls.get_resources_path()
         return resources_path.exists() and resources_path.is_dir()
 
     @classmethod
     def get_resource_file(cls, relative_path: str) -> Optional[Path]:
-        """Get a resource file path.
-
-        Args:
-            relative_path: Path relative to resources directory
-
-        Returns:
-            Full path to the resource file if it exists, None otherwise
-        """
+        """Get a resource file path."""
         full_path = cls.get_resources_path() / relative_path
         return full_path if full_path.exists() else None
 
     @classmethod
     def get_settings_dict(cls) -> dict:
-        """Get all settings as a dictionary.
-
-        Returns:
-            Dictionary of all settings
-        """
+        """Get all settings as a dictionary."""
         return {
             "BASE_DIR": str(cls.BASE_DIR),
             "RESOURCES_PATH": cls.RESOURCES_PATH,
