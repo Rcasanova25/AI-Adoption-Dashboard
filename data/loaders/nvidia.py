@@ -618,10 +618,10 @@ class NVIDIATokenLoader(BaseDataLoader):
                     if technique.lower() in text.lower():
                         # Extract metrics for this technique
                         patterns = [
-                            rrfr"{technique}.*?(\d+(?:\.\d+)?)\s*%\s*(?:token\s*)?reduction",
-                            rrfr"{technique}.*?(?:reduce|save).*?(\d+(?:\.\d+)?)\s*%",
-                            rrfr"(\d+(?:\.\d+)?)\s*%.*?{technique}",
-                            rrfr"{technique}.*?(\d+(?:\.\d+)?)\s*x\s*(?:faster|improvement)",
+                            rf"{technique}.*?(\d+(?:\.\d+)?)\s*%\s*(?:token\s*)?reduction",
+                            rf"{technique}.*?(?:reduce|save).*?(\d+(?:\.\d+)?)\s*%",
+                            rf"(\d+(?:\.\d+)?)\s*%.*?{technique}",
+                            rf"{technique}.*?(\d+(?:\.\d+)?)\s*x\s*(?:faster|improvement)",
                         ]
 
                         for pattern in patterns:
@@ -872,9 +872,9 @@ class NVIDIATokenLoader(BaseDataLoader):
                     if barrier.lower() in text.lower():
                         # Extract cost data for this barrier
                         patterns = [
-                            rrfr"{barrier}.*?\\$(\d+(?:,\d+)*(?:\.\d+)?)\s*(thousand|million|K|M)?",
-                            rrfr"\\$(\d+(?:,\d+)*(?:\.\d+)?)\s*(thousand|million|K|M)?.*?{barrier}",
-                            rrfr"{barrier}.*?(\d+(?:\.\d+)?)\s*%\s*of\s*(?:total\s*)?(?:IT\s*)?budget",
+                            rf"{barrier}.*?\\$(\d+(?:,\d+)*(?:\.\d+)?)\s*(thousand|million|K|M)?",
+                            rf"\\$(\d+(?:,\d+)*(?:\.\d+)?)\s*(thousand|million|K|M)?.*?{barrier}",
+                            rf"{barrier}.*?(\d+(?:\.\d+)?)\s*%\s*of\s*(?:total\s*)?(?:IT\s*)?budget",
                         ]
 
                         for pattern in patterns:

@@ -280,9 +280,9 @@ class RichmondFedLoader(BaseDataLoader):
                 for tech in technologies:
                     # Patterns for adoption rates
                     patterns = [
-                        rrfr"{tech}.*?adoption.*?(\d+(?:\.\d+)?)\s*%",
-                        rrfr"(\d+(?:\.\d+)?)\s*%.*?(?:firms|companies).*?{tech}",
-                        rrfr"{tech}.*?implemented.*?(\d+(?:\.\d+)?)\s*%",
+                        rf"{tech}.*?adoption.*?(\d+(?:\.\d+)?)\s*%",
+                        rf"(\d+(?:\.\d+)?)\s*%.*?(?:firms|companies).*?{tech}",
+                        rf"{tech}.*?implemented.*?(\d+(?:\.\d+)?)\s*%",
                     ]
 
                     for pattern in patterns:
@@ -476,9 +476,9 @@ class RichmondFedLoader(BaseDataLoader):
                 for skill in skill_categories:
                     # Look for skill mentions with percentages or importance
                     patterns = [
-                        rrfr"{skill}.*?(\d+(?:\.\d+)?)\s*%\s*(?:of\s+)?(?:workers|employees|firms)\s*(?:need|require|lack)",
-                        rrfr"(\d+(?:\.\d+)?)\s*%\s*%.*?{skill}",
-                        rrfr"{skill}.*?(?:critical|essential|important).*?(\d+(?:\.\d+)?)\s*%"
+                        rf"{skill}.*?(\d+(?:\.\d+)?)\s*%\s*(?:of\s+)?(?:workers|employees|firms)\s*(?:need|require|lack)",
+                        rf"(\d+(?:\.\d+)?)\s*%\s*%.*?{skill}",
+                        rf"{skill}.*?(?:critical|essential|important).*?(\d+(?:\.\d+)?)\s*%"
                     ]
 
                     for pattern in patterns:
@@ -1159,9 +1159,9 @@ class StLouisFedLoader(BaseDataLoader):
                     for category in categories:
                         # Look for impact metrics for each category
                         patterns = [
-                            rrfr"{category}.*?(\d+(?:\.\d+)?)\s*%\s*(?:productivity|efficiency|impact)",
-                            rrfr"(\d+(?:\.\d+)?)\s*%\s*%.*?{category}",
-                            rrfr"{category}.*?(?:gain|improvement|benefit).*?(\d+(?:\.\d+)?)\s*%",
+                            rf"{category}.*?(\d+(?:\.\d+)?)\s*%\s*(?:productivity|efficiency|impact)",
+                            rf"(\d+(?:\.\d+)?)\s*%\s*%.*?{category}",
+                            rf"{category}.*?(?:gain|improvement|benefit).*?(\d+(?:\.\d+)?)\s*%",
                         ]
 
                         for pattern in patterns:
@@ -1262,9 +1262,9 @@ class StLouisFedLoader(BaseDataLoader):
                         if phase.lower() in text.lower():
                             # Extract timing and metrics
                             patterns = [
-                                rrfr"{phase}.*?(\d+(?:\.\d+)?)\s*(?:months|quarters|years)",
-                                rrfr"{phase}.*?(\d{{4}})",  # Year
-                                rrfr"{phase}.*?Q(\d)\s*(\d{{4}})",  # Quarter and year
+                                rf"{phase}.*?(\d+(?:\.\d+)?)\s*(?:months|quarters|years)",
+                                rf"{phase}.*?(\d{{4}})",  # Year
+                                rf"{phase}.*?Q(\d)\s*(\d{{4}})",  # Quarter and year
                             ]
 
                             duration = None

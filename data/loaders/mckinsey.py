@@ -447,9 +447,9 @@ class McKinseyLoader(BaseDataLoader):
             for function in functions:
                 # Look for function mentions with percentages
                 patterns = [
-                    rrfr"{function}.*?(\d+(?:\.\d+)?)\s*%",
-                    rrfr"(\d+(?:\.\d+)?)\s*%.*?{function}",
-                    rrfr"{function}.*?adoption.*?(\d+(?:\.\d+)?)\s*%",
+                    rf"{function}.*?(\d+(?:\.\d+)?)\s*%",
+                    rf"(\d+(?:\.\d+)?)\s*%.*?{function}",
+                    rf"{function}.*?adoption.*?(\d+(?:\.\d+)?)\s*%",
                 ]
 
                 for pattern in patterns:
@@ -848,9 +848,9 @@ class McKinseyLoader(BaseDataLoader):
                 for aspect in aspects:
                     # Look for mentions with percentages
                     patterns = [
-                        rrfr"{aspect}.*?(\d+(?:\.\d+)?)\s*%",
-                        rrfr"(\d+(?:\.\d+)?)\s*%.*?{aspect}",
-                        rrfr"{aspect}.*?adopted by.*?(\d+(?:\.\d+)?)\s*%",
+                        rf"{aspect}.*?(\d+(?:\.\d+)?)\s*%",
+                        rf"(\d+(?:\.\d+)?)\s*%.*?{aspect}",
+                        rf"{aspect}.*?adopted by.*?(\d+(?:\.\d+)?)\s*%",
                     ]
 
                     for pattern in patterns:

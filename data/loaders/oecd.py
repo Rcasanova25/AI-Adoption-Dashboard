@@ -1189,7 +1189,7 @@ class OECDLoader(BaseDataLoader):
 
         for key, keywords in regions.items():
             for keyword in keywords:
-                pattern = rfr"{keyword}.*?(\d+(?:\.\d+)?)\s*%"
+                pattern = rf"{keyword}.*?(\d+(?:\.\d+)?)\s*%"
                 match = re.search(pattern, context, re.IGNORECASE)
                 if match:
                     result[key] = float(match.group(1))

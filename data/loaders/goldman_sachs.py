@@ -509,9 +509,9 @@ class GoldmanSachsLoader(BaseDataLoader):
             for sector in sectors:
                 # Look for sector mentions with productivity gains
                 patterns = [
-                    rrfr"{sector}.*?(\d+(?:\.\d+)?)\s*%\s*productivity",
-                    rrfr"(\d+(?:\.\d+)?)\s*%\s*productivity.*?{sector}",
-                    rrfr"{sector}.*?productivity.*?(\d+(?:\.\d+)?)\s*%",
+                    rf"{sector}.*?(\d+(?:\.\d+)?)\s*%\s*productivity",
+                    rf"(\d+(?:\.\d+)?)\s*%\s*productivity.*?{sector}",
+                    rf"{sector}.*?productivity.*?(\d+(?:\.\d+)?)\s*%",
                 ]
 
                 for pattern in patterns:
@@ -587,9 +587,9 @@ class GoldmanSachsLoader(BaseDataLoader):
                 for occupation in occupations:
                     # Look for occupation mentions with exposure percentages
                     patterns = [
-                        rrfr"{occupation}.*?(\d+(?:\.\d+)?)\s*%\s*(?:exposure|risk|automation)",
-                        rrfr"(\d+(?:\.\d+)?)\s*%\s*(?:of\s+)?{occupation}.*?(?:exposed|automated)",
-                        rrfr"{occupation}.*?(?:exposure|risk).*?(\d+(?:\.\d+)?)\s*%",
+                        rf"{occupation}.*?(\d+(?:\.\d+)?)\s*%\s*(?:exposure|risk|automation)",
+                        rf"(\d+(?:\.\d+)?)\s*%\s*(?:of\s+)?{occupation}.*?(?:exposed|automated)",
+                        rf"{occupation}.*?(?:exposure|risk).*?(\d+(?:\.\d+)?)\s*%",
                     ]
 
                     for pattern in patterns:
@@ -673,9 +673,9 @@ class GoldmanSachsLoader(BaseDataLoader):
                 for scenario in scenarios:
                     # Look for scenario mentions with growth rates
                     patterns = [
-                        rfr"{scenario}.*?(\d+(?:\.\d+)?)\s*%\s*(?:GDP\s+)?growth",
-                        rfr"{scenario}.*?growth.*?(\d+(?:\.\d+)?)\s*%",
-                        rfr"(\d+(?:\.\d+)?)\s*%.*?{scenario}\s+scenario",
+                        rf"{scenario}.*?(\d+(?:\.\d+)?)\s*%\s*(?:GDP\s+)?growth",
+                        rf"{scenario}.*?growth.*?(\d+(?:\.\d+)?)\s*%",
+                        rf"(\d+(?:\.\d+)?)\s*%.*?{scenario}\s+scenario",
                     ]
 
                     for pattern in patterns:
