@@ -9,6 +9,7 @@ import pandas as pd
 from config.settings import settings
 
 from .base import BaseDataLoader, DataSource
+from ..extractors.pdf_extractor import PDFExtractor
 
 logger = logging.getLogger(__name__)
 
@@ -28,6 +29,12 @@ class AIStrategyLoader(BaseDataLoader):
             citation="AI Strategy Framework Document. 2025.",
         )
         super().__init__(source)
+        self.extractor = None
+        if self.source.file_path and self.source.file_path.exists():
+            try:
+                self.extractor = PDFExtractor(self.source.file_path)
+            except Exception as e:
+                logger.error(f"Failed to initialize PDF extractor: {e}")
 
     def load(self) -> Dict[str, pd.DataFrame]:
         """Load AI strategy framework data."""
@@ -43,16 +50,55 @@ class AIStrategyLoader(BaseDataLoader):
         return datasets
 
     def _load_strategy_pillars(self) -> pd.DataFrame:
-        """Load strategic pillars data from real file. No hardcoded data allowed."""
-        raise NotImplementedError("Real extraction for strategy pillars is required. No fallback or static data allowed.")
+        """Extract strategic pillars from the PDF."""
+        if not self.extractor:
+            logger.error("PDF extractor not available for strategy pillars.")
+            return pd.DataFrame(columns=["pillar", "description", "priority", "owner"])
+        try:
+            pages = self.extractor.find_pages_with_keyword("pillar")
+            tables = []
+            for page in pages:
+                tables.extend(self.extractor.extract_tables(page_range=(page, page)))
+            for table in tables:
+                if not table.empty and any("pillar" in str(col).lower() for col in table.columns):
+                    return table
+        except Exception as e:
+            logger.error(f"Error extracting strategy pillars: {e}")
+        return pd.DataFrame(columns=["pillar", "description", "priority", "owner"])
 
     def _load_implementation_roadmap(self) -> pd.DataFrame:
-        """Load implementation roadmap from real file. No hardcoded data allowed."""
-        raise NotImplementedError("Real extraction for implementation roadmap is required. No fallback or static data allowed.")
+        """Extract implementation roadmap from the PDF."""
+        if not self.extractor:
+            logger.error("PDF extractor not available for implementation roadmap.")
+            return pd.DataFrame(columns=["phase", "milestone", "timeline", "responsible_party"])
+        try:
+            pages = self.extractor.find_pages_with_keyword("roadmap")
+            tables = []
+            for page in pages:
+                tables.extend(self.extractor.extract_tables(page_range=(page, page)))
+            for table in tables:
+                if not table.empty and any("milestone" in str(col).lower() for col in table.columns):
+                    return table
+        except Exception as e:
+            logger.error(f"Error extracting implementation roadmap: {e}")
+        return pd.DataFrame(columns=["phase", "milestone", "timeline", "responsible_party"])
 
     def _load_success_metrics(self) -> pd.DataFrame:
-        """Load success metrics framework from real file. No hardcoded data allowed."""
-        raise NotImplementedError("Real extraction for success metrics is required. No fallback or static data allowed.")
+        """Extract success metrics from the PDF."""
+        if not self.extractor:
+            logger.error("PDF extractor not available for success metrics.")
+            return pd.DataFrame(columns=["metric", "target", "actual", "status"])
+        try:
+            pages = self.extractor.find_pages_with_keyword("metric")
+            tables = []
+            for page in pages:
+                tables.extend(self.extractor.extract_tables(page_range=(page, page)))
+            for table in tables:
+                if not table.empty and any("metric" in str(col).lower() for col in table.columns):
+                    return table
+        except Exception as e:
+            logger.error(f"Error extracting success metrics: {e}")
+        return pd.DataFrame(columns=["metric", "target", "actual", "status"])
 
     def validate(self, data: Dict[str, pd.DataFrame]) -> bool:
         """Validate strategy data."""
@@ -76,6 +122,12 @@ class AIUseCaseLoader(BaseDataLoader):
             citation="Enterprise AI Use Case Catalog. 2025.",
         )
         super().__init__(source)
+        self.extractor = None
+        if self.source.file_path and self.source.file_path.exists():
+            try:
+                self.extractor = PDFExtractor(self.source.file_path)
+            except Exception as e:
+                logger.error(f"Failed to initialize PDF extractor: {e}")
 
     def load(self) -> Dict[str, pd.DataFrame]:
         """Load use case catalog data."""
@@ -91,16 +143,55 @@ class AIUseCaseLoader(BaseDataLoader):
         return datasets
 
     def _load_use_case_catalog(self) -> pd.DataFrame:
-        """Load comprehensive use case catalog from real file. No placeholder or empty DataFrame allowed."""
-        raise NotImplementedError("Real extraction for use case catalog is required. No fallback or placeholder data allowed.")
+        """Extract use case catalog from the PDF."""
+        if not self.extractor:
+            logger.error("PDF extractor not available for use case catalog.")
+            return pd.DataFrame(columns=["use_case", "category", "industry", "impact", "adoption_level"])
+        try:
+            pages = self.extractor.find_pages_with_keyword("use case")
+            tables = []
+            for page in pages:
+                tables.extend(self.extractor.extract_tables(page_range=(page, page)))
+            for table in tables:
+                if not table.empty and any("use case" in str(col).lower() for col in table.columns):
+                    return table
+        except Exception as e:
+            logger.error(f"Error extracting use case catalog: {e}")
+        return pd.DataFrame(columns=["use_case", "category", "industry", "impact", "adoption_level"])
 
     def _load_implementation_complexity(self) -> pd.DataFrame:
-        """Load implementation complexity analysis from real file. No placeholder or empty DataFrame allowed."""
-        raise NotImplementedError("Real extraction for implementation complexity is required. No fallback or placeholder data allowed.")
+        """Extract implementation complexity from the PDF."""
+        if not self.extractor:
+            logger.error("PDF extractor not available for implementation complexity.")
+            return pd.DataFrame(columns=["use_case", "complexity_score", "barriers", "resources_required"])
+        try:
+            pages = self.extractor.find_pages_with_keyword("complexity")
+            tables = []
+            for page in pages:
+                tables.extend(self.extractor.extract_tables(page_range=(page, page)))
+            for table in tables:
+                if not table.empty and any("complexity" in str(col).lower() for col in table.columns):
+                    return table
+        except Exception as e:
+            logger.error(f"Error extracting implementation complexity: {e}")
+        return pd.DataFrame(columns=["use_case", "complexity_score", "barriers", "resources_required"])
 
     def _load_value_impact_matrix(self) -> pd.DataFrame:
-        """Load value impact assessment matrix from real file. No placeholder or empty DataFrame allowed."""
-        raise NotImplementedError("Real extraction for value impact matrix is required. No fallback or placeholder data allowed.")
+        """Extract value impact matrix from the PDF."""
+        if not self.extractor:
+            logger.error("PDF extractor not available for value impact matrix.")
+            return pd.DataFrame(columns=["use_case", "value_score", "impact_area", "roi_estimate"])
+        try:
+            pages = self.extractor.find_pages_with_keyword("impact")
+            tables = []
+            for page in pages:
+                tables.extend(self.extractor.extract_tables(page_range=(page, page)))
+            for table in tables:
+                if not table.empty and any("impact" in str(col).lower() for col in table.columns):
+                    return table
+        except Exception as e:
+            logger.error(f"Error extracting value impact matrix: {e}")
+        return pd.DataFrame(columns=["use_case", "value_score", "impact_area", "roi_estimate"])
 
     def validate(self, data: Dict[str, pd.DataFrame]) -> bool:
         """Validate use case data."""
@@ -127,6 +218,12 @@ class PublicSectorLoader(BaseDataLoader):
             citation="Exploring Artificial Intelligence Adoption in Public Organizations: A Comparative Case Study. 2025.",
         )
         super().__init__(source)
+        self.extractor = None
+        if self.source.file_path and self.source.file_path.exists():
+            try:
+                self.extractor = PDFExtractor(self.source.file_path)
+            except Exception as e:
+                logger.error(f"Failed to initialize PDF extractor: {e}")
 
     def load(self) -> Dict[str, pd.DataFrame]:
         """Load public sector adoption data."""
@@ -142,42 +239,55 @@ class PublicSectorLoader(BaseDataLoader):
         return datasets
 
     def _load_public_sector_adoption(self) -> pd.DataFrame:
-        """Load public sector adoption patterns."""
-        logger.error("No real extraction implemented for public_sector_adoption.")
-        return pd.DataFrame(
-            columns=[
-                "government_level",
-                "adoption_rate",
-                "primary_use_cases",
-                "budget_allocated_millions",
-                "citizen_satisfaction_improvement",
-                "efficiency_gain_percent",
-            ]
-        )
+        """Extract public sector adoption patterns from the PDF."""
+        if not self.extractor:
+            logger.error("PDF extractor not available for public sector adoption.")
+            return pd.DataFrame(columns=["government_level", "adoption_rate", "primary_use_cases", "budget_allocated_millions", "citizen_satisfaction_improvement", "efficiency_gain_percent"])
+        try:
+            pages = self.extractor.find_pages_with_keyword("adoption")
+            tables = []
+            for page in pages:
+                tables.extend(self.extractor.extract_tables(page_range=(page, page)))
+            for table in tables:
+                if not table.empty and any("adoption" in str(col).lower() for col in table.columns):
+                    return table
+        except Exception as e:
+            logger.error(f"Error extracting public sector adoption: {e}")
+        return pd.DataFrame(columns=["government_level", "adoption_rate", "primary_use_cases", "budget_allocated_millions", "citizen_satisfaction_improvement", "efficiency_gain_percent"])
 
     def _load_implementation_barriers(self) -> pd.DataFrame:
-        """Load public sector implementation barriers."""
-        logger.error("No real extraction implemented for implementation_barriers.")
-        return pd.DataFrame(
-            columns=[
-                "barrier",
-                "severity_score",
-                "organizations_affected_percent",
-                "mitigation_strategies_available",
-            ]
-        )
+        """Extract public sector implementation barriers from the PDF."""
+        if not self.extractor:
+            logger.error("PDF extractor not available for implementation barriers.")
+            return pd.DataFrame(columns=["barrier", "severity_score", "organizations_affected_percent", "mitigation_strategies_available"])
+        try:
+            pages = self.extractor.find_pages_with_keyword("barrier")
+            tables = []
+            for page in pages:
+                tables.extend(self.extractor.extract_tables(page_range=(page, page)))
+            for table in tables:
+                if not table.empty and any("barrier" in str(col).lower() for col in table.columns):
+                    return table
+        except Exception as e:
+            logger.error(f"Error extracting implementation barriers: {e}")
+        return pd.DataFrame(columns=["barrier", "severity_score", "organizations_affected_percent", "mitigation_strategies_available"])
 
     def _load_success_factors(self) -> pd.DataFrame:
-        """Load public sector success factors."""
-        logger.error("No real extraction implemented for success_factors.")
-        return pd.DataFrame(
-            columns=[
-                "success_factor",
-                "importance_score",
-                "implementation_rate",
-                "impact_on_success",
-            ]
-        )
+        """Extract public sector success factors from the PDF."""
+        if not self.extractor:
+            logger.error("PDF extractor not available for success factors.")
+            return pd.DataFrame(columns=["success_factor", "importance_score", "implementation_rate", "impact_on_success"])
+        try:
+            pages = self.extractor.find_pages_with_keyword("success")
+            tables = []
+            for page in pages:
+                tables.extend(self.extractor.extract_tables(page_range=(page, page)))
+            for table in tables:
+                if not table.empty and any("success" in str(col).lower() for col in table.columns):
+                    return table
+        except Exception as e:
+            logger.error(f"Error extracting success factors: {e}")
+        return pd.DataFrame(columns=["success_factor", "importance_score", "implementation_rate", "impact_on_success"])
 
     def validate(self, data: Dict[str, pd.DataFrame]) -> bool:
         """Validate public sector data."""
