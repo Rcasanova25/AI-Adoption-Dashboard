@@ -58,8 +58,9 @@ def fix_regex_patterns():
             # Additional specific fixes for common problematic patterns
             additional_fixes = [
                 # Fix string literals that should be raw strings when containing regex
-                (r'("[^"]*\\[dswDSW\[\](){}+*?.|]+[^"]*")', lambda m: 'r' + m.group(1) if not m.group(1).startswith('r"') and not m.group(1).startswith('f"') else m.group(1)),
-                (r"('[^']*\\[dswDSW\[\](){}+*?.|]+[^']*')", lambda m: 'r' + m.group(1) if not m.group(1).startswith("r'") and not m.group(1).startswith("f'") else m.group(1)),
+                # Only add 'r' if not already present
+                (r'(?<!r)("[^"]*\\[dswDSW\[\](){}+*?.|]+[^"]*")', lambda m: 'r' + m.group(1)),
+                (r"(?<!r)('[^']*\\[dswDSW\[\](){}+*?.|]+[^']*')", lambda m: 'r' + m.group(1)),
             ]
             
             for pattern, replacement in additional_fixes:
