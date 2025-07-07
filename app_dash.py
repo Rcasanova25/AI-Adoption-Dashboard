@@ -67,8 +67,20 @@ except ImportError:
 class DashboardApp:
     """Main Dash application class for AI Adoption Dashboard."""
     
+    _instance = None
+    _callbacks_registered = False
+    
+    def __new__(cls):
+        if cls._instance is None:
+            cls._instance = super(DashboardApp, cls).__new__(cls)
+        return cls._instance
+    
     def __init__(self):
         """Initialize the Dash application."""
+        if hasattr(self, '_initialized'):
+            return
+        self._initialized = True
+        
         # Initialize Dash app with Bootstrap theme
         self.app = dash.Dash(
             __name__,
@@ -98,7 +110,9 @@ class DashboardApp:
         
         # Setup app
         self.setup_layout()
-        self.register_callbacks()
+        if not DashboardApp._callbacks_registered:
+            self.register_callbacks()
+            DashboardApp._callbacks_registered = True
         
     def setup_layout(self):
         """Create the main application layout."""
@@ -180,14 +194,18 @@ class DashboardApp:
     def register_callbacks(self):
         """Register all Dash callbacks."""
         # Import callback modules
-        from callbacks.data_callbacks import register_data_callbacks
-        from callbacks.view_callbacks import register_view_callbacks
-        from callbacks.performance_callbacks import register_performance_callbacks
-        
-        # Register callbacks
-        register_data_callbacks(self.app)
-        register_view_callbacks(self.app)
-        register_performance_callbacks(self.app)
+        try:
+            from callbacks.data_callbacks import register_data_callbacks
+            from callbacks.view_callbacks import register_view_callbacks
+            from callbacks.performance_callbacks import register_performance_callbacks
+            
+            # Register callbacks
+            register_data_callbacks(self.app)
+            register_view_callbacks(self.app)
+            register_performance_callbacks(self.app)
+        except Exception as e:
+            logger.error(f"Error registering callbacks: {str(e)}")
+            logger.error(traceback.format_exc())
 
     def run(self, debug=True, host="0.0.0.0", port=8050):
         """Run the Dash application."""

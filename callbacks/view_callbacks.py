@@ -9,6 +9,9 @@ import logging
 import traceback
 from typing import List, Tuple, Any, Dict
 
+import sys
+import os
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from dash_view_manager import DashViewManager
 
 logger = logging.getLogger(__name__)
@@ -19,7 +22,7 @@ def register_view_callbacks(app):
     # Initialize view manager
     view_manager = DashViewManager()
     
-    @callback(
+    @app.callback(
         Output("sidebar-content", "children"),
         Input("persona-store", "data")
     )
@@ -27,7 +30,7 @@ def register_view_callbacks(app):
         """Render the sidebar based on current persona."""
         return view_manager.create_sidebar_layout()
     
-    @callback(
+    @app.callback(
         [Output("view-selector", "options"),
          Output("view-selector", "value"),
          Output("persona-recommendations", "children")],
@@ -56,7 +59,7 @@ def register_view_callbacks(app):
         
         return options, default_view, recommendations
     
-    @callback(
+    @app.callback(
         Output("view-description", "children"),
         Input("view-selector", "value")
     )
@@ -64,7 +67,7 @@ def register_view_callbacks(app):
         """Update view description when selection changes."""
         return view_manager.create_view_description(view_id)
     
-    @callback(
+    @app.callback(
         [Output("main-content", "children"),
          Output("view-store", "data"),
          Output("error-modal", "is_open"),
@@ -174,7 +177,7 @@ def register_view_callbacks(app):
             
             return error_view, "", True, error_modal_content
     
-    @callback(
+    @app.callback(
         Output("persona-store", "data"),
         Input("persona-selector", "value"),
         prevent_initial_call=True
