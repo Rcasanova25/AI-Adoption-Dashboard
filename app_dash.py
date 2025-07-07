@@ -12,17 +12,57 @@ import logging
 import json
 import time
 
-# Import existing systems
-from data.data_manager import DataManager
-from core.business.roi_analysis import ROICalculator
-from core.business.scenario_engine import ScenarioEngine
-from core.business.industry_models import IndustryAnalyzer
-from performance.monitor import PerformanceMonitor
-from config.settings import get_settings
-
 # Configure logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
+
+# Import existing systems with error handling
+try:
+    from data.data_manager import DataManager
+except ImportError:
+    logger.warning("DataManager not available, using mock data")
+    DataManager = None
+
+try:
+    from core.business import roi_analysis
+    # Create a wrapper class for ROI functions
+    class ROICalculator:
+        @staticmethod
+        def compute_roi(*args, **kwargs):
+            return roi_analysis.compute_roi(*args, **kwargs)
+except ImportError:
+    logger.warning("ROI analysis not available")
+    ROICalculator = None
+
+try:
+    from core.business.scenario_engine import ScenarioEngine
+except ImportError:
+    logger.warning("ScenarioEngine not available")
+    ScenarioEngine = None
+
+try:
+    from core.business import industry_models
+    # Create a wrapper class for industry functions
+    class IndustryAnalyzer:
+        @staticmethod
+        def get_industry_profile(*args, **kwargs):
+            return industry_models.get_industry_profile(*args, **kwargs)
+except ImportError:
+    logger.warning("Industry models not available")
+    IndustryAnalyzer = None
+
+try:
+    from performance.monitor import PerformanceMonitor
+except ImportError:
+    logger.warning("PerformanceMonitor not available")
+    PerformanceMonitor = None
+
+try:
+    from config.settings import get_settings
+except ImportError:
+    logger.warning("Settings not available, using defaults")
+    def get_settings():
+        return {}
 
 class DashboardApp:
     """Main Dash application class for AI Adoption Dashboard."""
@@ -50,8 +90,8 @@ class DashboardApp:
         self.roi_calculator = None
         self.scenario_engine = None
         self.industry_analyzer = None
-        self.performance_monitor = PerformanceMonitor()
-        self.settings = get_settings()
+        self.performance_monitor = PerformanceMonitor() if PerformanceMonitor else None
+        self.settings = get_settings() if callable(get_settings) else {}
         
         # View registry
         self.view_manager = None

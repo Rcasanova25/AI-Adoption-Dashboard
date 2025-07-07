@@ -1,0 +1,14 @@
+# Minimal requirements for running the Dash app
+# Use this if you're having trouble with the full requirements
+
+# Core Dash components
+dash==2.17.1
+dash-bootstrap-components==1.5.0
+plotly==5.17.0
+
+# Data processing
+pandas>=2.0.0
+numpy>=1.24.0
+
+# Web server
+gunicorn>=20.0.0  # For production deployment

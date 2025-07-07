@@ -190,6 +190,16 @@ class AccessibilityConfig(TypedDict):
     reduced_motion: bool
 
 
+class CacheConfig(TypedDict):
+    """Type definition for cache configuration."""
+    
+    max_size: int
+    ttl_seconds: int
+    enabled: bool
+    backend: str  # 'memory', 'redis', 'disk'
+    eviction_policy: str  # 'lru', 'fifo', 'lfu'
+
+
 # Type aliases for common data structures
 DataFrameDict = Dict[str, pd.DataFrame]
 MetricDict = Dict[str, MetricData]
