@@ -18,18 +18,11 @@ from .loaders import (
     BaseDataLoader,
     GoldmanSachsLoader,
     IMFLoader,
-    IndustryLoader,
     McKinseyLoader,
-    NBERPapersLoader,
-    NVIDIALoader,
+    NVIDIATokenLoader,
     OECDLoader,
-    PublicSectorLoader,
-    RegionalLoader,
-    SkillsLoader,
-    StrategyTemplateLoader,
-    FederalReserveLoader,
-    AIStrategyLoader,
-    AIUseCaseLoader,
+    RichmondFedLoader,
+    StLouisFedLoader,
 )
 
 logger = logging.getLogger(__name__)
@@ -56,26 +49,28 @@ class DataManagerDash:
         self.loaders["ai_index"] = AIIndexLoader(self.resources_path)
         self.loaders["mckinsey"] = McKinseyLoader(self.resources_path)
         self.loaders["oecd"] = OECDLoader(self.resources_path)
-        self.loaders["federal_reserve"] = FederalReserveLoader(self.resources_path)
+        # Federal Reserve loaders
+        self.loaders["richmond_fed"] = RichmondFedLoader(self.resources_path)
+        self.loaders["stlouis_fed"] = StLouisFedLoader(self.resources_path)
 
         # Academic sources
-        self.loaders["nber"] = NBERPapersLoader(self.resources_path)
+        # self.loaders["nber"] = NBERPapersLoader(self.resources_path)  # Not available
         self.loaders["academic"] = AcademicPapersLoader(self.resources_path)
 
         # Industry sources
         self.loaders["goldman_sachs"] = GoldmanSachsLoader(self.resources_path)
-        self.loaders["nvidia"] = NVIDIALoader(self.resources_path)
+        self.loaders["nvidia"] = NVIDIATokenLoader(self.resources_path)
         self.loaders["imf"] = IMFLoader(self.resources_path)
 
-        # Specialized loaders
-        self.loaders["industry"] = IndustryLoader(self.resources_path)
-        self.loaders["regional"] = RegionalLoader(self.resources_path)
-        self.loaders["skills"] = SkillsLoader(self.resources_path)
+        # Specialized loaders - commented out as they're not available
+        # self.loaders["industry"] = IndustryLoader(self.resources_path)
+        # self.loaders["regional"] = RegionalLoader(self.resources_path)
+        # self.loaders["skills"] = SkillsLoader(self.resources_path)
 
-        # Strategy loaders
-        self.loaders["ai_strategy"] = AIStrategyLoader(self.resources_path)
-        self.loaders["ai_use_cases"] = AIUseCaseLoader(self.resources_path)
-        self.loaders["public_sector"] = PublicSectorLoader(self.resources_path)
+        # Strategy loaders - commented out as they're not available
+        # self.loaders["ai_strategy"] = AIStrategyLoader(self.resources_path)
+        # self.loaders["ai_use_cases"] = AIUseCaseLoader(self.resources_path)
+        # self.loaders["public_sector"] = PublicSectorLoader(self.resources_path)
 
         logger.info(f"Initialized {len(self.loaders)} data loaders")
 
