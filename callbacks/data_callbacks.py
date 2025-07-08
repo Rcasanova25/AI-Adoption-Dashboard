@@ -46,7 +46,7 @@ def register_data_callbacks(app):
             progress_container = dbc.Card([
                 dbc.CardBody([
                     html.H5([
-                        dbc.Spinner(size="sm", color="primary", className="me-2"),
+                        dbc.Spinner(size="sm", color="primary", spinner_class_name="me-2"),
                         "Loading AI Adoption Data..."
                     ], className="mb-3"),
                     html.Div(id="progress-details", children=[
