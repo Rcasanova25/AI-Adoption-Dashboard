@@ -27,6 +27,11 @@
 - **Issue**: App was falling back to demo data when PDFs couldn't be loaded, violating CLAUDE.md requirements
 - **Fix**: Removed all mock data creation and now raises RuntimeError with clear instructions
 
+### 6. DataManager Passing Directory Path to Loaders
+- **Fixed in**: `/data/data_manager_dash.py`
+- **Issue**: DataManager was passing `self.resources_path` (directory) to all loaders, but loaders expect specific PDF file paths
+- **Fix**: Changed all loader initializations to use no arguments, letting them use their default PDF file paths
+
 ## Current Status
 
 1. **PDF Files**: Confirmed present in correct directory

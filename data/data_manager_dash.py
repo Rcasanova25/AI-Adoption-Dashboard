@@ -45,22 +45,22 @@ class DataManagerDash:
         """Initialize all data loaders."""
         logger.info(f"Initializing data loaders with resources path: {self.resources_path}")
 
-        # Primary data sources
-        self.loaders["ai_index"] = AIIndexLoader(self.resources_path)
-        self.loaders["mckinsey"] = McKinseyLoader(self.resources_path)
-        self.loaders["oecd"] = OECDLoader(self.resources_path)
+        # Primary data sources - loaders expect specific file paths, not directory
+        self.loaders["ai_index"] = AIIndexLoader()  # Uses default PDF path
+        self.loaders["mckinsey"] = McKinseyLoader()  # Uses default PDF path
+        self.loaders["oecd"] = OECDLoader()  # Uses default PDF path
         # Federal Reserve loaders
-        self.loaders["richmond_fed"] = RichmondFedLoader(self.resources_path)
-        self.loaders["stlouis_fed"] = StLouisFedLoader(self.resources_path)
+        self.loaders["richmond_fed"] = RichmondFedLoader()  # Uses default PDF path
+        self.loaders["stlouis_fed"] = StLouisFedLoader()  # Uses default PDF path
 
         # Academic sources
-        # self.loaders["nber"] = NBERPapersLoader(self.resources_path)  # Not available
-        self.loaders["academic"] = AcademicPapersLoader(self.resources_path)
+        # self.loaders["nber"] = NBERPapersLoader()  # Not available
+        self.loaders["academic"] = AcademicPapersLoader()  # Uses default PDF paths
 
         # Industry sources
-        self.loaders["goldman_sachs"] = GoldmanSachsLoader(self.resources_path)
-        self.loaders["nvidia"] = NVIDIATokenLoader(self.resources_path)
-        self.loaders["imf"] = IMFLoader(self.resources_path)
+        self.loaders["goldman_sachs"] = GoldmanSachsLoader()  # Uses default PDF path
+        self.loaders["nvidia"] = NVIDIATokenLoader()  # Uses default PDF path
+        self.loaders["imf"] = IMFLoader()  # Uses default PDF path
 
         # Specialized loaders - commented out as they're not available
         # self.loaders["industry"] = IndustryLoader(self.resources_path)
