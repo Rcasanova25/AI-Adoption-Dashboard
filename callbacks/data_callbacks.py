@@ -114,55 +114,19 @@ def register_data_callbacks(app):
                     raise Exception("No data loaded from PDFs")
                     
             except Exception as e:
-                logger.warning(f"Could not load real data: {str(e)}")
-                logger.info("Using mock data for demonstration...")
-                
-                # Get list of datasets to load
-                dataset_names = [
-                    "ai_index_adoption_rates",
-                    "ai_index_historical_trends", 
-                    "ai_index_industry_adoption",
-                    "mckinsey_financial_impact",
-                    "mckinsey_use_cases",
-                    "oecd_2025_findings",
-                    "federal_reserve_productivity",
-                    "federal_reserve_economic_impact",
-                    "stanford_investment_trends",
-                    "goldman_sachs_gdp_impact",
-                    "nvidia_cost_trends",
-                    "imf_global_impact",
-                    "nber_research",
-                    "ai_strategy_recommendations",
-                    "ai_governance_insights",
-                    "environmental_impact_data",
-                    "labor_market_analysis",
-                    "regional_growth_patterns",
-                    "skill_gap_assessment",
-                    "technology_maturity_curve",
-                    "firm_size_distribution",
-                    "barriers_and_support",
-                    "token_economics_data",
-                    "bibliography_sources",
-                    "competitive_landscape"
-                ]
-                
-                # Load mock datasets
-                datasets = {}
-                successful_loads = 0
-                failed_loads = []
-                
-                for dataset_name in dataset_names:
-                    try:
-                        dataset = create_mock_dataset(dataset_name)
-                        datasets[dataset_name] = dataset
-                        successful_loads += 1
-                    except Exception as e:
-                        logger.error(f"Failed to create mock data for {dataset_name}: {str(e)}")
-                        failed_loads.append(dataset_name)
-                        datasets[dataset_name] = {"error": str(e), "status": "failed"}
+                logger.error(f"Failed to load data from PDFs: {str(e)}")
+                # NO DEMO DATA - per CLAUDE.md requirements
+                raise RuntimeError(
+                    f"Failed to load data from PDFs: {str(e)}\n\n" +
+                    "Please ensure:\n" +
+                    "1. PDF files are present in 'AI adoption resources/AI dashboard resources 1/'\n" +
+                    "2. The PDF files have read permissions\n" +
+                    "3. Required PDF processing libraries are installed (PyMuPDF, pdfplumber, tabula-py)\n" +
+                    "4. Java is installed (required by tabula-py)"
+                )
             
             # Add metadata
-            total_datasets = len(dataset_names) if 'dataset_names' in locals() else len(datasets) - 1
+            total_datasets = len(datasets)
             datasets["_metadata"] = {
                 "loaded_at": pd.Timestamp.now().isoformat(),
                 "total_datasets": total_datasets,
@@ -171,25 +135,8 @@ def register_data_callbacks(app):
                 "version": "4.0.0"
             }
             
-            # Check if using mock data
-            using_mock_data = "_mock" in str(type(datasets.get("ai_index_adoption_rates", {}))) or len(failed_loads) > 20
-            
             # Create success message
-            if using_mock_data:
-                final_progress = dbc.Alert([
-                    html.I(className="fas fa-info-circle me-2"),
-                    html.Strong("Using Demo Data"),
-                    html.Br(),
-                    html.P([
-                        "To use real data, place PDF files in: ",
-                        html.Code("AI adoption resources/AI dashboard resources 1/")
-                    ], className="mb-2"),
-                    html.P([
-                        "The app created this directory for you. ",
-                        html.A("See required PDFs list", href="#", id="show-pdf-list")
-                    ], className="mb-0 small")
-                ], color="info", dismissable=True)
-            elif successful_loads == len(datasets) - 1:  # -1 for metadata
+            if successful_loads == len(datasets) - 1:  # -1 for metadata
                 final_progress = dbc.Alert([
                     html.I(className="fas fa-check-circle me-2"),
                     f"✅ Successfully loaded {successful_loads} datasets from PDFs!"
@@ -246,45 +193,3 @@ def register_data_callbacks(app):
     # Success toast is now handled in the main layout to avoid conflicts
 
 
-def create_mock_dataset(dataset_name: str) -> Dict[str, Any]:
-    """Create mock dataset for testing when actual data is not available."""
-    # This is a placeholder that creates realistic mock data
-    # In production, this would be replaced with actual data loading
-    
-    if "adoption_rates" in dataset_name:
-        return {
-            "data": pd.DataFrame({
-                "year": [2018, 2019, 2020, 2021, 2022, 2023, 2024, 2025],
-                "adoption_rate": [15, 22, 31, 42, 58, 72, 85, 92],
-                "enterprises": [1200, 2100, 3500, 5200, 7800, 10500, 13200, 15800]
-            }),
-            "metadata": {
-                "source": "Stanford AI Index",
-                "last_updated": "2025-01-01"
-            }
-        }
-    elif "financial_impact" in dataset_name:
-        return {
-            "data": pd.DataFrame({
-                "metric": ["Revenue Growth", "Cost Reduction", "Productivity", "ROI"],
-                "impact_percent": [23.5, 18.2, 31.7, 156.0],
-                "confidence": [0.85, 0.92, 0.78, 0.81]
-            }),
-            "metadata": {
-                "source": "McKinsey Global Institute",
-                "last_updated": "2025-01-01"
-            }
-        }
-    else:
-        # Generic mock data
-        return {
-            "data": pd.DataFrame({
-                "category": ["A", "B", "C", "D"],
-                "value": [100, 150, 120, 180],
-                "trend": [10, 15, -5, 22]
-            }),
-            "metadata": {
-                "source": "Mock Data",
-                "last_updated": "2025-01-01"
-            }
-        }

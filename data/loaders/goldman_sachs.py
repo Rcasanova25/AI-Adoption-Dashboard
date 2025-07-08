@@ -22,10 +22,11 @@ class GoldmanSachsLoader(BaseDataLoader):
         """Initialize with Goldman Sachs report file path."""
         if file_path is None:
             # Default to Goldman Sachs AI report
-            file_path = Path(
-                "C:/Users/rcasa/OneDrive/Documents/AI-Adoption-Dashboard/data/loaders/goldman_sachs.py"
-                "AI adoption resources/AI Adoption Resources 3/"
-                "Generative AI could raise global GDP by 7_ _ Goldman Sachs.pdf"
+            from config.settings import settings
+            file_path = (
+                settings.get_resources_path() 
+                / "AI adoption resources 3"
+                / "Generative AI could raise global GDP by 7_ _ Goldman Sachs.pdf"
             )
 
         source = DataSource(

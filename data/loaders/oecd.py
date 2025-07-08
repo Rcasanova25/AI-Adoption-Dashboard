@@ -34,7 +34,7 @@ class OECDLoader(BaseDataLoader):
         super().__init__(source)
 
         self.adoption_file = adoption_file or (
-            settings.get_resources_path() / "AI Adoption Resources 3/f9ef33c3-en.pdf"
+            settings.get_resources_path() / "AI adoption resources 3/f9ef33c3-en.pdf"
         )
 
         # Initialize PDF extractors
@@ -52,7 +52,7 @@ class OECDLoader(BaseDataLoader):
         # Adoption file
         if self.adoption_file and self.adoption_file.exists():
             try:
-                extractor = PDFExtractor(self.source.file_path)
+                extractor = PDFExtractor(self.adoption_file)
                 self.extractors.append(extractor)
                 logger.info(f"Initialized PDF extractor for {self.adoption_file.name}")
             except Exception as e:

@@ -19,11 +19,11 @@ class Settings:
     # Base paths
     BASE_DIR = Path(__file__).resolve().parent.parent
 
-    # Resources path - FIXED to match GitHub repository case
-    # GitHub has: "AI Adoption Resources" (capital A in Adoption)
+    # Resources path - FIXED to match actual directory case
+    # Actual directory has: "AI adoption resources" (lowercase 'a' in adoption)
     RESOURCES_PATH = os.getenv(
         "AI_ADOPTION_RESOURCES_PATH", 
-        str(BASE_DIR / "AI Adoption Resources")  # FIXED: Capital "A" in "Adoption"
+        str(BASE_DIR / "AI adoption resources")  # FIXED: lowercase 'a' in "adoption"
     )
 
     # Data directories

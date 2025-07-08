@@ -23,7 +23,7 @@ class AcademicPapersLoader(BaseDataLoader):
     ):
         """Initialize with directory containing academic papers or specific paper paths."""
         if papers_dir is None:
-            papers_dir = settings.get_resources_path() / "AI Adoption Resources 4"
+            papers_dir = settings.get_resources_path() / "AI dashboard resources 1"
 
         # Specific papers to analyze
         if specific_papers is None:
@@ -1004,14 +1004,14 @@ class IMFLoader(BaseDataLoader):
     def __init__(self, file_path: Optional[Path] = None):
         """Initialize with IMF report file path."""
         if file_path is None:
-            file_path = settings.get_resources_path()
+            file_path = settings.get_resources_path() / "AI dashboard resources 1/wpiea2024231-print-pdf.pdf"
 
         source = DataSource(
             name="IMF AI Economic Analysis",
             version="2024",
             url="https://www.imf.org/en/Publications/WP/Issues/2024/04/15/ai-economic-implications",
             file_path=file_path,
-            citation="International Monetary Fund. 'AI and the Future of Work: Economic Implications.r' Working Paper, 2024.",
+            citation="International Monetary Fund. 'AI and the Future of Work: Economic Implications.' Working Paper, 2024.",
         )
         super().__init__(source)
 
